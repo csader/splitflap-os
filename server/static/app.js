@@ -23,21 +23,6 @@ const APP_SETTINGS_CONFIG = {
   stocks:     { title:'📈 Stocks Settings', fields:[
     {key:'stocks_list', label:'Tickers (comma-separated)', type:'text', ph:'MSFT,GOOG,NVDA'},
   ]},
-  sports:     { title:'🏆 Sports Settings', fields:[
-    {key:'sports_nfl',    label:'NFL Teams (comma-sep, * for all)',  type:'text', ph:'NE,DAL'},
-    {key:'sports_nba',    label:'NBA Teams',                         type:'text', ph:'BOS,LAL'},
-    {key:'sports_mlb',    label:'MLB Teams',                         type:'text', ph:'BOS,NYY'},
-    {key:'sports_nhl',    label:'NHL Teams',                         type:'text', ph:'BOS,DAL'},
-    {key:'sports_ncaaf',  label:'College Football Teams',            type:'text', ph:'MICH,OSU'},
-    {key:'sports_ncaab',  label:'College Basketball Teams',          type:'text', ph:'DUKE,UNC'},
-    {key:'sports_mls',    label:'MLS Teams',                         type:'text', ph:'ATL,LAFC'},
-    {key:'sports_epl',    label:'Premier League Teams',              type:'text', ph:'ARS,LIV'},
-    {key:'sports_laliga', label:'La Liga Teams',                     type:'text', ph:'BAR,RMA'},
-    {key:'sports_ucl',    label:'Champions League Teams',            type:'text', ph:'BAR,BAY'},
-    {key:'sports_wnba',   label:'WNBA Teams',                       type:'text', ph:'NY,LA'},
-    {key:'sports_pga',    label:'PGA (* to enable)',                 type:'text', ph:'*'},
-    {key:'sports_ufc',    label:'UFC (* to enable)',                 type:'text', ph:'*'},
-  ]},
   youtube:    { title:'▶️ YouTube Settings', fields:[
     {key:'yt_channel_id', label:'Channel ID', type:'text', ph:'UC...'},
   ]},
@@ -1010,16 +995,6 @@ function loadSettingsData(){
   document.getElementById('modMatrix').innerHTML='<div style="color:#888;grid-column:span 15;text-align:center;padding:8px">Loading…</div>';
   fetch('/settings').then(r=>r.json()).then(data=>{
     globalSettings=data;
-    document.getElementById('zipInput').value    = data.zip_code||'';
-    document.getElementById('tzInput').value     = data.timezone||'';
-    document.getElementById('keyInput').value    = data.weather_api_key||'';
-    document.getElementById('stopInput').value   = data.mbta_stop||'';
-    document.getElementById('routeInput').value  = data.mbta_route||'';
-    document.getElementById('stockInput').value  = data.stocks_list||'';
-    document.getElementById('nhlInput').value    = data.nhl_teams||'';
-    document.getElementById('ytInput').value     = data.yt_channel_id||'';
-    document.getElementById('ytApiInput').value  = data.yt_api_key||'';
-    document.getElementById('ytVideoInput').value= data.yt_video_id||'';
     document.getElementById('autoHomeToggle').checked = data.auto_home;
     document.getElementById('simRows').value = data.sim_rows||3;
     document.getElementById('simCols').value = data.sim_cols||15;
@@ -1170,16 +1145,6 @@ function saveGlobal(){
   fetch('/settings',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
     action:'save_global',
     sim_rows:rows, sim_cols:cols,
-    zip_code:       document.getElementById('zipInput').value,
-    timezone:       document.getElementById('tzInput').value,
-    weather_api_key:document.getElementById('keyInput').value,
-    mbta_stop:      document.getElementById('stopInput').value,
-    mbta_route:     document.getElementById('routeInput').value,
-    stocks_list:    document.getElementById('stockInput').value,
-    nhl_teams:      document.getElementById('nhlInput').value,
-    yt_channel_id:  document.getElementById('ytInput').value,
-    yt_api_key:     document.getElementById('ytApiInput').value,
-    yt_video_id:    document.getElementById('ytVideoInput').value,
   })}).then(()=>{
     initLiveGrids(rows, cols);
     showToast('Settings saved');

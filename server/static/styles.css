@@ -234,3 +234,11 @@ input:checked+.slider:before{transform:translateX(20px)}
   .apps-grid{grid-template-columns:repeat(2,1fr)}
   .char-matrix{grid-template-columns:repeat(5,1fr)}
 }
+
+/* ── SETTINGS FLOATING SAVE FAB ── */
+.settings-fab{position:fixed;left:32px;right:32px;max-width:756px;margin:0 auto;bottom:20px;transform:translateY(20px);background:var(--green);color:#fff;border:none;border-radius:28px;padding:12px 28px;font-size:.95rem;font-weight:700;cursor:pointer;box-shadow:0 4px 18px rgba(0,0,0,.45);opacity:0;pointer-events:none;transition:opacity .22s ease,transform .22s ease;z-index:150;display:flex;align-items:center;justify-content:center;gap:8px}
+.settings-fab.visible{opacity:1;pointer-events:auto;transform:translateY(0)}
+
+@media(max-width:600px){
+  .settings-fab{left:42px;right:42px}
+}

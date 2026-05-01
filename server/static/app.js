@@ -1024,6 +1024,7 @@ function loadSettingsData(){
     document.getElementById('simCols').value = data.sim_cols||15;
     renderModuleGrid();
     selectModule(selectedModule);
+    setSettingsDirty(false);
   });
 }
 
@@ -1156,6 +1157,12 @@ function modalAction(action){
   });
 }
 
+function setSettingsDirty(isDirty){
+  const fab = document.getElementById('settingsFab');
+  if(!fab) return;
+  fab.classList.toggle('visible', !!isDirty);
+}
+
 function saveGlobal(){
   const rows = parseInt(document.getElementById('simRows').value) || 3;
   const cols = parseInt(document.getElementById('simCols').value) || 15;
@@ -1175,6 +1182,7 @@ function saveGlobal(){
   })}).then(()=>{
     initLiveGrids(rows, cols);
     showToast('Settings saved');
+    setSettingsDirty(false);
   });
 }
 
@@ -1650,6 +1658,15 @@ function tmFinishEarly(){
   const sel = document.getElementById('styleInput');
   if(sel) sel.innerHTML = buildStyleOptions('ltr');
 })();
+
+document.querySelectorAll('button[onclick="saveGlobal()"]:not(#settingsFab)').forEach(el => el.remove());
+
+const settingsPage = document.getElementById('page-settings');
+if(settingsPage){
+  settingsPage.addEventListener('input', (e) => {
+    if(e.target.closest('.settings-grid')) setSettingsDirty(true);
+  });
+}
 
 buildAppsGrid();
 loadSavedPlaylists();

@@ -26,11 +26,9 @@ Open `http://<your-pi-ip>` in a browser. On first launch, install apps from ☰ 
 
 ## Hardware
 
-This project is the **web UI only**. For the firmware and physical display hardware (3D printed parts, PCBs, BOM), see the original project:
+This project is the **web UI only**. For the firmware and physical display hardware (3D printed parts, PCBs, BOM), see the original project by Adam G Makes:
 
-- **Build video:** https://www.youtube.com/watch?v=-C8_AtxEEQc
-- **Hardware repo:** https://github.com/adamgmakes/SplitFlapDisplay
-- **OnShape model:** https://cad.onshape.com/documents/87c916b33ca5d6492b457485
+**https://github.com/adamgmakes/SplitFlapDisplay**
 
 ## Repo Structure
 

@@ -14,14 +14,14 @@ const APP_SETTINGS_CONFIG = {
   weather:    { title:'🌤️ Weather Settings', fields:[
     {key:'zip_code',            label:'Zip Code',              type:'text',     ph:'02118'},
     {key:'weather_api_key',     label:'OpenWeatherMap API Key', type:'password', ph:'...'},
-    {key:'timezone',            label:'Timezone',              type:'text',     ph:'US/Eastern'},
+    {key:'timezone',            label:'Timezone',              type:'search_chips', searchUrl:'/timezones', resultKey:'zones', maxItems:1},
   ]},
   metro:      { title:'🚇 Metro Settings', fields:[
     {key:'mbta_stop',  label:'Stop ID (e.g. place-NSTAT)',  type:'text', ph:'place-NSTAT'},
     {key:'mbta_route', label:'Route (e.g. Orange)',          type:'text', ph:'Orange'},
   ]},
   stocks:     { title:'📈 Stocks Settings', fields:[
-    {key:'stocks_list', label:'Tickers (comma-separated)', type:'text', ph:'MSFT,GOOG,NVDA'},
+    {key:'stocks_list', label:'Stock Tickers', type:'search_chips', searchUrl:'/stocks_search', resultKey:'tickers'},
   ]},
   youtube:    { title:'▶️ YouTube Settings', fields:[
     {key:'yt_channel_id', label:'Channel ID', type:'text', ph:'UC...'},
@@ -33,12 +33,13 @@ const APP_SETTINGS_CONFIG = {
   countdown:  { title:'⏳ Countdown Settings', fields:[
     {key:'countdown_event',  label:'Event Name (15 chars)', type:'text',          ph:'NEW YEAR'},
     {key:'countdown_target', label:'Target Date & Time',    type:'datetime-local', ph:''},
+    {key:'timezone',         label:'Timezone',              type:'search_chips', searchUrl:'/timezones', resultKey:'zones', maxItems:1},
   ]},
   world_clock:{ title:'🌍 World Clock Settings', fields:[
-    {key:'world_clock_zones', label:'Timezones — comma-separated\n(e.g. US/Eastern, Europe/London, Asia/Tokyo)', type:'text', ph:'US/Eastern,US/Pacific,Europe/London'},
+    {key:'world_clock_zones', label:'Timezones (max 3)', type:'search_chips', searchUrl:'/timezones', resultKey:'zones', maxItems:3},
   ]},
   crypto:     { title:'₿ Crypto Settings', fields:[
-    {key:'crypto_list', label:'CoinGecko IDs (comma-separated)', type:'text', ph:'bitcoin,ethereum,solana'},
+    {key:'crypto_list', label:'Cryptocurrencies', type:'search_chips', searchUrl:'/crypto_search', resultKey:'coins'},
   ]},
   iss:        { title:'🛸 ISS Tracker', fields:[] },
   demo:       { title:'🎬 Demo Mode', fields:[] },
@@ -48,7 +49,7 @@ const APP_SETTINGS_CONFIG = {
     {key:'yt_channel_id', label:'YouTube Channel ID (for subs)', type:'text', ph:'UC...'},
     {key:'yt_video_id',   label:'YouTube Video ID (live, for viewers)', type:'text', ph:'...'},
     {key:'yt_api_key',    label:'YouTube Data API Key', type:'password', ph:'...'},
-    {key:'timezone',      label:'Timezone', type:'text', ph:'US/Eastern'},
+    {key:'timezone',      label:'Timezone', type:'search_chips', searchUrl:'/timezones', resultKey:'zones', maxItems:1},
   ]},
   anim_rainbow:{ title:'🌈 Rainbow Settings', fields:[
     {key:'anim_style', label:'Update Order', type:'select',
@@ -951,6 +952,20 @@ async function openAppSettings(appKey){
         input.rows = 8;
         if(f.ph) input.placeholder = f.ph;
         input.value = globalSettings[f.key]||'';
+      } else if(f.type==='search_chips'){
+        const wrapper = document.createElement('div');
+        wrapper.className = 'chip-picker';
+        div.appendChild(wrapper);
+        fields.appendChild(div);
+        createSearchChipPicker({
+          container: wrapper,
+          hiddenId: `asf_${f.key}`,
+          searchUrl: f.searchUrl,
+          resultKey: f.resultKey,
+          maxItems: f.maxItems||null,
+          currentValues: globalSettings[f.key]||''
+        });
+        return;
       } else {
         input = document.createElement('input');
         input.type = f.type||'text';
@@ -986,6 +1001,78 @@ function saveAppSettings(){
   });
   fetch('/settings',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
   .then(()=>{ showToast('Settings saved'); closeAppSettings(); });
+}
+
+// ============================================================
+//  SEARCH + CHIP PICKER COMPONENT
+// ============================================================
+function createSearchChipPicker({container, hiddenId, searchUrl, resultKey, maxItems, currentValues}){
+  const values = currentValues ? currentValues.split(',').map(v=>v.trim()).filter(Boolean) : [];
+  const hidden = document.createElement('input');
+  hidden.type='hidden'; hidden.id=hiddenId; hidden.value=values.join(',');
+  container.appendChild(hidden);
+
+  const chipsEl = document.createElement('div');
+  chipsEl.className='chip-picker-chips';
+  container.appendChild(chipsEl);
+
+  const searchInput = document.createElement('input');
+  searchInput.type='text'; searchInput.className='line-input';
+  searchInput.style.cssText='font-size:.85rem;margin:6px 0 0 0;text-transform:none';
+  searchInput.placeholder='Search…';
+  container.appendChild(searchInput);
+
+  const resultsEl = document.createElement('div');
+  resultsEl.className='chip-picker-results';
+  container.appendChild(resultsEl);
+
+  function renderChips(){
+    chipsEl.innerHTML='';
+    values.forEach((v,i)=>{
+      const chip = document.createElement('span');
+      chip.className='team-chip selected';
+      chip.style.cssText='display:inline-flex;align-items:center;gap:4px;margin:2px;padding:4px 8px';
+      chip.innerHTML=`${v} <span style="cursor:pointer;opacity:.6" data-idx="${i}">✕</span>`;
+      chip.querySelector('span').onclick=(e)=>{ e.stopPropagation(); values.splice(i,1); sync(); };
+      chipsEl.appendChild(chip);
+    });
+  }
+
+  function sync(){
+    hidden.value = values.join(',');
+    renderChips();
+  }
+
+  let debounce=null;
+  searchInput.oninput=()=>{
+    clearTimeout(debounce);
+    const q = searchInput.value.trim();
+    if(q.length<1){ resultsEl.innerHTML=''; return; }
+    debounce=setTimeout(async()=>{
+      try{
+        const res = await fetch(`${searchUrl}?q=${encodeURIComponent(q)}`);
+        const data = await res.json();
+        const items = data[resultKey]||[];
+        resultsEl.innerHTML='';
+        items.forEach(item=>{
+          const already = values.includes(item.value);
+          const el = document.createElement('div');
+          el.className='chip-picker-result'+(already?' selected':'');
+          el.textContent=item.label;
+          el.onclick=()=>{
+            if(already) return;
+            if(maxItems && values.length>=maxItems) values.shift();
+            values.push(item.value);
+            sync();
+            el.classList.add('selected');
+          };
+          resultsEl.appendChild(el);
+        });
+      }catch(e){ resultsEl.innerHTML='<span style="color:var(--red);font-size:.8rem">Search failed</span>'; }
+    },300);
+  };
+
+  renderChips();
 }
 
 // ============================================================

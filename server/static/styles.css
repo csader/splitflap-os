@@ -217,6 +217,13 @@ input:checked+.slider:before{transform:translateX(20px)}
 .team-chip:hover{border-color:var(--accent)}
 .team-chip.selected{background:var(--accent);color:#111;border-color:var(--accent)}
 
+/* ── CHIP PICKER ── */
+.chip-picker-chips{display:flex;flex-wrap:wrap;gap:4px;min-height:24px}
+.chip-picker-results{max-height:180px;overflow-y:auto;margin-top:4px}
+.chip-picker-result{padding:6px 10px;font-size:.82rem;cursor:pointer;border-radius:4px;transition:.12s}
+.chip-picker-result:hover{background:#2a2a2a}
+.chip-picker-result.selected{opacity:.4;pointer-events:none}
+
 /* ── MOBILE ── */
 @media(max-width:600px){
   body{padding:56px 10px 56px 10px}

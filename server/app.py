@@ -1347,6 +1347,9 @@ loop_delay  = 5
 stop_event  = threading.Event()
 last_sent_page = None
 active_app  = None
+active_app_playlist = None
+app_playlist_loop = True
+app_playlist_name = None
 
 last_fetches = {
     'weather': 0, 'metro': 0, 'sports': 0, 'stocks': 0,
@@ -1360,8 +1363,238 @@ app_caches = {
 }
 
 
+def _run_app_playlist():
+    """Execute one pass through the app playlist entries."""
+    global active_app_playlist, active_app, last_sent_page, last_fetches, app_caches
+
+    entries = active_app_playlist
+    if not entries:
+        active_app_playlist = None
+        return
+
+    while True:
+        for entry in entries:
+            if stop_event.is_set():
+                stop_event.clear()
+                return
+
+            etype = entry.get('type', 'app')
+            duration = float(entry.get('duration', 30))
+
+            if etype == 'compose':
+                # Send composed text to display
+                text = entry.get('text', '')
+                style = entry.get('style', 'ltr')
+                speed = int(entry.get('speed', 15))
+                order = get_animation_order(style)
+                max_dist = send_to_display(text, order, step_delay_ms=speed)
+                last_sent_page = text
+                # Wait for rotation + duration
+                rotation_time = max_dist * (4.0 / 64.0)
+                for _ in range(int(rotation_time * 10)):
+                    if stop_event.is_set():
+                        stop_event.clear()
+                        return
+                    time.sleep(0.1)
+                for _ in range(int(duration * 10)):
+                    if stop_event.is_set():
+                        stop_event.clear()
+                        return
+                    time.sleep(0.1)
+
+            elif etype == 'app':
+                app_key = entry.get('app', '')
+                if not app_key:
+                    continue
+                # Temporarily set active_app so existing fetch logic works
+                old_app = active_app
+                active_app = app_key
+                last_fetches = {k: 0 for k in last_fetches}
+                deadline = time.time() + duration
+
+                while time.time() < deadline:
+                    if stop_event.is_set():
+                        active_app = None
+                        stop_event.clear()
+                        return
+
+                    display_pages = _get_pages_for_app(app_key)
+                    if not display_pages:
+                        time.sleep(1)
+                        continue
+
+                    is_anim = app_key.startswith('anim_') or \
+                              (app_key in _plugin_registry and _plugin_registry[app_key].get('animation'))
+
+                    # Determine per-page delay
+                    if is_anim:
+                        eff_delay = max(0.1, float(settings.get('anim_speed', '0.4')))
+                    elif app_key in _plugin_registry:
+                        eff_delay = float(_plugin_registry[app_key].get('loop_delay', 5))
+                    elif app_key.startswith('plugin_'):
+                        pid = app_key[7:]
+                        eff_delay = float(_plugin_registry.get(pid, {}).get('loop_delay', 5))
+                    elif app_key in ('countdown', 'world_clock'):
+                        eff_delay = 1
+                    elif app_key == 'stocks':
+                        eff_delay = 10
+                    else:
+                        eff_delay = 5
+
+                    active_order = None
+                    if is_anim:
+                        active_order = get_animation_order(settings.get('anim_style', 'ltr'))
+
+                    for page in display_pages:
+                        if stop_event.is_set() or time.time() >= deadline:
+                            break
+                        page_text = page.get('text', '') if isinstance(page, dict) else page
+                        page_order = get_animation_order(page.get('style', 'ltr')) if isinstance(page, dict) else active_order
+                        page_speed = int(page.get('speed', 15)) if isinstance(page, dict) else 15
+                        page_delay = float(page.get('delay', eff_delay)) if isinstance(page, dict) else eff_delay
+
+                        if is_anim or page_text != last_sent_page:
+                            max_dist = send_to_display(page_text, page_order, raw=is_anim, step_delay_ms=page_speed)
+                            last_sent_page = page_text
+
+                        rotation_time = max_dist * (4.0 / 64.0)
+                        for _ in range(int(rotation_time * 10)):
+                            if stop_event.is_set() or time.time() >= deadline: break
+                            time.sleep(0.1)
+                        for _ in range(int(page_delay * 10)):
+                            if stop_event.is_set() or time.time() >= deadline: break
+                            time.sleep(0.1)
+
+                active_app = None
+
+        # After all entries
+        if not app_playlist_loop:
+            active_app_playlist = None
+            return
+        # Otherwise loop continues
+
+
+def _get_pages_for_app(app_key):
+    """Fetch display pages for an app (reuses existing logic)."""
+    now = time.time()
+
+    if app_key in _plugin_registry:
+        return get_plugin_pages(app_key)
+
+    elif app_key == 'time':
+        tz = pytz.timezone(settings.get('timezone', 'US/Eastern'))
+        return [format_lines("", datetime.now(tz).strftime("%I:%M %p").lstrip("0"), "")]
+
+    elif app_key == 'date':
+        tz = pytz.timezone(settings.get('timezone', 'US/Eastern'))
+        dt = datetime.now(tz)
+        return [format_lines(dt.strftime("%I:%M %p").lstrip("0"), dt.strftime("%B %d").upper(), dt.strftime("%A").upper())]
+
+    elif app_key == 'countdown':
+        return fetch_countdown()
+
+    elif app_key == 'world_clock':
+        return fetch_world_clock()
+
+    elif app_key == 'weather':
+        if now - last_fetches['weather'] > 300:
+            app_caches['weather'] = fetch_weather_data()
+            last_fetches['weather'] = now
+        w = app_caches['weather']
+        if not w:
+            return [format_lines("NO WEATHER DATA", "", "CHECK API KEY")]
+        c = get_cols()
+        now_t = datetime.now(pytz.timezone(settings.get('timezone', 'US/Eastern'))).strftime("%I:%M%p").lstrip("0")
+        mcl = c - 1 - len(now_t)
+        l1 = f"{w['city'][:mcl]} {now_t}".center(c)
+        pfx = f"{w['temp']}F ({w['feels']}F) "
+        l2 = (pfx + w['desc'][:c-len(pfx)]).center(c)
+        l3 = f"H:{w['high']}F L:{w['low']}F".center(c)
+        return [format_lines(l1, l2, l3)]
+
+    elif app_key == 'dashboard':
+        tz = pytz.timezone(settings.get('timezone', 'US/Eastern'))
+        dt = datetime.now(tz)
+        time_page = format_lines(dt.strftime("%A").upper(), dt.strftime("%b %d %Y").upper(), dt.strftime("%I:%M %p").upper())
+        if now - last_fetches['weather'] > 300:
+            app_caches['weather'] = fetch_weather_data()
+            last_fetches['weather'] = now
+        w = app_caches['weather']
+        if not w:
+            wp = format_lines("NO WEATHER DATA", "", "CHECK API KEY")
+        else:
+            c = get_cols()
+            now_t = dt.strftime("%I:%M%p").lstrip("0")
+            mcl = c - 1 - len(now_t)
+            l1 = f"{w['city'][:mcl]} {now_t}".center(c)
+            pfx = f"{w['temp']}F ({w['feels']}F) "
+            l2 = (pfx + w['desc'][:c-len(pfx)]).center(c)
+            l3 = f"H:{w['high']}F L:{w['low']}F".center(c)
+            wp = format_lines(l1, l2, l3)
+        return [time_page, wp]
+
+    elif app_key == 'youtube':
+        if now - last_fetches['youtube'] > 30:
+            app_caches['youtube'] = fetch_youtube_data()
+            last_fetches['youtube'] = now
+        yt = app_caches['youtube']
+        return ([format_lines("YOUTUBE", yt['name'][:get_cols()], f"{yt['subs']} SUBS")]
+                if yt else [format_lines("YOUTUBE", "FETCH ERROR", "CHECK API")])
+
+    elif app_key == 'yt_comments':
+        if now - last_fetches['yt_comments'] > 60:
+            app_caches['yt_comments'] = fetch_youtube_comments()
+            last_fetches['yt_comments'] = now
+        return app_caches.get('yt_comments', [format_lines("LOADING", "COMMENTS...", "")])
+
+    elif app_key == 'metro':
+        if now - last_fetches['metro'] > 30:
+            app_caches['metro'] = fetch_metro()
+            last_fetches['metro'] = now
+        return app_caches['metro']
+
+    elif app_key == 'stocks':
+        if now - last_fetches['stocks'] > 60:
+            app_caches['stocks'] = fetch_stocks()
+            last_fetches['stocks'] = now
+        return app_caches['stocks']
+
+    elif app_key == 'sports':
+        if now - last_fetches['sports'] > 60:
+            app_caches['sports'] = fetch_sports()
+            last_fetches['sports'] = now
+        return app_caches['sports']
+
+    elif app_key == 'crypto':
+        if now - last_fetches['crypto'] > 60:
+            app_caches['crypto'] = fetch_crypto()
+            last_fetches['crypto'] = now
+        return app_caches.get('crypto', [format_lines("LOADING", "CRYPTO...", "")])
+
+    elif app_key == 'iss':
+        if now - last_fetches['iss'] > 5:
+            app_caches['iss'] = fetch_iss()
+            last_fetches['iss'] = now
+        return app_caches.get('iss', [format_lines("LOADING", "ISS...", "")])
+
+    elif app_key == 'livestream':
+        if now - last_fetches.get('youtube', 0) > 60:
+            app_caches['youtube'] = fetch_youtube_data()
+            last_fetches['youtube'] = now
+        if now - last_fetches.get('livestream_viewers', 0) > 30:
+            app_caches['livestream_viewers'] = fetch_youtube_viewers()
+            last_fetches['livestream_viewers'] = now
+        return build_livestream_pages()
+
+    elif app_key and app_key.startswith('plugin_'):
+        return get_plugin_pages(app_key[7:])
+
+    return []
+
+
 def playlist_loop():
     global current_playlist, loop_delay, last_sent_page, active_app, last_fetches, app_caches
+    global active_app_playlist, app_playlist_loop
 
     while True:
         now = time.time()
@@ -1373,6 +1606,11 @@ def playlist_loop():
             run_demo()
             if stop_event.is_set():
                 stop_event.clear()
+            continue
+
+        # ── App playlist mode ─────────────────────────────
+        if active_app_playlist is not None:
+            _run_app_playlist()
             continue
 
         # ── Static / real-time apps ──────────────────────────
@@ -1604,6 +1842,8 @@ def index():
 @app.route('/current_state')
 def current_state():
     return jsonify(is_homed=is_homed, state=current_display_string, active_app=active_app,
+                   active_app_playlist=active_app_playlist is not None,
+                   app_playlist_name=app_playlist_name,
                    rows=get_rows(), cols=get_cols(), sim_mode=sim_mode, hardware_connected=ser is not None)
 
 @app.route('/grid_config')
@@ -1757,19 +1997,21 @@ def toggle_autohome():
 
 @app.route('/update_playlist', methods=['POST'])
 def update_playlist():
-    global current_playlist, loop_delay, last_sent_page, active_app
+    global current_playlist, loop_delay, last_sent_page, active_app, active_app_playlist
     data             = request.json
     current_playlist = data.get('pages', [])
     loop_delay       = data.get('delay', 5)
     last_sent_page   = None
     active_app       = None
+    active_app_playlist = None
     stop_event.set()
     mqtt_publish_state()
     return jsonify(status="success")
 
 @app.route('/run_app', methods=['POST'])
 def run_app():
-    global active_app, last_fetches, loop_delay
+    global active_app, last_fetches, loop_delay, active_app_playlist
+    active_app_playlist = None
     active_app   = request.json.get('app')
     last_fetches = {k: 0 for k in last_fetches}
 
@@ -1797,8 +2039,9 @@ def run_app():
 
 @app.route('/stop_app', methods=['POST'])
 def stop_app():
-    global active_app
+    global active_app, active_app_playlist
     active_app = None
+    active_app_playlist = None
     stop_event.set()
     mqtt_publish_state()
     return jsonify(status="stopped")
@@ -1980,6 +2223,51 @@ def delete_playlist(name):
     if name in plists:
         del plists[name]
         settings['saved_playlists'] = plists
+        save_settings(settings)
+    return jsonify(status="deleted")
+
+
+# ============================================================
+#  APP PLAYLISTS
+# ============================================================
+
+@app.route('/run_app_playlist', methods=['POST'])
+def run_app_playlist():
+    global active_app_playlist, app_playlist_loop, active_app, current_playlist, last_sent_page, app_playlist_name
+    data = request.json
+    active_app_playlist = data.get('entries', [])
+    app_playlist_loop = data.get('loop', True)
+    app_playlist_name = data.get('name', None)
+    active_app = None
+    current_playlist = []
+    last_sent_page = None
+    stop_event.set()
+    mqtt_publish_state()
+    return jsonify(status="App playlist started")
+
+@app.route('/app_playlists', methods=['GET', 'POST'])
+def app_playlists():
+    if request.method == 'GET':
+        return jsonify(settings.get('saved_app_playlists', {}))
+    data = request.json
+    name = (data.get('name') or '').strip()
+    if not name:
+        return jsonify(status="error", message="Name required"), 400
+    if 'saved_app_playlists' not in settings:
+        settings['saved_app_playlists'] = {}
+    settings['saved_app_playlists'][name] = {
+        'entries': data.get('entries', []),
+        'loop': data.get('loop', True),
+    }
+    save_settings(settings)
+    return jsonify(status="saved", name=name)
+
+@app.route('/app_playlists/<path:name>', methods=['DELETE'])
+def delete_app_playlist(name):
+    plists = settings.get('saved_app_playlists', {})
+    if name in plists:
+        del plists[name]
+        settings['saved_app_playlists'] = plists
         save_settings(settings)
     return jsonify(status="deleted")
 

@@ -307,13 +307,15 @@ setInterval(()=>{
 
     // Active app banner (single)
     const app = data.active_app;
+    const playlistRunning = data.active_app_playlist;
+    const playlistName = data.app_playlist_name;
     currentActiveApp = app;
-    const appLabel = app ? (APP_LIST.find(a=>a.key===app)||{name:app}).name : null;
+    const appLabel = playlistRunning ? (playlistName ? `Playlist: ${playlistName}` : 'Playlist') : (app ? (APP_LIST.find(a=>a.key===app)||{name:app}).name : null);
     const banner = document.getElementById('control-banner');
     const nameEl = document.getElementById('control-app-name');
     if(banner){
-      banner.classList.toggle('visible', !!app);
-      if(app && nameEl) nameEl.textContent = appLabel;
+      banner.classList.toggle('visible', !!(app || playlistRunning));
+      if((app || playlistRunning) && nameEl) nameEl.textContent = appLabel;
     }
 
     // Running highlight on app cards
@@ -332,6 +334,7 @@ function switchTab(name){
   document.getElementById('tab-'+name).classList.add('active');
   document.getElementById('page-'+name).classList.add('active');
   if(name==='apps') buildAppsGrid();
+  if(name==='playlists'){ loadSavedAppPlaylists(); if(typeof lucide!=='undefined') lucide.createIcons(); }
 }
 
 // ── Hamburger ──
@@ -1850,7 +1853,190 @@ function saveSportsFollow(league){
     body:JSON.stringify({league, teams})});
 }
 
+// ============================================================
+//  APP PLAYLISTS
+// ============================================================
+let appPlaylistEntries = [];
+
+function renderAppPlaylistEntries(){
+  const el = document.getElementById('appPlaylistEntries');
+  if(!appPlaylistEntries.length){
+    el.innerHTML='<div style="color:#666;font-style:italic;font-size:.85rem">No entries yet. Add apps or messages below.</div>';
+    return;
+  }
+  el.innerHTML='';
+  appPlaylistEntries.forEach((entry,i)=>{
+    const row = document.createElement('div');
+    row.className='ap-entry';
+    const label = entry.type==='app'
+      ? `${(APP_LIST.find(a=>a.key===entry.app)||{icon:'📦'}).icon} ${(APP_LIST.find(a=>a.key===entry.app)||{name:entry.app}).name}`
+      : null;
+    if(entry.type==='compose'){
+      row.innerHTML=`
+        <span style="font-size:.75rem;color:#888;margin-right:2px">📝</span>
+        <input type="text" class="ap-entry-text" value="${(entry.text||'').replace(/"/g,'&quot;')}" placeholder="Type message…"
+          oninput="appPlaylistEntries[${i}].text=this.value" data-idx="${i}">
+        <input type="number" class="ap-entry-dur" value="${entry.duration||10}" min="1" max="600" step="1"
+          onchange="appPlaylistEntries[${i}].duration=parseInt(this.value)||10" title="Duration (seconds)">
+        <span style="font-size:.75rem;color:#888">s</span>
+        <button class="ap-entry-btn" onclick="moveAppEntry(${i},-1)" title="Move up">↑</button>
+        <button class="ap-entry-btn" onclick="moveAppEntry(${i},1)" title="Move down">↓</button>
+        <button class="ap-entry-btn" onclick="removeAppEntry(${i})" title="Remove">✕</button>`;
+    } else {
+      row.innerHTML=`
+        <span class="ap-entry-label">${label}</span>
+        <input type="number" class="ap-entry-dur" value="${entry.duration||30}" min="5" max="600" step="5"
+          onchange="appPlaylistEntries[${i}].duration=parseInt(this.value)||30" title="Duration (seconds)">
+        <span style="font-size:.75rem;color:#888">s</span>
+        <button class="ap-entry-btn" onclick="moveAppEntry(${i},-1)" title="Move up">↑</button>
+        <button class="ap-entry-btn" onclick="moveAppEntry(${i},1)" title="Move down">↓</button>
+        <button class="ap-entry-btn" onclick="removeAppEntry(${i})" title="Remove">✕</button>`;
+    }
+    el.appendChild(row);
+  });
+}
+
+function addAppPlaylistEntry(type){
+  if(type==='app'){
+    // Show a picker
+    const modal = document.createElement('div');
+    modal.className='modal-overlay';
+    modal.style.display='flex';
+    modal.innerHTML=`
+      <div class="modal-content" style="max-width:400px">
+        <h3 style="color:var(--accent);margin-bottom:12px">Add App to Playlist</h3>
+        <select id="apPickerSelect" style="width:100%;background:#111;color:#fff;border:1px solid #555;padding:8px;border-radius:4px;font-size:.9rem;margin-bottom:12px">
+          ${APP_LIST.map(a=>`<option value="${a.key}">${a.icon} ${a.name}</option>`).join('')}
+        </select>
+        <label style="font-size:.85rem;color:#aaa;display:flex;align-items:center;gap:6px;margin-bottom:14px">
+          Duration <input type="number" id="apPickerDur" value="30" min="5" max="600" step="5"
+            style="width:70px;padding:5px;background:#111;color:#fff;border:1px solid #555;border-radius:4px;text-align:center"> seconds
+        </label>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-success" style="flex:1" onclick="confirmAddApp(this)">Add</button>
+          <button class="btn" style="background:#333;color:#aaa;border:1px solid #555" onclick="this.closest('.modal-overlay').remove()">Cancel</button>
+        </div>
+      </div>`;
+    document.body.appendChild(modal);
+  } else {
+    // Compose entry — add empty and focus
+    appPlaylistEntries.push({type:'compose', text:'', duration:10, style:'ltr', speed:15});
+    renderAppPlaylistEntries();
+    const inputs = document.querySelectorAll('.ap-entry-text');
+    if(inputs.length) inputs[inputs.length-1].focus();
+  }
+}
+
+function confirmAddApp(btn){
+  const modal = btn.closest('.modal-overlay');
+  const app = document.getElementById('apPickerSelect').value;
+  const dur = parseInt(document.getElementById('apPickerDur').value)||30;
+  appPlaylistEntries.push({type:'app', app, duration:dur});
+  modal.remove();
+  renderAppPlaylistEntries();
+}
+
+function moveAppEntry(i, dir){
+  const j = i+dir;
+  if(j<0||j>=appPlaylistEntries.length) return;
+  [appPlaylistEntries[i], appPlaylistEntries[j]] = [appPlaylistEntries[j], appPlaylistEntries[i]];
+  renderAppPlaylistEntries();
+}
+
+function removeAppEntry(i){
+  appPlaylistEntries.splice(i,1);
+  renderAppPlaylistEntries();
+}
+
+function runAppPlaylist(){
+  if(!appPlaylistEntries.length){ showToast('Add entries first','warn'); return; }
+  const loop = document.getElementById('appPlaylistLoop').checked;
+  fetch('/run_app_playlist',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({entries:appPlaylistEntries, loop})});
+  showToast('▶ Playlist started');
+}
+
+function openSaveAppPlaylist(){
+  if(!appPlaylistEntries.length){ showToast('Add entries first','warn'); return; }
+  const modal = document.createElement('div');
+  modal.className='modal-overlay';
+  modal.style.display='flex';
+  modal.innerHTML=`
+    <div class="modal-content" style="max-width:360px">
+      <h3 style="color:var(--accent);margin-bottom:12px">Save Playlist</h3>
+      <input type="text" id="saveAppPlaylistName" placeholder="Playlist name…" class="line-input" style="font-size:.9rem;margin-bottom:14px;text-transform:none">
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-success" style="flex:1" onclick="saveAppPlaylist();this.closest('.modal-overlay').remove()">Save</button>
+        <button class="btn" style="background:#333;color:#aaa;border:1px solid #555" onclick="this.closest('.modal-overlay').remove()">Cancel</button>
+      </div>
+    </div>`;
+  document.body.appendChild(modal);
+  setTimeout(()=>document.getElementById('saveAppPlaylistName').focus(),50);
+}
+
+function saveAppPlaylist(){
+  const name = document.getElementById('saveAppPlaylistName').value.trim();
+  if(!name){ showToast('Enter a name','warn'); return; }
+  if(!appPlaylistEntries.length){ showToast('Add entries first','warn'); return; }
+  const loop = document.getElementById('appPlaylistLoop').checked;
+  fetch('/app_playlists',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({name, entries:appPlaylistEntries, loop})})
+  .then(()=>{ showToast('Playlist saved'); loadSavedAppPlaylists(); });
+}
+
+function loadSavedAppPlaylists(){
+  fetch('/app_playlists').then(r=>r.json()).then(data=>{
+    const el = document.getElementById('savedAppPlaylistList');
+    const names = Object.keys(data);
+    if(!names.length){ el.innerHTML='<div style="color:#666;font-style:italic;font-size:.85rem">No saved playlists yet.</div>'; return; }
+    el.innerHTML='';
+    names.forEach(name=>{
+      const pl = data[name];
+      const count = (pl.entries||[]).length;
+      const row = document.createElement('div');
+      row.style.cssText='display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #333';
+      row.innerHTML=`
+        <span style="flex:1;font-size:.9rem">${name} <span style="color:#888;font-size:.75rem">(${count} items${pl.loop?' · loop':''})</span></span>
+        <button class="btn btn-sm" style="background:#333;color:#ccc;border:1px solid #555" onclick="loadAppPlaylist('${name.replace(/'/g,"\\'")}')">Load</button>
+        <button class="btn btn-success btn-sm" onclick="runSavedAppPlaylist('${name.replace(/'/g,"\\'")}')">▶ Run</button>
+        <button class="btn-del btn-sm" style="padding:4px 8px;border-radius:4px" onclick="deleteAppPlaylist('${name.replace(/'/g,"\\'")}')">✕</button>`;
+      el.appendChild(row);
+    });
+  });
+}
+
+function loadAppPlaylist(name){
+  fetch('/app_playlists').then(r=>r.json()).then(data=>{
+    const pl = data[name];
+    if(!pl) return;
+    appPlaylistEntries = pl.entries||[];
+    document.getElementById('appPlaylistLoop').checked = pl.loop!==false;
+    renderAppPlaylistEntries();
+    showToast(`Loaded "${name}"`);
+  });
+}
+
+function runSavedAppPlaylist(name){
+  fetch('/app_playlists').then(r=>r.json()).then(data=>{
+    const pl = data[name];
+    if(!pl) return;
+    appPlaylistEntries = pl.entries||[];
+    document.getElementById('appPlaylistLoop').checked = pl.loop!==false;
+    renderAppPlaylistEntries();
+    fetch('/run_app_playlist',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({entries:pl.entries, loop:pl.loop!==false, name})});
+    showToast(`▶ "${name}" started`);
+  });
+}
+
+function deleteAppPlaylist(name){
+  if(!confirm(`Delete "${name}"?`)) return;
+  fetch(`/app_playlists/${encodeURIComponent(name)}`,{method:'DELETE'})
+  .then(()=>{ showToast(`Deleted "${name}"`,'warn'); loadSavedAppPlaylists(); });
+}
+
 buildAppsGrid();
 loadSavedPlaylists();
+loadSavedAppPlaylists();
 updatePreview();
 if(typeof lucide!=='undefined') lucide.createIcons();

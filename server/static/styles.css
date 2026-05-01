@@ -96,11 +96,12 @@ h3{margin-top:0;color:var(--text)}
 .btn{padding:12px 20px;border-radius:6px;border:none;font-weight:bold;cursor:pointer;transition:.2s;font-size:1rem}
 .btn:active{transform:scale(.98)}
 .btn-primary{background:var(--accent);color:#fff;width:100%;margin-top:16px;padding:16px;font-size:1.1rem}
+.btn-sm.btn-primary{width:auto;margin-top:0;padding:7px 12px;font-size:.85rem}
 .btn-success{background:var(--green);color:#fff}
 .btn-warning{background:var(--orange);color:#fff}
 .btn-secondary{background:#444;color:#fff}
 .btn-del{background:var(--red);color:#fff;border:none;padding:6px 12px;border-radius:4px;cursor:pointer;font-weight:bold}
-.btn-sm{padding:7px 12px;font-size:.85rem}
+.btn-sm{padding:7px 12px;font-size:.85rem;display:inline-flex;align-items:center;gap:4px}
 
 /* ── PLAYLIST ── */
 .playlist-area{margin-top:12px;background:var(--panel);padding:14px;border-radius:8px;border:1px solid var(--border)}
@@ -223,6 +224,17 @@ input:checked+.slider:before{transform:translateX(20px)}
 .chip-picker-result{padding:6px 10px;font-size:.82rem;cursor:pointer;border-radius:4px;transition:.12s}
 .chip-picker-result:hover{background:#2a2a2a}
 .chip-picker-result.selected{opacity:.4;pointer-events:none}
+
+/* ── APP PLAYLIST ENTRIES ── */
+.ap-entry{display:flex;align-items:center;gap:8px;padding:10px 12px;background:#222;border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:6px;margin-bottom:8px;transition:.15s}
+.ap-entry:hover{border-color:var(--accent);background:#252525}
+.ap-entry-label{flex:1;font-size:.88rem;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:monospace}
+.ap-entry-dur{width:50px;padding:5px;background:#111;color:#fff;border:1px solid #555;border-radius:4px;text-align:center;font-size:.82rem;font-family:monospace}
+.ap-entry-btn{background:#2a2a2a;border:1px solid #555;color:#888;border-radius:4px;padding:4px 8px;cursor:pointer;font-size:.8rem;transition:.15s}
+.ap-entry-btn:hover{border-color:var(--accent);color:var(--accent);background:#333}
+.ap-entry-text{flex:1;background:#111;color:var(--green);border:1px solid #555;border-radius:4px;padding:6px 10px;font-size:.85rem;font-family:'Courier New',monospace;text-transform:uppercase}
+.ap-entry-text:focus{border-color:var(--accent);outline:none}
+.ap-controls{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px;align-items:center;padding:12px 14px;background:var(--panel);border:1px solid var(--border);border-radius:8px}
 
 /* ── MOBILE ── */
 @media(max-width:600px){

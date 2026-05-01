@@ -116,6 +116,23 @@
     <button class="hamburger-back" onclick="closeMenuPage()"><i data-lucide="arrow-left" style="width:14px;height:14px"></i> Back</button>
     <h3 style="margin-bottom:12px">App Library</h3>
     <div class="apps-grid" id="appLibraryGrid"></div>
+
+    <div style="margin-top:28px;padding:16px;background:var(--panel);border:1px solid var(--border);border-radius:8px">
+      <h4 style="margin:0 0 8px 0;color:var(--text)">🛠 Create Your Own App</h4>
+      <p style="color:#aaa;font-size:.85rem;line-height:1.6;margin:0 0 10px 0">
+        Each app is a folder with two files: <code style="background:#222;padding:2px 5px;border-radius:3px">manifest.json</code> and <code style="background:#222;padding:2px 5px;border-radius:3px">app.py</code>.
+      </p>
+      <p style="color:#aaa;font-size:.85rem;line-height:1.6;margin:0 0 10px 0">
+        Your <code style="background:#222;padding:2px 5px;border-radius:3px">app.py</code> exports a single function:
+      </p>
+      <pre style="background:#111;padding:10px;border-radius:6px;font-size:.8rem;color:#0f0;overflow-x:auto;margin:0 0 10px 0">def fetch(settings, format_lines, get_rows, get_cols):
+    return [format_lines("LINE 1", "LINE 2", "LINE 3")]</pre>
+      <p style="color:#aaa;font-size:.85rem;line-height:1.6;margin:0 0 10px 0">
+        To share your app, submit a PR to the
+        <a href="https://github.com/csader/splitflap-os" target="_blank" style="color:var(--accent)">splitflap-os repo</a>
+        adding your app folder to <code style="background:#222;padding:2px 5px;border-radius:3px">apps/</code>.
+      </p>
+    </div>
   </div>
 
   <!-- ══════════ CALIBRATION PAGE ══════════ -->

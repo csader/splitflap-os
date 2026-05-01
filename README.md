@@ -16,13 +16,16 @@ Built on [Adam G Makes' Split-Flap Display](https://github.com/adamgmakes/SplitF
 
 ## Quick Start
 
+On your Split-Flap Display's Raspberry Pi:
+
 ```bash
-cd server
+git clone https://github.com/csader/splitflap-os.git
+cd splitflap-os/server
 pip install -r requirements.txt
-python app.py
+sudo python app.py
 ```
 
-Open `http://<your-pi-ip>` in a browser. On first launch, install apps from ☰ → App Library.
+Open `http://<your-pi-ip>` on any device on the same network. On first launch, install apps from ☰ → App Library.
 
 ## Hardware
 

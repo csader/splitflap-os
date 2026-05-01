@@ -437,6 +437,18 @@
   </div>
 </div>
 
+<!-- ══════════ SPORTS SETTINGS MODAL ══════════ -->
+<div class="modal-overlay" id="sportsModal">
+  <div class="modal-content" style="max-width:600px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <h3 style="margin:0;color:var(--accent)">🏆 My Teams</h3>
+      <button style="background:none;border:none;color:var(--text-muted);font-size:1.3rem;cursor:pointer" onclick="closeSportsSettings()">✕</button>
+    </div>
+    <div id="sportsLeagueList"></div>
+    <button class="btn btn-success" style="width:100%;margin-top:16px" onclick="closeSportsSettings();showToast('Sports settings saved')">Save & Close</button>
+  </div>
+</div>
+
 <!-- TOAST -->
 <div class="toast-container" id="toastContainer"></div>
 

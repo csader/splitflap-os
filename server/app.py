@@ -152,27 +152,10 @@ SPORTS_LEAGUES = {
     'laliga': {'path': 'soccer/esp.1',                       'name': 'LALIGA'},
     'ucl':    {'path': 'soccer/uefa.champions',              'name': 'UCL'},
     'wnba':   {'path': 'basketball/wnba',                    'name': 'WNBA'},
-    'pga':    {'path': 'golf/pga',                           'name': 'PGA'},
-    'ufc':    {'path': 'mma/ufc',                            'name': 'UFC'},
-}
-
-
-# ============================================================
-#  SPORTS LEAGUE REGISTRY
-# ============================================================
-
-SPORTS_LEAGUES = {
-    'nfl':    {'path': 'football/nfl',                       'name': 'NFL'},
-    'nba':    {'path': 'basketball/nba',                     'name': 'NBA'},
-    'mlb':    {'path': 'baseball/mlb',                       'name': 'MLB'},
-    'nhl':    {'path': 'hockey/nhl',                         'name': 'NHL'},
-    'ncaaf':  {'path': 'football/college-football',          'name': 'NCAAF'},
-    'ncaab':  {'path': 'basketball/mens-college-basketball', 'name': 'NCAAB'},
-    'mls':    {'path': 'soccer/usa.1',                       'name': 'MLS'},
-    'epl':    {'path': 'soccer/eng.1',                       'name': 'EPL'},
-    'laliga': {'path': 'soccer/esp.1',                       'name': 'LALIGA'},
-    'ucl':    {'path': 'soccer/uefa.champions',              'name': 'UCL'},
-    'wnba':   {'path': 'basketball/wnba',                    'name': 'WNBA'},
+    'ncaaw':  {'path': 'basketball/womens-college-basketball','name': 'NCAAW'},
+    'soft':   {'path': 'baseball/college-softball',          'name': 'SOFTBALL'},
+    'msoc':   {'path': 'soccer/usa.ncaa.m.1',               'name': 'MSOC'},
+    'wsoc':   {'path': 'soccer/usa.ncaa.w.1',               'name': 'WSOC'},
     'pga':    {'path': 'golf/pga',                           'name': 'PGA'},
     'ufc':    {'path': 'mma/ufc',                            'name': 'UFC'},
 }
@@ -2128,6 +2111,68 @@ def app_library_uninstall():
         logging.error(f"Uninstall error for {app_id}: {e}")
         return jsonify(status="error", message=str(e)), 500
 
+
+_teams_cache = {}
+
+@app.route('/sports_leagues')
+def sports_leagues_route():
+    """Return league list with current follow settings."""
+    leagues = []
+    for key, info in SPORTS_LEAGUES.items():
+        followed = settings.get(f'sports_{key}', '').strip()
+        leagues.append({'key': key, 'name': info['name'], 'path': info['path'],
+                        'followed': followed, 'follow_all': followed == '*'})
+    return jsonify(leagues=leagues)
+
+@app.route('/sports_teams/<league_key>')
+def sports_teams_route(league_key):
+    """Search teams for a league. Use ?q= for search, otherwise return all (cached)."""
+    info = SPORTS_LEAGUES.get(league_key)
+    if not info:
+        return jsonify(teams=[], error='Unknown league'), 404
+    if league_key in ('pga', 'ufc'):
+        return jsonify(teams=[], no_teams=True)
+    query = request.args.get('q', '').strip().lower()
+    # WSOC has no teams endpoint — reuse MSOC list (same schools)
+    fetch_key = 'msoc' if league_key == 'wsoc' else league_key
+    fetch_path = SPORTS_LEAGUES[fetch_key]['path']
+    # Fetch and cache full list
+    if league_key not in _teams_cache:
+        try:
+            all_teams = []
+            for page in range(1, 4):
+                url = f"https://site.api.espn.com/apis/site/v2/sports/{fetch_path}/teams?limit=200&page={page}"
+                data = requests.get(url, timeout=8).json()
+                batch = data.get('sports', [{}])[0].get('leagues', [{}])[0].get('teams', [])
+                if not batch:
+                    break
+                for entry in batch:
+                    t = entry.get('team', entry)
+                    all_teams.append({'abbr': t.get('abbreviation', '?'), 'name': t.get('displayName', '?'),
+                                      'short': t.get('shortDisplayName', t.get('displayName', '?'))})
+            all_teams.sort(key=lambda t: t['name'])
+            # Deduplicate by abbreviation
+            seen = set()
+            all_teams = [t for t in all_teams if t['abbr'] not in seen and not seen.add(t['abbr'])]
+            _teams_cache[league_key] = all_teams
+        except Exception as e:
+            return jsonify(teams=[], error=str(e)), 502
+    teams = _teams_cache[league_key]
+    if query:
+        teams = [t for t in teams if query in t['name'].lower() or query in t['abbr'].lower()]
+    return jsonify(teams=teams)
+
+@app.route('/sports_follow', methods=['POST'])
+def sports_follow():
+    """Save followed teams for a league."""
+    data = request.json
+    league = data.get('league', '')
+    teams = data.get('teams', '')  # comma-sep abbreviations or '*'
+    if league not in SPORTS_LEAGUES:
+        return jsonify(status='error', message='Unknown league'), 400
+    settings[f'sports_{league}'] = teams
+    save_settings(settings)
+    return jsonify(status='success')
 
 @app.route('/installed_apps')
 def installed_apps():

@@ -12,14 +12,20 @@ LEAGUES = {
     'laliga': {'path': 'soccer/esp.1',                       'name': 'LALIGA'},
     'ucl':    {'path': 'soccer/uefa.champions',              'name': 'UCL'},
     'wnba':   {'path': 'basketball/wnba',                    'name': 'WNBA'},
+    'ncaaw':  {'path': 'basketball/womens-college-basketball','name': 'NCAAW'},
+    'soft':   {'path': 'baseball/college-softball',          'name': 'SOFTBALL'},
+    'msoc':   {'path': 'soccer/usa.ncaa.m.1',               'name': 'MSOC'},
+    'wsoc':   {'path': 'soccer/usa.ncaa.w.1',               'name': 'WSOC'},
     'pga':    {'path': 'golf/pga',                           'name': 'PGA'},
     'ufc':    {'path': 'mma/ufc',                            'name': 'UFC'},
 }
 
 def fetch(settings, format_lines, get_rows, get_cols):
     import requests, logging
+    # One-time migration from old nhl_teams key
     if settings.get('nhl_teams') and not settings.get('sports_nhl'):
         settings['sports_nhl'] = settings['nhl_teams']
+        settings['nhl_teams'] = ''
     pages = []
     for key, info in LEAGUES.items():
         teams_str = settings.get(f'sports_{key}', '').strip()

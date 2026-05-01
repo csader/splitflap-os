@@ -22,7 +22,10 @@ except ImportError:
 
 SERIAL_PORT = '/dev/ttyUSB0'
 BAUD_RATE = 9600
-CONFIG_PATH = "/home/gordo/splitflap/settings.json"
+CONFIG_PATH = os.environ.get(
+    "SPLITFLAP_CONFIG",
+    os.path.join(os.path.dirname(__file__), "settings.json")
+)
 PLUGIN_APPS_PATH = os.path.expanduser("~/.splitflap/apps")
 BUILTIN_APPS_PATH = os.path.join(os.path.dirname(__file__), '..', 'apps')
 

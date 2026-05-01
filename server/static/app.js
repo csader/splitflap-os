@@ -808,13 +808,13 @@ function appLucideIcon(key){
 
 function buildAppCard(a, isPlugin) {
   const div = document.createElement('div');
-  div.className = 'app-card';
-  div.dataset.app = a.key;
-  div.onclick = () => runApp(a.key);
   const bareKey = a.key.replace('plugin_','');
   const cfgKey = bareKey in APP_SETTINGS_CONFIG ? bareKey : a.key;
   const hasCfg = APP_SETTINGS_CONFIG[cfgKey] && (APP_SETTINGS_CONFIG[cfgKey].fields||[]).length > 0;
   const removable = isPlugin;
+  div.className = 'app-card has-app-actions';
+  div.dataset.app = a.key;
+  div.onclick = () => runApp(a.key);
   const icon = appLucideIcon(a.key) || appLucideIcon(a.plugin_id||'') || `<span style="font-size:2.2rem">${a.icon}</span>`;
   div.innerHTML = `
     ${hasCfg ? `<button class="app-gear" style="right:${removable?'28':'8'}px" title="Settings" onclick="event.stopPropagation();openAppSettings('${cfgKey}')"><i data-lucide="settings" style="width:14px;height:14px"></i></button>` : ''}
@@ -867,7 +867,7 @@ async function loadAppLibrary(){
     apps.sort((a,b) => (a.installed===b.installed) ? (a.name||'').localeCompare(b.name||'') : a.installed ? 1 : -1);
     apps.forEach(a => {
       const div = document.createElement('div');
-      div.className = 'app-card';
+      div.className = 'app-card app-library-card';
       div.style.cursor = 'default';
       const icon = appLucideIcon(a.id) || `<span style="font-size:2.2rem">${a.icon||'🧩'}</span>`;
       div.innerHTML = `
@@ -875,7 +875,7 @@ async function loadAppLibrary(){
         <span class="app-name">${a.name}</span>
         <span class="app-desc">${a.description||''}</span>
         <span style="display:inline-block;font-size:.65rem;color:#888;background:#222;padding:2px 6px;border-radius:4px;margin-top:4px">${a.type}${a.version?' · v'+a.version:''}</span>
-        <div style="margin-top:8px">
+        <div class="app-library-action">
           ${a.installed
             ? '<button class="btn-del" style="width:100%;padding:8px;border-radius:6px;font-size:.8rem" onclick="event.stopPropagation();uninstallApp(\''+a.id+'\')">Uninstall</button>'
             : '<button class="btn btn-success btn-sm" style="width:100%" onclick="event.stopPropagation();installApp(\''+a.id+'\')">Install</button>'

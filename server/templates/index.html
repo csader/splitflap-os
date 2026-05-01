@@ -12,8 +12,10 @@
 
   <!-- STICKY TOP BAR -->
   <div class="top-bar" id="topBar">
-    <button class="hamburger-btn" onclick="toggleHamburger()"><i data-lucide="menu" style="width:20px;height:20px"></i></button>
-    <span class="top-bar-title">Split-Flap OS</span>
+    <div style="display:flex;align-items:center;gap:8px">
+      <button class="hamburger-btn" onclick="toggleHamburger()"><i data-lucide="menu" style="width:20px;height:20px"></i></button>
+      <span class="top-bar-title">Split-Flap OS</span>
+    </div>
     <div style="display:flex;align-items:center;gap:6px">
       <span id="simLabel" style="font-size:.82rem;font-weight:bold;color:#555">SIMULATE</span>
       <label class="switch"><input type="checkbox" id="simModeToggle" onchange="toggleSimMode()"><span class="slider"></span></label>

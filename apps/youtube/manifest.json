@@ -1,0 +1,9 @@
+{
+  "id": "youtube",
+  "name": "YouTube",
+  "icon": "▶️",
+  "description": "Sub counter",
+  "type": "functional",
+  "refresh_interval": 30,
+  "loop_delay": 5
+}

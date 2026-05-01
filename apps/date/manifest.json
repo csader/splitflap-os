@@ -1,0 +1,9 @@
+{
+  "id": "date",
+  "name": "Date",
+  "icon": "📅",
+  "description": "Full date view",
+  "type": "functional",
+  "refresh_interval": 1,
+  "loop_delay": 1
+}

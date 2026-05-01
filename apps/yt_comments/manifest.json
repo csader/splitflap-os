@@ -1,0 +1,9 @@
+{
+  "id": "yt_comments",
+  "name": "Comments",
+  "icon": "💬",
+  "description": "YT comments",
+  "type": "functional",
+  "refresh_interval": 60,
+  "loop_delay": 8
+}

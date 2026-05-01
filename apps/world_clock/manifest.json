@@ -1,0 +1,9 @@
+{
+  "id": "world_clock",
+  "name": "World Clock",
+  "icon": "🌍",
+  "description": "3 time zones",
+  "type": "functional",
+  "refresh_interval": 1,
+  "loop_delay": 1
+}

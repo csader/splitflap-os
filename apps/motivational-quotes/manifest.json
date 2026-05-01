@@ -1,0 +1,12 @@
+{
+  "id": "motivational-quotes",
+  "name": "Motivational Quotes",
+  "icon": "💪",
+  "description": "Daily motivation on your display",
+  "category": "lifestyle",
+  "type": "channel",
+  "version": "1.0",
+  "refresh_interval": 300,
+  "loop_delay": 10,
+  "settings": []
+}

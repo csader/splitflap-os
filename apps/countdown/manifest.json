@@ -1,0 +1,9 @@
+{
+  "id": "countdown",
+  "name": "Countdown",
+  "icon": "⏳",
+  "description": "Timer to event",
+  "type": "functional",
+  "refresh_interval": 1,
+  "loop_delay": 1
+}

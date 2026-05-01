@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Split-Flap OS</title>
+<link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+<div class="container">
+
+  <!-- TAB BAR -->
+  <div class="tab-bar">
+    <button id="tab-control" class="tab-btn active" onclick="switchTab('control')">
+      <span class="tab-label-full">CONTROL</span><span class="tab-label-short">CTRL</span>
+    </button>
+    <button id="tab-apps" class="tab-btn" onclick="switchTab('apps')">
+      <span class="tab-label-full">APPS</span><span class="tab-label-short">APPS</span>
+    </button>
+    <button id="tab-tuning" class="tab-btn" onclick="switchTab('tuning')">
+      <span class="tab-label-full">TUNING &amp; SETTINGS</span><span class="tab-label-short">TUNE</span>
+    </button>
+  </div>
+
+  <!-- ══════════ CONTROL PAGE ══════════ -->
+  <div id="page-control" class="page active">
+    <div id="control-banner" class="active-app-banner">
+      <div class="aab-dot"></div>
+      <span class="aab-label">▶ <span id="control-app-name">APP</span> is running</span>
+      <button class="aab-stop" onclick="stopApp()">⏹ STOP</button>
+    </div>
+
+    <div style="text-align:center;color:#888;font-size:.8rem;margin-bottom:4px;font-weight:bold;letter-spacing:1px">LIVE DISPLAY</div>
+    <div class="sim-toolbar">
+      <div style="display:flex;align-items:center;gap:6px">
+        <span id="simModeLabel" style="font-size:.82rem;font-weight:bold;color:#f88">SIMULATION</span>
+        <label class="switch"><input type="checkbox" id="simModeToggle" onchange="toggleSimMode()"><span class="slider"></span></label>
+        <span style="font-size:.82rem;color:#888">LIVE</span>
+      </div>
+    </div>
+    <div class="preview-wrapper" style="position:relative;margin-bottom:18px">
+      <div class="preview-grid live-grid-control"></div>
+      <div class="homing-overlay" id="homing-control" style="display:none"><div style="text-align:center">HOMING REQUIRED<br><button class="btn btn-warning btn-sm" style="margin-top:8px" onclick="homeAll()">HOME ALL</button></div></div>
+    </div>
+
+    <div style="text-align:center;color:#888;font-size:.8rem;margin-bottom:4px;font-weight:bold;letter-spacing:1px">COMPOSE</div>
+    <div class="preview-wrapper"><div class="preview-grid" id="preview"></div></div>
+
+    <div class="control-panel">
+      <label style="cursor:pointer"><input type="checkbox" id="modeToggle" onchange="toggleMultiMode()"> <strong>Multi-Page Playlist</strong></label>
+      <label style="cursor:pointer"><input type="checkbox" id="centerToggle" onchange="updatePreview()"> Center Text</label>
+      <button class="btn btn-secondary btn-sm" style="margin-left:auto" onclick="clearDisplay()">Clear</button>
+    </div>
+
+    <div class="color-palette">
+      <button class="color-btn" onclick="insertColor('🟥')" title="Red">🟥</button>
+      <button class="color-btn" onclick="insertColor('🟧')" title="Orange">🟧</button>
+      <button class="color-btn" onclick="insertColor('🟨')" title="Yellow">🟨</button>
+      <button class="color-btn" onclick="insertColor('🟩')" title="Green">🟩</button>
+      <button class="color-btn" onclick="insertColor('🟦')" title="Blue">🟦</button>
+      <button class="color-btn" onclick="insertColor('🟪')" title="Purple">🟪</button>
+      <button class="color-btn" onclick="insertColor('⬜')" title="White">⬜</button>
+      <button class="color-btn" onclick="insertColor('⬛')" title="Black">⬛</button>
+    </div>
+
+    <input type="text" id="L1" class="line-input" placeholder="LINE 1" oninput="updatePreview()">
+    <input type="text" id="L2" class="line-input" placeholder="LINE 2" oninput="updatePreview()">
+    <input type="text" id="L3" class="line-input" placeholder="LINE 3" oninput="updatePreview()">
+
+    <div id="multiControls" style="display:none" class="playlist-area">
+      <button class="btn btn-success" id="saveMsgBtn" style="width:100%" onclick="saveMessage()">+ Add to Playlist</button>
+      <div id="playlistList" style="margin-top:12px"></div>
+      <div style="margin-top:12px;padding-top:10px;border-top:1px solid #444;display:flex;flex-wrap:wrap;gap:14px;align-items:center">
+        <label style="font-size:.85rem;color:#aaa;display:flex;align-items:center;gap:6px">
+          Default delay
+          <input type="number" id="delayInput" value="5" min="0.5" max="60" step="0.5"
+            style="width:56px;padding:5px;background:#111;color:#fff;border:1px solid #555;border-radius:4px;text-align:center">
+          s
+        </label>
+        <label style="font-size:.85rem;color:#aaa;display:flex;align-items:center;gap:6px">
+          Default transition
+          <select id="styleInput" style="background:#111;color:#fff;border:1px solid #555;border-radius:4px;padding:5px 6px;font-size:.82rem">
+          </select>
+        </label>
+        <label style="font-size:.85rem;color:#aaa;display:flex;align-items:center;gap:6px">
+          Default speed
+          <input type="number" id="speedInput" value="15" min="0" max="500" step="5"
+            style="width:56px;padding:5px;background:#111;color:#fff;border:1px solid #555;border-radius:4px;text-align:center">
+          ms/module
+        </label>
+      </div>
+    </div>
+
+    <button class="btn btn-primary" onclick="sync()">PUSH TO DISPLAY</button>
+
+    <!-- Saved Playlists -->
+    <div class="playlist-area" style="margin-top:18px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px">
+        <h3 style="margin:0;font-size:.95rem">📂 Saved Playlists</h3>
+        <div style="display:flex;gap:8px;align-items:center">
+          <input type="text" id="savePlaylistName" placeholder="Playlist name…" style="background:#111;color:#fff;border:1px solid #555;padding:6px 10px;border-radius:4px;width:150px;font-size:.85rem">
+          <button class="btn btn-success btn-sm" onclick="saveCurrentPlaylist()">Save</button>
+        </div>
+      </div>
+      <div id="savedPlaylistList"><div style="color:#666;font-style:italic;font-size:.85rem">No saved playlists yet.</div></div>
+    </div>
+  </div>
+
+  <!-- ══════════ APPS PAGE ══════════ -->
+  <div id="page-apps" class="page">
+    <div id="apps-banner" class="active-app-banner">
+      <div class="aab-dot"></div>
+      <span class="aab-label">▶ <span id="apps-app-name">APP</span> is running</span>
+      <button class="aab-stop" onclick="stopApp()">⏹ STOP</button>
+    </div>
+
+    <div style="text-align:center;color:#888;font-size:.8rem;margin-bottom:4px;font-weight:bold;letter-spacing:1px">LIVE DISPLAY</div>
+    <div class="preview-wrapper" style="position:relative;margin-bottom:18px">
+      <div class="preview-grid live-grid-apps"></div>
+      <div class="homing-overlay" id="homing-apps" style="display:none"><div style="text-align:center">HOMING REQUIRED<br><button class="btn btn-warning btn-sm" style="margin-top:8px" onclick="homeAll()">HOME ALL</button></div></div>
+    </div>
+
+    <h3 style="margin-bottom:4px">Installed Apps</h3>
+    <p style="color:#888;margin-top:0;font-size:.85rem">Tap to launch · ⚙️ to configure · ✕ to remove</p>
+
+    <div class="apps-grid" id="appsGrid">
+      <!-- Populated by JS -->
+    </div>
+
+    <button class="btn btn-secondary" style="width:100%;margin-top:20px" onclick="openAppLibrary()">+ Install App</button>
+  </div>
+
+  <!-- ══════════ TUNING PAGE ══════════ -->
+  <div id="page-tuning" class="page">
+
+    <!-- Hardware Inspector -->
+    <div class="config-section" style="border-left:5px solid var(--accent)">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
+        <h3 style="margin:0">Hardware Inspector</h3>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn btn-warning btn-sm" onclick="openAutoTune()">🎯 AUTO FINE-TUNE</button>
+          <button class="btn btn-sm" style="background:#6f42c1;color:#fff" onclick="openTeachMode()">📖 TEACH MODE</button>
+          <button class="btn btn-success btn-sm" onclick="syncAllFromHardware()">SYNC ALL (EEPROM)</button>
+          <button class="btn btn-warning btn-sm" onclick="homeAll()">HOME ALL</button>
+        </div>
+      </div>
+
+      <div id="modMatrixWrap">
+        <div class="mod-matrix" id="modMatrix"></div>
+      </div>
+
+      <div class="inspector-panel" id="inspectorPanel" style="display:none">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <h3 style="margin:0;color:#fff" id="inspectTitle">MODULE 00</h3>
+          <button class="btn btn-secondary btn-sm" onclick="syncOneFromHardware()">Sync EEPROM</button>
+        </div>
+        <div class="inspector-stats">
+          <div class="stat-box"><span class="stat-label">Home Offset</span><span class="stat-val" id="inspectOffset">2832</span></div>
+          <div class="stat-box"><span class="stat-label">Total Steps</span><span class="stat-val" id="inspectCalib" style="color:var(--orange)">4096</span></div>
+        </div>
+        <div class="adj-controls">
+          <button class="btn-adj neg" onclick="adjustOffset(-32)">-32</button>
+          <button class="btn-adj neg" onclick="adjustOffset(-16)">-16</button>
+          <button class="btn-adj neg" onclick="adjustOffset(-4)">-4</button>
+          <button class="btn-adj neg" onclick="adjustOffset(-1)">-1</button>
+          <span style="color:#888;display:flex;align-items:center;padding:0 8px;font-size:.85rem">OFFSET</span>
+          <button class="btn-adj pos" onclick="adjustOffset(1)">+1</button>
+          <button class="btn-adj pos" onclick="adjustOffset(4)">+4</button>
+          <button class="btn-adj pos" onclick="adjustOffset(16)">+16</button>
+          <button class="btn-adj pos" onclick="adjustOffset(32)">+32</button>
+        </div>
+        <div style="text-align:center;color:#666;font-size:.75rem;margin-top:-6px">(Saves instantly; press Home to verify)</div>
+        <div style="display:flex;gap:10px;margin-top:4px">
+          <button class="btn" style="flex:1;background:#444;color:#fff" onclick="homeSelected()">HOME MOTOR</button>
+          <button class="btn" style="flex:1;background:#333;color:#aaa;border:1px solid #555" onclick="calibrateSelected()">MEASURE REEL (360°)</button>
+        </div>
+      </div>
+
+      <h4 style="margin-bottom:8px;color:#aaa">Character Map</h4>
+      <div class="char-matrix" id="charMatrix"></div>
+    </div>
+
+    <!-- Global Settings -->
+    <div class="config-section">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px">
+        <h3>Global Settings</h3>
+        <div style="display:flex;align-items:center;gap:10px;background:#2a2a2a;padding:8px 12px;border-radius:8px">
+          <span style="font-size:.85rem;color:#ccc">Auto-Home on Boot</span>
+          <label class="switch"><input type="checkbox" id="autoHomeToggle" onchange="toggleAutoHome()"><span class="slider"></span></label>
+        </div>
+      </div>
+      <div class="settings-grid">
+        <div><label class="field-label">Display Rows</label><input type="number" id="simRows" value="3" min="1" max="20" class="line-input" style="font-size:.95rem;margin:0"></div>
+        <div><label class="field-label">Display Cols</label><input type="number" id="simCols" value="15" min="1" max="50" class="line-input" style="font-size:.95rem;margin:0"></div>
+        <div class="span2"><label class="field-label">OpenWeatherMap API Key</label><input type="password" id="keyInput" class="line-input" style="font-size:.95rem;margin:0"></div>
+        <div><label class="field-label">Zip Code</label><input type="text" id="zipInput" class="line-input" style="font-size:.95rem;margin:0"></div>
+        <div><label class="field-label">Timezone</label><input type="text" id="tzInput" class="line-input" style="font-size:.95rem;margin:0"></div>
+        <div><label class="field-label">MBTA Stop ID</label><input type="text" id="stopInput" class="line-input" style="font-size:.95rem;margin:0"></div>
+        <div><label class="field-label">MBTA Route</label><input type="text" id="routeInput" class="line-input" style="font-size:.95rem;margin:0"></div>
+        <div><label class="field-label">Stocks (comma-sep)</label><input type="text" id="stockInput" class="line-input" style="font-size:.95rem;margin:0"></div>
+        <div><label class="field-label">NHL Teams (comma-sep)</label><input type="text" id="nhlInput" class="line-input" style="font-size:.95rem;margin:0"></div>
+        <div class="span2"><label class="field-label">YouTube Channel ID</label><input type="text" id="ytInput" class="line-input" style="font-size:.95rem;margin:0"></div>
+        <div class="span2"><label class="field-label">YouTube Data API Key</label><input type="password" id="ytApiInput" class="line-input" style="font-size:.95rem;margin:0"></div>
+        <div class="span2"><label class="field-label">YouTube Video ID (for Comments)</label><input type="text" id="ytVideoInput" class="line-input" style="font-size:.95rem;margin:0"></div>
+      </div>
+      <button class="btn btn-secondary" style="margin-top:14px" onclick="saveGlobal()">Save Settings</button>
+    </div>
+
+    <!-- Backup / Restore -->
+    <div class="config-section">
+      <h3>Calibration Backup &amp; Restore</h3>
+      <p style="color:#888;font-size:.85rem;margin-top:0">Export/import all offsets, calibrations and tuned character positions.</p>
+      <div class="backup-row">
+        <button class="btn btn-secondary" onclick="downloadBackup()">⬇ Download Backup JSON</button>
+        <div style="display:flex;gap:8px;align-items:center;flex:1">
+          <input type="file" id="backupFile" accept=".json" style="display:none" onchange="uploadBackup(this)">
+          <button class="btn btn-warning" style="flex:1" onclick="document.getElementById('backupFile').click()">⬆ Restore from JSON</button>
+          <span id="restoreStatus" style="font-size:.8rem;color:#888"></span>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /page-tuning -->
+</div><!-- /container -->
+
+<!-- ══════════ CHARACTER TUNING MODAL ══════════ -->
+<div class="modal-overlay" id="charModal">
+  <div class="modal-content">
+    <h3 id="modalTitle" style="color:var(--accent);margin-bottom:4px">Tune Character</h3>
+    <div style="color:#aaa;font-size:.85rem;margin-bottom:14px">Expected: <span id="modalExpected">0</span></div>
+    <label class="field-label" style="color:#ccc">Absolute Target Step:</label>
+    <input type="number" id="modalInput" class="line-input" style="margin-bottom:14px">
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <button class="btn" style="background:#444;color:#fff" onclick="modalAction('goto')">Test Position (GOTO)</button>
+      <button class="btn btn-success" onclick="modalAction('save')">Lock to EEPROM</button>
+      <button class="btn-del" style="padding:12px;border-radius:6px;font-size:1rem" onclick="modalAction('erase')">Revert to Expected</button>
+      <button class="btn" style="background:none;color:#888;border:1px solid #555" onclick="closeModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ APP SETTINGS MODAL ══════════ -->
+<div class="modal-overlay" id="appSettingsModal">
+  <div class="modal-content">
+    <h3 id="appSettingsTitle" style="color:var(--accent);margin-bottom:16px">App Settings</h3>
+    <div id="appSettingsFields"></div>
+    <div style="display:flex;gap:8px;margin-top:16px">
+      <button class="btn btn-success" style="flex:1" onclick="saveAppSettings()">Save &amp; Close</button>
+      <button class="btn" style="background:#333;color:#aaa;border:1px solid #555" onclick="closeAppSettings()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ AUTO FINE-TUNE OVERLAY ══════════ -->
+<div class="modal-overlay" id="autoTuneOverlay">
+  <div class="modal-content" style="max-width:720px">
+    <!-- Start screen -->
+    <div id="atStart">
+      <h3 style="color:var(--accent);margin-bottom:12px">🎯 Automated Fine-Tune</h3>
+      <p style="color:#aaa;font-size:.9rem;line-height:1.6">
+        This wizard walks through every character position from farthest to nearest,
+        letting you correct modules that land on the wrong flap.
+      </p>
+      <p style="color:#aaa;font-size:.85rem;line-height:1.5">
+        <strong style="color:#fff">How it works:</strong><br>
+        1. All modules home first (~12 sec)<br>
+        2. All modules move to the same character<br>
+        3. Click modules that show the <strong style="color:#f55">NEXT</strong> character (overshot) → apply correction<br>
+        4. Click modules that show the <strong style="color:#5f5">PREVIOUS</strong> character (undershot) → apply correction<br>
+        5. Confirm all correct, move to next character
+      </p>
+      <div style="margin:14px 0">
+        <label class="field-label">Step Adjustment Size</label>
+        <input type="number" id="atStepSize" value="25" min="1" max="100" class="at-step-input" style="width:100%">
+        <div style="color:#666;font-size:.75rem;margin-top:4px">Default 25 steps (~40% of one character spacing). Increase for larger errors.</div>
+      </div>
+      <div style="margin:14px 0">
+        <label class="field-label">Start from character index</label>
+        <input type="number" id="atStartIdx" value="63" min="1" max="63" class="at-step-input" style="width:100%">
+        <div style="color:#666;font-size:.75rem;margin-top:4px">63 = farthest from home (default). Lower to skip already-tuned chars.</div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:16px">
+        <button class="btn btn-success" style="flex:1" onclick="atBegin()">Home All &amp; Begin</button>
+        <button class="btn" style="background:#333;color:#aaa;border:1px solid #555" onclick="closeAutoTune()">Cancel</button>
+      </div>
+    </div>
+
+    <!-- Homing screen -->
+    <div id="atHoming" style="display:none;text-align:center;padding:40px 0">
+      <div style="font-size:2rem;margin-bottom:12px">⏳</div>
+      <div style="font-size:1.1rem;font-weight:bold;margin-bottom:8px">Homing all 45 modules…</div>
+      <div style="color:#888" id="atHomingCountdown">Please wait ~12 seconds</div>
+    </div>
+
+    <!-- Active tuning screen -->
+    <div id="atActive" style="display:none">
+      <div class="at-header">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+          <h3 style="margin:0;color:var(--accent)">Fine-Tune</h3>
+          <div style="display:flex;gap:6px;align-items:center">
+            <label style="color:#888;font-size:.8rem">Jump to:</label>
+            <input type="number" id="atJumpIdx" min="1" max="63" style="width:55px" class="at-step-input" onchange="atJumpTo(this.value)">
+            <button class="btn btn-secondary btn-sm" onclick="atFinish()">Finish</button>
+          </div>
+        </div>
+        <div class="at-char-display" id="atCharBox">?</div>
+        <div class="at-progress" id="atProgressText">Character 63 of 63 — Index 63</div>
+      </div>
+
+      <div class="at-instructions" id="atInstructions">
+        Look at the physical display. Click any module showing the <strong>WRONG</strong> character.
+      </div>
+
+      <div class="at-grid" id="atGrid"></div>
+
+      <div class="at-btn-row" id="atPhaseButtons">
+        <!-- Populated dynamically per phase -->
+      </div>
+
+      <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:6px">
+        <label style="color:#888;font-size:.85rem;display:flex;align-items:center;gap:4px">
+          Step: <input type="number" id="atStepSizeActive" value="25" min="1" max="200" class="at-step-input">
+        </label>
+      </div>
+    </div>
+
+    <!-- Done screen -->
+    <div id="atDone" style="display:none;text-align:center;padding:30px 0">
+      <div style="font-size:2.5rem;margin-bottom:12px">✅</div>
+      <h3 style="color:var(--green)">Fine-Tuning Complete!</h3>
+      <p style="color:#888">All corrections have been saved to EEPROM and settings.json.</p>
+      <button class="btn btn-success" style="margin-top:12px" onclick="closeAutoTune()">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ TEACH MODE OVERLAY ══════════ -->
+<div class="modal-overlay" id="teachModeOverlay">
+  <div class="modal-content" style="max-width:720px">
+    <!-- Start screen -->
+    <div id="tmStart">
+      <h3 style="color:#6f42c1;margin-bottom:12px">📖 Teach Mode</h3>
+      <p style="color:#aaa;font-size:.9rem;line-height:1.6">
+        Step through every character one by one. For each character, tap any modules
+        that look wrong and nudge them until they're right, then advance.
+      </p>
+      <div style="margin:14px 0">
+        <label class="field-label">Step Size</label>
+        <input type="number" id="tmStepSize" value="3" min="1" max="100" class="at-step-input" style="width:100%">
+        <div style="color:#666;font-size:.75rem;margin-top:4px">Steps per nudge click. Smaller = more precise.</div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:16px">
+        <button class="btn btn-success" style="flex:1" onclick="tmBegin()">Home All &amp; Begin</button>
+        <button class="btn" style="background:#333;color:#aaa;border:1px solid #555" onclick="closeTeachMode()">Cancel</button>
+      </div>
+    </div>
+
+    <!-- Homing screen -->
+    <div id="tmHoming" style="display:none;text-align:center;padding:40px 0">
+      <div style="font-size:2rem;margin-bottom:12px">⏳</div>
+      <div style="font-size:1.1rem;font-weight:bold;margin-bottom:8px">Homing all 45 modules…</div>
+      <div style="color:#888" id="tmHomingCountdown">Please wait ~12 seconds</div>
+    </div>
+
+    <!-- Active card -->
+    <div id="tmActive" style="display:none">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:8px">
+        <h3 style="margin:0;color:#6f42c1">Teach Mode</h3>
+        <div style="display:flex;gap:6px;align-items:center">
+          <label style="color:#888;font-size:.8rem">Step:
+            <input type="number" id="tmStepSizeActive" value="3" min="1" max="200" class="at-step-input" style="width:55px">
+          </label>
+          <button class="btn btn-secondary btn-sm" onclick="tmFinishEarly()">Finish</button>
+        </div>
+      </div>
+
+      <div class="tm-progress-bar"><div class="tm-progress-fill" id="tmProgressFill" style="width:0%"></div></div>
+      <div style="text-align:center;color:#888;font-size:.85rem;margin-bottom:8px" id="tmProgressText">Character 0 of 63</div>
+
+      <div style="text-align:center">
+        <div class="at-char-display" id="tmCharBox">?</div>
+      </div>
+
+      <div style="text-align:center;padding:8px;background:#111;border-radius:8px;margin:10px 0;font-size:.9rem;color:#aaa">
+        Tap modules that look <strong style="color:#f55">wrong</strong>, then nudge. When all look good, hit <strong style="color:var(--green)">Next</strong>.
+      </div>
+
+      <div class="at-grid" id="tmGrid"></div>
+
+      <div class="tm-nudge-row">
+        <button class="btn-adj neg" onclick="tmNudge(-5)">−5x</button>
+        <button class="btn-adj neg" onclick="tmNudge(-1)">− Nudge</button>
+        <button class="btn btn-sm" style="background:#555;color:#fff" onclick="tmSelectNone()">Clear</button>
+        <button class="btn-adj pos" onclick="tmNudge(1)">+ Nudge</button>
+        <button class="btn-adj pos" onclick="tmNudge(5)">+5x</button>
+      </div>
+
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button class="btn btn-secondary" style="flex:1" onclick="tmPrev()" id="tmPrevBtn" disabled>← Prev</button>
+        <button class="btn btn-success" style="flex:2" onclick="tmNext()">Looks Good → Next</button>
+      </div>
+    </div>
+
+    <!-- Done screen -->
+    <div id="tmDone" style="display:none;text-align:center;padding:30px 0">
+      <div style="font-size:2.5rem;margin-bottom:12px">✅</div>
+      <h3 style="color:var(--green)">Teach Mode Complete!</h3>
+      <p style="color:#888">All corrections saved to EEPROM and settings.</p>
+      <p style="color:#aaa;font-size:.9rem" id="tmSummary"></p>
+      <button class="btn btn-success" style="margin-top:12px" onclick="closeTeachMode()">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ APP LIBRARY MODAL ══════════ -->
+<div class="modal-overlay" id="appLibraryModal">
+  <div class="modal-content" style="max-width:600px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <h3 style="margin:0;color:var(--accent)">📚 App Library</h3>
+      <button class="drawer-close" onclick="closeAppLibrary()">✕</button>
+    </div>
+    <p style="color:#888;margin-top:0;font-size:.85rem">Install community apps from the repository</p>
+    <div class="apps-grid" id="appLibraryGrid"></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script src="/static/app.js"></script>

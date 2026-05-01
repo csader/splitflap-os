@@ -1,0 +1,9 @@
+{
+  "id": "iss",
+  "name": "ISS Tracker",
+  "icon": "🛸",
+  "description": "Space station",
+  "type": "functional",
+  "refresh_interval": 5,
+  "loop_delay": 5
+}

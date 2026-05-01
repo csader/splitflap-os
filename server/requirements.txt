@@ -1,0 +1,6 @@
+flask
+pyserial
+requests
+pytz
+yfinance
+paho-mqtt

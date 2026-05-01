@@ -1,0 +1,41 @@
+{
+  "version": 1,
+  "apps": [
+    {
+      "id": "dad-jokes",
+      "name": "Dad Jokes",
+      "icon": "😂",
+      "description": "Bring some levity with Dad Jokes",
+      "category": "entertainment",
+      "type": "channel",
+      "version": "1.0"
+    },
+    {
+      "id": "motivational-quotes",
+      "name": "Motivational Quotes",
+      "icon": "💪",
+      "description": "Daily motivation on your display",
+      "category": "lifestyle",
+      "type": "channel",
+      "version": "1.0"
+    },
+    {
+      "id": "word-of-the-day",
+      "name": "Word of the Day",
+      "icon": "📖",
+      "description": "Expand your vocabulary daily",
+      "category": "education",
+      "type": "functional",
+      "version": "1.0"
+    },
+    {
+      "id": "bitcoin-fear-greed",
+      "name": "BTC Fear & Greed",
+      "icon": "😱",
+      "description": "Bitcoin Fear and Greed Index",
+      "category": "finance",
+      "type": "functional",
+      "version": "1.0"
+    }
+  ]
+}

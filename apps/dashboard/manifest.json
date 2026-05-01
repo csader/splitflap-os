@@ -1,0 +1,10 @@
+{
+  "id": "dashboard",
+  "name": "Dashboard",
+  "icon": "🏠",
+  "description": "Time + weather",
+  "type": "functional",
+  "refresh_interval": 60,
+  "loop_delay": 5,
+  "settings": []
+}

@@ -1,0 +1,9 @@
+{
+  "id": "stocks",
+  "name": "Stocks",
+  "icon": "📈",
+  "description": "Live prices",
+  "type": "functional",
+  "refresh_interval": 60,
+  "loop_delay": 5
+}

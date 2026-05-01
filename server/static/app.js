@@ -929,6 +929,7 @@ async function uninstallApp(appId){
 let currentAppSettingsKey = null;
 
 async function openAppSettings(appKey){
+  if(appKey==='sports'||appKey==='plugin_sports'){ openSportsSettings(); return; }
   currentAppSettingsKey = appKey;
   const cfg = APP_SETTINGS_CONFIG[appKey];
   if(!cfg) return;
@@ -1666,6 +1667,135 @@ if(settingsPage){
   settingsPage.addEventListener('input', (e) => {
     if(e.target.closest('.settings-grid')) setSettingsDirty(true);
   });
+}
+
+// ============================================================
+//  SPORTS TEAM PICKER
+// ============================================================
+let _sportsState = {};
+
+async function openSportsSettings(){
+  document.getElementById('sportsModal').style.display='flex';
+  const list = document.getElementById('sportsLeagueList');
+  list.innerHTML='<div style="text-align:center;color:#888;padding:20px">Loading leagues…</div>';
+  try {
+    const res = await fetch('/sports_leagues');
+    const data = await res.json();
+    _sportsState = {};
+    list.innerHTML='';
+    for(const lg of data.leagues){
+      const followed = lg.followed || '';
+      _sportsState[lg.key] = {follow_all: followed==='*', teams: new Set(followed==='*'?[]:followed.split(',').filter(t=>t.trim()).map(t=>t.trim().toUpperCase()))};
+      const section = document.createElement('div');
+      section.className='league-section';
+      const count = _sportsState[lg.key].follow_all ? 'ALL' : (_sportsState[lg.key].teams.size || '');
+      section.innerHTML=`
+        <div class="league-header" onclick="toggleLeague('${lg.key}')">
+          <span class="league-name">${lg.name}</span>
+          <span class="league-count" id="lcount-${lg.key}">${count}</span>
+        </div>
+        <div class="league-body" id="lbody-${lg.key}">
+          <div class="league-controls">
+            <label style="cursor:pointer;display:flex;align-items:center;gap:6px">
+              <input type="checkbox" ${_sportsState[lg.key].follow_all?'checked':''} onchange="toggleFollowAll('${lg.key}',this.checked)"> Follow All
+            </label>
+          </div>
+          <div class="team-grid" id="tgrid-${lg.key}"><div style="color:#888;font-size:.8rem">Loading teams…</div></div>
+        </div>`;
+      list.appendChild(section);
+    }
+  } catch(e){ list.innerHTML='<div style="color:var(--red);padding:20px">Failed to load</div>'; }
+}
+
+function closeSportsSettings(){ document.getElementById('sportsModal').style.display='none'; }
+
+async function toggleLeague(key){
+  const body = document.getElementById(`lbody-${key}`);
+  body.classList.toggle('open');
+  if(!body.classList.contains('open') || body.dataset.loaded) return;
+  const grid = document.getElementById(`tgrid-${key}`);
+  const st = _sportsState[key];
+  if(key==='pga'||key==='ufc'){
+    grid.innerHTML=`<label style="cursor:pointer;display:flex;align-items:center;gap:6px;grid-column:1/-1;font-size:.85rem"><input type="checkbox" ${st.follow_all?'checked':''} onchange="toggleFollowAll('${key}',this.checked)"> Enable ${key.toUpperCase()}</label>`;
+  } else {
+    grid.innerHTML=`
+      <div style="grid-column:1/-1">
+        <input type="text" class="line-input" style="font-size:.85rem;margin:0 0 8px 0;text-transform:none" placeholder="Search teams…" oninput="searchTeams('${key}',this.value)" id="tsearch-${key}">
+        <div id="tresults-${key}"></div>
+        <div id="tfollowed-${key}" style="margin-top:8px"></div>
+      </div>`;
+    renderFollowedChips(key);
+  }
+  body.dataset.loaded='1';
+}
+
+let _searchTimeout = null;
+function searchTeams(league, query){
+  clearTimeout(_searchTimeout);
+  const results = document.getElementById(`tresults-${league}`);
+  if(query.length < 2){ results.innerHTML=''; return; }
+  _searchTimeout = setTimeout(async()=>{
+    try {
+      const res = await fetch(`/sports_teams/${league}?q=${encodeURIComponent(query)}`);
+      const data = await res.json();
+      results.innerHTML='';
+      data.teams.slice(0,12).forEach(t=>{
+        const st = _sportsState[league];
+        const already = st.follow_all || st.teams.has(t.abbr);
+        const chip = document.createElement('div');
+        chip.className='team-chip'+(already?' selected':'');
+        chip.innerHTML=`<strong>${t.abbr}</strong><br><span style="font-size:.65rem;font-weight:normal">${t.short}</span>`;
+        chip.style.padding='8px 4px';
+        chip.onclick=()=>{
+          if(!already){ st.teams.add(t.abbr); saveSportsFollow(league); updateLeagueCount(league); renderFollowedChips(league); }
+          chip.classList.add('selected');
+        };
+        results.appendChild(chip);
+      });
+    } catch(e){ results.innerHTML='<span style="color:var(--red);font-size:.8rem">Search failed</span>'; }
+  }, 300);
+}
+
+function renderFollowedChips(league){
+  const el = document.getElementById(`tfollowed-${league}`);
+  if(!el) return;
+  const st = _sportsState[league];
+  if(!st.teams.size && !st.follow_all){ el.innerHTML='<span style="color:#666;font-size:.8rem">No teams followed</span>'; return; }
+  el.innerHTML='';
+  st.teams.forEach(abbr=>{
+    const chip = document.createElement('div');
+    chip.className='team-chip selected';
+    chip.style.display='inline-flex';chip.style.alignItems='center';chip.style.gap='4px';chip.style.margin='2px';
+    chip.innerHTML=`${abbr} <span style="cursor:pointer;opacity:.6" onclick="event.stopPropagation();unfollowTeam('${league}','${abbr}')">✕</span>`;
+    el.appendChild(chip);
+  });
+}
+
+function unfollowTeam(league, abbr){
+  _sportsState[league].teams.delete(abbr);
+  saveSportsFollow(league);
+  updateLeagueCount(league);
+  renderFollowedChips(league);
+}
+
+function toggleFollowAll(league, checked){
+  _sportsState[league].follow_all = checked;
+  document.querySelectorAll(`#tgrid-${league} .team-chip`).forEach(c=>c.classList.toggle('selected', checked));
+  updateLeagueCount(league);
+  saveSportsFollow(league);
+}
+
+function updateLeagueCount(league){
+  const st = _sportsState[league];
+  const el = document.getElementById(`lcount-${league}`);
+  if(el) el.textContent = st.follow_all ? 'ALL' : (st.teams.size || '');
+}
+
+function saveSportsFollow(league){
+  const st = _sportsState[league];
+  const teams = st.follow_all ? '*' : Array.from(st.teams).join(',');
+  fetch('/sports_follow',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({league, teams})});
 }
 
 buildAppsGrid();

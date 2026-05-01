@@ -203,6 +203,20 @@ input:checked+.slider:before{transform:translateX(20px)}
 /* ── BACKUP ── */
 .backup-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
 
+/* ── SPORTS PICKER ── */
+.league-section{margin-bottom:16px;background:#1a1a1a;border-radius:8px;border:1px solid var(--border);overflow:hidden}
+.league-header{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;cursor:pointer}
+.league-header:hover{background:#222}
+.league-name{font-weight:bold;font-size:.95rem}
+.league-count{font-size:.75rem;color:var(--text-muted)}
+.league-body{padding:8px 14px 14px;display:none}
+.league-body.open{display:block}
+.league-controls{display:flex;gap:10px;align-items:center;margin-bottom:10px;font-size:.85rem}
+.team-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(70px,1fr));gap:6px}
+.team-chip{background:#222;border:1px solid #444;border-radius:6px;padding:6px 4px;text-align:center;cursor:pointer;font-size:.75rem;font-weight:600;transition:.15s}
+.team-chip:hover{border-color:var(--accent)}
+.team-chip.selected{background:var(--accent);color:#111;border-color:var(--accent)}
+
 /* ── MOBILE ── */
 @media(max-width:600px){
   body{padding:56px 10px 56px 10px}

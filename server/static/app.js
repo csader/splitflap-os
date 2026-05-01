@@ -227,14 +227,13 @@ class LiveFlap {
 
 let liveFlipSpeedMs = 62;
 let liveGridRows = 3, liveGridCols = 15;
-let simMode = true;
+let simMode = false;
 
 function updateSimModeUI() {
   const toggle = document.getElementById('simModeToggle');
-  const label = document.getElementById('simModeLabel');
-  toggle.checked = !simMode;  // checked = LIVE, unchecked = SIMULATION
-  label.textContent = simMode ? 'SIMULATION' : 'LIVE';
-  label.style.color = simMode ? '#f88' : '#8f8';
+  toggle.checked = !simMode;  // checked = LIVE, unchecked = SIM
+  document.getElementById('simLabel').style.color = simMode ? '#f88' : '#555';
+  document.getElementById('liveLabel').style.color = simMode ? '#555' : 'var(--green)';
 }
 
 async function toggleSimMode() {
@@ -253,22 +252,18 @@ function initLiveGrids(rows, cols) {
   cols = cols || liveGridCols;
   liveGridRows = rows;
   liveGridCols = cols;
-  ['control', 'apps'].forEach(tab => {
-    const grid = document.querySelector(`.live-grid-${tab}`);
-    if (!grid) return;
-    grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
-    grid.innerHTML = '';
-    liveFlaps[tab] = [];
-    for (let i = 0; i < rows * cols; i++) {
-      const el = document.createElement('div');
-      el.className = 'live-flap';
-      el.innerHTML = '<div class="fh ft"><span class="fc"></span></div><div class="fh fb"><span class="fc"></span></div><div class="fd"></div>';
-      grid.appendChild(el);
-      liveFlaps[tab].push(new LiveFlap(el));
-    }
-  });
-  document.getElementById('simRows').value = rows;
-  document.getElementById('simCols').value = cols;
+  const grid = document.querySelector('.live-grid-control');
+  if (!grid) return;
+  grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+  grid.innerHTML = '';
+  liveFlaps['control'] = [];
+  for (let i = 0; i < rows * cols; i++) {
+    const el = document.createElement('div');
+    el.className = 'live-flap';
+    el.innerHTML = '<div class="fh ft"><span class="fc"></span></div><div class="fh fb"><span class="fc"></span></div><div class="fd"></div>';
+    grid.appendChild(el);
+    liveFlaps['control'].push(new LiveFlap(el));
+  }
 }
 
 // Fetch initial grid config then init
@@ -303,42 +298,37 @@ setInterval(()=>{
       initLiveGrids(rows, cols);
     }
 
-    // Homing overlays (hide in sim mode)
-    ['control','apps'].forEach(tab=>{
-      const el = document.getElementById(`homing-${tab}`);
-      if(!el) return;
-      if(data.is_homed || data.sim_mode){ el.style.display='none'; return; }
-      el.style.display='flex';
-      if(!data.hardware_connected){
-        el.innerHTML='<div style="text-align:center">NO SPLITFLAP DEVICE DETECTED</div>';
-      } else {
-        el.innerHTML='<div style="text-align:center">HOMING REQUIRED<br><button class="btn btn-warning btn-sm" style="margin-top:8px" onclick="homeAll()">HOME ALL</button></div>';
+    // Homing overlay (single, hide in sim mode)
+    const homingEl = document.getElementById('homing-control');
+    if(homingEl){
+      if(data.is_homed || data.sim_mode){ homingEl.style.display='none'; }
+      else {
+        homingEl.style.display='flex';
+        homingEl.innerHTML = data.hardware_connected
+          ? '<div style="text-align:center">HOMING REQUIRED<br><button class="btn btn-warning btn-sm" style="margin-top:8px" onclick="homeAll()">HOME ALL</button></div>'
+          : '<div style="text-align:center">NO SPLITFLAP DEVICE DETECTED</div>';
       }
-    });
+    }
 
-    // Animated live display grids
+    // Animated live display (single grid)
     const s = data.state || '';
-    ['control','apps'].forEach(tab=>{
-      const fa = liveFlaps[tab];
-      for(let i=0; i<fa.length; i++){
-        const ch = s[i] || ' ';
-        const idx = CHAR_MAP.indexOf(ch);
-        fa[i].setTarget(idx >= 0 ? idx : 0, i * 5);
-      }
-    });
+    const fa = liveFlaps['control'];
+    if(fa) for(let i=0; i<fa.length; i++){
+      const ch = s[i] || ' ';
+      const idx = CHAR_MAP.indexOf(ch);
+      fa[i].setTarget(idx >= 0 ? idx : 0, i * 5);
+    }
 
-    // Active app banners
+    // Active app banner (single)
     const app = data.active_app;
     currentActiveApp = app;
     const appLabel = app ? (APP_LIST.find(a=>a.key===app)||{name:app}).name : null;
-    ['control','apps'].forEach(tab=>{
-      const banner = document.getElementById(`${tab}-banner`);
-      const nameEl = document.getElementById(`${tab}-app-name`);
-      if(banner){
-        banner.classList.toggle('visible', !!app);
-        if(app && nameEl) nameEl.textContent = appLabel;
-      }
-    });
+    const banner = document.getElementById('control-banner');
+    const nameEl = document.getElementById('control-app-name');
+    if(banner){
+      banner.classList.toggle('visible', !!app);
+      if(app && nameEl) nameEl.textContent = appLabel;
+    }
 
     // Running highlight on app cards
     document.querySelectorAll('.app-card').forEach(c=>{
@@ -351,12 +341,55 @@ setInterval(()=>{
 //  TAB SWITCHING
 // ============================================================
 function switchTab(name){
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.bottom-tab').forEach(b=>b.classList.remove('active'));
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById('tab-'+name).classList.add('active');
   document.getElementById('page-'+name).classList.add('active');
-  if(name==='tuning') loadSettingsData();
-  if(name==='apps'){ buildAppsGrid(); loadAppLibrary(); }
+  if(name==='apps') buildAppsGrid();
+}
+
+// ── Hamburger ──
+function toggleHamburger(){
+  document.getElementById('hamburgerDrawer').classList.toggle('open');
+  document.getElementById('hamburgerOverlay').classList.toggle('open');
+}
+
+function showHamburgerSection(name){
+  // unused — replaced by openMenuPage
+}
+
+function hideHamburgerSection(){
+  // unused — replaced by closeMenuPage
+}
+
+let _prevTab = 'apps';
+function openMenuPage(name){
+  toggleHamburger();
+  const active = document.querySelector('.bottom-tab.active');
+  if(active) _prevTab = active.id.replace('tab-','');
+  document.getElementById('bottomTabs').style.display='none';
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  if(name==='calibration') loadSettingsData();
+  if(name==='settings') loadSettingsData();
+  if(name==='library') loadAppLibrary();
+  if(typeof lucide!=='undefined') lucide.createIcons();
+}
+
+function closeMenuPage(){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+_prevTab).classList.add('active');
+  document.getElementById('bottomTabs').style.display='flex';
+}
+
+function openAppLibrary(){
+  const active = document.querySelector('.bottom-tab.active');
+  if(active) _prevTab = active.id.replace('tab-','');
+  document.getElementById('bottomTabs').style.display='none';
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-library').classList.add('active');
+  loadAppLibrary();
+  if(typeof lucide!=='undefined') lucide.createIcons();
 }
 
 // ============================================================
@@ -370,46 +403,121 @@ document.querySelectorAll('.line-input').forEach(el=>{
 });
 
 // ============================================================
-//  CONTROL TAB
+//  COMPOSE — INTERACTIVE GRID EDITOR
 // ============================================================
-function updatePreview(){
-  const grid = document.getElementById('preview');
-  grid.innerHTML='';
-  const centered = document.getElementById('centerToggle').checked;
-  let full='';
-  [1,2,3].forEach(n=>{
-    const el = document.getElementById('L'+n);
-    let chars = Array.from(el.value);
-    if(chars.length>15){
-      const s = el.selectionStart;
-      chars = chars.slice(0,15);
-      el.value = chars.join('');
-      el.setSelectionRange(s,s);
-    }
-    let dc = chars.map(c=>c.toUpperCase());
-    if(centered){
-      const pad = Math.floor((15-dc.length)/2);
-      for(let i=0;i<pad;i++) dc.unshift(' ');
-    }
-    while(dc.length<15) dc.push(' ');
-    full += dc.join('');
-  });
-  for(let ch of Array.from(full)){
-    const div = document.createElement('div');
-    div.className='flap-unit';
-    div.innerText = ch===' '?'':ch;
-    grid.appendChild(div);
-  }
-  return full;
+let composeBuffer = [];
+let composeCursor = -1;
+const composeTotal = () => get_rows() * get_cols();
+function get_rows(){ return liveGridRows || 3; }
+function get_cols(){ return liveGridCols || 15; }
+
+function initComposeBuffer(){
+  const n = composeTotal();
+  if(composeBuffer.length !== n) composeBuffer = Array(n).fill(' ');
 }
 
+function renderCompose(){
+  initComposeBuffer();
+  const grid = document.getElementById('preview');
+  grid.innerHTML='';
+  grid.style.gridTemplateColumns = `repeat(${get_cols()}, 1fr)`;
+  composeBuffer.forEach((ch, i) => {
+    const div = document.createElement('div');
+    div.className = 'flap-unit' + (i === composeCursor ? ' cursor' : '');
+    div.innerText = ch === ' ' ? '' : ch;
+    div.onclick = () => setCursor(i);
+    grid.appendChild(div);
+  });
+  // Sync hidden inputs for playlist compat
+  const cols = get_cols();
+  document.getElementById('L1').value = composeBuffer.slice(0, cols).join('').trimEnd();
+  document.getElementById('L2').value = composeBuffer.slice(cols, cols*2).join('').trimEnd();
+  document.getElementById('L3').value = composeBuffer.slice(cols*2, cols*3).join('').trimEnd();
+}
+
+function setCursor(i){
+  composeCursor = i;
+  renderCompose();
+  document.getElementById('composeCapture').focus();
+}
+
+function updatePreview(){
+  renderCompose();
+  return composeBuffer.join('');
+}
+
+// Keyboard handler
+document.addEventListener('keydown', e => {
+  if(composeCursor < 0) return;
+  const capture = document.getElementById('composeCapture');
+  if(document.activeElement !== capture && !e.target.closest('#preview')) return;
+
+  const n = composeTotal();
+  if(e.key === 'Backspace'){
+    e.preventDefault();
+    if(composeBuffer[composeCursor] !== ' '){
+      composeBuffer[composeCursor] = ' ';
+    } else if(composeCursor > 0){
+      composeCursor--;
+      composeBuffer[composeCursor] = ' ';
+    }
+    renderCompose();
+  } else if(e.key === 'ArrowLeft'){
+    e.preventDefault();
+    if(composeCursor > 0) composeCursor--;
+    renderCompose();
+  } else if(e.key === 'ArrowRight'){
+    e.preventDefault();
+    if(composeCursor < n-1) composeCursor++;
+    renderCompose();
+  } else if(e.key === 'ArrowDown'){
+    e.preventDefault();
+    const cols = get_cols();
+    if(composeCursor + cols < n) composeCursor += cols;
+    renderCompose();
+  } else if(e.key === 'ArrowUp'){
+    e.preventDefault();
+    const cols = get_cols();
+    if(composeCursor - cols >= 0) composeCursor -= cols;
+    renderCompose();
+  } else if(e.key.length === 1 && !e.ctrlKey && !e.metaKey){
+    e.preventDefault();
+    composeBuffer[composeCursor] = e.key.toUpperCase();
+    if(composeCursor < n-1) composeCursor++;
+    renderCompose();
+  }
+});
+
 function clearDisplay(){
-  ['L1','L2','L3'].forEach(id=>document.getElementById(id).value='');
+  composeBuffer = Array(composeTotal()).fill(' ');
+  composeCursor = -1;
+  document.getElementById('centerToggle').checked = false;
   if(editingIndex!==null){
     editingIndex=null;
     document.getElementById('saveMsgBtn').textContent='+ Add to Playlist';
   }
-  updatePreview();
+  renderCompose();
+}
+
+function centerBuffer(){
+  initComposeBuffer();
+  const cols = get_cols();
+  const rows = get_rows();
+  for(let r=0; r<rows; r++){
+    const start = r * cols;
+    const row = composeBuffer.slice(start, start + cols);
+    // Find first and last non-space
+    let first = row.findIndex(c => c !== ' ');
+    if(first === -1) continue;
+    let last = row.length - 1;
+    while(last > first && row[last] === ' ') last--;
+    const content = row.slice(first, last + 1);
+    const pad = Math.floor((cols - content.length) / 2);
+    const centered = Array(cols).fill(' ');
+    content.forEach((c, i) => centered[pad + i] = c);
+    centered.forEach((c, i) => composeBuffer[start + i] = c);
+  }
+  renderCompose();
 }
 
 function toggleMultiMode(){
@@ -418,16 +526,11 @@ function toggleMultiMode(){
 }
 
 function insertColor(emoji){
-  const target = lastFocusedInput||document.getElementById('L1');
-  let chars = Array.from(target.value);
-  if(chars.length>=15) return;
-  const text = target.value;
-  const start = lastCursorPos;
-  target.value = text.substring(0,start)+emoji+text.substring(start);
-  lastCursorPos += emoji.length;
-  target.focus();
-  target.setSelectionRange(lastCursorPos,lastCursorPos);
-  updatePreview();
+  if(composeCursor < 0) composeCursor = 0;
+  const n = composeTotal();
+  composeBuffer[composeCursor] = emoji;
+  if(composeCursor < n-1) composeCursor++;
+  renderCompose();
 }
 
 function saveMessage(){
@@ -684,6 +787,23 @@ async function buildAppsGrid(){
   APP_LIST.forEach(a => {
     if (!pluginKeys.has(a.key) && !libraryKeys.has(a.key)) grid.appendChild(buildAppCard(a, false));
   });
+  if(typeof lucide!=='undefined') lucide.createIcons();
+}
+
+const LUCIDE_APP_ICONS = {
+  demo:'clapperboard', livestream:'radio', dashboard:'layout-dashboard',
+  time:'clock', date:'calendar', weather:'cloud-sun', metro:'train-front',
+  stocks:'trending-up', sports:'trophy', youtube:'play-circle',
+  yt_comments:'message-circle', countdown:'timer', world_clock:'globe',
+  crypto:'coins', iss:'rocket', anim_rainbow:'rainbow', anim_sweep:'waves',
+  anim_twinkle:'sparkles', anim_checker:'grid-3x3', anim_matrix:'binary',
+  'dad-jokes':'smile', 'motivational-quotes':'quote', 'word-of-the-day':'book-open',
+  'bitcoin-fear-greed':'gauge',
+};
+function appLucideIcon(key){
+  const id = key.replace('plugin_','');
+  const name = LUCIDE_APP_ICONS[id];
+  return name ? `<i data-lucide="${name}" style="width:28px;height:28px"></i>` : null;
 }
 
 function buildAppCard(a, isPlugin) {
@@ -691,12 +811,15 @@ function buildAppCard(a, isPlugin) {
   div.className = 'app-card';
   div.dataset.app = a.key;
   div.onclick = () => runApp(a.key);
-  const hasCfg = APP_SETTINGS_CONFIG[a.key] && (APP_SETTINGS_CONFIG[a.key].fields||[]).length > 0;
+  const bareKey = a.key.replace('plugin_','');
+  const cfgKey = bareKey in APP_SETTINGS_CONFIG ? bareKey : a.key;
+  const hasCfg = APP_SETTINGS_CONFIG[cfgKey] && (APP_SETTINGS_CONFIG[cfgKey].fields||[]).length > 0;
   const removable = isPlugin;
+  const icon = appLucideIcon(a.key) || appLucideIcon(a.plugin_id||'') || `<span style="font-size:2.2rem">${a.icon}</span>`;
   div.innerHTML = `
-    ${hasCfg ? `<button class="app-gear" style="right:${removable?'28':'8'}px" title="Settings" onclick="event.stopPropagation();openAppSettings('${a.key}')">⚙️</button>` : ''}
-    ${removable ? `<button class="app-gear" title="Remove" onclick="event.stopPropagation();removeApp('${a.plugin_id||a.key.replace('plugin_','')}')">✕</button>` : ''}
-    <span class="app-icon">${a.icon}</span>
+    ${hasCfg ? `<button class="app-gear" style="right:${removable?'28':'8'}px" title="Settings" onclick="event.stopPropagation();openAppSettings('${cfgKey}')"><i data-lucide="settings" style="width:14px;height:14px"></i></button>` : ''}
+    ${removable ? `<button class="app-gear" title="Remove" onclick="event.stopPropagation();removeApp('${a.plugin_id||a.key.replace('plugin_','')}')"><i data-lucide="x" style="width:14px;height:14px"></i></button>` : ''}
+    <span class="app-icon">${icon}</span>
     <span class="app-name">${a.name}</span>
     <span class="app-desc">${a.desc}</span>`;
   return div;
@@ -718,19 +841,16 @@ async function removeApp(appId){
 }
 
 function runApp(appKey){
+  if(currentActiveApp === appKey || currentActiveApp === appKey.replace('plugin_','')){
+    fetch('/stop_app',{method:'POST'}).then(()=>showToast('App stopped'));
+    return;
+  }
   fetch('/run_app',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({app:appKey})});
   const label = (APP_LIST.find(a=>a.key===appKey)||{name:appKey.replace('plugin_','').replace(/-/g,' ')}).name;
   showToast(`▶ ${label} started`);
 }
 
 // ── App Library ──────────────────────────────────────────────
-function openAppLibrary(){
-  document.getElementById('appLibraryModal').style.display='flex';
-  loadAppLibrary();
-}
-function closeAppLibrary(){
-  document.getElementById('appLibraryModal').style.display='none';
-}
 
 async function loadAppLibrary(){
   const grid = document.getElementById('appLibraryGrid');
@@ -749,8 +869,9 @@ async function loadAppLibrary(){
       const div = document.createElement('div');
       div.className = 'app-card';
       div.style.cursor = 'default';
+      const icon = appLucideIcon(a.id) || `<span style="font-size:2.2rem">${a.icon||'🧩'}</span>`;
       div.innerHTML = `
-        <span class="app-icon">${a.icon||'🧩'}</span>
+        <span class="app-icon">${icon}</span>
         <span class="app-name">${a.name}</span>
         <span class="app-desc">${a.description||''}</span>
         <span style="display:inline-block;font-size:.65rem;color:#888;background:#222;padding:2px 6px;border-radius:4px;margin-top:4px">${a.type}${a.version?' · v'+a.version:''}</span>
@@ -762,6 +883,7 @@ async function loadAppLibrary(){
         </div>`;
       grid.appendChild(div);
     });
+    if(typeof lucide!=='undefined') lucide.createIcons();
   } catch(e){
     grid.innerHTML = '<div style="color:var(--red);grid-column:1/-1;text-align:center;padding:20px">Failed to load library</div>';
   }
@@ -1532,3 +1654,4 @@ function tmFinishEarly(){
 buildAppsGrid();
 loadSavedPlaylists();
 updatePreview();
+if(typeof lucide!=='undefined') lucide.createIcons();

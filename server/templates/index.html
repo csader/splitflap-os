@@ -5,50 +5,48 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Split-Flap OS</title>
 <link rel="stylesheet" href="/static/styles.css">
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 </head>
 <body>
 <div class="container">
 
-  <!-- TAB BAR -->
-  <div class="tab-bar">
-    <button id="tab-control" class="tab-btn active" onclick="switchTab('control')">
-      <span class="tab-label-full">CONTROL</span><span class="tab-label-short">CTRL</span>
-    </button>
-    <button id="tab-apps" class="tab-btn" onclick="switchTab('apps')">
-      <span class="tab-label-full">APPS</span><span class="tab-label-short">APPS</span>
-    </button>
-    <button id="tab-tuning" class="tab-btn" onclick="switchTab('tuning')">
-      <span class="tab-label-full">TUNING &amp; SETTINGS</span><span class="tab-label-short">TUNE</span>
-    </button>
+  <!-- STICKY TOP BAR -->
+  <div class="top-bar" id="topBar">
+    <button class="hamburger-btn" onclick="toggleHamburger()"><i data-lucide="menu" style="width:20px;height:20px"></i></button>
+    <span class="top-bar-title">Split-Flap OS</span>
+    <div style="display:flex;align-items:center;gap:6px">
+      <span id="simLabel" style="font-size:.82rem;font-weight:bold;color:#555">SIMULATE</span>
+      <label class="switch"><input type="checkbox" id="simModeToggle" onchange="toggleSimMode()"><span class="slider"></span></label>
+      <span id="liveLabel" style="font-size:.82rem;font-weight:bold;color:var(--green)">LIVE</span>
+    </div>
   </div>
 
-  <!-- ══════════ CONTROL PAGE ══════════ -->
-  <div id="page-control" class="page active">
-    <div id="control-banner" class="active-app-banner">
-      <div class="aab-dot"></div>
-      <span class="aab-label">▶ <span id="control-app-name">APP</span> is running</span>
-      <button class="aab-stop" onclick="stopApp()">⏹ STOP</button>
-    </div>
+  <!-- PERSISTENT LIVE PREVIEW -->
+  <div class="preview-wrapper" style="position:relative;margin-bottom:12px">
+    <div class="preview-grid live-grid-control"></div>
+    <div class="homing-overlay" id="homing-control" style="display:none"></div>
+  </div>
 
-    <div style="text-align:center;color:#888;font-size:.8rem;margin-bottom:4px;font-weight:bold;letter-spacing:1px">LIVE DISPLAY</div>
-    <div class="sim-toolbar">
-      <div style="display:flex;align-items:center;gap:6px">
-        <span id="simModeLabel" style="font-size:.82rem;font-weight:bold;color:#f88">SIMULATION</span>
-        <label class="switch"><input type="checkbox" id="simModeToggle" onchange="toggleSimMode()"><span class="slider"></span></label>
-        <span style="font-size:.82rem;color:#888">LIVE</span>
-      </div>
-    </div>
-    <div class="preview-wrapper" style="position:relative;margin-bottom:18px">
-      <div class="preview-grid live-grid-control"></div>
-      <div class="homing-overlay" id="homing-control" style="display:none"><div style="text-align:center">HOMING REQUIRED<br><button class="btn btn-warning btn-sm" style="margin-top:8px" onclick="homeAll()">HOME ALL</button></div></div>
-    </div>
+  <!-- ACTIVE APP BANNER -->
+  <div id="control-banner" class="active-app-banner">
+    <div class="aab-dot"></div>
+    <span class="aab-label">▶ <span id="control-app-name">APP</span> is running</span>
+    <button class="aab-stop" onclick="stopApp()">⏹ STOP</button>
+  </div>
 
-    <div style="text-align:center;color:#888;font-size:.8rem;margin-bottom:4px;font-weight:bold;letter-spacing:1px">COMPOSE</div>
-    <div class="preview-wrapper"><div class="preview-grid" id="preview"></div></div>
+  <!-- ══════════ COMPOSE PAGE ══════════ -->
+  <div id="page-control" class="page">
+
+    <div style="text-align:center;color:#888;font-size:.8rem;margin-bottom:4px;font-weight:bold;letter-spacing:1px">COMPOSE <span style="font-weight:normal;font-size:.7rem">(click a cell to type)</span></div>
+    <div class="preview-wrapper" style="cursor:text"><div class="preview-grid" id="preview"></div></div>
+    <!-- Hidden input to capture keyboard -->
+    <input type="text" id="composeCapture" style="position:absolute;left:-9999px" autocomplete="off">
+    <!-- Hidden line inputs for playlist compat -->
+    <input type="hidden" id="L1"><input type="hidden" id="L2"><input type="hidden" id="L3">
 
     <div class="control-panel">
       <label style="cursor:pointer"><input type="checkbox" id="modeToggle" onchange="toggleMultiMode()"> <strong>Multi-Page Playlist</strong></label>
-      <label style="cursor:pointer"><input type="checkbox" id="centerToggle" onchange="updatePreview()"> Center Text</label>
+      <label style="cursor:pointer"><input type="checkbox" id="centerToggle" onchange="centerBuffer()"> Center Text</label>
       <button class="btn btn-secondary btn-sm" style="margin-left:auto" onclick="clearDisplay()">Clear</button>
     </div>
 
@@ -62,10 +60,6 @@
       <button class="color-btn" onclick="insertColor('⬜')" title="White">⬜</button>
       <button class="color-btn" onclick="insertColor('⬛')" title="Black">⬛</button>
     </div>
-
-    <input type="text" id="L1" class="line-input" placeholder="LINE 1" oninput="updatePreview()">
-    <input type="text" id="L2" class="line-input" placeholder="LINE 2" oninput="updatePreview()">
-    <input type="text" id="L3" class="line-input" placeholder="LINE 3" oninput="updatePreview()">
 
     <div id="multiControls" style="display:none" class="playlist-area">
       <button class="btn btn-success" id="saveMsgBtn" style="width:100%" onclick="saveMessage()">+ Add to Playlist</button>
@@ -107,21 +101,8 @@
   </div>
 
   <!-- ══════════ APPS PAGE ══════════ -->
-  <div id="page-apps" class="page">
-    <div id="apps-banner" class="active-app-banner">
-      <div class="aab-dot"></div>
-      <span class="aab-label">▶ <span id="apps-app-name">APP</span> is running</span>
-      <button class="aab-stop" onclick="stopApp()">⏹ STOP</button>
-    </div>
-
-    <div style="text-align:center;color:#888;font-size:.8rem;margin-bottom:4px;font-weight:bold;letter-spacing:1px">LIVE DISPLAY</div>
-    <div class="preview-wrapper" style="position:relative;margin-bottom:18px">
-      <div class="preview-grid live-grid-apps"></div>
-      <div class="homing-overlay" id="homing-apps" style="display:none"><div style="text-align:center">HOMING REQUIRED<br><button class="btn btn-warning btn-sm" style="margin-top:8px" onclick="homeAll()">HOME ALL</button></div></div>
-    </div>
-
-    <h3 style="margin-bottom:4px">Installed Apps</h3>
-    <p style="color:#888;margin-top:0;font-size:.85rem">Tap to launch · ⚙️ to configure · ✕ to remove</p>
+  <div id="page-apps" class="page active">
+    <h3 style="margin-bottom:12px">Installed Apps</h3>
 
     <div class="apps-grid" id="appsGrid">
       <!-- Populated by JS -->
@@ -130,10 +111,16 @@
     <button class="btn btn-secondary" style="width:100%;margin-top:20px" onclick="openAppLibrary()">+ Install App</button>
   </div>
 
-  <!-- ══════════ TUNING PAGE ══════════ -->
-  <div id="page-tuning" class="page">
+  <!-- ══════════ LIBRARY PAGE ══════════ -->
+  <div id="page-library" class="page">
+    <button class="hamburger-back" onclick="closeMenuPage()"><i data-lucide="arrow-left" style="width:14px;height:14px"></i> Back</button>
+    <h3 style="margin-bottom:12px">App Library</h3>
+    <div class="apps-grid" id="appLibraryGrid"></div>
+  </div>
 
-    <!-- Hardware Inspector -->
+  <!-- ══════════ CALIBRATION PAGE ══════════ -->
+  <div id="page-calibration" class="page">
+    <button class="hamburger-back" onclick="closeMenuPage()"><i data-lucide="arrow-left" style="width:14px;height:14px"></i> Back</button>
     <div class="config-section" style="border-left:5px solid var(--accent)">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
         <h3 style="margin:0">Hardware Inspector</h3>
@@ -144,11 +131,7 @@
           <button class="btn btn-warning btn-sm" onclick="homeAll()">HOME ALL</button>
         </div>
       </div>
-
-      <div id="modMatrixWrap">
-        <div class="mod-matrix" id="modMatrix"></div>
-      </div>
-
+      <div id="modMatrixWrap"><div class="mod-matrix" id="modMatrix"></div></div>
       <div class="inspector-panel" id="inspectorPanel" style="display:none">
         <div style="display:flex;justify-content:space-between;align-items:center">
           <h3 style="margin:0;color:#fff" id="inspectTitle">MODULE 00</h3>
@@ -175,15 +158,17 @@
           <button class="btn" style="flex:1;background:#333;color:#aaa;border:1px solid #555" onclick="calibrateSelected()">MEASURE REEL (360°)</button>
         </div>
       </div>
-
       <h4 style="margin-bottom:8px;color:#aaa">Character Map</h4>
       <div class="char-matrix" id="charMatrix"></div>
     </div>
+  </div>
 
-    <!-- Global Settings -->
+  <!-- ══════════ SETTINGS PAGE ══════════ -->
+  <div id="page-settings" class="page">
+    <button class="hamburger-back" onclick="closeMenuPage()"><i data-lucide="arrow-left" style="width:14px;height:14px"></i> Back</button>
     <div class="config-section">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px">
-        <h3>Global Settings</h3>
+        <h3>Settings</h3>
         <div style="display:flex;align-items:center;gap:10px;background:#2a2a2a;padding:8px 12px;border-radius:8px">
           <span style="font-size:.85rem;color:#ccc">Auto-Home on Boot</span>
           <label class="switch"><input type="checkbox" id="autoHomeToggle" onchange="toggleAutoHome()"><span class="slider"></span></label>
@@ -205,10 +190,8 @@
       </div>
       <button class="btn btn-secondary" style="margin-top:14px" onclick="saveGlobal()">Save Settings</button>
     </div>
-
-    <!-- Backup / Restore -->
     <div class="config-section">
-      <h3>Calibration Backup &amp; Restore</h3>
+      <h3>Backup &amp; Restore</h3>
       <p style="color:#888;font-size:.85rem;margin-top:0">Export/import all offsets, calibrations and tuned character positions.</p>
       <div class="backup-row">
         <button class="btn btn-secondary" onclick="downloadBackup()">⬇ Download Backup JSON</button>
@@ -219,9 +202,32 @@
         </div>
       </div>
     </div>
+  </div>
 
-  </div><!-- /page-tuning -->
 </div><!-- /container -->
+
+<!-- STICKY BOTTOM TABS -->
+<div class="bottom-tabs" id="bottomTabs">
+  <button class="bottom-tab active" id="tab-apps" onclick="switchTab('apps')"><i data-lucide="layout-grid" style="width:16px;height:16px"></i> Apps</button>
+  <button class="bottom-tab" id="tab-control" onclick="switchTab('control')"><i data-lucide="pen-line" style="width:16px;height:16px"></i> Compose</button>
+</div>
+
+<!-- HAMBURGER OVERLAY -->
+<div class="hamburger-overlay" id="hamburgerOverlay" onclick="toggleHamburger()"></div>
+
+<!-- HAMBURGER DRAWER -->
+<div class="hamburger-drawer" id="hamburgerDrawer">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+    <span style="font-weight:bold;font-size:1.1rem">Split-Flap OS</span>
+    <button class="drawer-close" onclick="toggleHamburger()"><i data-lucide="x" style="width:18px;height:18px"></i></button>
+  </div>
+
+  <div class="hamburger-nav" id="hamburgerNav">
+    <button class="hamburger-item" onclick="openMenuPage('library')"><i data-lucide="package-plus" style="width:18px;height:18px"></i> App Library</button>
+    <button class="hamburger-item" onclick="openMenuPage('calibration')"><i data-lucide="wrench" style="width:18px;height:18px"></i> Calibration</button>
+    <button class="hamburger-item" onclick="openMenuPage('settings')"><i data-lucide="settings" style="width:18px;height:18px"></i> Settings</button>
+  </div>
+</div><!-- /hamburger-drawer -->
 
 <!-- ══════════ CHARACTER TUNING MODAL ══════════ -->
 <div class="modal-overlay" id="charModal">
@@ -412,19 +418,10 @@
   </div>
 </div>
 
-<!-- ══════════ APP LIBRARY MODAL ══════════ -->
-<div class="modal-overlay" id="appLibraryModal">
-  <div class="modal-content" style="max-width:600px">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-      <h3 style="margin:0;color:var(--accent)">📚 App Library</h3>
-      <button class="drawer-close" onclick="closeAppLibrary()">✕</button>
-    </div>
-    <p style="color:#888;margin-top:0;font-size:.85rem">Install community apps from the repository</p>
-    <div class="apps-grid" id="appLibraryGrid"></div>
-  </div>
-</div>
-
 <!-- TOAST -->
 <div class="toast-container" id="toastContainer"></div>
 
 <script src="/static/app.js"></script>
+
+</body>
+</html>

@@ -2055,7 +2055,7 @@ def app_library_install():
         return jsonify(status="error", message="Already installed"), 409
 
     app_dir = os.path.join(PLUGIN_APPS_PATH, app_id)
-    # Try local repo copy first
+    # Try local copy first
     local_src = os.path.join(BUILTIN_APPS_PATH, app_id)
     if os.path.isdir(local_src):
         try:

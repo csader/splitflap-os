@@ -6,11 +6,13 @@ Built on [Adam G Makes' Split-Flap Display](https://github.com/adamgmakes/SplitF
 
 ## Features
 
-- **App system** — installable/removable apps (weather, stocks, sports, crypto, countdown, animations, and more)
+- **40+ apps** — weather, stocks, sports scores, crypto, word clock, trivia, news headlines, quotes, and more
+- **App Library** — browse and install apps by category (time, entertainment, news, lifestyle, education, finance, sports)
 - **Compose** — click-to-type grid editor with color tile support
+- **Playlists** — sequence apps and composed messages with per-entry timing and transitions
 - **Live preview** — animated flap simulation in the browser
 - **Calibration tools** — hardware inspector, auto fine-tune, teach mode
-- **MQTT** — Home Assistant integration
+- **MQTT** — Home Assistant integration with auto-discovery
 - **Plugin architecture** — community apps via manifest + fetch pattern
 - **Mobile-friendly** — hamburger menu, sticky bottom tabs, responsive layout
 
@@ -57,6 +59,7 @@ Each app is a directory in `apps/` with two files:
   "name": "My App",
   "icon": "🎯",
   "description": "What it does",
+  "category": "entertainment",
   "type": "functional",
   "refresh_interval": 60,
   "loop_delay": 5,

@@ -40,27 +40,9 @@
   <div id="page-control" class="page">
 
     <div style="text-align:center;color:#888;font-size:.8rem;margin-bottom:4px;font-weight:bold;letter-spacing:1px">COMPOSE <span style="font-weight:normal;font-size:.7rem">(click a cell to type)</span></div>
-    <div class="preview-wrapper" style="cursor:text"><div class="preview-grid" id="preview"></div></div>
-    <!-- Hidden input to capture keyboard -->
-    <input type="text" id="composeCapture" style="position:absolute;left:-9999px" autocomplete="off">
+    <div id="composeGridContainer"></div>
     <!-- Hidden line inputs for playlist compat -->
     <input type="hidden" id="L1"><input type="hidden" id="L2"><input type="hidden" id="L3">
-
-    <div class="control-panel">
-      <label style="cursor:pointer"><input type="checkbox" id="centerToggle" onchange="centerBuffer()"> Center Text</label>
-      <button class="btn btn-secondary btn-sm" style="margin-left:auto" onclick="clearDisplay()">Clear</button>
-    </div>
-
-    <div class="color-palette">
-      <button class="color-btn" onclick="insertColor('🟥')" title="Red">🟥</button>
-      <button class="color-btn" onclick="insertColor('🟧')" title="Orange">🟧</button>
-      <button class="color-btn" onclick="insertColor('🟨')" title="Yellow">🟨</button>
-      <button class="color-btn" onclick="insertColor('🟩')" title="Green">🟩</button>
-      <button class="color-btn" onclick="insertColor('🟦')" title="Blue">🟦</button>
-      <button class="color-btn" onclick="insertColor('🟪')" title="Purple">🟪</button>
-      <button class="color-btn" onclick="insertColor('⬜')" title="White">⬜</button>
-      <button class="color-btn" onclick="insertColor('⬛')" title="Black">⬛</button>
-    </div>
 
     <button class="btn btn-primary" onclick="sync()">PUSH TO DISPLAY</button>
   </div>
@@ -439,7 +421,7 @@
 <!-- TOAST -->
 <div class="toast-container" id="toastContainer"></div>
 
-<script src="/static/app.js?v=5"></script>
+<script src="/static/app.js?v=7"></script>
 
 </body>
 </html>

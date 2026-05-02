@@ -1,9 +1,10 @@
 {
   "id": "weather",
   "name": "Weather",
-  "icon": "🌤️",
+  "icon": "\ud83c\udf24\ufe0f",
   "description": "Current conditions",
   "type": "functional",
   "refresh_interval": 300,
-  "loop_delay": 5
+  "loop_delay": 5,
+  "category": "data"
 }

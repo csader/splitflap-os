@@ -1,0 +1,12 @@
+{
+  "id": "funny-one-liners",
+  "name": "One Liners",
+  "icon": "😄",
+  "description": "Quick witty laughs",
+  "category": "entertainment",
+  "type": "channel",
+  "version": "1.0",
+  "refresh_interval": 300,
+  "loop_delay": 8,
+  "settings": []
+}

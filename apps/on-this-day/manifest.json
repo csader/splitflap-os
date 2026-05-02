@@ -1,0 +1,12 @@
+{
+  "id": "on-this-day",
+  "name": "On This Day",
+  "icon": "📜",
+  "description": "Historical events today",
+  "category": "education",
+  "type": "functional",
+  "version": "1.0",
+  "refresh_interval": 3600,
+  "loop_delay": 10,
+  "settings": []
+}

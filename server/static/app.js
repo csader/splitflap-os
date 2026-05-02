@@ -788,6 +788,14 @@ const LUCIDE_APP_ICONS = {
   anim_twinkle:'sparkles', anim_checker:'grid-3x3', anim_matrix:'binary',
   'dad-jokes':'smile', 'motivational-quotes':'quote', 'word-of-the-day':'book-open',
   'bitcoin-fear-greed':'gauge',
+  'fortune-cookie':'cookie', 'magic-8-ball':'circle-help', 'shower-thoughts':'cloud-drizzle',
+  'funny-one-liners':'laugh', 'stoic-quotes':'landmark', 'office-quotes':'briefcase',
+  'star-wars-quotes':'sword', 'harry-potter-quotes':'wand-sparkles',
+  'good-morning':'sunrise', 'good-night':'moon-star',
+  'word-clock':'type', 'time-since':'hourglass', 'moon-phase':'moon',
+  'art-clock':'palette', 'chuck-norris':'shield', 'trivia':'brain',
+  'on-this-day':'scroll-text', 'national-today':'party-popper',
+  'news-headlines':'newspaper',
 };
 function appLucideIcon(key){
   const id = key.replace('plugin_','');
@@ -843,7 +851,9 @@ function runApp(appKey){
 
 async function loadAppLibrary(){
   const grid = document.getElementById('appLibraryGrid');
+  const filterBar = document.getElementById('appLibraryCategoryFilter');
   grid.innerHTML = '<div style="color:#888;grid-column:1/-1;text-align:center;padding:20px">Loading...</div>';
+  if(filterBar) filterBar.innerHTML = '';
   try {
     const res = await fetch('/app_library');
     const data = await res.json();
@@ -852,27 +862,52 @@ async function loadAppLibrary(){
       grid.innerHTML = '<div style="color:#666;grid-column:1/-1;text-align:center;padding:20px">No apps available</div>';
       return;
     }
-    grid.innerHTML = '';
     apps.sort((a,b) => (a.installed===b.installed) ? (a.name||'').localeCompare(b.name||'') : a.installed ? 1 : -1);
-    apps.forEach(a => {
-      const div = document.createElement('div');
-      div.className = 'app-card app-library-card';
-      div.style.cursor = 'default';
-      const icon = appLucideIcon(a.id) || `<span style="font-size:2.2rem">${a.icon||'🧩'}</span>`;
-      div.innerHTML = `
-        <span class="app-icon">${icon}</span>
-        <span class="app-name">${a.name}</span>
-        <span class="app-desc">${a.description||''}</span>
-        <span style="display:inline-block;font-size:.65rem;color:#888;background:#222;padding:2px 6px;border-radius:4px;margin-top:4px">${a.type}${a.version?' · v'+a.version:''}</span>
-        <div class="app-library-action">
-          ${a.installed
-            ? '<button class="btn-del" style="width:100%;padding:8px;border-radius:6px;font-size:.8rem" onclick="event.stopPropagation();uninstallApp(\''+a.id+'\')">Uninstall</button>'
-            : '<button class="btn btn-success btn-sm" style="width:100%" onclick="event.stopPropagation();installApp(\''+a.id+'\')">Install</button>'
-          }
-        </div>`;
-      grid.appendChild(div);
-    });
-    if(typeof lucide!=='undefined') lucide.createIcons();
+
+    // Build category filter pills
+    const cats = [...new Set(apps.map(a=>a.category).filter(Boolean))].sort();
+    let activeFilter = 'all';
+    function renderFilter(){
+      if(!filterBar) return;
+      const allCats = ['all', ...cats];
+      const labels = {all:'All',time:'Time',entertainment:'Entertainment',news:'News',lifestyle:'Lifestyle',education:'Education',finance:'Finance',sports:'Sports',animation:'Animation',data:'Data'};
+      filterBar.innerHTML = allCats.map(c=>{
+        const active = c===activeFilter;
+        return `<button data-cat="${c}" style="white-space:nowrap;padding:4px 12px;border-radius:16px;border:1px solid ${active?'var(--accent)':'var(--border)'};background:${active?'var(--accent)':'transparent'};color:${active?'#000':'var(--text)'};font-size:.78rem;cursor:pointer;transition:all .15s">${labels[c]||c}</button>`;
+      }).join('');
+      filterBar.querySelectorAll('button').forEach(btn=>{
+        btn.onclick = ()=>{ activeFilter=btn.dataset.cat; renderFilter(); renderGrid(); };
+      });
+    }
+
+    function renderGrid(){
+      grid.innerHTML = '';
+      const filtered = activeFilter==='all' ? apps : apps.filter(a=>a.category===activeFilter);
+      filtered.forEach(a => {
+        const div = document.createElement('div');
+        div.className = 'app-card app-library-card';
+        div.style.cursor = 'default';
+        const icon = appLucideIcon(a.id) || `<span style="font-size:2.2rem">${a.icon||'🧩'}</span>`;
+        const catBadge = a.category ? `<span style="display:inline-block;font-size:.6rem;color:#aaa;background:#1a1a1a;padding:1px 5px;border-radius:3px;margin-left:4px">${a.category}</span>` : '';
+        div.innerHTML = `
+          <span class="app-icon">${icon}</span>
+          <span class="app-name">${a.name}</span>
+          <span class="app-desc">${a.description||''}</span>
+          <span style="display:inline-block;font-size:.65rem;color:#888;background:#222;padding:2px 6px;border-radius:4px;margin-top:4px">${a.type}${a.version?' · v'+a.version:''}${catBadge}</span>
+          <div class="app-library-action">
+            ${a.installed
+              ? '<button class="btn-del" style="width:100%;padding:8px;border-radius:6px;font-size:.8rem;text-align:center" onclick="event.stopPropagation();uninstallApp(\''+a.id+'\')">Uninstall</button>'
+              : '<button class="btn btn-success btn-sm" style="width:100%;justify-content:center" onclick="event.stopPropagation();installApp(\''+a.id+'\')">Install</button>'
+            }
+          </div>`;
+        grid.appendChild(div);
+      });
+      if(!filtered.length) grid.innerHTML = '<div style="color:#666;grid-column:1/-1;text-align:center;padding:20px">No apps in this category</div>';
+      if(typeof lucide!=='undefined') lucide.createIcons();
+    }
+
+    renderFilter();
+    renderGrid();
   } catch(e){
     grid.innerHTML = '<div style="color:var(--red);grid-column:1/-1;text-align:center;padding:20px">Failed to load library</div>';
   }
@@ -947,7 +982,7 @@ async function openAppSettings(appKey){
         (f.opts||[]).forEach(opt=>{
           const o = document.createElement('option');
           o.value = opt; o.textContent = opt;
-          if((globalSettings[f.key]||'')===opt) o.selected=true;
+          if((globalSettings[f.key]||f.ph||'')===opt) o.selected=true;
           input.appendChild(o);
         });
       } else if(f.type==='textarea'){

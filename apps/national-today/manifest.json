@@ -1,0 +1,12 @@
+{
+  "id": "national-today",
+  "name": "National Today",
+  "icon": "🎉",
+  "description": "Today's holiday",
+  "category": "lifestyle",
+  "type": "functional",
+  "version": "1.0",
+  "refresh_interval": 3600,
+  "loop_delay": 10,
+  "settings": []
+}

@@ -1,0 +1,12 @@
+{
+  "id": "stoic-quotes",
+  "name": "Stoic Quotes",
+  "icon": "🏛️",
+  "description": "Ancient wisdom",
+  "category": "lifestyle",
+  "type": "channel",
+  "version": "1.0",
+  "refresh_interval": 300,
+  "loop_delay": 10,
+  "settings": []
+}

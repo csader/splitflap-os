@@ -1,0 +1,12 @@
+{
+  "id": "good-morning",
+  "name": "Good Morning",
+  "icon": "☀️",
+  "description": "Morning pick me up",
+  "category": "lifestyle",
+  "type": "channel",
+  "version": "1.0",
+  "refresh_interval": 300,
+  "loop_delay": 8,
+  "settings": []
+}

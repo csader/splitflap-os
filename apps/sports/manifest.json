@@ -1,1 +1,11 @@
-{"id":"sports","name":"Sports","icon":"🏒","description":"Live scores","type":"functional","refresh_interval":60,"loop_delay":5,"settings":[]}
+{
+  "id": "sports",
+  "name": "Sports",
+  "icon": "\ud83c\udfd2",
+  "description": "Live scores",
+  "type": "functional",
+  "refresh_interval": 60,
+  "loop_delay": 5,
+  "settings": [],
+  "category": "sports"
+}

@@ -36,6 +36,177 @@
       "category": "finance",
       "type": "functional",
       "version": "1.0"
+    },
+    {
+      "id": "fortune-cookie",
+      "name": "Fortune Cookie",
+      "icon": "🥠",
+      "description": "Mounted fortune cookie",
+      "category": "entertainment",
+      "type": "channel",
+      "version": "1.0"
+    },
+    {
+      "id": "magic-8-ball",
+      "name": "Magic 8 Ball",
+      "icon": "🎱",
+      "description": "Ask the magic 8 ball",
+      "category": "entertainment",
+      "type": "channel",
+      "version": "1.0"
+    },
+    {
+      "id": "shower-thoughts",
+      "name": "Shower Thoughts",
+      "icon": "🚿",
+      "description": "Mind-bending thoughts",
+      "category": "entertainment",
+      "type": "channel",
+      "version": "1.0"
+    },
+    {
+      "id": "funny-one-liners",
+      "name": "One Liners",
+      "icon": "😄",
+      "description": "Quick witty laughs",
+      "category": "entertainment",
+      "type": "channel",
+      "version": "1.0"
+    },
+    {
+      "id": "stoic-quotes",
+      "name": "Stoic Quotes",
+      "icon": "🏛️",
+      "description": "Ancient wisdom",
+      "category": "lifestyle",
+      "type": "channel",
+      "version": "1.0"
+    },
+    {
+      "id": "office-quotes",
+      "name": "The Office",
+      "icon": "📎",
+      "description": "That's what she said",
+      "category": "entertainment",
+      "type": "channel",
+      "version": "1.0"
+    },
+    {
+      "id": "star-wars-quotes",
+      "name": "Star Wars",
+      "icon": "⭐",
+      "description": "May the force be with you",
+      "category": "entertainment",
+      "type": "channel",
+      "version": "1.0"
+    },
+    {
+      "id": "harry-potter-quotes",
+      "name": "Harry Potter",
+      "icon": "⚡",
+      "description": "Wizarding wisdom",
+      "category": "entertainment",
+      "type": "channel",
+      "version": "1.0"
+    },
+    {
+      "id": "good-morning",
+      "name": "Good Morning",
+      "icon": "☀️",
+      "description": "Morning pick me up",
+      "category": "lifestyle",
+      "type": "channel",
+      "version": "1.0"
+    },
+    {
+      "id": "good-night",
+      "name": "Good Night",
+      "icon": "🌙",
+      "description": "Evening wind down",
+      "category": "lifestyle",
+      "type": "channel",
+      "version": "1.0"
+    },
+    {
+      "id": "word-clock",
+      "name": "Word Clock",
+      "icon": "🔤",
+      "description": "Time as written phrase",
+      "category": "time",
+      "type": "functional",
+      "version": "1.0"
+    },
+    {
+      "id": "time-since",
+      "name": "Time Since",
+      "icon": "⏱️",
+      "description": "Track elapsed time",
+      "category": "time",
+      "type": "functional",
+      "version": "1.0"
+    },
+    {
+      "id": "moon-phase",
+      "name": "Moon Phase",
+      "icon": "🌙",
+      "description": "Current moon phase",
+      "category": "lifestyle",
+      "type": "functional",
+      "version": "1.0"
+    },
+    {
+      "id": "art-clock",
+      "name": "Art Clock",
+      "icon": "🎨",
+      "description": "Time as color art",
+      "category": "time",
+      "type": "functional",
+      "version": "1.0"
+    },
+    {
+      "id": "chuck-norris",
+      "name": "Chuck Norris",
+      "icon": "👊",
+      "description": "Chuck Norris facts",
+      "category": "entertainment",
+      "type": "functional",
+      "version": "1.0"
+    },
+    {
+      "id": "trivia",
+      "name": "Trivia",
+      "icon": "🧠",
+      "description": "Random trivia questions",
+      "category": "education",
+      "type": "functional",
+      "version": "1.0"
+    },
+    {
+      "id": "on-this-day",
+      "name": "On This Day",
+      "icon": "📜",
+      "description": "Historical events today",
+      "category": "education",
+      "type": "functional",
+      "version": "1.0"
+    },
+    {
+      "id": "national-today",
+      "name": "National Today",
+      "icon": "🎉",
+      "description": "Today's holiday",
+      "category": "lifestyle",
+      "type": "functional",
+      "version": "1.0"
+    },
+    {
+      "id": "news-headlines",
+      "name": "News Headlines",
+      "icon": "📰",
+      "description": "Latest news via RSS",
+      "category": "news",
+      "type": "functional",
+      "version": "1.0"
     }
   ]
 }

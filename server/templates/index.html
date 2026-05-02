@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Split-Flap OS</title>
-<link rel="stylesheet" href="/static/styles.css">
+<link rel="stylesheet" href="/static/styles.css?v=2">
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 </head>
 <body>
@@ -111,6 +111,7 @@
   <div id="page-library" class="page">
     <button class="hamburger-back" onclick="closeMenuPage()"><i data-lucide="arrow-left" style="width:14px;height:14px"></i> Back</button>
     <h3 style="margin-bottom:12px">App Library</h3>
+    <div id="appLibraryCategoryFilter" style="display:flex;gap:6px;margin-bottom:14px;overflow-x:auto;padding-bottom:4px;scrollbar-width:thin"></div>
     <div class="apps-grid" id="appLibraryGrid"></div>
 
     <div style="margin-top:28px;padding:16px;background:var(--panel);border:1px solid var(--border);border-radius:8px">
@@ -437,7 +438,7 @@
 <!-- TOAST -->
 <div class="toast-container" id="toastContainer"></div>
 
-<script src="/static/app.js"></script>
+<script src="/static/app.js?v=5"></script>
 
 </body>
 </html>

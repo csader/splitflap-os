@@ -1,1 +1,11 @@
-{"id":"livestream","name":"Livestream","icon":"🔴","description":"Launch day rotate","type":"functional","refresh_interval":30,"loop_delay":5,"settings":[]}
+{
+  "id": "livestream",
+  "name": "Livestream",
+  "icon": "\ud83d\udd34",
+  "description": "Launch day rotate",
+  "type": "functional",
+  "refresh_interval": 30,
+  "loop_delay": 5,
+  "settings": [],
+  "category": "animation"
+}

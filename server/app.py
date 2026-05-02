@@ -26,8 +26,7 @@ CONFIG_PATH = os.environ.get(
     "SPLITFLAP_CONFIG",
     os.path.join(os.path.dirname(__file__), "settings.json")
 )
-PLUGIN_APPS_PATH = os.path.expanduser("~/.splitflap/apps")
-BUILTIN_APPS_PATH = os.path.join(os.path.dirname(__file__), '..', 'apps')
+APPS_PATH = os.path.join(os.path.dirname(__file__), '..', 'apps')
 
 app = Flask(__name__)
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(message)s')
@@ -53,12 +52,25 @@ sim_mode = not ser  # auto-enable simulation if no serial hardware
 # ============================================================
 
 def load_settings():
+    # Detect system timezone
+    sys_tz = 'US/Eastern'
+    try:
+        import subprocess
+        result = subprocess.run(['cat', '/etc/timezone'], capture_output=True, text=True, timeout=2)
+        if result.returncode == 0 and result.stdout.strip():
+            sys_tz = result.stdout.strip()
+    except Exception:
+        try:
+            link = os.readlink('/etc/localtime')
+            sys_tz = link.split('zoneinfo/')[-1]
+        except Exception:
+            pass
     defaults = {
         "offsets":       {str(i): 2832 for i in range(45)},
         "calibrations":  {str(i): 4096 for i in range(45)},
         "tuned_chars":   {str(i): {} for i in range(45)},
         "zip_code":      "02118",
-        "timezone":      "US/Eastern",
+        "timezone":      sys_tz,
         "weather_api_key": "",
         "mbta_stop":     "place-bbsta",
         "mbta_route":    "Orange",
@@ -99,6 +111,13 @@ def load_settings():
         "sim_rows": 3,
         "sim_cols": 15,
         "app_library_url": "https://raw.githubusercontent.com/csader/splitflap-os/main/apps",
+        "installed_apps": [
+            "time", "date", "weather", "stocks", "sports", "countdown",
+            "world_clock", "crypto", "iss", "metro", "youtube", "yt_comments",
+            "dashboard", "demo", "livestream",
+            "anim_rainbow", "anim_sweep", "anim_twinkle", "anim_checker", "anim_matrix",
+            "word-clock", "moon-phase", "star-wars-quotes",
+        ],
     }
     if os.path.exists(CONFIG_PATH):
         try:
@@ -254,7 +273,7 @@ def _mqtt_on_connect(client, userdata, flags, rc, properties=None):
 
 
 def _mqtt_on_message(client, userdata, msg):
-    global active_app, current_playlist, last_sent_page, last_fetches, loop_delay
+    global active_app, current_playlist, last_sent_page, loop_delay
     payload = msg.payload.decode('utf-8', errors='ignore').strip()
 
     if msg.topic == "homeassistant/status" and payload == "online":
@@ -275,18 +294,12 @@ def _mqtt_on_message(client, userdata, msg):
             stop_event.set()
         elif payload in MQTT_MODE_OPTIONS:
             active_app = payload
-            last_fetches = {k: 0 for k in last_fetches}
-            if active_app == 'stocks':
-                loop_delay = 10
-            elif active_app in ('countdown', 'world_clock'):
-                loop_delay = 1
-            elif active_app == 'livestream':
-                try:
-                    loop_delay = max(5, int(float(settings.get('livestream_interval', 25))))
-                except (TypeError, ValueError):
-                    loop_delay = 25
-            elif active_app.startswith('anim_'):
-                loop_delay = max(0.1, float(settings.get('anim_speed', '0.4')))
+            if active_app in _plugin_registry:
+                manifest = _plugin_registry[active_app]
+                if manifest.get('animation'):
+                    loop_delay = max(0.1, float(settings.get('anim_speed', '0.4')))
+                else:
+                    loop_delay = float(manifest.get('loop_delay', 5))
             else:
                 loop_delay = 5
             stop_event.set()
@@ -527,234 +540,6 @@ def send_to_display(text, order=None, raw=False, step_delay_ms=15):
     return max_dist
 
 
-# ============================================================
-#  ANIMATION CONTENT GENERATORS
-# ============================================================
-
-def generate_rainbow_pages():
-    """7 pages cycling the colour tiles across the board."""
-    colors = 'roygbpw'
-    return [''.join(colors[(c + off) % 7] for r in range(get_rows()) for c in range(get_cols()))
-            for off in range(7)]
-
-def generate_sweep_pages():
-    """Colour band sweeping left→right then right→left."""
-    colors = 'roygbpw'
-    cols = get_cols()
-    pages = []
-    for i in range(1, cols + 1):
-        col = colors[i % 7]
-        pages.append(''.join(col if c < i else ' ' for r in range(get_rows()) for c in range(cols)))
-    for i in range(cols - 1, 0, -1):
-        col = colors[(i + 3) % 7]
-        pages.append(''.join(col if c < i else ' ' for r in range(get_rows()) for c in range(cols)))
-    return pages
-
-def generate_twinkle_pages(n=12):
-    """Sparse random colour dots."""
-    colors = 'roygbpw   '  # extra spaces for sparsity
-    return [''.join(random.choice(colors) for _ in range(get_module_count())) for _ in range(n)]
-
-def generate_checker_pages():
-    """Alternating two-colour checkerboard that swaps through several palettes."""
-    pages = []
-    pairs = [('r', 'b'), ('o', 'p'), ('y', 'g'), ('r', 'w'), ('g', 'b')]
-    for a, b in pairs:
-        p1 = ''.join(a if (r + c) % 2 == 0 else b for r in range(get_rows()) for c in range(get_cols()))
-        p2 = ''.join(b if (r + c) % 2 == 0 else a for r in range(get_rows()) for c in range(get_cols()))
-        pages += [p1, p2]
-    return pages
-
-def run_matrix_animation():
-    """
-    Matrix cascade: 3 frames of random chars (each using a different
-    send order), then the target text revealed in the configured style.
-    """
-    global last_sent_page, loop_delay
-    target = settings.get('anim_text', 'SPLIT  FLAP  DISPLAY').upper().ljust(get_module_count())[:get_module_count()]
-    speed  = max(0.1, float(settings.get('anim_speed', '0.4')))
-    style  = settings.get('anim_style', 'ltr')
-    chars  = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$&?%*-+'
-
-    frame_plan = [
-        ('random',  lambda: ''.join(random.choice(chars) for _ in range(get_module_count()))),
-        ('rain',    lambda: ''.join(random.choice(chars) for _ in range(get_module_count()))),
-        ('spiral',  lambda: ''.join(random.choice(chars) for _ in range(get_module_count()))),
-        (style,     lambda: target),
-    ]
-
-    for order_name, content_fn in frame_plan:
-        if stop_event.is_set():
-            return
-        order    = get_animation_order(order_name)
-        page     = content_fn()
-        max_dist = send_to_display(page, order, raw=True)
-        last_sent_page = page
-
-        rotation_time = max_dist * (4.0 / 64.0)
-        deadline = time.time() + max(speed, rotation_time)
-        while time.time() < deadline:
-            if stop_event.is_set():
-                return
-            time.sleep(0.05)
-
-    # Hold final text for loop_delay
-    deadline = time.time() + float(loop_delay)
-    while time.time() < deadline:
-        if stop_event.is_set():
-            return
-        time.sleep(0.1)
-
-
-# ============================================================
-#  DEMO MODE
-# ============================================================
-
-def run_demo():
-    """
-    Scripted showcase sequence for filming.  Loops until stopped.
-    The first iteration includes an 8-second lead-in delay so the
-    operator can get behind the camera.
-    """
-    global last_sent_page
-
-    # ── helpers ────────────────────────────────────────────
-    def wait(secs):
-        """Sleep in small increments, bailing if stop_event fires."""
-        end = time.time() + secs
-        while time.time() < end:
-            if stop_event.is_set():
-                return False
-            time.sleep(0.05)
-        return True
-
-    def show(text, dur=4, style='ltr', raw_flag=False):
-        """Send one page, wait for rotation + display time."""
-        order = get_animation_order(style)
-        padded = text.ljust(get_module_count())[:get_module_count()]
-        md = send_to_display(padded, order, raw=raw_flag)
-        last_sent_page = padded
-        rot = md * (4.0 / 64.0)
-        if not wait(max(rot, 0.3)):
-            return False
-        return wait(dur)
-
-    def play_pages(pages, spd=0.4, style='ltr'):
-        """Play a list of raw colour pages."""
-        order = get_animation_order(style)
-        for p in pages:
-            if stop_event.is_set():
-                return False
-            md = send_to_display(p, order, raw=True)
-            last_sent_page = p
-            rot = md * (4.0 / 64.0)
-            if not wait(max(rot, spd)):
-                return False
-        return True
-
-    def matrix_burst(reveal_text, reveal_style='center_out'):
-        """Three random-char frames then a clean reveal."""
-        chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$&?%*'
-        for sty in ('random', 'rain', 'spiral'):
-            if stop_event.is_set():
-                return False
-            noise = ''.join(random.choice(chars) for _ in range(get_module_count()))
-            order = get_animation_order(sty)
-            md = send_to_display(noise, order, raw=True)
-            last_sent_page = noise
-            if not wait(max(md * (4.0 / 64.0), 0.6)):
-                return False
-        return show(reveal_text, 5, reveal_style)
-
-    # ── initial lead-in ───────────────────────────────────
-    if not wait(8):
-        return
-
-    # ── main loop ─────────────────────────────────────────
-    first_loop = True
-    while not stop_event.is_set():
-
-        # 1 ─ Title reveal
-        if not show('               '
-                     '  SPLIT  FLAP  '
-                     '               ', 1, 'ltr'):
-            return
-        if not show('   SPLIT  FLAP '
-                     '    DISPLAY    '
-                     '               ', 5, 'center_out'):
-            return
-
-        # 2 ─ Rainbow wave
-        if not play_pages(generate_rainbow_pages() * 3, 0.5, 'columns'):
-            return
-
-        # 3 ─ Feature text
-        if not show('  HANDMADE WITH'
-                     '   45 MODULES  '
-                     ' EACH ONE UNIQUE', 5, 'spiral'):
-            return
-
-        # 4 ─ Colour sweep
-        if not play_pages(generate_sweep_pages(), 0.2):
-            return
-
-        # 5 ─ Full colour gradient
-        gradient = 'rrrrroooooyyyyygggggbbbbbpppppwwwwwrrrrrooooo'
-        if not show(gradient, 4, 'rain', raw_flag=True):
-            return
-
-        # 6 ─ Dimensions text
-        if not show(' 3 ROWS  OF 15 '
-                     '  CHARACTERS   '
-                     '  = 45 TOTAL   ', 5, 'diagonal'):
-            return
-
-        # 7 ─ Checker animation
-        if not play_pages(generate_checker_pages() * 2, 0.6, 'center_out'):
-            return
-
-        # 8 ─ Data apps callout
-        if not show('   REAL  TIME  '
-                     '   DATA  APPS  '
-                     '   BUILT  IN   ', 5, 'rtl'):
-            return
-
-        # 9 ─ Matrix cascade
-        if not matrix_burst(
-                '   POWERED BY  '
-                '   ARDUINO  &  '
-                '  RASPBERRY PI ', 'outside_in'):
-            return
-
-        # 10 ─ Twinkle sparkle
-        if not play_pages(generate_twinkle_pages(10), 0.45, 'random'):
-            return
-
-        # 11 ─ Alphabet / charset flex
-        if not show(' ABCDEFGHIJKLMN'
-                     'OPQRSTUVWXYZ   '
-                     '0123456789!@#$&', 5, 'columns'):
-            return
-
-        # 12 ─ Second matrix cascade
-        if not matrix_burst(
-                '               '
-                '  SUBSCRIBE!   '
-                '               ', 'center_out'):
-            return
-
-        # 13 ─ Closing
-        if not show('               '
-                     ' THANKS  FOR   '
-                     '  WATCHING!    ', 6, 'center_out'):
-            return
-
-        # Brief pause before looping
-        if not wait(4):
-            return
-
-        first_loop = False
-
 
 # ============================================================
 #  APP DATA FETCHERS
@@ -786,10 +571,13 @@ def load_installed_plugins():
     _plugin_registry.clear()
     _plugin_modules.clear()
     _plugin_data.clear()
-    if not os.path.isdir(PLUGIN_APPS_PATH):
+    if not os.path.isdir(APPS_PATH):
         return
-    for app_id in os.listdir(PLUGIN_APPS_PATH):
-        app_dir = os.path.join(PLUGIN_APPS_PATH, app_id)
+    enabled = settings.get('installed_apps', [])
+    for app_id in os.listdir(APPS_PATH):
+        if app_id not in enabled:
+            continue
+        app_dir = os.path.join(APPS_PATH, app_id)
         manifest_path = os.path.join(app_dir, "manifest.json")
         if not os.path.isfile(manifest_path):
             continue
@@ -889,6 +677,7 @@ def get_plugin_app_list():
             "plugin": True,
             "plugin_id": app_id,
         })
+    entries.sort(key=lambda a: a['name'].lower())
     return entries
 
 
@@ -913,432 +702,8 @@ def get_plugin_settings_config():
     return configs
 
 
-os.makedirs(PLUGIN_APPS_PATH, exist_ok=True)
+os.makedirs(APPS_PATH, exist_ok=True)
 load_installed_plugins()
-
-
-def fetch_weather_data():
-    api_key  = settings.get("weather_api_key", "").strip()
-    zip_code = settings.get("zip_code", "02118").strip()
-    if not api_key:
-        return None
-    try:
-        url = (f"http://api.openweathermap.org/data/2.5/weather"
-               f"?zip={zip_code},us&appid={api_key}&units=imperial")
-        res = requests.get(url, timeout=5).json()
-        return {
-            'city':  res['name'].upper(),
-            'temp':  round(res['main']['temp']),
-            'feels': round(res['main']['feels_like']),
-            'desc':  res['weather'][0]['main'].upper(),
-            'high':  round(res['main']['temp_max']),
-            'low':   round(res['main']['temp_min']),
-        }
-    except:
-        return None
-
-def fetch_metro():
-    stop  = settings.get('mbta_stop', 'place-bbsta')
-    route = settings.get('mbta_route', 'Orange')
-    url = (f"https://api-v3.mbta.com/predictions"
-           f"?filter[stop]={stop}&filter[route]={route}&page[limit]=20&sort=departure_time")
-    try:
-        predictions = requests.get(url, timeout=5).json().get('data', [])
-        dirs = {0: [], 1: []}
-        for p in predictions:
-            dt = p['attributes']['departure_time']
-            if not dt:
-                continue
-            mins = int((datetime.fromisoformat(dt).astimezone(pytz.utc)
-                        - datetime.now(pytz.utc)).total_seconds() / 60)
-            if mins < 0:
-                continue
-            d = p['attributes']['direction_id']
-            if d in dirs and len(dirs[d]) < 2:
-                dirs[d].append(str(mins))
-
-        def fmt(name, times):
-            if not times: return f"{name} ---".ljust(get_cols())
-            return f"{name} {','.join(times)}M"[:get_cols()].ljust(get_cols())
-
-        # Use orange colour tiles for the header
-        header = ('\U0001f7e7\U0001f7e7' + route.upper()[:9] + '\U0001f7e7\U0001f7e7').center(get_cols())
-        return [header + fmt("OAK GRV", dirs[1]) + fmt("FRST HLS", dirs[0])]
-    except:
-        return [format_lines("METRO ERROR", "", "")]
-
-def fetch_stocks():
-    tickers = [t.strip() for t in settings.get('stocks_list', 'MSFT,GOOG,NVDA').split(',') if t.strip()]
-    pages = []
-    for chunk in [tickers[i:i+3] for i in range(0, len(tickers), 3)]:
-        pl = ["               "] * 3
-        cl = ["               "] * 3
-        for idx, sym in enumerate(chunk):
-            try:
-                si   = yf.Ticker(sym).fast_info
-                prc  = si.last_price
-                prev = si.previous_close
-                pct  = ((prc - prev) / prev) * 100
-                sign = "+" if pct >= 0 else ""
-                clr  = "\U0001f7e9" if pct >= 0 else "\U0001f7e5"
-                pl[idx] = f"{clr}{sym[:4]:<4} ${prc:<6.2f}"[:get_cols()].ljust(get_cols())
-                cl[idx] = f"{clr}{sym[:4]:<4} {sign}{pct:.2f}%"[:get_cols()].ljust(get_cols())
-            except:
-                pl[idx] = cl[idx] = f"{sym[:5]:<5} ERR".ljust(get_cols())
-        pages += [pl[0]+pl[1]+pl[2], cl[0]+cl[1]+cl[2]]
-    return pages or [format_lines("NO STOCKS", "CONFIGURED", "")]
-
-def fetch_sports():
-    pages = []
-
-    # Migration: old nhl_teams → new sports_nhl
-    if settings.get('nhl_teams') and not settings.get('sports_nhl'):
-        settings['sports_nhl'] = settings['nhl_teams']
-
-    for league_key, league_info in SPORTS_LEAGUES.items():
-        teams_str = settings.get(f'sports_{league_key}', '').strip()
-        if not teams_str:
-            continue
-        team_filter = [t.strip().upper() for t in teams_str.split(',') if t.strip()]
-        show_all = '*' in team_filter
-        try:
-            pages.extend(_fetch_league_scores(league_key, league_info, team_filter, show_all))
-        except Exception as e:
-            logging.error(f"ESPN {league_key} error: {e}")
-
-    return pages or [format_lines("SPORTS", "NO GAMES", "CONFIGURED")]
-
-
-def _fetch_league_scores(league_key, league_info, team_filter, show_all):
-    url = f"https://site.api.espn.com/apis/site/v2/sports/{league_info['path']}/scoreboard"
-    data = requests.get(url, timeout=8).json()
-    events = data.get('events', [])
-
-    if league_key == 'pga':
-        return _format_golf(events, league_info)
-    if league_key == 'ufc':
-        return _format_mma(events, league_info)
-
-    live, upcoming, final = [], [], []
-    for event in events:
-        comp = event.get('competitions', [{}])[0]
-        competitors = comp.get('competitors', [])
-        if len(competitors) < 2:
-            continue
-
-        away = home = None
-        for c in competitors:
-            if c.get('homeAway') == 'home':
-                home = c
-            else:
-                away = c
-        if not away or not home:
-            continue
-
-        away_abbr = away['team'].get('abbreviation', '???').upper()
-        home_abbr = home['team'].get('abbreviation', '???').upper()
-
-        if not show_all and away_abbr not in team_filter and home_abbr not in team_filter:
-            continue
-
-        state = event.get('status', {}).get('type', {}).get('state', 'pre')
-        detail = event.get('status', {}).get('type', {}).get('shortDetail', '')
-
-        page = _format_game_page(
-            league_info, away_abbr, away.get('score', '0'),
-            home_abbr, home.get('score', '0'), state, detail)
-
-        if state == 'in':
-            live.append(page)
-        elif state == 'pre':
-            upcoming.append(page)
-        else:
-            final.append(page)
-
-    return live + upcoming + final
-
-
-def _format_game_page(league_info, away_abbr, away_score, home_abbr, home_score, state, detail):
-    row1 = league_info['name']
-    if state == 'pre':
-        row2 = f"{away_abbr} VS {home_abbr}"
-    else:
-        row2 = f"{away_abbr} {away_score}  {home_abbr} {home_score}"
-    row3 = "FINAL" if state == 'post' else detail.upper()[:15]
-    return format_lines(row1, row2, row3)
-
-
-def _format_golf(events, league_info):
-    if not events:
-        return [format_lines("PGA TOUR", "NO EVENT", "THIS WEEK")]
-    event = events[0]
-    comps = event.get('competitions', [{}])
-    if not comps:
-        return [format_lines("PGA TOUR", "NO DATA", "")]
-    competitors = comps[0].get('competitors', [])
-    competitors.sort(key=lambda c: int(c.get('order', 999)))
-    pages = []
-    for i in range(0, min(9, len(competitors)), 3):
-        chunk = competitors[i:i+3]
-        lines = []
-        for c in chunk:
-            name = c.get('athlete', {}).get('shortName', '?')
-            score = c.get('score', {}).get('displayValue', '') if isinstance(c.get('score'), dict) else str(c.get('score', ''))
-            pos = c.get('order', '?')
-            lines.append(f"{pos} {name[:8]} {score}"[:15])
-        while len(lines) < 3:
-            lines.append('')
-        pages.append(format_lines(lines[0], lines[1], lines[2]))
-    return pages or [format_lines("PGA TOUR", "NO LEADERS", "")]
-
-
-def _format_mma(events, league_info):
-    if not events:
-        return [format_lines("UFC", "NO EVENT", "SCHEDULED")]
-    pages = []
-    for event in events[:1]:
-        for comp in event.get('competitions', [])[:5]:
-            competitors = comp.get('competitors', [])
-            if len(competitors) < 2:
-                continue
-            name1 = competitors[0].get('athlete', {}).get('shortName', '?').upper()[:7]
-            name2 = competitors[1].get('athlete', {}).get('shortName', '?').upper()[:7]
-            state = comp.get('status', {}).get('type', {}).get('state', 'pre')
-            detail = comp.get('status', {}).get('type', {}).get('shortDetail', '')
-            row3 = detail.upper()[:15] if detail else ("LIVE" if state == 'in' else "UPCOMING")
-            pages.append(format_lines("UFC", f"{name1} V {name2}", row3))
-    return pages or [format_lines("UFC", "NO FIGHTS", "SCHEDULED")]
-
-def fetch_youtube_data():
-    cid = settings.get("yt_channel_id", "").strip()
-    for url in [
-        f"https://mixerno.space/api/youtube-channel-counter/user/{cid}",
-        f"https://axern.space/api/get?platform=youtube&type=channel&id={cid}",
-    ]:
-        try:
-            r    = requests.get(url, headers={'User-Agent': 'Mozilla/5.0'}, timeout=5).json()
-            name = (r.get('user', [{}])[0].get('count') or
-                    r.get('snippet', {}).get('title', '')).upper()
-            subs = (r.get('counts', [{}])[0].get('count') or
-                    r.get('statistics', {}).get('subscriberCount', '?'))
-            if name:
-                return {'name': name, 'subs': subs}
-        except:
-            pass
-    return None
-
-def fetch_youtube_comments():
-    api_key  = settings.get("yt_api_key", "").strip()
-    video_id = settings.get("yt_video_id", "").strip()
-    if not api_key or not video_id:
-        return [format_lines("YT COMMENTS", "MISSING API KEY", "OR VIDEO ID")]
-    url = (f"https://www.googleapis.com/youtube/v3/commentThreads"
-           f"?part=snippet&videoId={video_id}&maxResults=5&order=time&textFormat=plainText&key={api_key}")
-    try:
-        items = requests.get(url, timeout=5).json().get('items', [])
-        if not items:
-            return [format_lines("YT COMMENTS", "NO COMMENTS", "FOUND")]
-        pages = []
-        for item in items:
-            sn     = item['snippet']['topLevelComment']['snippet']
-            author = ''.join(c for c in sn['authorDisplayName'].upper() if c in FLAP_CHARS)
-            text   = sn['textDisplay'].upper().replace('\n', ' ')
-            c = get_cols()
-            pages.append(author[:c].center(c) + text[0:c].ljust(c) + text[c:c*2].ljust(c))
-        return pages or [format_lines("YT COMMENTS", "FETCH ERROR", "")]
-    except:
-        return [format_lines("YT COMMENTS", "API ERROR", "")]
-
-def fetch_youtube_viewers():
-    """Fetch current concurrent viewer count for a YouTube live stream.
-    Returns an int viewer count, or None if unavailable / not live."""
-    api_key  = settings.get("yt_api_key", "").strip()
-    video_id = settings.get("yt_video_id", "").strip()
-    if not api_key or not video_id:
-        return None
-    url = (f"https://www.googleapis.com/youtube/v3/videos"
-           f"?part=liveStreamingDetails&id={video_id}&key={api_key}")
-    try:
-        data  = requests.get(url, timeout=5).json()
-        items = data.get('items', [])
-        if not items:
-            return None
-        details = items[0].get('liveStreamingDetails', {}) or {}
-        v = details.get('concurrentViewers')
-        return int(v) if v is not None else None
-    except Exception as e:
-        logging.error(f"YT viewers fetch error: {e}")
-        return None
-
-
-def parse_livestream_comments():
-    """Parse user-entered comment blocks into 45-char display pages.
-    Blocks are separated by blank lines; within a block each newline
-    is one row (up to 3 rows of 15 chars, auto-centered)."""
-    raw = settings.get('livestream_comments', '').strip()
-    if not raw:
-        return []
-    raw = raw.replace('\r\n', '\n').replace('\r', '\n')
-    blocks = [b for b in raw.split('\n\n') if b.strip()]
-    pages = []
-    for block in blocks:
-        lines = [l.strip() for l in block.split('\n')]
-        lines = [l for l in lines if l]  # drop empty lines inside block
-        while len(lines) < 3:
-            lines.append('')
-        lines = lines[:3]
-        page = ''.join(l[:get_cols()].center(get_cols())[:get_cols()] for l in lines)
-        pages.append(page)
-    return pages
-
-
-def build_livestream_pages():
-    """Construct the rotating page sequence for livestream mode.
-    Each page is a dict with its own transition style for visual variety."""
-    pages = []
-    tz = pytz.timezone(settings.get('timezone', 'US/Eastern'))
-    dt = datetime.now(tz)
-    time_str = dt.strftime("%I:%M %p").lstrip("0")
-
-
-    # ── 3. YouTube subs (time on top row, as requested) ────────────
-    yt = app_caches.get('youtube')
-    if yt:
-        pages.append({
-            'text':  format_lines(
-                time_str,
-                yt['name'][:15],
-                f"{yt['subs']} SUBS",
-            ),
-            'style': 'ltr',
-        })
-
-    # ── 4. Concurrent viewers (bonus) ──────────────────────────────
-    viewers = app_caches.get('livestream_viewers')
-    if viewers is not None:
-        pages.append({
-            'text':  format_lines(
-                'WATCHING NOW',
-                f"{viewers:,}",
-                'LIVE VIEWERS',
-            ),
-            'style': 'diagonal',
-        })
-
-    # ── 5. User-defined comment pages (variable count) ─────────────
-    comment_pages = parse_livestream_comments()
-    varied_styles = ['outside_in', 'spiral', 'anti_diagonal', 'rtl', 'rain', 'center_out']
-    for i, cp in enumerate(comment_pages):
-        pages.append({
-            'text':  cp,
-            'style': varied_styles[i % len(varied_styles)],
-        })
-
-
-    return pages
-
-
-# ── New apps ──────────────────────────────────────────────────
-
-def fetch_countdown():
-    event      = settings.get('countdown_event', 'NEW YEAR').upper()[:15]
-    target_str = settings.get('countdown_target', '2027-01-01T00:00:00')
-    tz         = pytz.timezone(settings.get('timezone', 'US/Eastern'))
-    try:
-        try:
-            target = datetime.fromisoformat(target_str)
-        except ValueError:
-            target = datetime.strptime(target_str[:16], "%Y-%m-%dT%H:%M")
-        if target.tzinfo is None:
-            target = tz.localize(target)
-        diff = target - datetime.now(pytz.utc).astimezone(tz)
-        if diff.total_seconds() <= 0:
-            return [format_lines(event, "TIME IS UP!", "")]
-        total = int(diff.total_seconds())
-        d  = total // 86400
-        h  = (total % 86400) // 3600
-        mn = (total % 3600) // 60
-        s  = total % 60
-        return [format_lines(event, f"{d}D {h:02d}H", f"{mn:02d}M {s:02d}S")]
-    except Exception as e:
-        logging.error(f"Countdown error: {e}")
-        return [format_lines("COUNTDOWN", "CONFIG ERROR", "")]
-
-def fetch_world_clock():
-    zones_str = settings.get('world_clock_zones', 'US/Eastern,US/Pacific,Europe/London')
-    zones = [z.strip() for z in zones_str.split(',') if z.strip()][:3]
-    while len(zones) < 3:
-        zones.append('UTC')
-    LABELS = {
-        'US/Eastern': 'EST', 'US/Pacific': 'PST', 'US/Central': 'CST',
-        'US/Mountain': 'MST', 'Europe/London': 'LON', 'Europe/Paris': 'PAR',
-        'Europe/Berlin': 'BER', 'Asia/Tokyo': 'TYO', 'Asia/Singapore': 'SIN',
-        'Asia/Dubai': 'DXB', 'Australia/Sydney': 'SYD', 'UTC': 'UTC',
-        'America/New_York': 'NYC', 'America/Los_Angeles': 'LAX',
-        'America/Chicago': 'CHI', 'America/Denver': 'DEN',
-    }
-    lines = []
-    for zone in zones:
-        try:
-            now   = datetime.now(pytz.timezone(zone))
-            tstr  = now.strftime("%I:%M%p").lstrip("0")
-            label = LABELS.get(zone, zone.split('/')[-1][:4].upper())
-            lines.append(f"{label:<4} {tstr}"[:get_cols()].ljust(get_cols()))
-        except:
-            lines.append("ERR".ljust(get_cols()))
-    return [lines[0] + lines[1] + lines[2]]
-
-def fetch_crypto():
-    coins = [c.strip().lower() for c in
-             settings.get('crypto_list', 'bitcoin,ethereum,solana').split(',') if c.strip()][:6]
-    url = (f"https://api.coingecko.com/api/v3/simple/price"
-           f"?ids={','.join(coins)}&vs_currencies=usd&include_24hr_change=true")
-    try:
-        data  = requests.get(url, timeout=8).json()
-        pages = []
-        for chunk in [coins[i:i+3] for i in range(0, len(coins), 3)]:
-            pl = ["               "] * 3
-            cl = ["               "] * 3
-            for idx, coin in enumerate(chunk):
-                if coin not in data:
-                    pl[idx] = cl[idx] = f"{coin[:4].upper():4} N/A".ljust(get_cols())
-                    continue
-                usd   = data[coin].get('usd', 0)
-                chg   = data[coin].get('usd_24h_change', 0) or 0
-                short = coin[:4].upper()
-                sign  = '+' if chg >= 0 else ''
-                if usd >= 10000:
-                    pstr = f"{short} ${usd:,.0f}"
-                elif usd >= 1:
-                    pstr = f"{short} ${usd:,.2f}"
-                else:
-                    pstr = f"{short} ${usd:.4f}"
-                pl[idx] = pstr[:get_cols()].ljust(get_cols())
-                cl[idx] = f"{short} {sign}{chg:.1f}%"[:get_cols()].ljust(get_cols())
-            pages += [pl[0]+pl[1]+pl[2], cl[0]+cl[1]+cl[2]]
-        return pages or [format_lines("CRYPTO", "NO DATA", "")]
-    except Exception as e:
-        logging.error(f"Crypto fetch error: {e}")
-        return [format_lines("CRYPTO ERR", "CHECK CONN", "")]
-
-def fetch_iss():
-    try:
-        pos  = requests.get("http://api.open-notify.org/iss-now.json", timeout=5).json()['iss_position']
-        lat  = float(pos['latitude'])
-        lon  = float(pos['longitude'])
-        ld   = 'N' if lat >= 0 else 'S'
-        lnd  = 'E' if lon >= 0 else 'W'
-        try:
-            crew = len(requests.get("http://api.open-notify.org/astros.json", timeout=3).json()['people'])
-            hdr  = f"ISS CREW:{crew}"
-        except:
-            hdr = "ISS TRACKER"
-        l2 = f"LAT {abs(lat):6.2f}{ld}".center(get_cols())
-        l3 = f"LON {abs(lon):7.2f}{lnd}".center(get_cols())
-        return [hdr.center(get_cols()) + l2 + l3]
-    except Exception as e:
-        logging.error(f"ISS fetch error: {e}")
-        return [format_lines("ISS ERR", "CHECK CONN", "")]
 
 
 # ============================================================
@@ -1354,21 +719,10 @@ active_app_playlist = None
 app_playlist_loop = True
 app_playlist_name = None
 
-last_fetches = {
-    'weather': 0, 'metro': 0, 'sports': 0, 'stocks': 0,
-    'youtube': 0, 'yt_comments': 0, 'crypto': 0, 'iss': 0,
-    'livestream_viewers': 0,
-}
-app_caches = {
-    'weather': None, 'metro': [], 'sports': [], 'stocks': [],
-    'youtube': None, 'yt_comments': [], 'crypto': [], 'iss': [],
-    'livestream_viewers': None,
-}
-
 
 def _run_app_playlist():
     """Execute one pass through the app playlist entries."""
-    global active_app_playlist, active_app, last_sent_page, last_fetches, app_caches
+    global active_app_playlist, active_app, last_sent_page
 
     entries = active_app_playlist
     if not entries:
@@ -1410,9 +764,7 @@ def _run_app_playlist():
                 if not app_key:
                     continue
                 # Temporarily set active_app so existing fetch logic works
-                old_app = active_app
                 active_app = app_key
-                last_fetches = {k: 0 for k in last_fetches}
                 deadline = time.time() + duration
 
                 while time.time() < deadline:
@@ -1478,125 +830,17 @@ def _run_app_playlist():
 
 
 def _get_pages_for_app(app_key):
-    """Fetch display pages for an app (reuses existing logic)."""
-    now = time.time()
-
+    """Fetch display pages for an app via the plugin system."""
     if app_key in _plugin_registry:
         return get_plugin_pages(app_key)
-
-    elif app_key == 'time':
-        tz = pytz.timezone(settings.get('timezone', 'US/Eastern'))
-        return [format_lines("", datetime.now(tz).strftime("%I:%M %p").lstrip("0"), "")]
-
-    elif app_key == 'date':
-        tz = pytz.timezone(settings.get('timezone', 'US/Eastern'))
-        dt = datetime.now(tz)
-        return [format_lines(dt.strftime("%I:%M %p").lstrip("0"), dt.strftime("%B %d").upper(), dt.strftime("%A").upper())]
-
-    elif app_key == 'countdown':
-        return fetch_countdown()
-
-    elif app_key == 'world_clock':
-        return fetch_world_clock()
-
-    elif app_key == 'weather':
-        if now - last_fetches['weather'] > 300:
-            app_caches['weather'] = fetch_weather_data()
-            last_fetches['weather'] = now
-        w = app_caches['weather']
-        if not w:
-            return [format_lines("NO WEATHER DATA", "", "CHECK API KEY")]
-        c = get_cols()
-        now_t = datetime.now(pytz.timezone(settings.get('timezone', 'US/Eastern'))).strftime("%I:%M%p").lstrip("0")
-        mcl = c - 1 - len(now_t)
-        l1 = f"{w['city'][:mcl]} {now_t}".center(c)
-        pfx = f"{w['temp']}F ({w['feels']}F) "
-        l2 = (pfx + w['desc'][:c-len(pfx)]).center(c)
-        l3 = f"H:{w['high']}F L:{w['low']}F".center(c)
-        return [format_lines(l1, l2, l3)]
-
-    elif app_key == 'dashboard':
-        tz = pytz.timezone(settings.get('timezone', 'US/Eastern'))
-        dt = datetime.now(tz)
-        time_page = format_lines(dt.strftime("%A").upper(), dt.strftime("%b %d %Y").upper(), dt.strftime("%I:%M %p").upper())
-        if now - last_fetches['weather'] > 300:
-            app_caches['weather'] = fetch_weather_data()
-            last_fetches['weather'] = now
-        w = app_caches['weather']
-        if not w:
-            wp = format_lines("NO WEATHER DATA", "", "CHECK API KEY")
-        else:
-            c = get_cols()
-            now_t = dt.strftime("%I:%M%p").lstrip("0")
-            mcl = c - 1 - len(now_t)
-            l1 = f"{w['city'][:mcl]} {now_t}".center(c)
-            pfx = f"{w['temp']}F ({w['feels']}F) "
-            l2 = (pfx + w['desc'][:c-len(pfx)]).center(c)
-            l3 = f"H:{w['high']}F L:{w['low']}F".center(c)
-            wp = format_lines(l1, l2, l3)
-        return [time_page, wp]
-
-    elif app_key == 'youtube':
-        if now - last_fetches['youtube'] > 30:
-            app_caches['youtube'] = fetch_youtube_data()
-            last_fetches['youtube'] = now
-        yt = app_caches['youtube']
-        return ([format_lines("YOUTUBE", yt['name'][:get_cols()], f"{yt['subs']} SUBS")]
-                if yt else [format_lines("YOUTUBE", "FETCH ERROR", "CHECK API")])
-
-    elif app_key == 'yt_comments':
-        if now - last_fetches['yt_comments'] > 60:
-            app_caches['yt_comments'] = fetch_youtube_comments()
-            last_fetches['yt_comments'] = now
-        return app_caches.get('yt_comments', [format_lines("LOADING", "COMMENTS...", "")])
-
-    elif app_key == 'metro':
-        if now - last_fetches['metro'] > 30:
-            app_caches['metro'] = fetch_metro()
-            last_fetches['metro'] = now
-        return app_caches['metro']
-
-    elif app_key == 'stocks':
-        if now - last_fetches['stocks'] > 60:
-            app_caches['stocks'] = fetch_stocks()
-            last_fetches['stocks'] = now
-        return app_caches['stocks']
-
-    elif app_key == 'sports':
-        if now - last_fetches['sports'] > 60:
-            app_caches['sports'] = fetch_sports()
-            last_fetches['sports'] = now
-        return app_caches['sports']
-
-    elif app_key == 'crypto':
-        if now - last_fetches['crypto'] > 60:
-            app_caches['crypto'] = fetch_crypto()
-            last_fetches['crypto'] = now
-        return app_caches.get('crypto', [format_lines("LOADING", "CRYPTO...", "")])
-
-    elif app_key == 'iss':
-        if now - last_fetches['iss'] > 5:
-            app_caches['iss'] = fetch_iss()
-            last_fetches['iss'] = now
-        return app_caches.get('iss', [format_lines("LOADING", "ISS...", "")])
-
-    elif app_key == 'livestream':
-        if now - last_fetches.get('youtube', 0) > 60:
-            app_caches['youtube'] = fetch_youtube_data()
-            last_fetches['youtube'] = now
-        if now - last_fetches.get('livestream_viewers', 0) > 30:
-            app_caches['livestream_viewers'] = fetch_youtube_viewers()
-            last_fetches['livestream_viewers'] = now
-        return build_livestream_pages()
-
-    elif app_key and app_key.startswith('plugin_'):
+    # Try with plugin_ prefix stripped
+    if app_key.startswith('plugin_'):
         return get_plugin_pages(app_key[7:])
-
     return []
 
 
 def playlist_loop():
-    global current_playlist, loop_delay, last_sent_page, active_app, last_fetches, app_caches
+    global current_playlist, loop_delay, last_sent_page, active_app
     global active_app_playlist, app_playlist_loop
 
     while True:
@@ -1604,172 +848,28 @@ def playlist_loop():
         display_pages = []
         active_order  = None   # custom module send order for this cycle
 
-        # ── Demo mode (self-contained loop) ──────────────
-        if active_app == 'demo':
-            run_demo()
-            if stop_event.is_set():
-                stop_event.clear()
-            continue
-
         # ── App playlist mode ─────────────────────────────
         if active_app_playlist is not None:
             _run_app_playlist()
             continue
 
-        # ── Static / real-time apps ──────────────────────────
+        # ── No active app — use compose playlist ──────────
         if active_app is None:
             display_pages = current_playlist
 
-        # ── Plugin-based apps (built-in + user-installed) ────
+        # ── Plugin-based apps ─────────────────────────────
         elif active_app in _plugin_registry:
             manifest = _plugin_registry[active_app]
             display_pages = get_plugin_pages(active_app)
             if manifest.get('animation'):
                 active_order = get_animation_order(settings.get('anim_style', 'ltr'))
 
-        elif active_app == 'time':
-            tz = pytz.timezone(settings.get('timezone', 'US/Eastern'))
-            display_pages = [format_lines("", datetime.now(tz).strftime("%I:%M %p").lstrip("0"), "")]
-
-        elif active_app == 'date':
-            tz = pytz.timezone(settings.get('timezone', 'US/Eastern'))
-            dt = datetime.now(tz)
-            display_pages = [format_lines(
-                dt.strftime("%I:%M %p").lstrip("0"),
-                dt.strftime("%B %d").upper(),
-                dt.strftime("%A").upper(),
-            )]
-
-        elif active_app == 'countdown':
-            display_pages = fetch_countdown()
-
-        elif active_app == 'world_clock':
-            display_pages = fetch_world_clock()
-
-        # ── Cached / API apps ────────────────────────────────
-        elif active_app == 'weather':
-            if now - last_fetches['weather'] > 300:
-                app_caches['weather'] = fetch_weather_data()
-                last_fetches['weather'] = now
-            w = app_caches['weather']
-            now_t = datetime.now(pytz.timezone(settings.get('timezone', 'US/Eastern'))).strftime("%I:%M%p").lstrip("0")
-            if not w:
-                display_pages = [format_lines("NO WEATHER DATA", now_t, "CHECK API KEY")]
-            else:
-                c = get_cols()
-                mcl = c - 1 - len(now_t)
-                l1  = f"{w['city'][:mcl]} {now_t}".center(c)
-                pfx = f"{w['temp']}F ({w['feels']}F) "
-                l2  = (pfx + w['desc'][:c-len(pfx)]).center(c)
-                l3  = f"H:{w['high']}F L:{w['low']}F".center(c)
-                display_pages = [format_lines(l1, l2, l3)]
-
-        elif active_app == 'dashboard':
-            tz = pytz.timezone(settings.get('timezone', 'US/Eastern'))
-            dt = datetime.now(tz)
-            time_page = format_lines(dt.strftime("%A").upper(),
-                                     dt.strftime("%b %d %Y").upper(),
-                                     dt.strftime("%I:%M %p").upper())
-            if now - last_fetches['weather'] > 300:
-                app_caches['weather'] = fetch_weather_data()
-                last_fetches['weather'] = now
-            w = app_caches['weather']
-            now_t = dt.strftime("%I:%M%p").lstrip("0")
-            if not w:
-                wp = format_lines("NO WEATHER DATA", now_t, "CHECK API KEY")
-            else:
-                c = get_cols()
-                mcl = c - 1 - len(now_t)
-                l1  = f"{w['city'][:mcl]} {now_t}".center(c)
-                pfx = f"{w['temp']}F ({w['feels']}F) "
-                l2  = (pfx + w['desc'][:c-len(pfx)]).center(c)
-                l3  = f"H:{w['high']}F L:{w['low']}F".center(c)
-                wp  = format_lines(l1, l2, l3)
-            display_pages = [time_page, wp]
-
-        elif active_app == 'youtube':
-            if now - last_fetches['youtube'] > 30:
-                app_caches['youtube'] = fetch_youtube_data()
-                last_fetches['youtube'] = now
-            yt = app_caches['youtube']
-            display_pages = ([format_lines("YOUTUBE", yt['name'][:get_cols()],
-                                           f"{yt['subs']} SUBS")]
-                             if yt else [format_lines("YOUTUBE", "FETCH ERROR", "CHECK API")])
-
-        elif active_app == 'yt_comments':
-            if now - last_fetches['yt_comments'] > 60:
-                app_caches['yt_comments'] = fetch_youtube_comments()
-                last_fetches['yt_comments'] = now
-            display_pages = app_caches.get('yt_comments', [format_lines("LOADING", "COMMENTS...", "")])
-
-        elif active_app == 'metro':
-            if now - last_fetches['metro'] > 30:
-                app_caches['metro'] = fetch_metro()
-                last_fetches['metro'] = now
-            display_pages = app_caches['metro']
-
-        elif active_app == 'stocks':
-            if now - last_fetches['stocks'] > 60:
-                app_caches['stocks'] = fetch_stocks()
-                last_fetches['stocks'] = now
-            display_pages = app_caches['stocks']
-
-        elif active_app == 'sports':
-            if now - last_fetches['sports'] > 60:
-                app_caches['sports'] = fetch_sports()
-                last_fetches['sports'] = now
-            display_pages = app_caches['sports']
-
-        elif active_app == 'crypto':
-            if now - last_fetches['crypto'] > 60:
-                app_caches['crypto'] = fetch_crypto()
-                last_fetches['crypto'] = now
-            display_pages = app_caches.get('crypto', [format_lines("LOADING", "CRYPTO...", "")])
-
-        elif active_app == 'iss':
-            if now - last_fetches['iss'] > 5:
-                app_caches['iss'] = fetch_iss()
-                last_fetches['iss'] = now
-            display_pages = app_caches.get('iss', [format_lines("LOADING", "ISS...", "")])
-
-        elif active_app == 'livestream':
-            # Refresh YouTube subs every 60s
-            if now - last_fetches.get('youtube', 0) > 60:
-                app_caches['youtube'] = fetch_youtube_data()
-                last_fetches['youtube'] = now
-            # Refresh concurrent viewers every 30s
-            if now - last_fetches.get('livestream_viewers', 0) > 30:
-                app_caches['livestream_viewers'] = fetch_youtube_viewers()
-                last_fetches['livestream_viewers'] = now
-            display_pages = build_livestream_pages()
-
-        # ── Animation apps ───────────────────────────────────
-        elif active_app == 'anim_rainbow':
-            display_pages = generate_rainbow_pages()
-            active_order  = get_animation_order(settings.get('anim_style', 'ltr'))
-
-        elif active_app == 'anim_sweep':
-            display_pages = generate_sweep_pages()
-            active_order  = get_animation_order(settings.get('anim_style', 'ltr'))
-
-        elif active_app == 'anim_twinkle':
-            display_pages = generate_twinkle_pages()
-            active_order  = get_animation_order('random')
-
-        elif active_app == 'anim_checker':
-            display_pages = generate_checker_pages()
-            active_order  = get_animation_order(settings.get('anim_style', 'ltr'))
-
-        elif active_app == 'anim_matrix':
-            # Runs its own multi-order frame sequence; loop back to top when done
-            run_matrix_animation()
-            if stop_event.is_set():
-                stop_event.clear()
-            continue
-
-        elif active_app and active_app.startswith('plugin_'):
+        elif active_app.startswith('plugin_') and active_app[7:] in _plugin_registry:
             plugin_id = active_app[7:]
+            manifest = _plugin_registry[plugin_id]
             display_pages = get_plugin_pages(plugin_id)
+            if manifest.get('animation'):
+                active_order = get_animation_order(settings.get('anim_style', 'ltr'))
 
         else:
             display_pages = current_playlist
@@ -1778,20 +878,19 @@ def playlist_loop():
             time.sleep(1)
             continue
 
-        is_anim = (active_app is not None and active_app.startswith('anim_')) or \
-                  (active_app in _plugin_registry and _plugin_registry[active_app].get('animation'))
+        # Resolve plugin_ prefix for registry lookups
+        reg_key = active_app[7:] if (active_app and active_app.startswith('plugin_')) else active_app
+
+        is_anim = (reg_key is not None and reg_key.startswith('anim_')) or \
+                  (reg_key in _plugin_registry and _plugin_registry[reg_key].get('animation'))
 
         # Effective per-page delay
         if is_anim:
             eff_delay = max(0.1, float(settings.get('anim_speed', '0.4')))
-            if active_app in _plugin_registry:
-                eff_delay = max(0.1, float(_plugin_registry[active_app].get('loop_delay', eff_delay)))
-        elif active_app in _plugin_registry:
-            manifest = _plugin_registry[active_app]
-            eff_delay = float(manifest.get('loop_delay', loop_delay))
-        elif active_app and active_app.startswith('plugin_'):
-            plugin_id = active_app[7:]
-            manifest = _plugin_registry.get(plugin_id, {})
+            if reg_key in _plugin_registry:
+                eff_delay = max(0.1, float(_plugin_registry[reg_key].get('loop_delay', eff_delay)))
+        elif reg_key in _plugin_registry:
+            manifest = _plugin_registry[reg_key]
             eff_delay = float(manifest.get('loop_delay', loop_delay))
         else:
             eff_delay = float(loop_delay)
@@ -1874,6 +973,7 @@ def handle_settings():
                 'yt_channel_id', 'yt_api_key', 'yt_video_id',
                 'countdown_event', 'countdown_target', 'world_clock_zones',
                 'crypto_list', 'anim_style', 'anim_speed', 'anim_text',
+                'time_format',
                 'livestream_interval', 'livestream_comments',
                 'sports_nfl', 'sports_nba', 'sports_mlb', 'sports_nhl',
                 'sports_ncaaf', 'sports_ncaab', 'sports_mls', 'sports_epl',
@@ -2013,26 +1113,20 @@ def update_playlist():
 
 @app.route('/run_app', methods=['POST'])
 def run_app():
-    global active_app, last_fetches, loop_delay, active_app_playlist
+    global active_app, loop_delay, active_app_playlist
     active_app_playlist = None
     active_app   = request.json.get('app')
-    last_fetches = {k: 0 for k in last_fetches}
 
-    if active_app == 'stocks':
-        loop_delay = 10
-    elif active_app in ('countdown', 'world_clock'):
-        loop_delay = 1
-    elif active_app == 'livestream':
-        try:
-            loop_delay = max(5, int(float(settings.get('livestream_interval', 25))))
-        except (TypeError, ValueError):
-            loop_delay = 25
-    elif active_app and active_app.startswith('anim_'):
-        loop_delay = max(0.1, float(settings.get('anim_speed', '0.4')))
-    elif active_app and active_app.startswith('plugin_'):
-        plugin_id = active_app[7:]
-        manifest = _plugin_registry.get(plugin_id, {})
-        loop_delay = float(manifest.get('loop_delay', 5))
+    # Resolve plugin_ prefix
+    registry_key = active_app[7:] if active_app and active_app.startswith('plugin_') else active_app
+
+    # Use loop_delay from plugin manifest if available
+    if registry_key in _plugin_registry:
+        manifest = _plugin_registry[registry_key]
+        if manifest.get('animation'):
+            loop_delay = max(0.1, float(settings.get('anim_speed', '0.4')))
+        else:
+            loop_delay = float(manifest.get('loop_delay', 5))
     else:
         loop_delay = 5
 
@@ -2281,33 +1375,11 @@ def delete_app_playlist(name):
 
 @app.route('/app_library')
 def app_library():
-    now = time.time()
-    if _registry_cache['data'] and (now - _registry_cache['fetched_at']) < 300:
-        return jsonify(_registry_cache['data'])
-    try:
-        base_url = settings.get('app_library_url', 'https://raw.githubusercontent.com/csader/splitflap-os/main/apps')
-        url = f"{base_url}/registry.json"
-        req = urllib.request.Request(url, headers={"User-Agent": "SplitFlap/1.0"})
-        with urllib.request.urlopen(req, timeout=10) as resp:
-            data = json.loads(resp.read().decode())
-        for app_entry in data.get("apps", []):
-            app_entry["installed"] = app_entry["id"] in _plugin_registry
-        _registry_cache['data'] = data
-        _registry_cache['fetched_at'] = now
-        return jsonify(data)
-    except Exception as e:
-        logging.error(f"App library fetch error: {e}")
-        if _registry_cache['data']:
-            return jsonify(_registry_cache['data'])
-        # Fallback: build registry from all local app directories
-        pass
-    # Serve from local apps/ directories (built-in + repo-level)
+    """List all apps in the apps/ directory with installed status."""
     apps = []
-    for apps_dir in [BUILTIN_APPS_PATH]:
-        if not os.path.isdir(apps_dir):
-            continue
-        for app_id in os.listdir(apps_dir):
-            manifest_path = os.path.join(apps_dir, app_id, 'manifest.json')
+    if os.path.isdir(APPS_PATH):
+        for app_id in os.listdir(APPS_PATH):
+            manifest_path = os.path.join(APPS_PATH, app_id, 'manifest.json')
             if not os.path.isfile(manifest_path):
                 continue
             try:
@@ -2315,10 +1387,10 @@ def app_library():
                     m = json.load(f)
                 m['id'] = app_id
                 m['installed'] = app_id in _plugin_registry
-                if not any(a['id'] == app_id for a in apps):
-                    apps.append(m)
+                apps.append(m)
             except Exception:
                 pass
+    apps.sort(key=lambda a: a.get('name', '').lower())
     return jsonify({"version": 1, "apps": apps})
 
 
@@ -2331,54 +1403,50 @@ def app_library_install():
     if app_id in _plugin_registry:
         return jsonify(status="error", message="Already installed"), 409
 
-    app_dir = os.path.join(PLUGIN_APPS_PATH, app_id)
-    # Try local copy first
-    local_src = os.path.join(BUILTIN_APPS_PATH, app_id)
-    if os.path.isdir(local_src):
+    app_dir = os.path.join(APPS_PATH, app_id)
+    if not os.path.isdir(app_dir):
+        # Download from remote if not local
+        base_url = settings.get('app_library_url', 'https://raw.githubusercontent.com/csader/splitflap-os/main/apps')
         try:
-            shutil.copytree(local_src, app_dir)
-            load_installed_plugins()
-            _registry_cache['fetched_at'] = 0
-            return jsonify(status="success", id=app_id)
+            os.makedirs(app_dir, exist_ok=True)
+            manifest_url = f"{base_url}/{app_id}/manifest.json"
+            req = urllib.request.Request(manifest_url, headers={"User-Agent": "SplitFlap/1.0"})
+            with urllib.request.urlopen(req, timeout=10) as resp:
+                manifest_bytes = resp.read()
+            with open(os.path.join(app_dir, "manifest.json"), "wb") as f:
+                f.write(manifest_bytes)
+
+            manifest = json.loads(manifest_bytes.decode())
+            app_type = manifest.get("type", "channel")
+
+            if app_type == "channel":
+                data_url = f"{base_url}/{app_id}/data.json"
+                req = urllib.request.Request(data_url, headers={"User-Agent": "SplitFlap/1.0"})
+                with urllib.request.urlopen(req, timeout=10) as resp:
+                    with open(os.path.join(app_dir, "data.json"), "wb") as f:
+                        f.write(resp.read())
+            elif app_type == "functional":
+                code_url = f"{base_url}/{app_id}/app.py"
+                req = urllib.request.Request(code_url, headers={"User-Agent": "SplitFlap/1.0"})
+                with urllib.request.urlopen(req, timeout=10) as resp:
+                    with open(os.path.join(app_dir, "app.py"), "wb") as f:
+                        f.write(resp.read())
         except Exception as e:
             if os.path.isdir(app_dir):
                 shutil.rmtree(app_dir, ignore_errors=True)
+            logging.error(f"Install error for {app_id}: {e}")
             return jsonify(status="error", message=str(e)), 500
 
-    base_url = settings.get('app_library_url', 'https://raw.githubusercontent.com/csader/splitflap-os/main/apps')
-    try:
-        os.makedirs(app_dir, exist_ok=True)
-        manifest_url = f"{base_url}/{app_id}/manifest.json"
-        req = urllib.request.Request(manifest_url, headers={"User-Agent": "SplitFlap/1.0"})
-        with urllib.request.urlopen(req, timeout=10) as resp:
-            manifest_bytes = resp.read()
-        with open(os.path.join(app_dir, "manifest.json"), "wb") as f:
-            f.write(manifest_bytes)
+    # Add to installed_apps list
+    installed = settings.get('installed_apps', [])
+    if app_id not in installed:
+        installed.append(app_id)
+        settings['installed_apps'] = installed
+        save_settings(settings)
 
-        manifest = json.loads(manifest_bytes.decode())
-        app_type = manifest.get("type", "channel")
-
-        if app_type == "channel":
-            data_url = f"{base_url}/{app_id}/data.json"
-            req = urllib.request.Request(data_url, headers={"User-Agent": "SplitFlap/1.0"})
-            with urllib.request.urlopen(req, timeout=10) as resp:
-                with open(os.path.join(app_dir, "data.json"), "wb") as f:
-                    f.write(resp.read())
-        elif app_type == "functional":
-            code_url = f"{base_url}/{app_id}/app.py"
-            req = urllib.request.Request(code_url, headers={"User-Agent": "SplitFlap/1.0"})
-            with urllib.request.urlopen(req, timeout=10) as resp:
-                with open(os.path.join(app_dir, "app.py"), "wb") as f:
-                    f.write(resp.read())
-
-        load_installed_plugins()
-        _registry_cache['fetched_at'] = 0
-        return jsonify(status="success", id=app_id)
-    except Exception as e:
-        if os.path.isdir(app_dir):
-            shutil.rmtree(app_dir, ignore_errors=True)
-        logging.error(f"Install error for {app_id}: {e}")
-        return jsonify(status="error", message=str(e)), 500
+    load_installed_plugins()
+    _registry_cache['fetched_at'] = 0
+    return jsonify(status="success", id=app_id)
 
 
 @app.route('/app_library/uninstall', methods=['POST'])
@@ -2387,20 +1455,18 @@ def app_library_uninstall():
     app_id = request.json.get("id", "").strip()
     if not app_id:
         return jsonify(status="error", message="No app ID"), 400
-    app_dir = os.path.join(PLUGIN_APPS_PATH, app_id)
-    if not os.path.isdir(app_dir):
-        return jsonify(status="error", message="Not installed"), 404
     if active_app in (app_id, f"plugin_{app_id}"):
         active_app = None
         stop_event.set()
-    try:
-        shutil.rmtree(app_dir)
-        load_installed_plugins()
-        _registry_cache['fetched_at'] = 0
-        return jsonify(status="success", id=app_id)
-    except Exception as e:
-        logging.error(f"Uninstall error for {app_id}: {e}")
-        return jsonify(status="error", message=str(e)), 500
+    # Remove from installed_apps list (keep files)
+    installed = settings.get('installed_apps', [])
+    if app_id in installed:
+        installed.remove(app_id)
+        settings['installed_apps'] = installed
+        save_settings(settings)
+    load_installed_plugins()
+    _registry_cache['fetched_at'] = 0
+    return jsonify(status="success", id=app_id)
 
 
 _teams_cache = {}

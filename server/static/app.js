@@ -267,9 +267,10 @@ function initLiveGrids(rows, cols) {
   try {
     const cfg = await fetch('/grid_config').then(r=>r.json());
     initLiveGrids(cfg.rows || 3, cfg.cols || 15);
+    initComposeGrid();
     simMode = cfg.sim_mode !== false;
     updateSimModeUI();
-  } catch(e) { initLiveGrids(3, 15); updateSimModeUI(); }
+  } catch(e) { initLiveGrids(3, 15); initComposeGrid(); updateSimModeUI(); }
 })();
 
 async function applyGridConfig() {
@@ -402,134 +403,240 @@ document.querySelectorAll('.line-input').forEach(el=>{
 });
 
 // ============================================================
-//  COMPOSE — INTERACTIVE GRID EDITOR
+//  COMPOSE — REUSABLE GRID EDITOR
 // ============================================================
-let composeBuffer = [];
+let activeGridInstance = null; // tracks which grid has focus
+
+function createComposeGrid(container, opts={}){
+  const rows = opts.rows || get_rows();
+  const cols = opts.cols || get_cols();
+  const total = rows * cols;
+  const compact = opts.compact || false;
+  const onChange = opts.onChange || (()=>{});
+
+  let buffer = Array(total).fill(' ');
+  let cursor = -1;
+
+  // Initialize from existing text
+  if(opts.initialText){
+    const chars = Array.from(opts.initialText);
+    for(let i=0; i<Math.min(chars.length, total); i++) buffer[i] = chars[i] || ' ';
+  }
+
+  // Build DOM
+  const wrapper = document.createElement('div');
+  wrapper.className = 'compose-grid-editor' + (compact ? ' compact' : '');
+
+  const gridWrap = document.createElement('div');
+  gridWrap.className = 'preview-wrapper';
+  gridWrap.style.cursor = 'text';
+  const grid = document.createElement('div');
+  grid.className = 'preview-grid';
+  gridWrap.appendChild(grid);
+
+  const capture = document.createElement('input');
+  capture.type = 'text';
+  capture.style.cssText = 'position:absolute;left:-9999px';
+  capture.autocomplete = 'off';
+
+  const controls = document.createElement('div');
+  controls.className = 'control-panel';
+  controls.style.cssText = 'display:flex;align-items:center;gap:8px;margin:6px 0';
+  const centerLabel = document.createElement('label');
+  centerLabel.style.cssText = 'cursor:pointer;font-size:.8rem;display:flex;align-items:center;gap:4px';
+  const centerCb = document.createElement('input');
+  centerCb.type = 'checkbox';
+  centerCb.onchange = ()=> doCenter();
+  centerLabel.appendChild(centerCb);
+  centerLabel.appendChild(document.createTextNode(' Center'));
+  const clearBtn = document.createElement('button');
+  clearBtn.className = 'btn btn-secondary btn-sm';
+  clearBtn.style.marginLeft = 'auto';
+  clearBtn.textContent = 'Clear';
+  clearBtn.onclick = ()=> doClear();
+  controls.appendChild(centerLabel);
+  controls.appendChild(clearBtn);
+
+  const palette = document.createElement('div');
+  palette.className = 'color-palette';
+  ['🟥','🟧','🟨','🟩','🟦','🟪','⬜','⬛'].forEach(emoji=>{
+    const btn = document.createElement('button');
+    btn.className = 'color-btn';
+    btn.textContent = emoji;
+    btn.onclick = ()=> doInsertColor(emoji);
+    palette.appendChild(btn);
+  });
+
+  wrapper.appendChild(gridWrap);
+  wrapper.appendChild(capture);
+  wrapper.appendChild(controls);
+  wrapper.appendChild(palette);
+  container.appendChild(wrapper);
+
+  function render(){
+    grid.innerHTML = '';
+    grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+    buffer.forEach((ch, i) => {
+      const div = document.createElement('div');
+      div.className = 'flap-unit' + (i === cursor ? ' cursor' : '');
+      div.innerText = ch === ' ' ? '' : ch;
+      div.onclick = ()=> setCursor(i);
+      grid.appendChild(div);
+    });
+    onChange(getText());
+  }
+
+  function setCursor(i){
+    cursor = i;
+    activeGridInstance = instance;
+    render();
+    capture.focus();
+  }
+
+  function getText(){
+    return buffer.join('');
+  }
+
+  function setText(text){
+    buffer = Array(total).fill(' ');
+    const chars = Array.from(text);
+    for(let i=0; i<Math.min(chars.length, total); i++) buffer[i] = chars[i] || ' ';
+    render();
+  }
+
+  function doClear(){
+    buffer = Array(total).fill(' ');
+    cursor = -1;
+    centerCb.checked = false;
+    render();
+  }
+
+  function doCenter(){
+    for(let r=0; r<rows; r++){
+      const start = r * cols;
+      const row = buffer.slice(start, start + cols);
+      let first = row.findIndex(c => c !== ' ');
+      if(first === -1) continue;
+      let last = row.length - 1;
+      while(last > first && row[last] === ' ') last--;
+      const content = row.slice(first, last + 1);
+      const pad = Math.floor((cols - content.length) / 2);
+      const centered = Array(cols).fill(' ');
+      content.forEach((c, i) => centered[pad + i] = c);
+      centered.forEach((c, i) => buffer[start + i] = c);
+    }
+    render();
+  }
+
+  function doInsertColor(emoji){
+    if(cursor < 0) cursor = 0;
+    activeGridInstance = instance;
+    buffer[cursor] = emoji;
+    if(cursor < total-1) cursor++;
+    render();
+    capture.focus();
+  }
+
+  function handleKey(e){
+    if(activeGridInstance !== instance) return false;
+    if(cursor < 0) return false;
+    if(document.activeElement !== capture && !e.target.closest('.preview-grid')) return false;
+
+    if(e.key === 'Backspace'){
+      e.preventDefault();
+      if(buffer[cursor] !== ' '){
+        buffer[cursor] = ' ';
+      } else if(cursor > 0){
+        cursor--;
+        buffer[cursor] = ' ';
+      }
+      render();
+      return true;
+    } else if(e.key === 'ArrowLeft'){
+      e.preventDefault();
+      if(cursor > 0) cursor--;
+      render(); return true;
+    } else if(e.key === 'ArrowRight'){
+      e.preventDefault();
+      if(cursor < total-1) cursor++;
+      render(); return true;
+    } else if(e.key === 'ArrowDown'){
+      e.preventDefault();
+      if(cursor + cols < total) cursor += cols;
+      render(); return true;
+    } else if(e.key === 'ArrowUp'){
+      e.preventDefault();
+      if(cursor - cols >= 0) cursor -= cols;
+      render(); return true;
+    } else if(e.key.length === 1 && !e.ctrlKey && !e.metaKey){
+      e.preventDefault();
+      buffer[cursor] = e.key.toUpperCase();
+      if(cursor < total-1) cursor++;
+      render();
+      return true;
+    }
+    return false;
+  }
+
+  const instance = {
+    render, getText, setText, handleKey, doClear,
+    getBuffer(){ return buffer; },
+    setBuffer(b){ buffer = b; render(); },
+    getCursor(){ return cursor; },
+    destroy(){ wrapper.remove(); }
+  };
+
+  render();
+  return instance;
+}
+
+// Global keyboard router
+document.addEventListener('keydown', e => {
+  if(activeGridInstance && activeGridInstance.handleKey(e)) return;
+});
+
+// ── Compose tab (main) ──
+let composeGrid = null;
+let composeBuffer = []; // kept for compat
 let composeCursor = -1;
 const composeTotal = () => get_rows() * get_cols();
 function get_rows(){ return liveGridRows || 3; }
 function get_cols(){ return liveGridCols || 15; }
 
-function initComposeBuffer(){
-  const n = composeTotal();
-  if(composeBuffer.length !== n) composeBuffer = Array(n).fill(' ');
-}
-
-function renderCompose(){
-  initComposeBuffer();
-  const grid = document.getElementById('preview');
-  grid.innerHTML='';
-  grid.style.gridTemplateColumns = `repeat(${get_cols()}, 1fr)`;
-  composeBuffer.forEach((ch, i) => {
-    const div = document.createElement('div');
-    div.className = 'flap-unit' + (i === composeCursor ? ' cursor' : '');
-    div.innerText = ch === ' ' ? '' : ch;
-    div.onclick = () => setCursor(i);
-    grid.appendChild(div);
-  });
-  // Sync hidden inputs for playlist compat
-  const cols = get_cols();
-  document.getElementById('L1').value = composeBuffer.slice(0, cols).join('').trimEnd();
-  document.getElementById('L2').value = composeBuffer.slice(cols, cols*2).join('').trimEnd();
-  document.getElementById('L3').value = composeBuffer.slice(cols*2, cols*3).join('').trimEnd();
-}
-
-function setCursor(i){
-  composeCursor = i;
-  renderCompose();
-  document.getElementById('composeCapture').focus();
-}
-
-function updatePreview(){
-  renderCompose();
-  return composeBuffer.join('');
-}
-
-// Keyboard handler
-document.addEventListener('keydown', e => {
-  if(composeCursor < 0) return;
-  const capture = document.getElementById('composeCapture');
-  if(document.activeElement !== capture && !e.target.closest('#preview')) return;
-
-  const n = composeTotal();
-  if(e.key === 'Backspace'){
-    e.preventDefault();
-    if(composeBuffer[composeCursor] !== ' '){
-      composeBuffer[composeCursor] = ' ';
-    } else if(composeCursor > 0){
-      composeCursor--;
-      composeBuffer[composeCursor] = ' ';
+function initComposeGrid(){
+  const container = document.getElementById('composeGridContainer');
+  if(!container) return;
+  container.innerHTML = '';
+  composeGrid = createComposeGrid(container, {
+    rows: get_rows(), cols: get_cols(),
+    onChange: (text) => {
+      composeBuffer = composeGrid.getBuffer();
+      composeCursor = composeGrid.getCursor();
+      const cols = get_cols();
+      document.getElementById('L1').value = composeBuffer.slice(0, cols).join('').trimEnd();
+      document.getElementById('L2').value = composeBuffer.slice(cols, cols*2).join('').trimEnd();
+      document.getElementById('L3').value = composeBuffer.slice(cols*2, cols*3).join('').trimEnd();
     }
-    renderCompose();
-  } else if(e.key === 'ArrowLeft'){
-    e.preventDefault();
-    if(composeCursor > 0) composeCursor--;
-    renderCompose();
-  } else if(e.key === 'ArrowRight'){
-    e.preventDefault();
-    if(composeCursor < n-1) composeCursor++;
-    renderCompose();
-  } else if(e.key === 'ArrowDown'){
-    e.preventDefault();
-    const cols = get_cols();
-    if(composeCursor + cols < n) composeCursor += cols;
-    renderCompose();
-  } else if(e.key === 'ArrowUp'){
-    e.preventDefault();
-    const cols = get_cols();
-    if(composeCursor - cols >= 0) composeCursor -= cols;
-    renderCompose();
-  } else if(e.key.length === 1 && !e.ctrlKey && !e.metaKey){
-    e.preventDefault();
-    composeBuffer[composeCursor] = e.key.toUpperCase();
-    if(composeCursor < n-1) composeCursor++;
-    renderCompose();
-  }
-});
+  });
+}
 
+function initComposeBuffer(){ if(composeGrid) composeGrid.render(); }
+function renderCompose(){ if(composeGrid) composeGrid.render(); }
+function setCursor(i){ /* no-op, handled by grid instance */ }
+function updatePreview(){ return composeGrid ? composeGrid.getText() : ''; }
 function clearDisplay(){
-  composeBuffer = Array(composeTotal()).fill(' ');
-  composeCursor = -1;
-  document.getElementById('centerToggle').checked = false;
+  if(composeGrid) composeGrid.doClear();
   if(editingIndex!==null){
     editingIndex=null;
     document.getElementById('saveMsgBtn').textContent='+ Add to Playlist';
   }
-  renderCompose();
 }
-
-function centerBuffer(){
-  initComposeBuffer();
-  const cols = get_cols();
-  const rows = get_rows();
-  for(let r=0; r<rows; r++){
-    const start = r * cols;
-    const row = composeBuffer.slice(start, start + cols);
-    // Find first and last non-space
-    let first = row.findIndex(c => c !== ' ');
-    if(first === -1) continue;
-    let last = row.length - 1;
-    while(last > first && row[last] === ' ') last--;
-    const content = row.slice(first, last + 1);
-    const pad = Math.floor((cols - content.length) / 2);
-    const centered = Array(cols).fill(' ');
-    content.forEach((c, i) => centered[pad + i] = c);
-    centered.forEach((c, i) => composeBuffer[start + i] = c);
-  }
-  renderCompose();
-}
+function centerBuffer(){ /* handled by grid instance center checkbox */ }
+function insertColor(emoji){ /* handled by grid instance color palette */ }
 
 function toggleMultiMode(){
   document.getElementById('multiControls').style.display =
     document.getElementById('modeToggle').checked ? 'block':'none';
-}
-
-function insertColor(emoji){
-  if(composeCursor < 0) composeCursor = 0;
-  const n = composeTotal();
-  composeBuffer[composeCursor] = emoji;
-  if(composeCursor < n-1) composeCursor++;
-  renderCompose();
 }
 
 function saveMessage(){
@@ -2025,9 +2132,13 @@ function saveSportsFollow(league){
 //  APP PLAYLISTS
 // ============================================================
 let appPlaylistEntries = [];
+let playlistGridInstances = [];
 
 function renderAppPlaylistEntries(){
   const el = document.getElementById('appPlaylistEntries');
+  // Destroy old grid instances
+  playlistGridInstances.forEach(g => { if(g) g.destroy(); });
+  playlistGridInstances = [];
   if(!appPlaylistEntries.length){
     el.innerHTML='<div style="color:#666;font-style:italic;font-size:.85rem">No entries yet. Add apps or messages below.</div>';
     return;
@@ -2040,16 +2151,29 @@ function renderAppPlaylistEntries(){
       ? `${(APP_LIST.find(a=>a.key===entry.app)||{icon:'📦'}).icon} ${(APP_LIST.find(a=>a.key===entry.app)||{name:entry.app}).name}`
       : null;
     if(entry.type==='compose'){
-      row.innerHTML=`
-        <span style="font-size:.75rem;color:#888;margin-right:2px">📝</span>
-        <input type="text" class="ap-entry-text" value="${(entry.text||'').replace(/"/g,'&quot;')}" placeholder="Type message…"
-          oninput="appPlaylistEntries[${i}].text=this.value" data-idx="${i}">
+      row.style.flexDirection='column';
+      row.style.alignItems='stretch';
+      const header = document.createElement('div');
+      header.style.cssText='display:flex;align-items:center;gap:6px;margin-bottom:6px';
+      header.innerHTML=`
+        <span style="font-size:.75rem;color:#888">📝</span>
+        <span style="font-size:.8rem;color:#aaa;flex:1">Message ${i+1}</span>
         <input type="number" class="ap-entry-dur" value="${entry.duration||10}" min="1" max="600" step="1"
           onchange="appPlaylistEntries[${i}].duration=parseInt(this.value)||10" title="Duration (seconds)">
         <span style="font-size:.75rem;color:#888">s</span>
         <button class="ap-entry-btn" onclick="moveAppEntry(${i},-1)" title="Move up">↑</button>
         <button class="ap-entry-btn" onclick="moveAppEntry(${i},1)" title="Move down">↓</button>
         <button class="ap-entry-btn" onclick="removeAppEntry(${i})" title="Remove">✕</button>`;
+      row.appendChild(header);
+      const gridContainer = document.createElement('div');
+      row.appendChild(gridContainer);
+      el.appendChild(row);
+      const gridInst = createComposeGrid(gridContainer, {
+        rows: get_rows(), cols: get_cols(), compact: true,
+        initialText: entry.text || '',
+        onChange: (text) => { appPlaylistEntries[i].text = text; }
+      });
+      playlistGridInstances[i] = gridInst;
     } else {
       row.innerHTML=`
         <span class="ap-entry-label">${label}</span>
@@ -2059,8 +2183,8 @@ function renderAppPlaylistEntries(){
         <button class="ap-entry-btn" onclick="moveAppEntry(${i},-1)" title="Move up">↑</button>
         <button class="ap-entry-btn" onclick="moveAppEntry(${i},1)" title="Move down">↓</button>
         <button class="ap-entry-btn" onclick="removeAppEntry(${i})" title="Remove">✕</button>`;
+      el.appendChild(row);
     }
-    el.appendChild(row);
   });
 }
 
@@ -2090,8 +2214,6 @@ function addAppPlaylistEntry(type){
     // Compose entry — add empty and focus
     appPlaylistEntries.push({type:'compose', text:'', duration:10, style:'ltr', speed:15});
     renderAppPlaylistEntries();
-    const inputs = document.querySelectorAll('.ap-entry-text');
-    if(inputs.length) inputs[inputs.length-1].focus();
   }
 }
 

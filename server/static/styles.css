@@ -126,6 +126,14 @@ h3{margin-top:0;color:var(--text)}
 .app-library-card{display:flex;flex-direction:column}
 .app-library-action{margin-top:auto;padding-top:8px}
 
+/* ── COMPACT COMPOSE GRID (playlist entries) ── */
+.compose-grid-editor.compact .preview-grid{gap:2px}
+.compose-grid-editor.compact .flap-unit{font-size:.7rem;aspect-ratio:5/4}
+.compose-grid-editor.compact .color-palette{gap:3px;padding:4px 6px;margin-bottom:6px}
+.compose-grid-editor.compact .color-btn{font-size:1rem;padding:1px}
+.compose-grid-editor.compact .control-panel{margin:4px 0}
+.compose-grid-editor.compact .btn-sm{padding:4px 8px;font-size:.75rem}
+
 /* ── TUNING ── */
 .config-section{background:var(--panel);padding:20px;border-radius:12px;margin-bottom:28px;border:1px solid var(--border)}
 .mod-matrix{display:grid;grid-template-columns:repeat(15,1fr);gap:3px;margin-bottom:18px}

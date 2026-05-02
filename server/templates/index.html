@@ -178,6 +178,19 @@
   <button class="settings-fab" id="settingsFab" onclick="saveGlobal()"><i data-lucide="save" style="width:16px;height:16px"></i> Save Settings</button>
     </div>
     <div class="config-section">
+      <h3>MQTT / Home Assistant</h3>
+      <div class="settings-grid">
+        <div class="span2" style="display:flex;align-items:center;gap:10px">
+          <label class="field-label" style="margin:0">Enabled</label>
+          <label class="switch"><input type="checkbox" id="mqttEnabled"><span class="slider"></span></label>
+        </div>
+        <div><label class="field-label">Broker Host</label><input type="text" id="mqttBroker" class="line-input" style="font-size:.95rem;margin:0" placeholder="homeassistant.local"></div>
+        <div><label class="field-label">Port</label><input type="number" id="mqttPort" class="line-input" style="font-size:.95rem;margin:0" value="1883"></div>
+        <div><label class="field-label">Username</label><input type="text" id="mqttUser" class="line-input" style="font-size:.95rem;margin:0" placeholder="(optional)"></div>
+        <div><label class="field-label">Password</label><input type="password" id="mqttPassword" class="line-input" style="font-size:.95rem;margin:0" placeholder="(optional)"></div>
+      </div>
+    </div>
+    <div class="config-section">
       <h3>Backup &amp; Restore</h3>
       <p style="color:#888;font-size:.85rem;margin-top:0">Export/import all offsets, calibrations and tuned character positions.</p>
       <div class="backup-row">
@@ -421,7 +434,7 @@
 <!-- TOAST -->
 <div class="toast-container" id="toastContainer"></div>
 
-<script src="/static/app.js?v=7"></script>
+<script src="/static/app.js?v=10"></script>
 
 </body>
 </html>

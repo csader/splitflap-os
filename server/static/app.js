@@ -426,6 +426,7 @@ function createComposeGrid(container, opts={}){
   // Build DOM
   const wrapper = document.createElement('div');
   wrapper.className = 'compose-grid-editor' + (compact ? ' compact' : '');
+  wrapper.style.position = 'relative';
 
   const gridWrap = document.createElement('div');
   gridWrap.className = 'preview-wrapper';
@@ -436,8 +437,10 @@ function createComposeGrid(container, opts={}){
 
   const capture = document.createElement('input');
   capture.type = 'text';
-  capture.style.cssText = 'position:absolute;left:-9999px';
+  capture.style.cssText = 'position:absolute;opacity:0;width:1px;height:1px;top:0;left:0;pointer-events:none';
   capture.autocomplete = 'off';
+  capture.setAttribute('inputmode', 'text');
+  capture.setAttribute('autocapitalize', 'characters');
 
   const controls = document.createElement('div');
   controls.className = 'control-panel';
@@ -489,8 +492,8 @@ function createComposeGrid(container, opts={}){
   function setCursor(i){
     cursor = i;
     activeGridInstance = instance;
-    render();
     capture.focus();
+    render();
   }
 
   function getText(){
@@ -577,6 +580,23 @@ function createComposeGrid(container, opts={}){
     }
     return false;
   }
+
+  // Mobile input handler — keyboards don't always fire keydown
+  capture.addEventListener('input', ()=>{
+    if(activeGridInstance !== instance || cursor < 0) return;
+    const val = capture.value;
+    if(val.length > 0){
+      const chars = Array.from(val);
+      chars.forEach(ch => {
+        if(cursor < total){
+          buffer[cursor] = ch.toUpperCase();
+          if(cursor < total-1) cursor++;
+        }
+      });
+      capture.value = '';
+      render();
+    }
+  });
 
   const instance = {
     render, getText, setText, handleKey, doClear,
@@ -1354,6 +1374,12 @@ function loadSettingsData(){
     document.getElementById('autoHomeToggle').checked = data.auto_home;
     document.getElementById('simRows').value = data.sim_rows||3;
     document.getElementById('simCols').value = data.sim_cols||15;
+    // MQTT settings
+    document.getElementById('mqttEnabled').checked = data.mqtt_enabled !== false;
+    document.getElementById('mqttBroker').value = data.mqtt_broker || '';
+    document.getElementById('mqttPort').value = data.mqtt_port || 1883;
+    document.getElementById('mqttUser').value = data.mqtt_user || '';
+    document.getElementById('mqttPassword').value = data.mqtt_password || '';
     // Global timezone picker
     const tzEl = document.getElementById('globalTzPicker');
     if(tzEl){
@@ -1510,6 +1536,11 @@ function saveGlobal(){
     action:'save_global',
     sim_rows:rows, sim_cols:cols,
     timezone: tz,
+    mqtt_enabled: document.getElementById('mqttEnabled').checked,
+    mqtt_broker: document.getElementById('mqttBroker').value,
+    mqtt_port: parseInt(document.getElementById('mqttPort').value) || 1883,
+    mqtt_user: document.getElementById('mqttUser').value,
+    mqtt_password: document.getElementById('mqttPassword').value,
   })}).then(()=>{
     initLiveGrids(rows, cols);
     showToast('Settings saved');

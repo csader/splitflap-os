@@ -14,6 +14,12 @@ Built on [Adam G Makes' Split-Flap Display](https://github.com/adamgmakes/SplitF
 - **Plugin architecture** — community apps via manifest + fetch pattern
 - **Mobile-friendly** — hamburger menu, sticky bottom tabs, responsive layout
 
+| | | |
+|:---:|:---:|:---:|
+| <img width="250" alt="Apps" src="https://github.com/user-attachments/assets/002634e8-00d5-48ae-97a3-5d3ee3ee0ad4" /> | <img width="250" alt="Compose" src="https://github.com/user-attachments/assets/13aa01ed-aaa7-48e3-8c95-bbb158ab4fe4" /> | <img width="250" alt="Playlists" src="https://github.com/user-attachments/assets/463dc2ca-ffff-4560-a4f0-7409b86f03e4" /> |
+
+<img width="800" alt="Desktop" src="PASTE_DESKTOP_URL_HERE" />
+
 ## Quick Start
 
 On your Split-Flap Display's Raspberry Pi:

@@ -1,1 +1,12 @@
-{"id":"anim_rainbow","name":"Rainbow","icon":"🌈","description":"Colour wave","type":"functional","refresh_interval":0,"loop_delay":0.4,"animation":true,"settings":[]}
+{
+  "id": "anim_rainbow",
+  "name": "Rainbow",
+  "icon": "\ud83c\udf08",
+  "description": "Colour wave",
+  "type": "functional",
+  "refresh_interval": 0,
+  "loop_delay": 0.4,
+  "animation": true,
+  "settings": [],
+  "category": "animation"
+}

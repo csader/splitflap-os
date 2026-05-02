@@ -1,9 +1,10 @@
 {
   "id": "youtube",
   "name": "YouTube",
-  "icon": "▶️",
+  "icon": "\u25b6\ufe0f",
   "description": "Sub counter",
   "type": "functional",
   "refresh_interval": 30,
-  "loop_delay": 5
+  "loop_delay": 5,
+  "category": "data"
 }

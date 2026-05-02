@@ -1,0 +1,14 @@
+{
+  "id": "news-headlines",
+  "name": "News Headlines",
+  "icon": "📰",
+  "description": "Latest news via RSS",
+  "category": "news",
+  "type": "functional",
+  "version": "1.0",
+  "refresh_interval": 600,
+  "loop_delay": 8,
+  "settings": [
+    {"key": "feed_url", "label": "RSS Feed URL", "type": "text", "default": "https://feeds.bbci.co.uk/news/rss.xml"}
+  ]
+}

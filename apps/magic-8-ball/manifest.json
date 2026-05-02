@@ -1,0 +1,12 @@
+{
+  "id": "magic-8-ball",
+  "name": "Magic 8 Ball",
+  "icon": "🎱",
+  "description": "Ask the magic 8 ball",
+  "category": "entertainment",
+  "type": "channel",
+  "version": "1.0",
+  "refresh_interval": 300,
+  "loop_delay": 8,
+  "settings": []
+}

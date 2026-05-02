@@ -1,9 +1,10 @@
 {
   "id": "metro",
   "name": "Metro",
-  "icon": "🚇",
+  "icon": "\ud83d\ude87",
   "description": "MBTA arrivals",
   "type": "functional",
   "refresh_interval": 30,
-  "loop_delay": 5
+  "loop_delay": 5,
+  "category": "data"
 }

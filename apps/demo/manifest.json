@@ -1,1 +1,12 @@
-{"id":"demo","name":"Demo","icon":"🎬","description":"YouTube showcase","type":"functional","refresh_interval":0,"loop_delay":4,"animation":true,"settings":[]}
+{
+  "id": "demo",
+  "name": "Demo",
+  "icon": "\ud83c\udfac",
+  "description": "YouTube showcase",
+  "type": "functional",
+  "refresh_interval": 0,
+  "loop_delay": 4,
+  "animation": true,
+  "settings": [],
+  "category": "animation"
+}

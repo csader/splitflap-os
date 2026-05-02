@@ -1,9 +1,10 @@
 {
   "id": "date",
   "name": "Date",
-  "icon": "📅",
+  "icon": "\ud83d\udcc5",
   "description": "Full date view",
   "type": "functional",
   "refresh_interval": 1,
-  "loop_delay": 1
+  "loop_delay": 1,
+  "category": "time"
 }

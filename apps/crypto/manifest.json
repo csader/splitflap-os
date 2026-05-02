@@ -1,9 +1,10 @@
 {
   "id": "crypto",
   "name": "Crypto",
-  "icon": "₿",
+  "icon": "\u20bf",
   "description": "Coin prices",
   "type": "functional",
   "refresh_interval": 60,
-  "loop_delay": 5
+  "loop_delay": 5,
+  "category": "finance"
 }

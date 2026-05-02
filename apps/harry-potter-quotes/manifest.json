@@ -1,0 +1,12 @@
+{
+  "id": "harry-potter-quotes",
+  "name": "Harry Potter",
+  "icon": "⚡",
+  "description": "Wizarding wisdom",
+  "category": "entertainment",
+  "type": "channel",
+  "version": "1.0",
+  "refresh_interval": 300,
+  "loop_delay": 10,
+  "settings": []
+}

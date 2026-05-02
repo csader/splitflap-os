@@ -1,9 +1,10 @@
 {
   "id": "yt_comments",
   "name": "Comments",
-  "icon": "💬",
+  "icon": "\ud83d\udcac",
   "description": "YT comments",
   "type": "functional",
   "refresh_interval": 60,
-  "loop_delay": 8
+  "loop_delay": 8,
+  "category": "data"
 }

@@ -1,0 +1,12 @@
+{
+  "id": "chuck-norris",
+  "name": "Chuck Norris",
+  "icon": "👊",
+  "description": "Chuck Norris facts",
+  "category": "entertainment",
+  "type": "functional",
+  "version": "1.0",
+  "refresh_interval": 300,
+  "loop_delay": 10,
+  "settings": []
+}

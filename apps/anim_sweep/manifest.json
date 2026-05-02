@@ -1,1 +1,12 @@
-{"id":"anim_sweep","name":"Sweep","icon":"〰️","description":"Colour sweep","type":"functional","refresh_interval":0,"loop_delay":0.25,"animation":true,"settings":[]}
+{
+  "id": "anim_sweep",
+  "name": "Sweep",
+  "icon": "\u3030\ufe0f",
+  "description": "Colour sweep",
+  "type": "functional",
+  "refresh_interval": 0,
+  "loop_delay": 0.25,
+  "animation": true,
+  "settings": [],
+  "category": "animation"
+}

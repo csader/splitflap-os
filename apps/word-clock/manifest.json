@@ -1,0 +1,12 @@
+{
+  "id": "word-clock",
+  "name": "Word Clock",
+  "icon": "🔤",
+  "description": "Time as written phrase",
+  "category": "time",
+  "type": "functional",
+  "version": "1.0",
+  "refresh_interval": 60,
+  "loop_delay": 1,
+  "settings": []
+}

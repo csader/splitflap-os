@@ -1,0 +1,13 @@
+{
+  "id": "art-clock",
+  "name": "Art Clock",
+  "icon": "🎨",
+  "description": "Time as color art",
+  "category": "time",
+  "type": "functional",
+  "version": "1.0",
+  "refresh_interval": 60,
+  "loop_delay": 1,
+  "animation": true,
+  "settings": []
+}

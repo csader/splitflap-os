@@ -1,1 +1,12 @@
-{"id":"anim_matrix","name":"Matrix","icon":"💻","description":"Cascade reveal","type":"functional","refresh_interval":0,"loop_delay":0.4,"animation":true,"settings":[]}
+{
+  "id": "anim_matrix",
+  "name": "Matrix",
+  "icon": "\ud83d\udcbb",
+  "description": "Cascade reveal",
+  "type": "functional",
+  "refresh_interval": 0,
+  "loop_delay": 0.4,
+  "animation": true,
+  "settings": [],
+  "category": "animation"
+}

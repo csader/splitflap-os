@@ -1,0 +1,12 @@
+{
+  "id": "office-quotes",
+  "name": "The Office",
+  "icon": "📎",
+  "description": "That's what she said",
+  "category": "entertainment",
+  "type": "channel",
+  "version": "1.0",
+  "refresh_interval": 300,
+  "loop_delay": 10,
+  "settings": []
+}

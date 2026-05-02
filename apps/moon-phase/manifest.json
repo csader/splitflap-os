@@ -1,0 +1,12 @@
+{
+  "id": "moon-phase",
+  "name": "Moon Phase",
+  "icon": "🌙",
+  "description": "Current moon phase",
+  "category": "lifestyle",
+  "type": "functional",
+  "version": "1.0",
+  "refresh_interval": 3600,
+  "loop_delay": 10,
+  "settings": []
+}

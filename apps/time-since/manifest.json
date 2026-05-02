@@ -1,0 +1,15 @@
+{
+  "id": "time-since",
+  "name": "Time Since",
+  "icon": "⏱️",
+  "description": "Track elapsed time",
+  "category": "time",
+  "type": "functional",
+  "version": "1.0",
+  "refresh_interval": 1,
+  "loop_delay": 1,
+  "settings": [
+    {"key": "event_name", "label": "Event Name", "type": "text", "default": "THE START"},
+    {"key": "event_date", "label": "Event Date (YYYY-MM-DD)", "type": "text", "default": "2024-01-01"}
+  ]
+}

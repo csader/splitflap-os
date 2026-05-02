@@ -1,9 +1,10 @@
 {
   "id": "stocks",
   "name": "Stocks",
-  "icon": "📈",
+  "icon": "\ud83d\udcc8",
   "description": "Live prices",
   "type": "functional",
   "refresh_interval": 60,
-  "loop_delay": 5
+  "loop_delay": 5,
+  "category": "finance"
 }

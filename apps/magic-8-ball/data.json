@@ -1,0 +1,24 @@
+{
+  "pages": [
+    {"lines": ["MAGIC 8 BALL", "IT IS CERTAIN", ""]},
+    {"lines": ["MAGIC 8 BALL", "IT IS", "DECIDEDLY SO"]},
+    {"lines": ["MAGIC 8 BALL", "WITHOUT", "A DOUBT"]},
+    {"lines": ["MAGIC 8 BALL", "YES", "DEFINITELY"]},
+    {"lines": ["MAGIC 8 BALL", "YOU MAY", "RELY ON IT"]},
+    {"lines": ["MAGIC 8 BALL", "AS I SEE IT", "YES"]},
+    {"lines": ["MAGIC 8 BALL", "MOST LIKELY", ""]},
+    {"lines": ["MAGIC 8 BALL", "OUTLOOK GOOD", ""]},
+    {"lines": ["MAGIC 8 BALL", "YES", ""]},
+    {"lines": ["MAGIC 8 BALL", "SIGNS POINT", "TO YES"]},
+    {"lines": ["MAGIC 8 BALL", "REPLY HAZY", "TRY AGAIN"]},
+    {"lines": ["MAGIC 8 BALL", "ASK AGAIN", "LATER"]},
+    {"lines": ["MAGIC 8 BALL", "BETTER NOT", "TELL YOU NOW"]},
+    {"lines": ["MAGIC 8 BALL", "CANNOT", "PREDICT NOW"]},
+    {"lines": ["MAGIC 8 BALL", "CONCENTRATE", "AND ASK AGAIN"]},
+    {"lines": ["MAGIC 8 BALL", "DON'T COUNT", "ON IT"]},
+    {"lines": ["MAGIC 8 BALL", "MY REPLY", "IS NO"]},
+    {"lines": ["MAGIC 8 BALL", "MY SOURCES", "SAY NO"]},
+    {"lines": ["MAGIC 8 BALL", "OUTLOOK", "NOT SO GOOD"]},
+    {"lines": ["MAGIC 8 BALL", "VERY DOUBTFUL", ""]}
+  ]
+}

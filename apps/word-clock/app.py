@@ -7,10 +7,31 @@ def fetch(settings, format_lines, get_rows, get_cols):
     m = now.minute
     h12 = h % 12
 
+    interval = int(settings.get('interval', '5'))
+
     hours = ['TWELVE', 'ONE', 'TWO', 'THREE', 'FOUR', 'FIVE',
              'SIX', 'SEVEN', 'EIGHT', 'NINE', 'TEN', 'ELEVEN']
 
-    rounded = round(m / 5) * 5
+    ones = ['', 'ONE', 'TWO', 'THREE', 'FOUR', 'FIVE',
+            'SIX', 'SEVEN', 'EIGHT', 'NINE', 'TEN',
+            'ELEVEN', 'TWELVE', 'THIRTEEN', 'FOURTEEN', 'FIFTEEN',
+            'SIXTEEN', 'SEVENTEEN', 'EIGHTEEN', 'NINETEEN']
+    tens = ['', '', 'TWENTY', 'THIRTY', 'FORTY', 'FIFTY']
+
+    def minute_word(n):
+        if n == 0:
+            return ''
+        if n == 15:
+            return 'A QUARTER'
+        if n == 30:
+            return 'HALF'
+        if n < 20:
+            return ones[n]
+        t, o = divmod(n, 10)
+        return (tens[t] + ' ' + ones[o]).strip() if o else tens[t]
+
+    # Round to interval
+    rounded = round(m / interval) * interval
     if rounded == 60:
         rounded = 0
         h = (h + 1) % 24
@@ -18,6 +39,7 @@ def fetch(settings, format_lines, get_rows, get_cols):
 
     hour_word = hours[h12]
     next_word = hours[(h12 + 1) % 12]
+    cols = get_cols()
 
     # Special cases for noon and midnight
     if h == 0 and rounded == 0:
@@ -27,26 +49,18 @@ def fetch(settings, format_lines, get_rows, get_cols):
 
     if rounded == 0:
         return [format_lines("IT'S", hour_word, "O'CLOCK")]
-    elif rounded == 5:
-        return [format_lines("IT'S", 'FIVE PAST', hour_word)]
-    elif rounded == 10:
-        return [format_lines("IT'S", 'TEN PAST', hour_word)]
-    elif rounded == 15:
-        return [format_lines("IT'S", 'A QUARTER PAST', hour_word)]
-    elif rounded == 20:
-        return [format_lines("IT'S", 'TWENTY PAST', hour_word)]
-    elif rounded == 25:
-        return [format_lines("IT'S", 'TWENTY FIVE', 'PAST ' + hour_word)]
-    elif rounded == 30:
-        return [format_lines("IT'S", 'HALF PAST', hour_word)]
-    elif rounded == 35:
-        return [format_lines("IT'S", 'TWENTY FIVE TO', next_word)]
-    elif rounded == 40:
-        return [format_lines("IT'S", 'TWENTY TO', next_word)]
-    elif rounded == 45:
-        return [format_lines("IT'S", 'A QUARTER TO', next_word)]
-    elif rounded == 50:
-        return [format_lines("IT'S", 'TEN TO', next_word)]
-    elif rounded == 55:
-        return [format_lines("IT'S", 'FIVE TO', next_word)]
-    return [format_lines("IT'S", hour_word, "O'CLOCK")]
+    elif rounded <= 30:
+        mw = minute_word(rounded)
+        direction = 'PAST'
+        target = hour_word
+    else:
+        mw = minute_word(60 - rounded)
+        direction = 'TO'
+        target = next_word
+
+    # Fit into 3 lines: try "MW PAST" on line 2, else split
+    combined = mw + ' ' + direction
+    if len(combined) <= cols:
+        return [format_lines("IT'S", combined, target)]
+    else:
+        return [format_lines("IT'S", mw, direction + ' ' + target)]

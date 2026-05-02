@@ -14,7 +14,7 @@ const APP_SETTINGS_CONFIG = {
   weather:    { title:'🌤️ Weather Settings', fields:[
     {key:'zip_code',            label:'Zip Code',              type:'text',     ph:'02118'},
     {key:'weather_api_key',     label:'OpenWeatherMap API Key', type:'password', ph:'...'},
-    {key:'timezone',            label:'Timezone',              type:'search_chips', searchUrl:'/timezones', resultKey:'zones', maxItems:1},
+    {key:'timezone',            label:'Timezone (override global)',  type:'search_chips', searchUrl:'/timezones', resultKey:'zones', maxItems:1},
   ]},
   metro:      { title:'🚇 Metro Settings', fields:[
     {key:'mbta_stop',  label:'Stop ID (e.g. place-NSTAT)',  type:'text', ph:'place-NSTAT'},
@@ -33,7 +33,7 @@ const APP_SETTINGS_CONFIG = {
   countdown:  { title:'⏳ Countdown Settings', fields:[
     {key:'countdown_event',  label:'Event Name (15 chars)', type:'text',          ph:'NEW YEAR'},
     {key:'countdown_target', label:'Target Date & Time',    type:'datetime-local', ph:''},
-    {key:'timezone',         label:'Timezone',              type:'search_chips', searchUrl:'/timezones', resultKey:'zones', maxItems:1},
+    {key:'timezone',         label:'Timezone (override global)',  type:'search_chips', searchUrl:'/timezones', resultKey:'zones', maxItems:1},
   ]},
   world_clock:{ title:'🌍 World Clock Settings', fields:[
     {key:'world_clock_zones', label:'Timezones (max 3)', type:'search_chips', searchUrl:'/timezones', resultKey:'zones', maxItems:3},
@@ -43,13 +43,23 @@ const APP_SETTINGS_CONFIG = {
   ]},
   iss:        { title:'🛸 ISS Tracker', fields:[] },
   demo:       { title:'🎬 Demo Mode', fields:[] },
+  time:       { title:'⏱️ Time Settings', fields:[
+    {key:'timezone', label:'Timezone (override global)', type:'search_chips', searchUrl:'/timezones', resultKey:'zones', maxItems:1},
+    {key:'time_format', label:'Time Format', type:'select', opts:['12hr','24hr']},
+  ]},
+  date:       { title:'📅 Date Settings', fields:[
+    {key:'timezone', label:'Timezone (override global)', type:'search_chips', searchUrl:'/timezones', resultKey:'zones', maxItems:1},
+  ]},
+  dashboard:  { title:'🏠 Dashboard Settings', fields:[
+    {key:'timezone', label:'Timezone (override global)', type:'search_chips', searchUrl:'/timezones', resultKey:'zones', maxItems:1},
+  ]},
   livestream: { title:'🔴 Livestream Settings', fields:[
     {key:'livestream_interval', label:'Rotation Interval (seconds)', type:'number', ph:'25', min:'5', max:'180', step:'1'},
     {key:'livestream_comments', label:'Comments — blank line separates slides, up to 3 lines each (use 🟥🟧🟨🟩🟦🟪⬜ for color tiles)', type:'textarea', ph:'JOHNDOE\nGreat video!\nSubscribed\n\nUSER_123\nLove the build\nVery cool'},
     {key:'yt_channel_id', label:'YouTube Channel ID (for subs)', type:'text', ph:'UC...'},
     {key:'yt_video_id',   label:'YouTube Video ID (live, for viewers)', type:'text', ph:'...'},
     {key:'yt_api_key',    label:'YouTube Data API Key', type:'password', ph:'...'},
-    {key:'timezone',      label:'Timezone', type:'search_chips', searchUrl:'/timezones', resultKey:'zones', maxItems:1},
+    {key:'timezone',      label:'Timezone (override global)', type:'search_chips', searchUrl:'/timezones', resultKey:'zones', maxItems:1},
   ]},
   anim_rainbow:{ title:'🌈 Rainbow Settings', fields:[
     {key:'anim_style', label:'Update Order', type:'select',
@@ -772,9 +782,9 @@ async function buildAppsGrid(){
     (ld.apps || []).forEach(a => libraryKeys.add(a.id));
   } catch(e) {}
 
-  // Only show hardcoded apps if not a plugin AND not in the library
+  // Only show hardcoded apps if not already shown as a plugin
   APP_LIST.forEach(a => {
-    if (!pluginKeys.has(a.key) && !libraryKeys.has(a.key)) grid.appendChild(buildAppCard(a, false));
+    if (!pluginKeys.has(a.key)) grid.appendChild(buildAppCard(a, false));
   });
   if(typeof lucide!=='undefined') lucide.createIcons();
 }
@@ -990,6 +1000,18 @@ async function openAppSettings(appKey){
         input.rows = 8;
         if(f.ph) input.placeholder = f.ph;
         input.value = globalSettings[f.key]||'';
+      } else if(f.type==='search_chips' && f.maxItems===1){
+        const wrapper = document.createElement('div');
+        div.appendChild(wrapper);
+        fields.appendChild(div);
+        createSingleSearchPicker({
+          container: wrapper,
+          hiddenId: `asf_${f.key}`,
+          searchUrl: f.searchUrl,
+          resultKey: f.resultKey,
+          currentValue: globalSettings[f.key]||''
+        });
+        return;
       } else if(f.type==='search_chips'){
         const wrapper = document.createElement('div');
         wrapper.className = 'chip-picker';
@@ -1039,6 +1061,108 @@ function saveAppSettings(){
   });
   fetch('/settings',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
   .then(()=>{ showToast('Settings saved'); closeAppSettings(); });
+}
+
+// ============================================================
+//  SINGLE TIMEZONE PICKER
+// ============================================================
+function createTimezonePicker(container, currentValue){
+  const hidden = document.createElement('input');
+  hidden.type='hidden'; hidden.id='globalTzValue'; hidden.value=currentValue;
+  container.appendChild(hidden);
+
+  const input = document.createElement('input');
+  input.type='text'; input.className='line-input';
+  input.style.cssText='font-size:.9rem;margin:0;text-transform:none';
+  input.value=currentValue;
+  input.placeholder='Search timezone…';
+  container.appendChild(input);
+
+  const resultsEl = document.createElement('div');
+  resultsEl.className='chip-picker-results';
+  container.appendChild(resultsEl);
+
+  let debounce=null;
+  input.onfocus=()=>{ if(!input.value) doSearch(''); };
+  input.oninput=()=>{
+    clearTimeout(debounce);
+    debounce=setTimeout(()=>doSearch(input.value.trim()),300);
+  };
+
+  async function doSearch(q){
+    try{
+      const res = await fetch(`/timezones?q=${encodeURIComponent(q)}`);
+      const data = await res.json();
+      resultsEl.innerHTML='';
+      (data.zones||[]).forEach(z=>{
+        const el = document.createElement('div');
+        el.className='chip-picker-result'+(z.value===hidden.value?' selected':'');
+        el.textContent=z.label;
+        el.onclick=()=>{
+          hidden.value=z.value;
+          input.value=z.value;
+          resultsEl.innerHTML='';
+          setSettingsDirty(true);
+        };
+        resultsEl.appendChild(el);
+      });
+    }catch(e){}
+  }
+
+  // Close results on outside click
+  document.addEventListener('click',(e)=>{
+    if(!container.contains(e.target)) resultsEl.innerHTML='';
+  });
+}
+
+// ============================================================
+//  SINGLE SEARCH PICKER (for maxItems:1 fields in app settings)
+// ============================================================
+function createSingleSearchPicker({container, hiddenId, searchUrl, resultKey, currentValue}){
+  const hidden = document.createElement('input');
+  hidden.type='hidden'; hidden.id=hiddenId; hidden.value=currentValue;
+  container.appendChild(hidden);
+
+  const input = document.createElement('input');
+  input.type='text'; input.className='line-input';
+  input.style.cssText='font-size:.85rem;margin:0;text-transform:none';
+  input.value=currentValue;
+  input.placeholder='Search…';
+  container.appendChild(input);
+
+  const resultsEl = document.createElement('div');
+  resultsEl.className='chip-picker-results';
+  container.appendChild(resultsEl);
+
+  let debounce=null;
+  input.onfocus=()=>{ if(!input.value) doSearch(''); };
+  input.oninput=()=>{
+    clearTimeout(debounce);
+    debounce=setTimeout(()=>doSearch(input.value.trim()),300);
+  };
+
+  async function doSearch(q){
+    try{
+      const res = await fetch(`${searchUrl}?q=${encodeURIComponent(q)}`);
+      const data = await res.json();
+      resultsEl.innerHTML='';
+      (data[resultKey]||[]).forEach(item=>{
+        const el = document.createElement('div');
+        el.className='chip-picker-result'+(item.value===hidden.value?' selected':'');
+        el.textContent=item.label;
+        el.onclick=()=>{
+          hidden.value=item.value;
+          input.value=item.value;
+          resultsEl.innerHTML='';
+        };
+        resultsEl.appendChild(el);
+      });
+    }catch(e){}
+  }
+
+  document.addEventListener('click',(e)=>{
+    if(!container.contains(e.target)) resultsEl.innerHTML='';
+  });
 }
 
 // ============================================================
@@ -1123,6 +1247,12 @@ function loadSettingsData(){
     document.getElementById('autoHomeToggle').checked = data.auto_home;
     document.getElementById('simRows').value = data.sim_rows||3;
     document.getElementById('simCols').value = data.sim_cols||15;
+    // Global timezone picker
+    const tzEl = document.getElementById('globalTzPicker');
+    if(tzEl){
+      tzEl.innerHTML='';
+      createTimezonePicker(tzEl, data.timezone||'');
+    }
     renderModuleGrid();
     selectModule(selectedModule);
     setSettingsDirty(false);
@@ -1267,9 +1397,12 @@ function setSettingsDirty(isDirty){
 function saveGlobal(){
   const rows = parseInt(document.getElementById('simRows').value) || 3;
   const cols = parseInt(document.getElementById('simCols').value) || 15;
+  const tzEl = document.getElementById('globalTzValue');
+  const tz = tzEl ? tzEl.value : '';
   fetch('/settings',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
     action:'save_global',
     sim_rows:rows, sim_cols:cols,
+    timezone: tz,
   })}).then(()=>{
     initLiveGrids(rows, cols);
     showToast('Settings saved');

@@ -113,6 +113,37 @@
     <button class="btn btn-secondary" style="width:100%;margin-top:20px" onclick="openAppLibrary()">+ Install App</button>
   </div>
 
+  <!-- ══════════ PLAYLISTS PAGE ══════════ -->
+  <div id="page-playlists" class="page">
+    <h3 style="margin-bottom:12px">App Playlists</h3>
+
+    <div id="appPlaylistEntries" class="playlist-area" style="min-height:60px">
+      <div style="color:#666;font-style:italic;font-size:.85rem">No entries yet. Add apps or messages below.</div>
+    </div>
+
+    <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
+      <button class="btn btn-success btn-sm" onclick="addAppPlaylistEntry('app')">+ Add App</button>
+      <button class="btn btn-secondary btn-sm" onclick="addAppPlaylistEntry('compose')">+ Add Message</button>
+    </div>
+
+    <div class="ap-controls">
+      <label style="cursor:pointer;font-size:.85rem;display:flex;align-items:center;gap:6px">
+        <input type="checkbox" id="appPlaylistLoop" checked> Loop
+      </label>
+      <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
+        <button class="btn btn-success btn-sm" onclick="openSaveAppPlaylist()"><i data-lucide="save" style="width:14px;height:14px"></i> Save…</button>
+        <button class="btn btn-primary btn-sm" onclick="runAppPlaylist()"><i data-lucide="play" style="width:14px;height:14px"></i> Run</button>
+        <button class="btn btn-secondary btn-sm" onclick="stopApp()"><i data-lucide="square" style="width:14px;height:14px"></i> Stop</button>
+      </div>
+    </div>
+
+    <!-- Saved App Playlists -->
+    <div class="playlist-area" style="margin-top:18px">
+      <h3 style="margin:0 0 10px 0;font-size:.95rem">📂 Saved Playlists</h3>
+      <div id="savedAppPlaylistList"><div style="color:#666;font-style:italic;font-size:.85rem">No saved playlists yet.</div></div>
+    </div>
+  </div>
+
   <!-- ══════════ LIBRARY PAGE ══════════ -->
   <div id="page-library" class="page">
     <button class="hamburger-back" onclick="closeMenuPage()"><i data-lucide="arrow-left" style="width:14px;height:14px"></i> Back</button>
@@ -219,6 +250,7 @@
 <div class="bottom-tabs" id="bottomTabs">
   <button class="bottom-tab active" id="tab-apps" onclick="switchTab('apps')"><i data-lucide="layout-grid" style="width:16px;height:16px"></i> Apps</button>
   <button class="bottom-tab" id="tab-control" onclick="switchTab('control')"><i data-lucide="pen-line" style="width:16px;height:16px"></i> Compose</button>
+  <button class="bottom-tab" id="tab-playlists" onclick="switchTab('playlists')"><i data-lucide="list-music" style="width:16px;height:16px"></i> Playlists</button>
 </div>
 
 <!-- HAMBURGER OVERLAY -->

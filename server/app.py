@@ -98,7 +98,7 @@ def load_settings():
         "mqtt_password": "",
         "sim_rows": 3,
         "sim_cols": 15,
-        "app_library_url": "https://raw.githubusercontent.com/csader/SplitFlapDisplay/main/apps",
+        "app_library_url": "https://raw.githubusercontent.com/csader/splitflap-os/main/apps",
     }
     if os.path.exists(CONFIG_PATH):
         try:
@@ -897,12 +897,15 @@ def get_plugin_settings_config():
     for app_id, manifest in _plugin_registry.items():
         fields = []
         for s in manifest.get("settings", []):
-            fields.append({
+            field = {
                 "key": f"plugin_{app_id}_{s['key']}",
                 "label": s.get("label", s["key"]),
                 "type": s.get("type", "text"),
                 "ph": s.get("default", ""),
-            })
+            }
+            if s.get("options"):
+                field["opts"] = s["options"]
+            fields.append(field)
         configs[f"plugin_{app_id}"] = {
             "title": f"{manifest.get('icon', '🧩')} {manifest.get('name', app_id)}",
             "fields": fields,
@@ -2282,7 +2285,7 @@ def app_library():
     if _registry_cache['data'] and (now - _registry_cache['fetched_at']) < 300:
         return jsonify(_registry_cache['data'])
     try:
-        base_url = settings.get('app_library_url', 'https://raw.githubusercontent.com/csader/SplitFlapDisplay/main/apps')
+        base_url = settings.get('app_library_url', 'https://raw.githubusercontent.com/csader/splitflap-os/main/apps')
         url = f"{base_url}/registry.json"
         req = urllib.request.Request(url, headers={"User-Agent": "SplitFlap/1.0"})
         with urllib.request.urlopen(req, timeout=10) as resp:
@@ -2342,7 +2345,7 @@ def app_library_install():
                 shutil.rmtree(app_dir, ignore_errors=True)
             return jsonify(status="error", message=str(e)), 500
 
-    base_url = settings.get('app_library_url', 'https://raw.githubusercontent.com/csader/SplitFlapDisplay/main/apps')
+    base_url = settings.get('app_library_url', 'https://raw.githubusercontent.com/csader/splitflap-os/main/apps')
     try:
         os.makedirs(app_dir, exist_ok=True)
         manifest_url = f"{base_url}/{app_id}/manifest.json"

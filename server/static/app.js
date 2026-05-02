@@ -982,7 +982,7 @@ async function openAppSettings(appKey){
         (f.opts||[]).forEach(opt=>{
           const o = document.createElement('option');
           o.value = opt; o.textContent = opt;
-          if((globalSettings[f.key]||'')===opt) o.selected=true;
+          if((globalSettings[f.key]||f.ph||'')===opt) o.selected=true;
           input.appendChild(o);
         });
       } else if(f.type==='textarea'){

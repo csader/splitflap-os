@@ -9,6 +9,6 @@
   "refresh_interval": 60,
   "loop_delay": 1,
   "settings": [
-    {"key": "interval", "label": "Rounding (minutes)", "type": "select", "default": "5", "options": ["1", "5", "15", "30"]}
+    {"key": "interval", "label": "Update Interval", "type": "select", "default": "5", "options": ["1", "5", "15", "30"]}
   ]
 }

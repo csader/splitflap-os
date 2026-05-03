@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Split-Flap OS</title>
+<title>Splitflap OS</title>
+<link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
 <link rel="stylesheet" href="/static/styles.css?v=2">
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 </head>
@@ -14,7 +15,7 @@
   <div class="top-bar" id="topBar">
     <div style="display:flex;align-items:center;gap:8px">
       <button class="hamburger-btn" onclick="toggleHamburger()"><i data-lucide="menu" style="width:20px;height:20px"></i></button>
-      <span class="top-bar-title">Split-Flap OS</span>
+      <img src="/static/logo.svg" alt="Splitflap OS" style="height:24px">
     </div>
     <div style="display:flex;align-items:center;gap:6px">
       <span id="simLabel" style="font-size:.82rem;font-weight:bold;color:#555">SIMULATE</span>
@@ -173,6 +174,7 @@
       <div class="settings-grid">
         <div><label class="field-label">Display Rows</label><input type="number" id="simRows" value="3" min="1" max="20" class="line-input" style="font-size:.95rem;margin:0"></div>
         <div><label class="field-label">Display Cols</label><input type="number" id="simCols" value="15" min="1" max="50" class="line-input" style="font-size:.95rem;margin:0"></div>
+        <div><label class="field-label">Delay Between Pages (seconds)</label><input type="number" id="globalLoopDelay" value="5" min="1" max="60" step="1" class="line-input" style="font-size:.95rem;margin:0"></div>
         <div class="span2"><label class="field-label">Timezone</label><div id="globalTzPicker"></div></div>
       </div>
   <button class="settings-fab" id="settingsFab" onclick="saveGlobal()"><i data-lucide="save" style="width:16px;height:16px"></i> Save Settings</button>
@@ -219,7 +221,7 @@
 <!-- HAMBURGER DRAWER -->
 <div class="hamburger-drawer" id="hamburgerDrawer">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-    <span style="font-weight:bold;font-size:1.1rem">Split-Flap OS</span>
+    <img src="/static/logo.svg" alt="Splitflap OS" style="height:22px">
     <button class="drawer-close" onclick="toggleHamburger()"><i data-lucide="x" style="width:18px;height:18px"></i></button>
   </div>
 

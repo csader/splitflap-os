@@ -896,7 +896,16 @@ async function buildAppsGrid(){
     const res = await fetch('/installed_apps');
     const data = await res.json();
     const pluginConfigs = data.settings_config || {};
-    Object.assign(APP_SETTINGS_CONFIG, pluginConfigs);
+    // Merge plugin settings with hardcoded configs (don't overwrite, combine fields)
+    for(const [key, cfg] of Object.entries(pluginConfigs)){
+      if(APP_SETTINGS_CONFIG[key]){
+        const existing = APP_SETTINGS_CONFIG[key].fields||[];
+        const newFields = (cfg.fields||[]).filter(f=>!existing.some(e=>e.key===f.key));
+        APP_SETTINGS_CONFIG[key].fields = existing.concat(newFields);
+      } else {
+        APP_SETTINGS_CONFIG[key] = cfg;
+      }
+    }
     (data.apps || []).forEach(a => pluginKeys.add(a.key.replace('plugin_','')));
     (data.apps || []).forEach(a => grid.appendChild(buildAppCard(a, true)));
   } catch(e) { console.error('Failed to load plugins:', e); }
@@ -944,7 +953,7 @@ function buildAppCard(a, isPlugin) {
   const div = document.createElement('div');
   const bareKey = a.key.replace('plugin_','');
   const cfgKey = bareKey in APP_SETTINGS_CONFIG ? bareKey : a.key;
-  const hasCfg = APP_SETTINGS_CONFIG[cfgKey] && (APP_SETTINGS_CONFIG[cfgKey].fields||[]).length > 0;
+  const hasCfg = (APP_SETTINGS_CONFIG[cfgKey] && (APP_SETTINGS_CONFIG[cfgKey].fields||[]).length > 0) || bareKey === 'sports';
   const removable = isPlugin;
   div.className = 'app-card has-app-actions';
   div.dataset.app = a.key;
@@ -1374,6 +1383,7 @@ function loadSettingsData(){
     document.getElementById('autoHomeToggle').checked = data.auto_home;
     document.getElementById('simRows').value = data.sim_rows||3;
     document.getElementById('simCols').value = data.sim_cols||15;
+    document.getElementById('globalLoopDelay').value = data.global_loop_delay||5;
     // MQTT settings
     document.getElementById('mqttEnabled').checked = data.mqtt_enabled !== false;
     document.getElementById('mqttBroker').value = data.mqtt_broker || '';
@@ -1530,11 +1540,13 @@ function setSettingsDirty(isDirty){
 function saveGlobal(){
   const rows = parseInt(document.getElementById('simRows').value) || 3;
   const cols = parseInt(document.getElementById('simCols').value) || 15;
+  const globalDelay = parseInt(document.getElementById('globalLoopDelay').value) || 5;
   const tzEl = document.getElementById('globalTzValue');
   const tz = tzEl ? tzEl.value : '';
   fetch('/settings',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
     action:'save_global',
     sim_rows:rows, sim_cols:cols,
+    global_loop_delay: globalDelay,
     timezone: tz,
     mqtt_enabled: document.getElementById('mqttEnabled').checked,
     mqtt_broker: document.getElementById('mqttBroker').value,
@@ -2039,11 +2051,49 @@ async function openSportsSettings(){
   document.getElementById('sportsModal').style.display='flex';
   const list = document.getElementById('sportsLeagueList');
   list.innerHTML='<div style="text-align:center;color:#888;padding:20px">Loading leagues…</div>';
+
+  // Fetch fresh settings for display options
+  const settingsRes = await fetch('/settings');
+  const allSettings = await settingsRes.json();
+
   try {
     const res = await fetch('/sports_leagues');
     const data = await res.json();
     _sportsState = {};
     list.innerHTML='';
+
+    // Display settings at top
+    const opts = document.createElement('div');
+    opts.style.cssText='display:flex;flex-wrap:wrap;gap:12px;margin-bottom:16px;padding:10px 14px;background:#1a1a1a;border:1px solid var(--border);border-radius:8px;align-items:center';
+    const filterVal = allSettings.plugin_sports_sports_filter || allSettings.sports_filter || 'all';
+    const leagueVal = allSettings.plugin_sports_sports_show_league || allSettings.sports_show_league || 'yes';
+    const compactVal = allSettings.plugin_sports_sports_compact || allSettings.sports_compact || 'no';
+    opts.innerHTML=`
+      <label style="font-size:.85rem;color:#ccc;display:flex;align-items:center;gap:6px">
+        Show
+        <select id="sportsFilterSelect" style="background:#111;color:#fff;border:1px solid #555;border-radius:4px;padding:4px 6px;font-size:.82rem">
+          <option value="all"${filterVal==='all'?' selected':''}>All Games</option>
+          <option value="live"${filterVal==='live'?' selected':''}>Live Only</option>
+          <option value="live+upcoming"${filterVal==='live+upcoming'?' selected':''}>Live + Upcoming</option>
+          <option value="live+final"${filterVal==='live+final'?' selected':''}>Live + Final</option>
+        </select>
+      </label>
+      <label style="font-size:.85rem;color:#ccc;display:flex;align-items:center;gap:6px">
+        League Name
+        <select id="sportsLeagueToggle" style="background:#111;color:#fff;border:1px solid #555;border-radius:4px;padding:4px 6px;font-size:.82rem">
+          <option value="yes"${leagueVal==='yes'?' selected':''}>Show</option>
+          <option value="no"${leagueVal==='no'?' selected':''}>Hide</option>
+        </select>
+      </label>
+      <label style="font-size:.85rem;color:#ccc;display:flex;align-items:center;gap:6px">
+        Layout
+        <select id="sportsCompactToggle" style="background:#111;color:#fff;border:1px solid #555;border-radius:4px;padding:4px 6px;font-size:.82rem">
+          <option value="no"${compactVal==='no'?' selected':''}>1 Game/Page</option>
+          <option value="yes"${compactVal==='yes'?' selected':''}>2 Games/Page</option>
+        </select>
+      </label>`;
+    list.appendChild(opts);
+
     for(const lg of data.leagues){
       const followed = lg.followed || '';
       _sportsState[lg.key] = {follow_all: followed==='*', teams: new Set(followed==='*'?[]:followed.split(',').filter(t=>t.trim()).map(t=>t.trim().toUpperCase()))};
@@ -2068,7 +2118,17 @@ async function openSportsSettings(){
   } catch(e){ list.innerHTML='<div style="color:var(--red);padding:20px">Failed to load</div>'; }
 }
 
-function closeSportsSettings(){ document.getElementById('sportsModal').style.display='none'; }
+function closeSportsSettings(){
+  // Save display options
+  const filter = document.getElementById('sportsFilterSelect');
+  const league = document.getElementById('sportsLeagueToggle');
+  const compact = document.getElementById('sportsCompactToggle');
+  if(filter && league && compact){
+    fetch('/settings',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({action:'save_global', sports_filter:filter.value, sports_show_league:league.value, sports_compact:compact.value})});
+  }
+  document.getElementById('sportsModal').style.display='none';
+}
 
 async function toggleLeague(key){
   const body = document.getElementById(`lbody-${key}`);

@@ -782,19 +782,15 @@ def _run_app_playlist():
                               (app_key in _plugin_registry and _plugin_registry[app_key].get('animation'))
 
                     # Determine per-page delay
+                    reg = app_key[7:] if app_key.startswith('plugin_') else app_key
                     if is_anim:
                         eff_delay = max(0.1, float(settings.get('anim_speed', '0.4')))
-                    elif app_key in _plugin_registry:
-                        eff_delay = float(_plugin_registry[app_key].get('loop_delay', 5))
-                    elif app_key.startswith('plugin_'):
-                        pid = app_key[7:]
-                        eff_delay = float(_plugin_registry.get(pid, {}).get('loop_delay', 5))
-                    elif app_key in ('countdown', 'world_clock'):
-                        eff_delay = 1
-                    elif app_key == 'stocks':
-                        eff_delay = 10
+                    elif reg in _plugin_registry:
+                        saved = settings.get(f'plugin_{reg}_loop_delay', '')
+                        default = float(_plugin_registry[reg].get('loop_delay', settings.get('global_loop_delay', 5)))
+                        eff_delay = float(saved) if saved else default
                     else:
-                        eff_delay = 5
+                        eff_delay = float(settings.get('global_loop_delay', 5))
 
                     active_order = None
                     if is_anim:
@@ -890,10 +886,12 @@ def playlist_loop():
             if reg_key in _plugin_registry:
                 eff_delay = max(0.1, float(_plugin_registry[reg_key].get('loop_delay', eff_delay)))
         elif reg_key in _plugin_registry:
+            saved = settings.get(f'plugin_{reg_key}_loop_delay', '')
             manifest = _plugin_registry[reg_key]
-            eff_delay = float(manifest.get('loop_delay', loop_delay))
+            default = float(manifest.get('loop_delay', settings.get('global_loop_delay', 5)))
+            eff_delay = float(saved) if saved else default
         else:
-            eff_delay = float(loop_delay)
+            eff_delay = float(settings.get('global_loop_delay', loop_delay))
 
         for page in display_pages:
             if stop_event.is_set():
@@ -967,25 +965,10 @@ def handle_settings():
         mod_id = str(data.get('id', '0'))
 
         if action == 'save_global':
-            keys = [
-                'zip_code', 'weather_api_key', 'timezone',
-                'mbta_stop', 'mbta_route', 'stocks_list', 'nhl_teams',
-                'yt_channel_id', 'yt_api_key', 'yt_video_id',
-                'countdown_event', 'countdown_target', 'world_clock_zones',
-                'crypto_list', 'anim_style', 'anim_speed', 'anim_text',
-                'time_format',
-                'livestream_interval', 'livestream_comments',
-                'sports_nfl', 'sports_nba', 'sports_mlb', 'sports_nhl',
-                'sports_ncaaf', 'sports_ncaab', 'sports_mls', 'sports_epl',
-                'sports_laliga', 'sports_ucl', 'sports_wnba', 'sports_pga',
-                'sports_ufc',
-                'mqtt_enabled', 'mqtt_broker', 'mqtt_port', 'mqtt_user', 'mqtt_password',
-                'sim_rows', 'sim_cols',
-                'app_library_url',
-            ]
-            settings.update({k: data[k] for k in keys if k in data})
+            # Save any key except internal/protected ones
+            protected = {'action', 'id', 'offsets', 'calibrations', 'tuned_chars', 'installed_apps', 'saved_playlists', 'saved_app_playlists'}
             for k, v in data.items():
-                if k.startswith("plugin_"):
+                if k not in protected:
                     settings[k] = v
             if 'sim_rows' in data or 'sim_cols' in data:
                 resize_grid()
@@ -1120,15 +1103,17 @@ def run_app():
     # Resolve plugin_ prefix
     registry_key = active_app[7:] if active_app and active_app.startswith('plugin_') else active_app
 
-    # Use loop_delay from plugin manifest if available
+    # Use loop_delay from user settings, then manifest, then global default
     if registry_key in _plugin_registry:
         manifest = _plugin_registry[registry_key]
         if manifest.get('animation'):
             loop_delay = max(0.1, float(settings.get('anim_speed', '0.4')))
         else:
-            loop_delay = float(manifest.get('loop_delay', 5))
+            saved = settings.get(f'plugin_{registry_key}_loop_delay', '')
+            default = float(manifest.get('loop_delay', settings.get('global_loop_delay', 5)))
+            loop_delay = float(saved) if saved else default
     else:
-        loop_delay = 5
+        loop_delay = float(settings.get('global_loop_delay', 5))
 
     stop_event.set()
     mqtt_publish_state()

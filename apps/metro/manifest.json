@@ -1,10 +1,21 @@
 {
   "id": "metro",
   "name": "Metro",
-  "icon": "\ud83d\ude87",
+  "icon": "🚇",
   "description": "MBTA arrivals",
   "type": "functional",
   "refresh_interval": 30,
   "loop_delay": 5,
-  "category": "data"
+  "category": "data",
+  "settings": [
+    {
+      "key": "loop_delay",
+      "label": "Delay Between Pages (seconds)",
+      "type": "number",
+      "default": "5",
+      "min": "2",
+      "max": "30",
+      "step": "1"
+    }
+  ]
 }

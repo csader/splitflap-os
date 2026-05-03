@@ -1,10 +1,21 @@
 {
   "id": "crypto",
   "name": "Crypto",
-  "icon": "\u20bf",
+  "icon": "₿",
   "description": "Coin prices",
   "type": "functional",
   "refresh_interval": 60,
   "loop_delay": 5,
+  "settings": [
+    {
+      "key": "loop_delay",
+      "label": "Delay Between Pages (seconds)",
+      "type": "number",
+      "default": "5",
+      "min": "2",
+      "max": "30",
+      "step": "1"
+    }
+  ],
   "category": "finance"
 }

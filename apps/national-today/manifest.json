@@ -8,5 +8,15 @@
   "version": "1.0",
   "refresh_interval": 3600,
   "loop_delay": 10,
-  "settings": []
+  "settings": [
+    {
+      "key": "loop_delay",
+      "label": "Delay Between Pages (seconds)",
+      "type": "number",
+      "default": "10",
+      "min": "2",
+      "max": "30",
+      "step": "1"
+    }
+  ]
 }

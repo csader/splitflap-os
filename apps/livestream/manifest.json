@@ -1,11 +1,21 @@
 {
   "id": "livestream",
   "name": "Livestream",
-  "icon": "\ud83d\udd34",
+  "icon": "🔴",
   "description": "Launch day rotate",
   "type": "functional",
   "refresh_interval": 30,
   "loop_delay": 5,
-  "settings": [],
+  "settings": [
+    {
+      "key": "loop_delay",
+      "label": "Delay Between Pages (seconds)",
+      "type": "number",
+      "default": "5",
+      "min": "2",
+      "max": "30",
+      "step": "1"
+    }
+  ],
   "category": "animation"
 }

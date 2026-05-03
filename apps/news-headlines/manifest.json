@@ -9,6 +9,20 @@
   "refresh_interval": 600,
   "loop_delay": 8,
   "settings": [
-    {"key": "feed_url", "label": "RSS Feed URL", "type": "text", "default": "https://feeds.bbci.co.uk/news/rss.xml"}
+    {
+      "key": "feed_url",
+      "label": "RSS Feed URL",
+      "type": "text",
+      "default": "https://feeds.bbci.co.uk/news/rss.xml"
+    },
+    {
+      "key": "loop_delay",
+      "label": "Delay Between Pages (seconds)",
+      "type": "number",
+      "default": "8",
+      "min": "2",
+      "max": "30",
+      "step": "1"
+    }
   ]
 }

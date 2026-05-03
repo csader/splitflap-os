@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 269.1 267.3">
+  <!-- Generator: Adobe Illustrator 30.0.0, SVG Export Plug-In . SVG Version: 2.1.1 Build 123)  -->
+  <defs>
+    <style>
+      .st0 {
+        fill: #e6e6e6;
+        font-family: DINCondensed-Bold, 'DIN Condensed';
+        font-size: 300px;
+        font-weight: 700;
+      }
+    </style>
+  </defs>
+  <g>
+    <rect x=".5" y="-.4" width="268.1" height="268.1" rx="23.6" ry="23.6"/>
+    <path d="M245,.1c12.7,0,23.1,10.3,23.1,23.1v221c0,12.7-10.3,23.1-23.1,23.1H24.1c-12.7,0-23.1-10.3-23.1-23.1V23.2C1,10.5,11.3.1,24.1.1h221M245-.9H24.1C10.8-.9,0,9.9,0,23.2v221C0,257.4,10.8,268.2,24.1,268.2h221c13.3,0,24.1-10.8,24.1-24.1V23.2c0-13.3-10.8-24.1-24.1-24.1h0Z"/>
+  </g>
+  <text class="st0" transform="translate(9.7 239.8)"><tspan x="0" y="0">OS</tspan></text>
+  <rect y="125" width="269.1" height="17.3"/>
+</svg>

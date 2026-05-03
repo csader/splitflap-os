@@ -1,10 +1,34 @@
 {
   "id": "countdown",
   "name": "Countdown",
-  "icon": "\u23f3",
+  "icon": "⏳",
   "description": "Timer to event",
   "type": "functional",
   "refresh_interval": 1,
   "loop_delay": 1,
-  "category": "time"
+  "category": "time",
+  "settings": [
+    {
+      "key": "countdown_event",
+      "label": "Event Name (15 chars)",
+      "type": "text",
+      "default": "NEW YEAR",
+      "global_key": true
+    },
+    {
+      "key": "countdown_target",
+      "label": "Target Date & Time",
+      "type": "datetime-local",
+      "global_key": true
+    },
+    {
+      "key": "timezone",
+      "label": "Timezone (override global)",
+      "type": "search_chips",
+      "searchUrl": "/timezones",
+      "resultKey": "zones",
+      "maxItems": 1,
+      "global_key": true
+    }
+  ]
 }

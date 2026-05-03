@@ -1,10 +1,21 @@
 {
   "id": "date",
   "name": "Date",
-  "icon": "\ud83d\udcc5",
+  "icon": "📅",
   "description": "Full date view",
   "type": "functional",
   "refresh_interval": 1,
   "loop_delay": 1,
-  "category": "time"
+  "category": "time",
+  "settings": [
+    {
+      "key": "timezone",
+      "label": "Timezone (override global)",
+      "type": "search_chips",
+      "searchUrl": "/timezones",
+      "resultKey": "zones",
+      "maxItems": 1,
+      "global_key": true
+    }
+  ]
 }

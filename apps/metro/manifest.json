@@ -9,6 +9,20 @@
   "category": "data",
   "settings": [
     {
+      "key": "mbta_stop",
+      "label": "Stop ID (e.g. place-NSTAT)",
+      "type": "text",
+      "default": "place-NSTAT",
+      "global_key": true
+    },
+    {
+      "key": "mbta_route",
+      "label": "Route (e.g. Orange)",
+      "type": "text",
+      "default": "Orange",
+      "global_key": true
+    },
+    {
       "key": "loop_delay",
       "label": "Delay Between Pages (seconds)",
       "type": "number",

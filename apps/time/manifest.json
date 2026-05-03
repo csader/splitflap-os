@@ -1,10 +1,31 @@
 {
   "id": "time",
   "name": "Time",
-  "icon": "\u23f1\ufe0f",
+  "icon": "⏱️",
   "description": "Live clock",
   "type": "functional",
   "refresh_interval": 1,
   "loop_delay": 1,
-  "category": "time"
+  "category": "time",
+  "settings": [
+    {
+      "key": "timezone",
+      "label": "Timezone (override global)",
+      "type": "search_chips",
+      "searchUrl": "/timezones",
+      "resultKey": "zones",
+      "maxItems": 1,
+      "global_key": true
+    },
+    {
+      "key": "time_format",
+      "label": "Time Format",
+      "type": "select",
+      "options": [
+        "12hr",
+        "24hr"
+      ],
+      "global_key": true
+    }
+  ]
 }

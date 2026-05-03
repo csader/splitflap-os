@@ -8,6 +8,14 @@
   "loop_delay": 5,
   "settings": [
     {
+      "key": "stocks_list",
+      "label": "Stock Tickers",
+      "type": "search_chips",
+      "searchUrl": "/stocks_search",
+      "resultKey": "tickers",
+      "global_key": true
+    },
+    {
       "key": "loop_delay",
       "label": "Delay Between Pages (seconds)",
       "type": "number",

@@ -8,6 +8,50 @@
   "loop_delay": 5,
   "settings": [
     {
+      "key": "livestream_interval",
+      "label": "Rotation Interval (seconds)",
+      "type": "number",
+      "default": "25",
+      "min": "5",
+      "max": "180",
+      "step": "1",
+      "global_key": true
+    },
+    {
+      "key": "livestream_comments",
+      "label": "Comments (blank line separates slides, up to 3 lines each)",
+      "type": "textarea",
+      "global_key": true
+    },
+    {
+      "key": "yt_channel_id",
+      "label": "YouTube Channel ID (for subs)",
+      "type": "text",
+      "default": "UC...",
+      "global_key": true
+    },
+    {
+      "key": "yt_video_id",
+      "label": "YouTube Video ID (live, for viewers)",
+      "type": "text",
+      "global_key": true
+    },
+    {
+      "key": "yt_api_key",
+      "label": "YouTube Data API Key",
+      "type": "password",
+      "global_key": true
+    },
+    {
+      "key": "timezone",
+      "label": "Timezone (override global)",
+      "type": "search_chips",
+      "searchUrl": "/timezones",
+      "resultKey": "zones",
+      "maxItems": 1,
+      "global_key": true
+    },
+    {
       "key": "loop_delay",
       "label": "Delay Between Pages (seconds)",
       "type": "number",

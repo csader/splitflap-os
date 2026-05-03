@@ -1,10 +1,19 @@
 {
   "id": "youtube",
   "name": "YouTube",
-  "icon": "\u25b6\ufe0f",
+  "icon": "▶️",
   "description": "Sub counter",
   "type": "functional",
   "refresh_interval": 30,
   "loop_delay": 5,
-  "category": "data"
+  "category": "data",
+  "settings": [
+    {
+      "key": "yt_channel_id",
+      "label": "Channel ID",
+      "type": "text",
+      "default": "UC...",
+      "global_key": true
+    }
+  ]
 }

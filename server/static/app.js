@@ -10,82 +10,7 @@ const STATE_DISPLAY = {
 };
 
 // Per-app quick-settings configuration
-const APP_SETTINGS_CONFIG = {
-  weather:    { title:'🌤️ Weather Settings', fields:[
-    {key:'zip_code',            label:'Zip Code',              type:'text',     ph:'02118'},
-    {key:'weather_api_key',     label:'OpenWeatherMap API Key', type:'password', ph:'...'},
-    {key:'timezone',            label:'Timezone (override global)',  type:'search_chips', searchUrl:'/timezones', resultKey:'zones', maxItems:1},
-  ]},
-  metro:      { title:'🚇 Metro Settings', fields:[
-    {key:'mbta_stop',  label:'Stop ID (e.g. place-NSTAT)',  type:'text', ph:'place-NSTAT'},
-    {key:'mbta_route', label:'Route (e.g. Orange)',          type:'text', ph:'Orange'},
-  ]},
-  stocks:     { title:'📈 Stocks Settings', fields:[
-    {key:'stocks_list', label:'Stock Tickers', type:'search_chips', searchUrl:'/stocks_search', resultKey:'tickers'},
-  ]},
-  youtube:    { title:'▶️ YouTube Settings', fields:[
-    {key:'yt_channel_id', label:'Channel ID', type:'text', ph:'UC...'},
-  ]},
-  yt_comments:{ title:'💬 YT Comments Settings', fields:[
-    {key:'yt_video_id', label:'Video ID',   type:'text',     ph:'dQw4w9WgXcQ'},
-    {key:'yt_api_key',  label:'API Key',    type:'password', ph:'...'},
-  ]},
-  countdown:  { title:'⏳ Countdown Settings', fields:[
-    {key:'countdown_event',  label:'Event Name (15 chars)', type:'text',          ph:'NEW YEAR'},
-    {key:'countdown_target', label:'Target Date & Time',    type:'datetime-local', ph:''},
-    {key:'timezone',         label:'Timezone (override global)',  type:'search_chips', searchUrl:'/timezones', resultKey:'zones', maxItems:1},
-  ]},
-  world_clock:{ title:'🌍 World Clock Settings', fields:[
-    {key:'world_clock_zones', label:'Timezones (max 3)', type:'search_chips', searchUrl:'/timezones', resultKey:'zones', maxItems:3},
-  ]},
-  crypto:     { title:'₿ Crypto Settings', fields:[
-    {key:'crypto_list', label:'Cryptocurrencies', type:'search_chips', searchUrl:'/crypto_search', resultKey:'coins'},
-  ]},
-  iss:        { title:'🛸 ISS Tracker', fields:[] },
-  demo:       { title:'🎬 Demo Mode', fields:[] },
-  time:       { title:'⏱️ Time Settings', fields:[
-    {key:'timezone', label:'Timezone (override global)', type:'search_chips', searchUrl:'/timezones', resultKey:'zones', maxItems:1},
-    {key:'time_format', label:'Time Format', type:'select', opts:['12hr','24hr']},
-  ]},
-  date:       { title:'📅 Date Settings', fields:[
-    {key:'timezone', label:'Timezone (override global)', type:'search_chips', searchUrl:'/timezones', resultKey:'zones', maxItems:1},
-  ]},
-  dashboard:  { title:'🏠 Dashboard Settings', fields:[
-    {key:'timezone', label:'Timezone (override global)', type:'search_chips', searchUrl:'/timezones', resultKey:'zones', maxItems:1},
-  ]},
-  livestream: { title:'🔴 Livestream Settings', fields:[
-    {key:'livestream_interval', label:'Rotation Interval (seconds)', type:'number', ph:'25', min:'5', max:'180', step:'1'},
-    {key:'livestream_comments', label:'Comments — blank line separates slides, up to 3 lines each (use 🟥🟧🟨🟩🟦🟪⬜ for color tiles)', type:'textarea', ph:'JOHNDOE\nGreat video!\nSubscribed\n\nUSER_123\nLove the build\nVery cool'},
-    {key:'yt_channel_id', label:'YouTube Channel ID (for subs)', type:'text', ph:'UC...'},
-    {key:'yt_video_id',   label:'YouTube Video ID (live, for viewers)', type:'text', ph:'...'},
-    {key:'yt_api_key',    label:'YouTube Data API Key', type:'password', ph:'...'},
-    {key:'timezone',      label:'Timezone (override global)', type:'search_chips', searchUrl:'/timezones', resultKey:'zones', maxItems:1},
-  ]},
-  anim_rainbow:{ title:'🌈 Rainbow Settings', fields:[
-    {key:'anim_style', label:'Update Order', type:'select',
-     opts:['ltr','rtl','center_out','outside_in','spiral','diagonal','anti_diagonal','random','rain','reverse_rain','columns','columns_rtl']},
-    {key:'anim_speed', label:'Frame Speed (seconds)', type:'number', ph:'0.4', min:'0.1', max:'3', step:'0.1'},
-  ]},
-  anim_matrix:{ title:'💻 Matrix Settings', fields:[
-    {key:'anim_text',  label:'Reveal Text (45 chars / 3×15)', type:'text', ph:'SPLIT  FLAP  DISPLAY'},
-    {key:'anim_style', label:'Final Reveal Order', type:'select',
-     opts:['ltr','rtl','center_out','outside_in','spiral','diagonal','anti_diagonal','random','rain','columns']},
-    {key:'anim_speed', label:'Frame Speed (seconds)', type:'number', ph:'0.4', min:'0.1', max:'2', step:'0.1'},
-  ]},
-  anim_sweep: { title:'〰️ Sweep Settings', fields:[
-    {key:'anim_style', label:'Update Order', type:'select',
-     opts:['ltr','rtl','center_out','outside_in','spiral','diagonal','anti_diagonal','random','columns']},
-    {key:'anim_speed', label:'Frame Speed (seconds)', type:'number', ph:'0.25', min:'0.05', max:'2', step:'0.05'},
-  ]},
-  anim_twinkle:{ title:'✨ Twinkle Settings', fields:[
-    {key:'anim_speed', label:'Frame Speed (seconds)', type:'number', ph:'0.5', min:'0.1', max:'3', step:'0.1'},
-  ]},
-  anim_checker:{ title:'🎭 Checker Settings', fields:[
-    {key:'anim_style', label:'Update Order', type:'select',
-     opts:['ltr','rtl','center_out','outside_in','spiral','diagonal','random']},
-    {key:'anim_speed', label:'Frame Speed (seconds)', type:'number', ph:'0.6', min:'0.1', max:'3', step:'0.1'},
-  ]},
-};
+const APP_SETTINGS_CONFIG = {};
 
 // App registry for building the grid
 const APP_LIST = [
@@ -952,7 +877,7 @@ function appLucideIcon(key){
 function buildAppCard(a, isPlugin) {
   const div = document.createElement('div');
   const bareKey = a.key.replace('plugin_','');
-  const cfgKey = bareKey in APP_SETTINGS_CONFIG ? bareKey : a.key;
+  const cfgKey = a.key in APP_SETTINGS_CONFIG ? a.key : (bareKey in APP_SETTINGS_CONFIG ? bareKey : a.key);
   const hasCfg = (APP_SETTINGS_CONFIG[cfgKey] && (APP_SETTINGS_CONFIG[cfgKey].fields||[]).length > 0) || bareKey === 'sports';
   const removable = isPlugin;
   div.className = 'app-card has-app-actions';
@@ -2068,6 +1993,7 @@ async function openSportsSettings(){
     const filterVal = allSettings.plugin_sports_sports_filter || allSettings.sports_filter || 'all';
     const leagueVal = allSettings.plugin_sports_sports_show_league || allSettings.sports_show_league || 'yes';
     const compactVal = allSettings.plugin_sports_sports_compact || allSettings.sports_compact || 'no';
+    const delayVal = allSettings.plugin_sports_loop_delay || allSettings.sports_loop_delay || '5';
     opts.innerHTML=`
       <label style="font-size:.85rem;color:#ccc;display:flex;align-items:center;gap:6px">
         Show
@@ -2091,6 +2017,12 @@ async function openSportsSettings(){
           <option value="no"${compactVal==='no'?' selected':''}>1 Game/Page</option>
           <option value="yes"${compactVal==='yes'?' selected':''}>2 Games/Page</option>
         </select>
+      </label>
+      <label style="font-size:.85rem;color:#ccc;display:flex;align-items:center;gap:6px">
+        Delay
+        <input type="number" id="sportsDelayInput" value="${delayVal}" min="2" max="30" step="1"
+          style="width:50px;padding:4px;background:#111;color:#fff;border:1px solid #555;border-radius:4px;text-align:center;font-size:.82rem">
+        s
       </label>`;
     list.appendChild(opts);
 
@@ -2123,9 +2055,12 @@ function closeSportsSettings(){
   const filter = document.getElementById('sportsFilterSelect');
   const league = document.getElementById('sportsLeagueToggle');
   const compact = document.getElementById('sportsCompactToggle');
+  const delay = document.getElementById('sportsDelayInput');
   if(filter && league && compact){
+    const payload = {action:'save_global', sports_filter:filter.value, sports_show_league:league.value, sports_compact:compact.value};
+    if(delay) payload.plugin_sports_loop_delay = delay.value;
     fetch('/settings',{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({action:'save_global', sports_filter:filter.value, sports_show_league:league.value, sports_compact:compact.value})});
+      body:JSON.stringify(payload)});
   }
   document.getElementById('sportsModal').style.display='none';
 }

@@ -8,6 +8,14 @@
   "loop_delay": 5,
   "settings": [
     {
+      "key": "crypto_list",
+      "label": "Cryptocurrencies",
+      "type": "search_chips",
+      "searchUrl": "/crypto_search",
+      "resultKey": "coins",
+      "global_key": true
+    },
+    {
       "key": "loop_delay",
       "label": "Delay Between Pages (seconds)",
       "type": "number",

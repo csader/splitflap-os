@@ -1,10 +1,21 @@
 {
   "id": "world_clock",
   "name": "World Clock",
-  "icon": "\ud83c\udf0d",
+  "icon": "🌍",
   "description": "3 time zones",
   "type": "functional",
   "refresh_interval": 1,
   "loop_delay": 1,
-  "category": "time"
+  "category": "time",
+  "settings": [
+    {
+      "key": "world_clock_zones",
+      "label": "Timezones (max 3)",
+      "type": "search_chips",
+      "searchUrl": "/timezones",
+      "resultKey": "zones",
+      "maxItems": 3,
+      "global_key": true
+    }
+  ]
 }

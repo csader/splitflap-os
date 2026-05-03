@@ -686,14 +686,29 @@ def get_plugin_settings_config():
     for app_id, manifest in _plugin_registry.items():
         fields = []
         for s in manifest.get("settings", []):
+            # global_key: true means use the key as-is (no plugin_ prefix)
+            raw_key = s['key']
+            key = raw_key if s.get('global_key') else f"plugin_{app_id}_{raw_key}"
             field = {
-                "key": f"plugin_{app_id}_{s['key']}",
-                "label": s.get("label", s["key"]),
+                "key": key,
+                "label": s.get("label", raw_key),
                 "type": s.get("type", "text"),
                 "ph": s.get("default", ""),
             }
             if s.get("options"):
                 field["opts"] = s["options"]
+            if s.get("min"):
+                field["min"] = s["min"]
+            if s.get("max"):
+                field["max"] = s["max"]
+            if s.get("step"):
+                field["step"] = s["step"]
+            if s.get("searchUrl"):
+                field["searchUrl"] = s["searchUrl"]
+            if s.get("resultKey"):
+                field["resultKey"] = s["resultKey"]
+            if s.get("maxItems"):
+                field["maxItems"] = s["maxItems"]
             fields.append(field)
         configs[f"plugin_{app_id}"] = {
             "title": f"{manifest.get('icon', '🧩')} {manifest.get('name', app_id)}",

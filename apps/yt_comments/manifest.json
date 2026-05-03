@@ -8,6 +8,19 @@
   "loop_delay": 8,
   "settings": [
     {
+      "key": "yt_video_id",
+      "label": "Video ID",
+      "type": "text",
+      "default": "dQw4w9WgXcQ",
+      "global_key": true
+    },
+    {
+      "key": "yt_api_key",
+      "label": "API Key",
+      "type": "password",
+      "global_key": true
+    },
+    {
       "key": "loop_delay",
       "label": "Delay Between Pages (seconds)",
       "type": "number",

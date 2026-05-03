@@ -1,4 +1,4 @@
-# Split-Flap OS
+# SplitFlap OS
 
 A web-based control interface for modular split-flap displays. Manage apps, compose messages, and calibrate hardware from any device.
 

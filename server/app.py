@@ -829,20 +829,22 @@ def get_plugin_settings_config():
                 "type": s.get("type", "text"),
                 "ph": s.get("default", ""),
             }
-            if s.get("options"):
+            if "options" in s:
                 field["opts"] = s["options"]
-            if s.get("min"):
+            if "min" in s:
                 field["min"] = s["min"]
-            if s.get("max"):
+            if "max" in s:
                 field["max"] = s["max"]
-            if s.get("step"):
+            if "step" in s:
                 field["step"] = s["step"]
-            if s.get("searchUrl"):
+            if "searchUrl" in s:
                 field["searchUrl"] = s["searchUrl"]
-            if s.get("resultKey"):
+            if "resultKey" in s:
                 field["resultKey"] = s["resultKey"]
-            if s.get("maxItems"):
+            if "maxItems" in s:
                 field["maxItems"] = s["maxItems"]
+            if "inline_toggle" in s:
+                field["inline_toggle"] = s["inline_toggle"]
             fields.append(field)
         configs[f"plugin_{app_id}"] = {
             "title": f"{manifest.get('icon', '🧩')} {manifest.get('name', app_id)}",

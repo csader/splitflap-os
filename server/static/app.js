@@ -1023,6 +1023,65 @@ async function uninstallApp(appId){
 // ── Per-app settings modal ──────────────────────────────────
 let currentAppSettingsKey = null;
 
+function getSettingsValue(key, fallback=''){
+  const value = globalSettings ? globalSettings[key] : undefined;
+  if(value === undefined || value === null || value === '') return fallback;
+  return value;
+}
+
+function normalizeSettingOption(opt){
+  if(opt && typeof opt === 'object'){
+    return {
+      value: String(opt.value ?? ''),
+      label: String(opt.label ?? opt.value ?? '')
+    };
+  }
+  return { value: String(opt ?? ''), label: String(opt ?? '') };
+}
+
+function normalizeToggleSize(rawSize){
+  const size = String(rawSize || 'md').toLowerCase();
+  if(size === 'small' || size === 'sm') return 'sm';
+  if(size === 'large' || size === 'lg') return 'lg';
+  return 'md';
+}
+
+function createSegmentedToggleControl({id, options, value, size='md'}){
+  const normalized = (options || []).map(normalizeSettingOption).filter(o=>o.value!=='' || o.label!=='');
+  const fallback = normalized[0] ? normalized[0].value : '';
+  const current = String(value ?? fallback);
+  const sizeClass = normalizeToggleSize(size);
+
+  const wrapper = document.createElement('div');
+  wrapper.className = `sf-segmented-toggle ${sizeClass}`;
+
+  const hidden = document.createElement('input');
+  hidden.type = 'hidden';
+  hidden.id = id;
+  hidden.value = normalized.some(o=>o.value===current) ? current : fallback;
+  wrapper.appendChild(hidden);
+
+  const setActive = (newValue)=>{
+    hidden.value = newValue;
+    wrapper.querySelectorAll('button').forEach(btn=>{
+      btn.classList.toggle('active', btn.dataset.value===newValue);
+    });
+  };
+
+  normalized.forEach(opt=>{
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'sf-segmented-toggle-btn';
+    btn.dataset.value = opt.value;
+    btn.textContent = opt.label;
+    btn.onclick = ()=> setActive(opt.value);
+    wrapper.appendChild(btn);
+  });
+
+  setActive(hidden.value);
+  return wrapper;
+}
+
 async function openAppSettings(appKey){
   if(appKey==='sports'||appKey==='plugin_sports'){ openSportsSettings(); return; }
   currentAppSettingsKey = appKey;
@@ -1048,19 +1107,36 @@ async function openAppSettings(appKey){
       div.appendChild(label);
 
       let input;
+      const fieldValue = getSettingsValue(f.key, f.ph ?? '');
+
+      if(f.type==='toggle'){
+        const toggleSize = normalizeToggleSize(f.size || f.toggle_size);
+        const toggle = createSegmentedToggleControl({
+          id: `asf_${f.key}`,
+          options: f.opts || [],
+          value: fieldValue,
+          size: toggleSize
+        });
+        div.appendChild(toggle);
+        fields.appendChild(div);
+        return;
+      }
+
       if(f.type==='select'){
         input = document.createElement('select');
-        (f.opts||[]).forEach(opt=>{
+        (f.opts||[]).forEach(rawOpt=>{
+          const opt = normalizeSettingOption(rawOpt);
           const o = document.createElement('option');
-          o.value = opt; o.textContent = opt;
-          if((globalSettings[f.key]||f.ph||'')===opt) o.selected=true;
+          o.value = opt.value;
+          o.textContent = opt.label;
+          if(String(fieldValue)===opt.value) o.selected=true;
           input.appendChild(o);
         });
       } else if(f.type==='textarea'){
         input = document.createElement('textarea');
         input.rows = 8;
         if(f.ph) input.placeholder = f.ph;
-        input.value = globalSettings[f.key]||'';
+        input.value = fieldValue;
       } else if(f.type==='search_chips' && f.maxItems===1){
         const wrapper = document.createElement('div');
         div.appendChild(wrapper);
@@ -1070,7 +1146,7 @@ async function openAppSettings(appKey){
           hiddenId: `asf_${f.key}`,
           searchUrl: f.searchUrl,
           resultKey: f.resultKey,
-          currentValue: globalSettings[f.key]||''
+          currentValue: fieldValue
         });
         return;
       } else if(f.type==='search_chips'){
@@ -1084,7 +1160,7 @@ async function openAppSettings(appKey){
           searchUrl: f.searchUrl,
           resultKey: f.resultKey,
           maxItems: f.maxItems||null,
-          currentValues: globalSettings[f.key]||''
+          currentValues: fieldValue
         });
         return;
       } else {
@@ -1095,12 +1171,41 @@ async function openAppSettings(appKey){
         if(f.step) input.step = f.step;
         if(f.ph)   input.placeholder = f.ph;
         // Special: datetime-local needs T stripped to 16 chars
-        let val = globalSettings[f.key]||'';
+        let val = String(fieldValue ?? '');
         if(f.type==='datetime-local' && val.length>16) val=val.slice(0,16);
         input.value = val;
       }
+
       input.id = `asf_${f.key}`;
-      div.appendChild(input);
+
+      const inlineToggle = f.inline_toggle;
+      if(inlineToggle && (inlineToggle.key || '').trim()){
+        const inlineKey = inlineToggle.key.trim();
+        const inlineValue = getSettingsValue(inlineKey, inlineToggle.default ?? '');
+        const inlineSize = normalizeToggleSize(inlineToggle.size);
+        const inlineControl = createSegmentedToggleControl({
+          id: `asf_${inlineKey}`,
+          options: inlineToggle.options || [],
+          value: inlineValue,
+          size: inlineSize
+        });
+        inlineControl.classList.add('sf-inline-toggle');
+
+        const row = document.createElement('div');
+        row.className = 'sf-inline-field-row';
+        const position = inlineToggle.position === 'before' ? 'before' : 'after';
+        if(position === 'before'){
+          row.appendChild(inlineControl);
+          row.appendChild(input);
+        } else {
+          row.appendChild(input);
+          row.appendChild(inlineControl);
+        }
+        div.appendChild(row);
+      } else {
+        div.appendChild(input);
+      }
+
       fields.appendChild(div);
     });
   }
@@ -1118,7 +1223,12 @@ function saveAppSettings(){
   const payload = {action:'save_global'};
   cfg.fields.forEach(f=>{
     const el = document.getElementById(`asf_${f.key}`);
-    if(el) payload[f.key] = el.value;
+    if(el) payload[f.key] = el.type === 'checkbox' ? el.checked : el.value;
+    const inlineKey = f.inline_toggle && (f.inline_toggle.key || '').trim();
+    if(inlineKey){
+      const inlineEl = document.getElementById(`asf_${inlineKey}`);
+      if(inlineEl) payload[inlineKey] = inlineEl.value;
+    }
   });
   fetch('/settings',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
   .then(()=>{ showToast('Settings saved'); closeAppSettings(); });

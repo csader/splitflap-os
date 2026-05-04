@@ -84,6 +84,57 @@ def fetch(settings, format_lines, get_rows, get_cols):
 
 `fetch()` returns a list of page strings. Each page is displayed for `loop_delay` seconds. Data is cached for `refresh_interval` seconds.
 
+### App settings field types
+
+`manifest.json` `settings` entries support these input types:
+
+- `text`, `number`, `password`, `datetime-local`, `textarea`
+- `select` with `options`
+- `search_chips` with `searchUrl`, `resultKey`, and `maxItems`
+- `toggle` with `options` (segmented buttons)
+
+For `select`/`toggle`, each option can be either:
+
+- a string: `"MI"`
+- or an object: `{ "value": "mi", "label": "MI" }`
+
+For `toggle`, optional sizing:
+
+- `size`: `"sm"`, `"md"` (default), or `"lg"`
+
+### Inline unit toggle next to an input
+
+You can attach a segmented toggle to a text/number field using `inline_toggle`.
+
+Example:
+
+```json
+{
+  "key": "search_radius",
+  "label": "Search Radius",
+  "type": "number",
+  "default": 100,
+  "inline_toggle": {
+    "key": "search_radius_unit",
+    "options": [
+      { "value": "mi", "label": "MI" },
+      { "value": "km", "label": "KM" }
+    ],
+    "default": "mi",
+    "position": "after",
+    "size": "md"
+  }
+}
+```
+
+`inline_toggle` fields:
+
+- `key` (required): setting key saved alongside the main input
+- `options` (required): list of string/object options
+- `default` (optional): default selected value
+- `position` (optional): `"before"` or `"after"` (default)
+- `size` (optional): `"sm"`, `"md"`, or `"lg"`
+
 ## Attribution
 
 Based on the [Split-Flap Display](https://github.com/adamgmakes/SplitFlapDisplay) by **Adam G Makes**, licensed under [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/).

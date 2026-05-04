@@ -180,6 +180,28 @@ input:checked+.slider:before{transform:translateX(20px)}
 .modal-field{margin-bottom:14px}
 .modal-field label{display:block;color:#aaa;font-size:.83rem;margin-bottom:5px}
 
+/* ── APP SETTINGS SEGMENTED TOGGLES ── */
+.sf-segmented-toggle{display:inline-flex;gap:4px;flex-wrap:wrap;padding:3px;border:1px solid var(--border);border-radius:12px;background:#1a1a1a}
+.sf-segmented-toggle-btn{border:none;background:transparent;color:#bbb;border-radius:9px;padding:6px 12px;font-size:.9rem;font-weight:700;cursor:pointer;transition:.15s}
+.sf-segmented-toggle-btn:hover{background:#2b2b2b;color:#fff}
+.sf-segmented-toggle-btn.active{background:var(--accent);color:#000}
+.sf-segmented-toggle.sm .sf-segmented-toggle-btn{padding:4px 9px;font-size:.78rem;border-radius:8px}
+.sf-segmented-toggle.md .sf-segmented-toggle-btn{padding:6px 12px;font-size:.9rem;border-radius:9px}
+.sf-segmented-toggle.lg .sf-segmented-toggle-btn{padding:9px 16px;font-size:1rem;border-radius:10px}
+
+.sf-inline-field-row{display:flex;align-items:center;gap:10px;flex-wrap:nowrap}
+.sf-inline-field-row > input,
+.sf-inline-field-row > select,
+.sf-inline-field-row > textarea{flex:1;min-width:0}
+.sf-inline-toggle{flex:0 0 auto}
+
+@media(max-width:600px){
+  .sf-inline-field-row{gap:8px}
+  .sf-segmented-toggle.md .sf-segmented-toggle-btn{padding:6px 10px;font-size:.85rem}
+  .sf-segmented-toggle.sm .sf-segmented-toggle-btn{padding:4px 8px;font-size:.75rem}
+  .sf-segmented-toggle.lg .sf-segmented-toggle-btn{padding:8px 12px;font-size:.9rem}
+}
+
 /* ── AUTO-TUNE OVERLAY ── */
 #autoTuneOverlay .modal-content{max-width:720px}
 .at-header{text-align:center;margin-bottom:16px}

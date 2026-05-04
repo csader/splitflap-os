@@ -866,7 +866,7 @@ const LUCIDE_APP_ICONS = {
   'word-clock':'type', 'time-since':'hourglass', 'moon-phase':'moon',
   'art-clock':'palette', 'chuck-norris':'shield', 'trivia':'brain',
   'on-this-day':'scroll-text', 'national-today':'party-popper',
-  'news-headlines':'newspaper',
+  'news-headlines':'newspaper', 'planes_overhead':'plane',
 };
 function appLucideIcon(key){
   const id = key.replace('plugin_','');

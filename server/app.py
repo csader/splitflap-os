@@ -818,11 +818,25 @@ def get_plugin_app_list():
 def get_plugin_settings_config():
     configs = {}
     for app_id, manifest in _plugin_registry.items():
+        def resolve_manifest_key(raw_key, *, global_key=False):
+            return raw_key if global_key else f"plugin_{app_id}_{raw_key}"
+
+        # Build a lookup of manifest raw keys -> real stored setting keys.
+        resolved_keys = {
+            s['key']: resolve_manifest_key(s['key'], global_key=s.get('global_key', False))
+            for s in manifest.get("settings", []) if s.get('key')
+        }
+
+        def map_related_key(raw_key):
+            if raw_key in resolved_keys:
+                return resolved_keys[raw_key]
+            return resolve_manifest_key(raw_key)
+
         fields = []
         for s in manifest.get("settings", []):
             # global_key: true means use the key as-is (no plugin_ prefix)
             raw_key = s['key']
-            key = raw_key if s.get('global_key') else f"plugin_{app_id}_{raw_key}"
+            key = resolved_keys[raw_key]
             field = {
                 "key": key,
                 "label": s.get("label", raw_key),
@@ -846,11 +860,24 @@ def get_plugin_settings_config():
             if "maxItems" in s:
                 field["maxItems"] = s["maxItems"]
             if "inline_toggle" in s:
-                field["inline_toggle"] = s["inline_toggle"]
+                inline = dict(s["inline_toggle"])
+                inline_key = inline.get("key")
+                if inline_key:
+                    inline["key"] = resolve_manifest_key(
+                        inline_key,
+                        global_key=inline.get("global_key", False)
+                    )
+                field["inline_toggle"] = inline
             if "sync_values" in s:
-                field["sync_values"] = s["sync_values"]
+                field["sync_values"] = {
+                    source_value: {
+                        map_related_key(target_key): target_value
+                        for target_key, target_value in target_map.items()
+                    }
+                    for source_value, target_map in s["sync_values"].items()
+                }
             if "sync_parent" in s:
-                field["sync_parent"] = s["sync_parent"]
+                field["sync_parent"] = map_related_key(s["sync_parent"])
             if "sync_parent_custom_value" in s:
                 field["sync_parent_custom_value"] = s["sync_parent_custom_value"]
             fields.append(field)

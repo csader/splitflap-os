@@ -831,6 +831,8 @@ def get_plugin_settings_config():
             }
             if "options" in s:
                 field["opts"] = s["options"]
+            if "size" in s:
+                field["size"] = s["size"]
             if "min" in s:
                 field["min"] = s["min"]
             if "max" in s:
@@ -845,6 +847,12 @@ def get_plugin_settings_config():
                 field["maxItems"] = s["maxItems"]
             if "inline_toggle" in s:
                 field["inline_toggle"] = s["inline_toggle"]
+            if "sync_values" in s:
+                field["sync_values"] = s["sync_values"]
+            if "sync_parent" in s:
+                field["sync_parent"] = s["sync_parent"]
+            if "sync_parent_custom_value" in s:
+                field["sync_parent_custom_value"] = s["sync_parent_custom_value"]
             fields.append(field)
         configs[f"plugin_{app_id}"] = {
             "title": f"{manifest.get('icon', '🧩')} {manifest.get('name', app_id)}",

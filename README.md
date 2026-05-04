@@ -135,6 +135,38 @@ Example:
 - `position` (optional): `"before"` or `"after"` (default)
 - `size` (optional): `"sm"`, `"md"`, or `"lg"`
 
+### Settings sync rules (optional)
+
+You can declaratively sync setting values across fields in `manifest.json`.
+
+- `sync_values` on a source field: maps the field value to one or more target key/value updates.
+- `sync_parent` on a child field: identifies a parent key to set when this child is manually changed.
+- `sync_parent_custom_value` on a child field: value to set on the parent (default: `"custom"`).
+
+Example:
+
+```json
+{
+  "key": "units_preset",
+  "type": "toggle",
+  "options": ["aviation", "metric", "imperial", "custom"],
+  "sync_values": {
+    "aviation": {"distance_unit": "nm", "altitude_unit": "fl", "speed_unit": "kt"},
+    "metric":   {"distance_unit": "km", "altitude_unit": "m",  "speed_unit": "kmh"},
+    "imperial": {"distance_unit": "mi", "altitude_unit": "ft", "speed_unit": "mph"}
+  }
+}
+```
+
+```json
+{
+  "key": "distance_unit",
+  "type": "toggle",
+  "sync_parent": "units_preset",
+  "sync_parent_custom_value": "custom"
+}
+```
+
 ## Attribution
 
 Based on the [Split-Flap Display](https://github.com/adamgmakes/SplitFlapDisplay) by **Adam G Makes**, licensed under [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/).

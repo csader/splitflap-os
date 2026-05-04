@@ -1051,6 +1051,7 @@ function createSegmentedToggleControl({id, options, value, size='md'}){
   const fallback = normalized[0] ? normalized[0].value : '';
   const current = String(value ?? fallback);
   const sizeClass = normalizeToggleSize(size);
+  const changeListeners = [];
 
   const wrapper = document.createElement('div');
   wrapper.className = `sf-segmented-toggle ${sizeClass}`;
@@ -1061,11 +1062,15 @@ function createSegmentedToggleControl({id, options, value, size='md'}){
   hidden.value = normalized.some(o=>o.value===current) ? current : fallback;
   wrapper.appendChild(hidden);
 
-  const setActive = (newValue)=>{
-    hidden.value = newValue;
+  const setActive = (newValue, notify=false)=>{
+    const nextValue = String(newValue ?? fallback);
+    const resolved = normalized.some(o=>o.value===nextValue) ? nextValue : fallback;
+    const changed = hidden.value !== resolved;
+    hidden.value = resolved;
     wrapper.querySelectorAll('button').forEach(btn=>{
-      btn.classList.toggle('active', btn.dataset.value===newValue);
+      btn.classList.toggle('active', btn.dataset.value===resolved);
     });
+    if(notify && changed) changeListeners.forEach(cb=>cb(resolved));
   };
 
   normalized.forEach(opt=>{
@@ -1074,12 +1079,51 @@ function createSegmentedToggleControl({id, options, value, size='md'}){
     btn.className = 'sf-segmented-toggle-btn';
     btn.dataset.value = opt.value;
     btn.textContent = opt.label;
-    btn.onclick = ()=> setActive(opt.value);
+    btn.onclick = ()=> setActive(opt.value, true);
     wrapper.appendChild(btn);
   });
 
+  wrapper._setValue = (newValue)=> setActive(newValue, false);
+  wrapper._addChangeListener = (cb)=>{
+    if(typeof cb === 'function') changeListeners.push(cb);
+  };
+
   setActive(hidden.value);
   return wrapper;
+}
+
+function getModalFieldValue(key){
+  const el = document.getElementById(`asf_${key}`);
+  return el ? String(el.value ?? '') : '';
+}
+
+// Set a modal field value without triggering change listeners.
+// Works for plain inputs/selects and segmented toggle controls.
+function setModalFieldValue(key, value){
+  const el = document.getElementById(`asf_${key}`);
+  if(!el) return;
+  const wrapper = el.parentElement && el.parentElement.classList.contains('sf-segmented-toggle')
+    ? el.parentElement
+    : null;
+  if(wrapper && typeof wrapper._setValue === 'function'){
+    wrapper._setValue(value);
+    return;
+  }
+  el.value = value ?? '';
+}
+
+// Bind a change callback for either native form controls or segmented toggle wrappers.
+function bindModalFieldChange(key, onChange){
+  const el = document.getElementById(`asf_${key}`);
+  if(!el || typeof onChange !== 'function') return;
+  const wrapper = el.parentElement && el.parentElement.classList.contains('sf-segmented-toggle')
+    ? el.parentElement
+    : null;
+  if(wrapper && typeof wrapper._addChangeListener === 'function'){
+    wrapper._addChangeListener(onChange);
+    return;
+  }
+  el.addEventListener('change', ()=> onChange(String(el.value ?? '')));
 }
 
 async function openAppSettings(appKey){
@@ -1208,6 +1252,45 @@ async function openAppSettings(appKey){
 
       fields.appendChild(div);
     });
+
+    const fieldsByKey = new Map(cfg.fields.map(f=>[f.key, f]));
+    let syncInProgress = false;
+
+    // Apply manifest-declared sync mappings for a source field.
+    // Example: units_preset -> {distance_unit, altitude_unit, speed_unit}.
+    function applySyncValues(sourceKey){
+      const source = fieldsByKey.get(sourceKey);
+      if(!source || !source.sync_values) return;
+      const selected = getModalFieldValue(sourceKey);
+      const mapping = source.sync_values[selected];
+      if(!mapping || typeof mapping !== 'object') return;
+      syncInProgress = true;
+      Object.entries(mapping).forEach(([targetKey, targetValue])=>{
+        if(fieldsByKey.has(targetKey)) setModalFieldValue(targetKey, targetValue);
+      });
+      syncInProgress = false;
+    }
+
+    // Single entry point for per-field interactions.
+    // - Child fields can force parent field to a custom marker value.
+    // - Source fields can fan out value updates to dependent fields.
+    function onFieldChanged(fieldKey){
+      const field = fieldsByKey.get(fieldKey);
+      if(!field) return;
+
+      if(!syncInProgress && field.sync_parent){
+        const parentKey = field.sync_parent;
+        const customValue = field.sync_parent_custom_value || 'custom';
+        if(fieldsByKey.has(parentKey) && getModalFieldValue(parentKey) !== String(customValue)){
+          setModalFieldValue(parentKey, customValue);
+        }
+      }
+
+      applySyncValues(fieldKey);
+    }
+
+    cfg.fields.forEach(f=> bindModalFieldChange(f.key, ()=> onFieldChanged(f.key)));
+    cfg.fields.forEach(f=> applySyncValues(f.key));
   }
 
   document.getElementById('appSettingsModal').style.display='flex';

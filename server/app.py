@@ -188,16 +188,13 @@ MQTT_TOPIC_PREFIX = "splitflap"
 MQTT_AVAIL_TOPIC = f"{MQTT_TOPIC_PREFIX}/availability"
 MQTT_TEXT_CMD     = f"{MQTT_TOPIC_PREFIX}/text/set"
 MQTT_TEXT_STATE   = f"{MQTT_TOPIC_PREFIX}/text/state"
-MQTT_MODE_CMD     = f"{MQTT_TOPIC_PREFIX}/mode/set"
-MQTT_MODE_STATE   = f"{MQTT_TOPIC_PREFIX}/mode/state"
+MQTT_MODE_CMD     = f"{MQTT_TOPIC_PREFIX}/app/set"
+MQTT_MODE_STATE   = f"{MQTT_TOPIC_PREFIX}/app/state"
 MQTT_STATUS_STATE = f"{MQTT_TOPIC_PREFIX}/status/state"
-
-MQTT_MODE_OPTIONS = [
-    "off", "time", "date", "weather", "dashboard", "countdown", "world_clock",
-    "metro", "stocks", "sports", "youtube", "yt_comments", "crypto", "iss",
-    "livestream", "demo", "anim_rainbow", "anim_sweep", "anim_twinkle",
-    "anim_checker", "anim_matrix",
-]
+MQTT_CENTER_CMD   = f"{MQTT_TOPIC_PREFIX}/center/set"
+MQTT_CENTER_STATE = f"{MQTT_TOPIC_PREFIX}/center/state"
+MQTT_PLAYLIST_CMD = f"{MQTT_TOPIC_PREFIX}/playlist/set"
+MQTT_PLAYLIST_STATE = f"{MQTT_TOPIC_PREFIX}/playlist/state"
 
 MQTT_DEVICE = {
     "identifiers": ["splitflap_display"],
@@ -209,13 +206,25 @@ MQTT_DEVICE = {
 mqtt_client = None
 
 
+def _get_mqtt_app_options():
+    """Build dynamic app list from plugin registry."""
+    return ["off"] + sorted(_plugin_registry.keys())
+
+
+def _get_mqtt_playlist_options():
+    """Build playlist list from saved playlists."""
+    return ["off"] + sorted(settings.get('saved_app_playlists', {}).keys())
+
+
 def mqtt_publish_state():
     """Publish current display state and active mode to MQTT."""
     if not mqtt_client or not mqtt_client.is_connected():
         return
-    mqtt_client.publish(MQTT_TEXT_STATE, current_display_string, retain=True)
     mqtt_client.publish(MQTT_STATUS_STATE, current_display_string, retain=True)
     mqtt_client.publish(MQTT_MODE_STATE, active_app or "off", retain=True)
+    center_state = "ON" if settings.get('mqtt_center', True) else "OFF"
+    mqtt_client.publish(MQTT_CENTER_STATE, center_state, retain=True)
+    mqtt_client.publish(MQTT_PLAYLIST_STATE, app_playlist_name or "off", retain=True)
 
 
 def mqtt_publish_discovery():
@@ -227,21 +236,40 @@ def mqtt_publish_discovery():
     configs = [
         ("text", "splitflap_text", {
             "unique_id": "splitflap_text",
-            "name": "Display Text",
+            "name": "Display Text (use | for line breaks)",
             "command_topic": MQTT_TEXT_CMD,
             "state_topic": MQTT_TEXT_STATE,
-            "min": 1,
+            "min": 0,
             "max": 45,
             "mode": "text",
             "availability": avail,
             "device": MQTT_DEVICE,
         }),
-        ("select", "splitflap_mode", {
-            "unique_id": "splitflap_mode",
-            "name": "Display Mode",
+        ("select", "splitflap_app", {
+            "unique_id": "splitflap_app",
+            "name": "Active App",
             "command_topic": MQTT_MODE_CMD,
             "state_topic": MQTT_MODE_STATE,
-            "options": MQTT_MODE_OPTIONS,
+            "options": _get_mqtt_app_options(),
+            "availability": avail,
+            "device": MQTT_DEVICE,
+        }),
+        ("select", "splitflap_playlist", {
+            "unique_id": "splitflap_playlist",
+            "name": "Playlist",
+            "command_topic": MQTT_PLAYLIST_CMD,
+            "state_topic": MQTT_PLAYLIST_STATE,
+            "options": _get_mqtt_playlist_options(),
+            "availability": avail,
+            "device": MQTT_DEVICE,
+        }),
+        ("switch", "splitflap_center", {
+            "unique_id": "splitflap_center",
+            "name": "Center Text",
+            "command_topic": MQTT_CENTER_CMD,
+            "state_topic": MQTT_CENTER_STATE,
+            "payload_on": "ON",
+            "payload_off": "OFF",
             "availability": avail,
             "device": MQTT_DEVICE,
         }),
@@ -252,10 +280,54 @@ def mqtt_publish_discovery():
             "availability": avail,
             "device": MQTT_DEVICE,
         }),
+        ("sensor", "splitflap_network_mode", {
+            "unique_id": "splitflap_network_mode",
+            "name": "Network Mode",
+            "state_topic": f"{MQTT_TOPIC_PREFIX}/network/mode",
+            "icon": "mdi:wifi",
+            "availability": avail,
+            "device": MQTT_DEVICE,
+        }),
+        ("sensor", "splitflap_network_ssid", {
+            "unique_id": "splitflap_network_ssid",
+            "name": "WiFi SSID",
+            "state_topic": f"{MQTT_TOPIC_PREFIX}/network/ssid",
+            "icon": "mdi:wifi",
+            "availability": avail,
+            "device": MQTT_DEVICE,
+        }),
+        ("sensor", "splitflap_network_ip", {
+            "unique_id": "splitflap_network_ip",
+            "name": "IP Address",
+            "state_topic": f"{MQTT_TOPIC_PREFIX}/network/ip",
+            "icon": "mdi:ip-network",
+            "availability": avail,
+            "device": MQTT_DEVICE,
+        }),
+        ("binary_sensor", "splitflap_online", {
+            "unique_id": "splitflap_online",
+            "name": "Internet Connected",
+            "state_topic": f"{MQTT_TOPIC_PREFIX}/network/online",
+            "payload_on": "ON",
+            "payload_off": "OFF",
+            "device_class": "connectivity",
+            "availability": avail,
+            "device": MQTT_DEVICE,
+        }),
+        ("button", "splitflap_home", {
+            "unique_id": "splitflap_home",
+            "name": "Home All",
+            "command_topic": f"{MQTT_TOPIC_PREFIX}/home/set",
+            "icon": "mdi:home-import-outline",
+            "availability": avail,
+            "device": MQTT_DEVICE,
+        }),
     ]
     for component, object_id, payload in configs:
         topic = f"homeassistant/{component}/{object_id}/config"
         mqtt_client.publish(topic, json.dumps(payload), retain=True)
+    # Remove deprecated entities
+    mqtt_client.publish("homeassistant/select/splitflap_mode/config", "", retain=True)
     logging.info("MQTT discovery payloads published")
 
 
@@ -264,6 +336,9 @@ def _mqtt_on_connect(client, userdata, flags, rc, properties=None):
         logging.info("MQTT connected to broker")
         client.subscribe(MQTT_TEXT_CMD)
         client.subscribe(MQTT_MODE_CMD)
+        client.subscribe(MQTT_CENTER_CMD)
+        client.subscribe(MQTT_PLAYLIST_CMD)
+        client.subscribe(f"{MQTT_TOPIC_PREFIX}/home/set")
         client.subscribe("homeassistant/status")
         client.publish(MQTT_AVAIL_TOPIC, "online", retain=True)
         mqtt_publish_discovery()
@@ -274,6 +349,7 @@ def _mqtt_on_connect(client, userdata, flags, rc, properties=None):
 
 def _mqtt_on_message(client, userdata, msg):
     global active_app, current_playlist, last_sent_page, loop_delay
+    global active_app_playlist, app_playlist_loop, app_playlist_name
     payload = msg.payload.decode('utf-8', errors='ignore').strip()
 
     if msg.topic == "homeassistant/status" and payload == "online":
@@ -283,26 +359,61 @@ def _mqtt_on_message(client, userdata, msg):
 
     if msg.topic == MQTT_TEXT_CMD:
         active_app = None
-        current_playlist = [payload]
+        active_app_playlist = None
+        if settings.get('mqtt_center', True):
+            lines = payload.split('|')
+            current_playlist = [format_lines(*lines)]
+        else:
+            current_playlist = [payload]
         last_sent_page = None
         stop_event.set()
+        mqtt_publish_state()
+
+    elif msg.topic == MQTT_CENTER_CMD:
+        settings['mqtt_center'] = (payload.upper() == 'ON')
+        save_settings(settings)
         mqtt_publish_state()
 
     elif msg.topic == MQTT_MODE_CMD:
         if payload == "off":
             active_app = None
+            active_app_playlist = None
             stop_event.set()
-        elif payload in MQTT_MODE_OPTIONS:
+        elif payload in _plugin_registry:
             active_app = payload
-            if active_app in _plugin_registry:
-                manifest = _plugin_registry[active_app]
-                if manifest.get('animation'):
-                    loop_delay = max(0.1, float(settings.get('anim_speed', '0.4')))
-                else:
-                    loop_delay = float(manifest.get('loop_delay', 5))
+            active_app_playlist = None
+            manifest = _plugin_registry[payload]
+            if manifest.get('animation'):
+                loop_delay = max(0.1, float(settings.get('anim_speed', '0.4')))
             else:
-                loop_delay = 5
+                saved = settings.get(f'plugin_{payload}_loop_delay', '')
+                loop_delay = float(saved) if saved else float(manifest.get('loop_delay', 5))
             stop_event.set()
+        mqtt_publish_state()
+
+    elif msg.topic == MQTT_PLAYLIST_CMD:
+        if payload == "off":
+            active_app_playlist = None
+            active_app = None
+            stop_event.set()
+        else:
+            playlists = settings.get('saved_app_playlists', {})
+            if payload in playlists:
+                pl = playlists[payload]
+                active_app_playlist = pl.get('entries', [])
+                app_playlist_loop = pl.get('loop', True)
+                app_playlist_name = payload
+                active_app = None
+                current_playlist = []
+                last_sent_page = None
+                stop_event.set()
+        mqtt_publish_state()
+
+    elif msg.topic == f"{MQTT_TOPIC_PREFIX}/home/set":
+        send_raw("m**h")
+        is_homed = True
+        current_indices = [0] * get_module_count()
+        current_display_string = " " * get_module_count()
         mqtt_publish_state()
 
 
@@ -664,8 +775,12 @@ def get_plugin_pages(app_id):
         try:
             plugin_settings = dict(settings)  # full settings for built-in apps
             for s in manifest.get("settings", []):
-                key = f"plugin_{app_id}_{s['key']}"
-                plugin_settings[s["key"]] = settings.get(key, s.get("default", ""))
+                if s.get('global_key'):
+                    # global_key settings use the key as-is, already in settings
+                    pass
+                else:
+                    key = f"plugin_{app_id}_{s['key']}"
+                    plugin_settings[s["key"]] = settings.get(key, s.get("default", ""))
             pages = mod.fetch(plugin_settings, format_lines, get_rows, get_cols)
             if not isinstance(pages, list):
                 pages = [str(pages)]
@@ -1376,6 +1491,7 @@ def app_playlists():
         'loop': data.get('loop', True),
     }
     save_settings(settings)
+    mqtt_publish_discovery()
     return jsonify(status="saved", name=name)
 
 @app.route('/app_playlists/<path:name>', methods=['DELETE'])
@@ -1385,6 +1501,7 @@ def delete_app_playlist(name):
         del plists[name]
         settings['saved_app_playlists'] = plists
         save_settings(settings)
+    mqtt_publish_discovery()
     return jsonify(status="deleted")
 
 
@@ -1465,6 +1582,7 @@ def app_library_install():
 
     load_installed_plugins()
     _registry_cache['fetched_at'] = 0
+    mqtt_publish_discovery()
     return jsonify(status="success", id=app_id)
 
 
@@ -1485,6 +1603,7 @@ def app_library_uninstall():
         save_settings(settings)
     load_installed_plugins()
     _registry_cache['fetched_at'] = 0
+    mqtt_publish_discovery()
     return jsonify(status="success", id=app_id)
 
 
@@ -1653,9 +1772,37 @@ def _check_network():
     except Exception:
         _is_online = False
 
+    # Publish network state via MQTT
+    _mqtt_publish_network()
+
 def check_online():
     """Return cached online status. Refreshed periodically."""
     return _is_online
+
+
+def _mqtt_publish_network():
+    """Publish network status to MQTT."""
+    if not mqtt_client or not mqtt_client.is_connected():
+        return
+    import subprocess
+    ip = '?'
+    ssid = '?'
+    try:
+        result = subprocess.run(['hostname', '-I'], capture_output=True, text=True, timeout=2)
+        ip = result.stdout.strip().split()[0] if result.stdout.strip() else '?'
+    except Exception:
+        pass
+    try:
+        result = subprocess.run(['iwgetid', '-r'], capture_output=True, text=True, timeout=2)
+        ssid = result.stdout.strip() or ('SplitflapOS' if _network_mode == 'hotspot' else '?')
+    except Exception:
+        if _network_mode == 'hotspot':
+            ssid = settings.get('hotspot_ssid', 'SplitflapOS')
+    mqtt_client.publish(f"{MQTT_TOPIC_PREFIX}/network/mode", _network_mode, retain=True)
+    mqtt_client.publish(f"{MQTT_TOPIC_PREFIX}/network/ssid", ssid, retain=True)
+    mqtt_client.publish(f"{MQTT_TOPIC_PREFIX}/network/ip", ip, retain=True)
+    mqtt_client.publish(f"{MQTT_TOPIC_PREFIX}/network/online", "ON" if _is_online else "OFF", retain=True)
+
 
 # Initial check on startup
 threading.Thread(target=_check_network, daemon=True).start()

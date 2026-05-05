@@ -179,6 +179,26 @@ input:checked+.slider:before{transform:translateX(20px)}
 .modal-content select option{background:#222}
 .modal-field{margin-bottom:14px}
 .modal-field label{display:block;color:#aaa;font-size:.83rem;margin-bottom:5px}
+.password-reveal-wrap{position:relative;display:flex}
+.password-reveal-wrap input{flex:1;padding-right:36px}
+.password-reveal-btn{position:absolute;right:0;top:0;bottom:0;width:34px;background:none;border:none;cursor:pointer;color:#888;display:flex;align-items:center;justify-content:center;font-size:1rem;transition:color .15s}
+.password-reveal-btn:hover{color:#fff}
+
+/* ── NUMBER STEPPER ── */
+.sf-num-stepper{display:flex;align-items:stretch}
+.sf-num-stepper input[type=number]{flex:1;min-width:0;text-align:center;border-radius:0!important;-moz-appearance:textfield}
+.sf-num-stepper input[type=number]::-webkit-inner-spin-button,
+.sf-num-stepper input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+.sf-num-btn{flex-shrink:0;width:34px;background:#252525;border:1px solid var(--border);color:#ccc;font-size:1.15rem;line-height:1;cursor:pointer;transition:.15s;display:flex;align-items:center;justify-content:center}
+.sf-num-btn:hover{background:#333;color:#fff}
+.sf-num-stepper .sf-num-btn:first-child{border-radius:8px 0 0 8px;border-right:none}
+.sf-num-stepper .sf-num-btn:last-child{border-radius:0 8px 8px 0;border-left:none}
+.sf-inline-field-row > .sf-num-stepper{flex:1;min-width:0}
+
+/* ── COMPUTED INFO FIELD ── */
+.sf-computed-info{background:#1a1a1a;border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-size:.83rem;color:#999;line-height:1.5;min-height:36px}
+.sf-computed-info.warn{border-color:#f59e0b;color:#bbb}
+.sf-computed-warn{display:block;color:#f59e0b;margin-top:3px;font-size:.8rem}
 
 /* ── APP SETTINGS SEGMENTED TOGGLES ── */
 .sf-segmented-toggle{display:inline-flex;gap:4px;flex-wrap:wrap;padding:3px;border:1px solid var(--border);border-radius:12px;background:#1a1a1a}

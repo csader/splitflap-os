@@ -102,6 +102,42 @@ For `toggle`, optional sizing:
 
 - `size`: `"sm"`, `"md"` (default), or `"lg"`
 
+### Minimal pattern (recommended)
+
+For most apps, keep settings to this simple structure:
+
+```json
+{
+  "settings": [
+    {
+      "key": "units",
+      "label": "Units",
+      "type": "toggle",
+      "default": "imperial",
+      "options": [
+        { "value": "imperial", "label": "Imperial" },
+        { "value": "metric", "label": "Metric" }
+      ]
+    },
+    {
+      "key": "refresh_minutes",
+      "label": "Refresh Minutes",
+      "type": "number",
+      "default": 15,
+      "min": 1,
+      "max": 60
+    }
+  ]
+}
+```
+
+Recommended conventions:
+
+- use stable lowercase keys with underscores (`refresh_minutes`)
+- always include a `default`
+- use object options (`value` + `label`) for toggles/selects
+- only add `sync_values` / `sync_parent` when you need dependent fields
+
 ### Inline unit toggle next to an input
 
 You can attach a segmented toggle to a text/number field using `inline_toggle`.

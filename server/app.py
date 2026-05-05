@@ -759,6 +759,13 @@ def get_plugin_pages(app_id):
         return [format_lines("PLUGIN ERROR", app_id.upper()[:get_cols()], "NOT FOUND")]
     app_type = manifest.get("type")
     refresh_interval = manifest.get("refresh_interval", 300)
+    # Allow a plugin setting named 'polling_rate' to override the cache interval
+    _poll = settings.get(f"plugin_{app_id}_polling_rate")
+    if _poll:
+        try:
+            refresh_interval = max(10, int(float(_poll)))
+        except (ValueError, TypeError):
+            pass
 
     if app_type == "channel":
         pages = _plugin_data.get(app_id, [])
@@ -815,74 +822,118 @@ def get_plugin_app_list():
     return entries
 
 
+_SETTING_PASSTHROUGH_KEYS = (
+    "size",
+    "min",
+    "max",
+    "step",
+    "stepper",
+    "searchUrl",
+    "resultKey",
+    "maxItems",
+    "compute",
+)
+
+
+def _resolve_manifest_setting_key(app_id, raw_key, *, global_key=False):
+    if global_key:
+        return raw_key
+    return f"plugin_{app_id}_{raw_key}"
+
+
+def _build_resolved_settings_lookup(app_id, settings):
+    return {
+        setting["key"]: _resolve_manifest_setting_key(
+            app_id,
+            setting["key"],
+            global_key=setting.get("global_key", False),
+        )
+        for setting in settings
+        if setting.get("key")
+    }
+
+
+def _normalize_inline_toggle(app_id, inline_toggle):
+    inline = dict(inline_toggle)
+    inline_key = inline.get("key")
+    if inline_key:
+        inline["key"] = _resolve_manifest_setting_key(
+            app_id,
+            inline_key,
+            global_key=inline.get("global_key", False),
+        )
+    return inline
+
+
+def _normalize_sync_values(sync_values, map_related_key):
+    return {
+        source_value: {
+            map_related_key(target_key): target_value
+            for target_key, target_value in target_map.items()
+        }
+        for source_value, target_map in sync_values.items()
+    }
+
+
+def _build_plugin_setting_field(app_id, setting, resolved_keys):
+    raw_key = setting["key"]
+    key = resolved_keys[raw_key]
+
+    def map_related_key(raw_related_key):
+        if raw_related_key in resolved_keys:
+            return resolved_keys[raw_related_key]
+        return _resolve_manifest_setting_key(app_id, raw_related_key)
+
+    field = {
+        "key": key,
+        "label": setting.get("label", raw_key),
+        "type": setting.get("type", "text"),
+        "ph": setting.get("default", ""),
+    }
+
+    if "options" in setting:
+        field["opts"] = setting["options"]
+
+    for pass_key in _SETTING_PASSTHROUGH_KEYS:
+        if pass_key in setting:
+            field[pass_key] = setting[pass_key]
+
+    if "inline_toggle" in setting:
+        field["inline_toggle"] = _normalize_inline_toggle(app_id, setting["inline_toggle"])
+
+    if "sync_values" in setting:
+        field["sync_values"] = _normalize_sync_values(setting["sync_values"], map_related_key)
+
+    if "sync_parent" in setting:
+        field["sync_parent"] = map_related_key(setting["sync_parent"])
+
+    if "sync_parent_custom_value" in setting:
+        field["sync_parent_custom_value"] = setting["sync_parent_custom_value"]
+
+    if "visible_when" in setting:
+        field["visible_when"] = {
+            map_related_key(k): v
+            for k, v in setting["visible_when"].items()
+        }
+
+    if "watches" in setting:
+        field["watches"] = [map_related_key(k) for k in setting["watches"]]
+
+    return field
+
+
 def get_plugin_settings_config():
     configs = {}
     for app_id, manifest in _plugin_registry.items():
-        def resolve_manifest_key(raw_key, *, global_key=False):
-            return raw_key if global_key else f"plugin_{app_id}_{raw_key}"
+        manifest_settings = [s for s in manifest.get("settings", []) if s.get("key")]
+        resolved_keys = _build_resolved_settings_lookup(app_id, manifest_settings)
+        fields = [
+            _build_plugin_setting_field(app_id, setting, resolved_keys)
+            for setting in manifest_settings
+        ]
 
-        # Build a lookup of manifest raw keys -> real stored setting keys.
-        resolved_keys = {
-            s['key']: resolve_manifest_key(s['key'], global_key=s.get('global_key', False))
-            for s in manifest.get("settings", []) if s.get('key')
-        }
-
-        def map_related_key(raw_key):
-            if raw_key in resolved_keys:
-                return resolved_keys[raw_key]
-            return resolve_manifest_key(raw_key)
-
-        fields = []
-        for s in manifest.get("settings", []):
-            # global_key: true means use the key as-is (no plugin_ prefix)
-            raw_key = s['key']
-            key = resolved_keys[raw_key]
-            field = {
-                "key": key,
-                "label": s.get("label", raw_key),
-                "type": s.get("type", "text"),
-                "ph": s.get("default", ""),
-            }
-            if "options" in s:
-                field["opts"] = s["options"]
-            if "size" in s:
-                field["size"] = s["size"]
-            if "min" in s:
-                field["min"] = s["min"]
-            if "max" in s:
-                field["max"] = s["max"]
-            if "step" in s:
-                field["step"] = s["step"]
-            if "searchUrl" in s:
-                field["searchUrl"] = s["searchUrl"]
-            if "resultKey" in s:
-                field["resultKey"] = s["resultKey"]
-            if "maxItems" in s:
-                field["maxItems"] = s["maxItems"]
-            if "inline_toggle" in s:
-                inline = dict(s["inline_toggle"])
-                inline_key = inline.get("key")
-                if inline_key:
-                    inline["key"] = resolve_manifest_key(
-                        inline_key,
-                        global_key=inline.get("global_key", False)
-                    )
-                field["inline_toggle"] = inline
-            if "sync_values" in s:
-                field["sync_values"] = {
-                    source_value: {
-                        map_related_key(target_key): target_value
-                        for target_key, target_value in target_map.items()
-                    }
-                    for source_value, target_map in s["sync_values"].items()
-                }
-            if "sync_parent" in s:
-                field["sync_parent"] = map_related_key(s["sync_parent"])
-            if "sync_parent_custom_value" in s:
-                field["sync_parent_custom_value"] = s["sync_parent_custom_value"]
-            fields.append(field)
         configs[f"plugin_{app_id}"] = {
-            "title": f"{manifest.get('icon', '🧩')} {manifest.get('name', app_id)}",
+            "title": manifest.get('name', app_id),
             "fields": fields,
         }
     return configs

@@ -16,9 +16,10 @@
     <div style="display:flex;align-items:center;gap:8px">
       <button class="hamburger-btn" onclick="toggleHamburger()"><i data-lucide="menu" style="width:20px;height:20px"></i></button>
       <img src="/static/logo.svg" alt="Splitflap OS" style="height:24px">
-      <span style="font-size:.65rem;color:#555;font-weight:bold;letter-spacing:.5px">v0.1</span>
+      <span style="font-size:.65rem;color:#555;font-weight:bold;letter-spacing:.5px">v0.1.1</span>
     </div>
     <div style="display:flex;align-items:center;gap:6px">
+      <span id="networkIndicator" title="Network status" style="cursor:pointer;display:flex;align-items:center" onclick="openMenuPage('settings')"><i data-lucide="wifi" style="width:14px;height:14px;color:#555"></i></span>
       <span id="simLabel" style="font-size:.82rem;font-weight:bold;color:#555">SIMULATE</span>
       <label class="switch"><input type="checkbox" id="simModeToggle" onchange="toggleSimMode()"><span class="slider"></span></label>
       <span id="liveLabel" style="font-size:.82rem;font-weight:bold;color:var(--green)">LIVE</span>
@@ -179,6 +180,20 @@
         <div class="span2"><label class="field-label">Timezone</label><div id="globalTzPicker"></div></div>
       </div>
   <button class="settings-fab" id="settingsFab" onclick="saveGlobal()"><i data-lucide="save" style="width:16px;height:16px"></i> Save Settings</button>
+    </div>
+    <div class="config-section">
+      <h3>WiFi / Network</h3>
+      <div id="networkInfo" style="font-size:.85rem;color:#888;margin-bottom:12px">Checking...</div>
+      <button class="btn btn-secondary btn-sm" onclick="scanWifi()" id="wifiScanBtn">Scan for Networks</button>
+      <div id="wifiList" style="margin-top:12px"></div>
+      <div style="margin-top:16px;padding-top:12px;border-top:1px solid #333">
+        <h4 style="margin:0 0 8px;font-size:.9rem;color:#aaa">Hotspot Settings</h4>
+        <div class="settings-grid">
+          <div><label class="field-label">Hotspot SSID</label><input type="text" id="hotspotSsid" class="line-input" style="font-size:.95rem;margin:0" placeholder="SplitflapOS"></div>
+          <div><label class="field-label">Hotspot Password</label><input type="text" id="hotspotPass" class="line-input" style="font-size:.95rem;margin:0" placeholder="splitflap"></div>
+        </div>
+        <button class="btn btn-success btn-sm" style="margin-top:10px" onclick="saveHotspotConfig()">Save Hotspot Config</button>
+      </div>
     </div>
     <div class="config-section">
       <h3>MQTT / Home Assistant</h3>

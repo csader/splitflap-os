@@ -260,7 +260,7 @@ def mqtt_publish_discovery():
 
 
 def _mqtt_on_connect(client, userdata, flags, rc, properties=None):
-    if rc == 0:
+    if rc == 0 or (hasattr(rc, 'is_failure') and not rc.is_failure):
         logging.info("MQTT connected to broker")
         client.subscribe(MQTT_TEXT_CMD)
         client.subscribe(MQTT_MODE_CMD)
@@ -329,6 +329,19 @@ def mqtt_setup():
     except Exception as e:
         mqtt_client = None
         logging.error(f"MQTT setup failed: {e}")
+
+
+def mqtt_reconnect():
+    """Disconnect and reconnect MQTT with current settings."""
+    global mqtt_client
+    if mqtt_client:
+        try:
+            mqtt_client.loop_stop()
+            mqtt_client.disconnect()
+        except Exception:
+            pass
+        mqtt_client = None
+    mqtt_setup()
 
 
 mqtt_setup()
@@ -661,7 +674,13 @@ def get_plugin_pages(app_id):
         except Exception as e:
             logging.error(f"Plugin {app_id} fetch error: {e}")
             cached_pages = _plugin_caches.get(app_id, {}).get("pages")
-            return cached_pages or [format_lines("PLUGIN ERROR", app_id.upper()[:get_cols()], str(e)[:get_cols()])]
+            if cached_pages:
+                return cached_pages
+            # Show OFFLINE for network errors, generic error otherwise
+            err_str = str(e).lower()
+            if not _is_online or 'timeout' in err_str or 'connection' in err_str or 'network' in err_str:
+                return [format_lines(manifest.get("name", app_id).upper()[:get_cols()], "OFFLINE", "")]
+            return [format_lines("APP ERROR", app_id.upper()[:get_cols()], str(e)[:get_cols()])]
 
     return [format_lines("PLUGIN ERROR", "UNKNOWN TYPE", "")]
 
@@ -1609,6 +1628,152 @@ def crypto_search_route():
     results.sort(key=lambda r: (not r['_exact'], r['label'].lower()))
     for r in results: del r['_exact']
     return jsonify(coins=results[:12])
+
+# ============================================================
+#  NETWORK STATUS
+# ============================================================
+
+_network_mode = 'unknown'
+_is_online = False
+
+def _check_network():
+    """Detect network mode and internet connectivity."""
+    global _network_mode, _is_online
+    # Check mode file written by network-check.sh
+    try:
+        with open('/tmp/splitflap-network-mode', 'r') as f:
+            _network_mode = f.read().strip()
+    except FileNotFoundError:
+        _network_mode = 'wifi'  # assume normal if no file (dev mode)
+
+    # Check internet connectivity
+    try:
+        requests.get('https://httpbin.org/status/200', timeout=3)
+        _is_online = True
+    except Exception:
+        _is_online = False
+
+def check_online():
+    """Return cached online status. Refreshed periodically."""
+    return _is_online
+
+# Initial check on startup
+threading.Thread(target=_check_network, daemon=True).start()
+
+# Periodic connectivity check every 60s
+def _periodic_network_check():
+    while True:
+        time.sleep(60)
+        _check_network()
+
+threading.Thread(target=_periodic_network_check, daemon=True).start()
+
+
+@app.route('/mqtt_reconnect', methods=['POST'])
+def mqtt_reconnect_route():
+    """Reconnect MQTT with current settings."""
+    mqtt_reconnect()
+    return jsonify(status="reconnecting")
+
+
+@app.route('/network_status')
+def network_status():
+    """Return current network mode and connectivity."""
+    import subprocess
+    ip = '?'
+    ssid = '?'
+    try:
+        result = subprocess.run(['hostname', '-I'], capture_output=True, text=True, timeout=2)
+        ip = result.stdout.strip().split()[0] if result.stdout.strip() else '?'
+    except Exception:
+        pass
+    try:
+        result = subprocess.run(['iwgetid', '-r'], capture_output=True, text=True, timeout=2)
+        ssid = result.stdout.strip() or ('SplitflapOS' if _network_mode == 'hotspot' else '?')
+    except Exception:
+        if _network_mode == 'hotspot':
+            ssid = settings.get('hotspot_ssid', 'SplitflapOS')
+    return jsonify(mode=_network_mode, online=_is_online, ip=ip, ssid=ssid)
+
+@app.route('/network_config', methods=['POST'])
+def network_config():
+    """Save hotspot configuration."""
+    data = request.json
+    if data.get('hotspot_ssid'):
+        settings['hotspot_ssid'] = data['hotspot_ssid']
+    if data.get('hotspot_password'):
+        settings['hotspot_password'] = data['hotspot_password']
+    save_settings(settings)
+    # Update systemd service environment
+    service_path = '/etc/systemd/system/splitflap-network.service'
+    if os.path.isfile(service_path):
+        try:
+            with open(service_path, 'r') as f:
+                lines = f.readlines()
+            with open(service_path, 'w') as f:
+                for line in lines:
+                    if line.startswith('Environment=SPLITFLAP_HOTSPOT_SSID='):
+                        f.write(f"Environment=SPLITFLAP_HOTSPOT_SSID={settings['hotspot_ssid']}\n")
+                    elif line.startswith('Environment=SPLITFLAP_HOTSPOT_PASS='):
+                        f.write(f"Environment=SPLITFLAP_HOTSPOT_PASS={settings['hotspot_password']}\n")
+                    else:
+                        f.write(line)
+            os.system('systemctl daemon-reload')
+        except Exception as e:
+            logging.error(f"Failed to update network service: {e}")
+    return jsonify(status="saved")
+
+@app.route('/wifi_scan')
+def wifi_scan():
+    """Scan for available WiFi networks."""
+    import subprocess
+    try:
+        result = subprocess.run(
+            ['nmcli', '-t', '-f', 'SSID,SIGNAL,SECURITY', 'dev', 'wifi', 'list', '--rescan', 'yes'],
+            capture_output=True, text=True, timeout=15)
+        networks = []
+        seen = set()
+        for line in result.stdout.strip().split('\n'):
+            if not line:
+                continue
+            parts = line.split(':')
+            ssid = parts[0] if parts else ''
+            if not ssid or ssid in seen:
+                continue
+            seen.add(ssid)
+            signal = int(parts[1]) if len(parts) > 1 and parts[1].isdigit() else 0
+            security = parts[2] if len(parts) > 2 else ''
+            networks.append({'ssid': ssid, 'signal': signal, 'security': security})
+        networks.sort(key=lambda n: -n['signal'])
+        return jsonify(networks=networks)
+    except Exception as e:
+        logging.error(f"WiFi scan error: {e}")
+        return jsonify(networks=[], error=str(e))
+
+@app.route('/wifi_connect', methods=['POST'])
+def wifi_connect():
+    """Connect to a WiFi network via NetworkManager."""
+    import subprocess
+    data = request.json
+    ssid = data.get('ssid', '').strip()
+    password = data.get('password', '').strip()
+    if not ssid:
+        return jsonify(status="error", message="SSID required"), 400
+    try:
+        # Remove existing connection with same name if any
+        subprocess.run(['nmcli', 'con', 'delete', ssid], capture_output=True, timeout=5)
+        # Connect
+        cmd = ['nmcli', 'dev', 'wifi', 'connect', ssid]
+        if password:
+            cmd += ['password', password]
+        result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
+        if result.returncode == 0:
+            return jsonify(status="success", message=f"Connected to {ssid}")
+        else:
+            return jsonify(status="error", message=result.stderr.strip() or "Connection failed"), 400
+    except Exception as e:
+        return jsonify(status="error", message=str(e)), 500
+
 
 @app.route('/installed_apps')
 def installed_apps():

@@ -1482,6 +1482,10 @@ function saveGlobal(){
     initLiveGrids(rows, cols);
     showToast('Settings saved');
     setSettingsDirty(false);
+    // Reconnect MQTT if credentials changed
+    if(document.getElementById('mqttEnabled').checked){
+      fetch('/mqtt_reconnect',{method:'POST'});
+    }
   });
 }
 
@@ -2349,6 +2353,95 @@ function deleteAppPlaylist(name){
   if(!confirm(`Delete "${name}"?`)) return;
   fetch(`/app_playlists/${encodeURIComponent(name)}`,{method:'DELETE'})
   .then(()=>{ showToast(`Deleted "${name}"`,'warn'); loadSavedAppPlaylists(); });
+}
+
+// ============================================================
+//  NETWORK STATUS
+// ============================================================
+let _networkOnline = true;
+
+function updateNetworkStatus(){
+  fetch('/network_status').then(r=>r.json()).then(data=>{
+    _networkOnline = data.online;
+    const el = document.getElementById('networkIndicator');
+    if(!el) return;
+    const icon = data.mode==='hotspot' ? 'radio' : (data.online ? 'wifi' : 'wifi-off');
+    const color = data.online ? 'var(--green)' : (data.mode==='hotspot' ? 'var(--orange)' : '#555');
+    el.innerHTML=`<i data-lucide="${icon}" style="width:14px;height:14px;color:${color}"></i>`;
+    el.title = data.mode==='hotspot' ? `Hotspot: ${data.ssid} (${data.ip})` : (data.online ? `WiFi: ${data.ssid} (${data.ip})` : 'Offline');
+    // Update settings page network info
+    const info = document.getElementById('networkInfo');
+    if(info){
+      if(data.mode==='hotspot') info.innerHTML=`<strong style="color:var(--orange)">Hotspot mode</strong> — ${data.ssid} @ ${data.ip}`;
+      else if(data.online) info.innerHTML=`<strong style="color:var(--green)">Connected</strong> — ${data.ssid} @ ${data.ip}`;
+      else info.innerHTML=`<strong style="color:#888">Offline</strong> — no internet`;
+    }
+    if(typeof lucide!=='undefined') lucide.createIcons();
+  }).catch(()=>{});
+}
+updateNetworkStatus();
+setInterval(updateNetworkStatus, 30000);
+
+function scanWifi(){
+  const btn = document.getElementById('wifiScanBtn');
+  const list = document.getElementById('wifiList');
+  btn.disabled=true; btn.textContent='Scanning...';
+  list.innerHTML='<div style="color:#888;font-size:.85rem">Scanning...</div>';
+  fetch('/wifi_scan').then(r=>r.json()).then(data=>{
+    btn.disabled=false; btn.textContent='Scan for Networks';
+    if(!data.networks||!data.networks.length){
+      list.innerHTML='<div style="color:#888;font-size:.85rem">No networks found</div>';
+      return;
+    }
+    list.innerHTML='';
+    data.networks.forEach(n=>{
+      const row = document.createElement('div');
+      row.style.cssText='display:flex;align-items:center;gap:8px;padding:8px 10px;background:#1a1a1a;border:1px solid var(--border);border-radius:6px;margin-bottom:6px;cursor:pointer';
+      const bars = n.signal>75?'▂▄▆█':n.signal>50?'▂▄▆░':n.signal>25?'▂▄░░':'▂░░░';
+      row.innerHTML=`
+        <span style="flex:1;font-size:.88rem;font-weight:600">${n.ssid}</span>
+        <span style="font-size:.7rem;color:#888;font-family:monospace">${bars}</span>
+        <span style="font-size:.7rem;color:#666">${n.security?'🔒':''}</span>`;
+      row.onclick=()=>connectWifi(n.ssid, !!n.security);
+      list.appendChild(row);
+    });
+  }).catch(()=>{
+    btn.disabled=false; btn.textContent='Scan for Networks';
+    list.innerHTML='<div style="color:var(--red);font-size:.85rem">Scan failed (requires Pi)</div>';
+  });
+}
+
+function connectWifi(ssid, needsPassword){
+  let password = '';
+  if(needsPassword){
+    password = prompt(`Enter password for "${ssid}":`);
+    if(password===null) return;
+  }
+  const list = document.getElementById('wifiList');
+  list.innerHTML=`<div style="color:#888;font-size:.85rem">Connecting to ${ssid}...</div>`;
+  fetch('/wifi_connect',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({ssid, password})})
+  .then(r=>r.json()).then(data=>{
+    if(data.status==='success'){
+      showToast(`Connected to ${ssid}`);
+      list.innerHTML=`<div style="color:var(--green);font-size:.85rem">Connected to ${ssid}! Reboot to use this network.</div>`;
+      updateNetworkStatus();
+    } else {
+      showToast(data.message||'Connection failed','error');
+      list.innerHTML=`<div style="color:var(--red);font-size:.85rem">${data.message||'Connection failed'}</div>`;
+    }
+  }).catch(()=>{
+    list.innerHTML='<div style="color:var(--red);font-size:.85rem">Connection failed</div>';
+  });
+}
+
+function saveHotspotConfig(){
+  const ssid = document.getElementById('hotspotSsid').value.trim();
+  const pass = document.getElementById('hotspotPass').value.trim();
+  if(!ssid||!pass||pass.length<8){ showToast('SSID required, password min 8 chars','warn'); return; }
+  fetch('/network_config',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({hotspot_ssid:ssid, hotspot_password:pass})})
+  .then(()=>showToast('Hotspot config saved'));
 }
 
 buildAppsGrid();

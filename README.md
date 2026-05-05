@@ -92,6 +92,14 @@ def fetch(settings, format_lines, get_rows, get_cols):
 - `select` with `options`
 - `search_chips` with `searchUrl`, `resultKey`, and `maxItems`
 - `toggle` with `options` (segmented buttons)
+- `computed` with `compute` and `watches` (read-only info box)
+
+Common optional keys by type:
+
+- `number`: `min`, `max`, `step`, and optional `stepper: true` for `− / +` buttons
+- `toggle`: optional `size` = `"sm" | "md" | "lg"`
+- `search_chips`: `searchUrl`, `resultKey`, optional `maxItems`
+- any field: `visible_when` for conditional show/hide
 
 For `select`/`toggle`, each option can be either:
 
@@ -137,6 +145,66 @@ Recommended conventions:
 - always include a `default`
 - use object options (`value` + `label`) for toggles/selects
 - only add `sync_values` / `sync_parent` when you need dependent fields
+
+### Number stepper buttons (optional)
+
+`number` fields can use native browser input UI or explicit `− / +` controls.
+
+- default: standard number input
+- add `"stepper": true` to enable `− / +` buttons
+
+Example:
+
+```json
+{
+  "key": "polling_rate",
+  "label": "Polling Rate (seconds)",
+  "type": "number",
+  "stepper": true,
+  "default": 60,
+  "min": 15,
+  "max": 3600,
+  "step": 15
+}
+```
+
+### Conditional field visibility (optional)
+
+Use `visible_when` to show a field only when one or more settings match.
+
+- format: `{ "other_key": "expected_value" }`
+- multiple keys are ANDed together
+
+Example:
+
+```json
+{
+  "key": "flightaware_api_key",
+  "label": "FlightAware API Key",
+  "type": "password",
+  "default": "",
+  "visible_when": { "data_source": "flightaware" }
+}
+```
+
+### Computed read-only info fields (optional)
+
+Use `computed` fields for live derived text in the settings modal.
+
+- `compute`: function name from the frontend compute registry
+- `watches`: array of keys that should trigger re-computation
+
+Example:
+
+```json
+{
+  "key": "_polling_stats",
+  "label": "API Usage Estimate",
+  "type": "computed",
+  "compute": "polling_rate_stats",
+  "watches": ["polling_rate", "data_source"]
+}
+```
 
 ### Inline unit toggle next to an input
 

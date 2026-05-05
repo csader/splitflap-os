@@ -121,7 +121,7 @@ def load_settings():
     }
     if os.path.exists(CONFIG_PATH):
         try:
-            with open(CONFIG_PATH, 'r') as f:
+            with open(CONFIG_PATH, 'r', encoding='utf-8') as f:
                 data = json.load(f)
                 defaults.update(data)
                 if "tuned_chars" not in defaults:
@@ -132,7 +132,7 @@ def load_settings():
     return defaults
 
 def save_settings(data):
-    with open(CONFIG_PATH, 'w') as f:
+    with open(CONFIG_PATH, 'w', encoding='utf-8') as f:
         json.dump(data, f, indent=4)
 
 settings = load_settings()
@@ -595,7 +595,7 @@ def load_installed_plugins():
         if not os.path.isfile(manifest_path):
             continue
         try:
-            with open(manifest_path, "r") as f:
+            with open(manifest_path, "r", encoding='utf-8') as f:
                 manifest = json.load(f)
             manifest["id"] = app_id
             _plugin_registry[app_id] = manifest
@@ -613,7 +613,7 @@ def _load_channel_data(app_id, app_dir):
     if not os.path.isfile(data_path):
         return
     try:
-        with open(data_path, "r") as f:
+        with open(data_path, "r", encoding='utf-8') as f:
             data = json.load(f)
         pages = []
         for page in data.get("pages", []):
@@ -1402,7 +1402,7 @@ def app_library():
             if not os.path.isfile(manifest_path):
                 continue
             try:
-                with open(manifest_path) as f:
+                with open(manifest_path, encoding='utf-8') as f:
                     m = json.load(f)
                 m['id'] = app_id
                 m['installed'] = app_id in _plugin_registry

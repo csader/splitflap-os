@@ -13,6 +13,8 @@ Built on [Adam G Makes' Split-Flap Display](https://github.com/adamgmakes/SplitF
 - **Live preview** — animated flap simulation in the browser
 - **Calibration tools** — hardware inspector, auto fine-tune, teach mode
 - **MQTT** — Home Assistant integration with auto-discovery
+- **WiFi hotspot fallback** — Pi creates its own network when no WiFi is found, so you can always access the UI
+- **Offline resilience** — internet-dependent apps degrade gracefully, offline apps keep running
 - **Plugin architecture** — community apps via manifest + fetch pattern
 - **Mobile-friendly** — hamburger menu, sticky bottom tabs, responsive layout
 
@@ -28,12 +30,18 @@ On your Split-Flap Display's Raspberry Pi:
 
 ```bash
 git clone https://github.com/csader/splitflap-os.git
-cd splitflap-os/server
-pip install -r requirements.txt
-sudo python app.py
+cd splitflap-os
+sudo bash setup/install.sh
 ```
 
-Open `http://<your-pi-ip>` on any device on the same network. On first launch, install apps from ☰ → App Library.
+The installer sets up auto-start, WiFi hotspot fallback, and all dependencies. Access the UI at `http://<your-pi-ip>`.
+
+If no WiFi is available, the Pi creates a hotspot:
+- SSID: `SplitflapOS`
+- Password: `splitflap`
+- UI: `http://192.168.4.1`
+
+Configure WiFi from Settings > WiFi / Network in the UI.
 
 ## Hardware
 
@@ -46,6 +54,7 @@ This project is the **web UI only**. For the firmware and physical display hardw
 ```
 server/          — Flask web app (backend + frontend)
 apps/            — Plugin library (all installable apps)
+setup/           — Raspberry Pi setup scripts and systemd services
 ```
 
 ## Creating an App

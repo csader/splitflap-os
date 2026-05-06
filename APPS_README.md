@@ -210,3 +210,16 @@ Use these keys to synchronize related fields:
 - Ensure every setting has a stable `key` and sensible `default`.
 - Use `visible_when` and sync rules only when they improve UX.
 - Keep `fetch()` fast and resilient to network/API errors.
+
+## Optional: Lucide Icon in Settings Modal
+
+The settings modal title uses the emoji from `manifest.json` by default. If you want a Lucide icon instead, add your app to the `LUCIDE_APP_ICONS` map in `server/static/app.js`:
+
+```js
+const LUCIDE_APP_ICONS = {
+  // ...existing entries...
+  'my-app': 'plane',  // any Lucide icon name
+};
+```
+
+Browse available icons at [lucide.dev](https://lucide.dev). The emoji in `manifest.json` is still used as a fallback on app tiles and in the App Library.

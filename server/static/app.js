@@ -1417,7 +1417,18 @@ async function openAppSettings(appKey){
   const res = await fetch('/settings');
   globalSettings = await res.json();
 
-  document.getElementById('appSettingsTitle').textContent = cfg.title;
+  // Set title with Lucide icon if available, stripping emoji prefix from cfg.title
+  const titleEl = document.getElementById('appSettingsTitle');
+  const bareKey = appKey.replace('plugin_','');
+  const lucideIconName = LUCIDE_APP_ICONS[bareKey];
+  // Strip leading emoji + space from title (e.g. "🌤️ Weather Settings" → "Weather Settings")
+  const titleText = cfg.title.replace(/^[\p{Emoji}\s]+/u, '').trim();
+  if(lucideIconName){
+    titleEl.innerHTML = `<i data-lucide="${lucideIconName}" style="width:20px;height:20px;vertical-align:middle;margin-right:6px"></i>${titleText}`;
+    if(typeof lucide!=='undefined') lucide.createIcons();
+  } else {
+    titleEl.textContent = cfg.title;
+  }
   const fields = document.getElementById('appSettingsFields');
   fields.innerHTML='';
 

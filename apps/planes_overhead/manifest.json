@@ -1,0 +1,270 @@
+{
+  "id": "planes_overhead",
+  "name": "Planes Overhead",
+  "icon": "✈️",
+  "description": "Nearby aircraft",
+  "type": "functional",
+  "refresh_interval": 1,
+  "loop_delay": 4,
+  "category": "data",
+  "settings": [
+    {
+      "key": "location",
+      "label": "Location (lat,lon)",
+      "type": "text",
+      "default": "41.97596460174016,-87.90326919959064"
+    },
+    {
+      "key": "radius",
+      "label": "Search Radius",
+      "type": "number",
+      "default": 25,
+      "min": 10,
+      "max": 250,
+      "step": 5,
+      "inline_toggle": {
+        "key": "radius_unit",
+        "position": "after",
+        "size": "md",
+        "options": [
+          {
+            "value": "mi",
+            "label": "MI"
+          },
+          {
+            "value": "km",
+            "label": "KM"
+          }
+        ],
+        "default": "mi"
+      }
+    },
+    {
+      "key": "max_results",
+      "label": "Max Flights To Cycle",
+      "type": "number",
+      "stepper": true,
+      "default": 9,
+      "min": 1,
+      "max": 10,
+      "step": 1
+    },
+    {
+      "key": "dwell_seconds",
+      "label": "Dwell Time (seconds)",
+      "type": "number",
+      "stepper": true,
+      "default": 20,
+      "min": 1,
+      "max": 60,
+      "step": 1
+    },
+    {
+      "key": "polling_rate",
+      "label": "Polling Rate (seconds)",
+      "type": "number",
+      "stepper": true,
+      "default": 240,
+      "min": 15,
+      "max": 3600,
+      "step": 15
+    },
+    {
+      "key": "_polling_stats",
+      "label": "API Usage Estimate",
+      "type": "computed",
+      "compute": "polling_rate_stats",
+      "watches": ["polling_rate", "data_source"]
+    },
+    {
+      "key": "data_source",
+      "label": "Datasource",
+      "note": "* APIs that are free or have a free tier.",
+      "type": "toggle",
+      "size": "md",
+      "default": "opensky",
+      "options": [
+        {
+          "value": "opensky",
+          "label": "OpenSky*"
+        },
+        {
+          "value": "flightaware",
+          "label": "FlightAware"
+        },
+        {
+          "value": "flightradar24",
+          "label": "FR24"
+        },
+        {
+          "value": "airlabs",
+          "label": "AirLabs*"
+        },
+        {
+          "value": "aviationstack",
+          "label": "AStack*"
+        }
+      ]
+    },
+    {
+      "key": "opensky_client_id",
+      "label": "OpenSky Client ID (optional; leave blank for free API)",
+      "type": "password",
+      "default": "",
+      "visible_when": { "data_source": "opensky" }
+    },
+    {
+      "key": "opensky_client_secret",
+      "label": "OpenSky Client Secret (optional; higher limits with free account)",
+      "type": "password",
+      "default": "",
+      "visible_when": { "data_source": "opensky" }
+    },
+    {
+      "key": "flightaware_api_key",
+      "label": "FlightAware AeroAPI Key",
+      "type": "password",
+      "default": "",
+      "visible_when": { "data_source": "flightaware" }
+    },
+    {
+      "key": "flightradar24_api_key",
+      "label": "FR24 RapidAPI Key",
+      "type": "password",
+      "default": "",
+      "visible_when": { "data_source": "flightradar24" }
+    },
+    {
+      "key": "flightradar24_api_host",
+      "label": "FR24 RapidAPI Host",
+      "type": "text",
+      "default": "flightradar24-com.p.rapidapi.com",
+      "visible_when": { "data_source": "flightradar24" }
+    },
+    {
+      "key": "airlabs_api_key",
+      "label": "AirLabs API Key",
+      "type": "password",
+      "default": "",
+      "visible_when": { "data_source": "airlabs" }
+    },
+    {
+      "key": "aviationstack_api_key",
+      "label": "Aviationstack API Key",
+      "type": "password",
+      "default": "",
+      "visible_when": { "data_source": "aviationstack" }
+    },
+    {
+      "key": "units_preset",
+      "label": "Units Preset",
+      "type": "toggle",
+      "size": "md",
+      "default": "aviation",
+      "sync_values": {
+        "aviation": {
+          "distance_unit": "nm",
+          "altitude_unit": "fl",
+          "speed_unit": "kt"
+        },
+        "metric": {
+          "distance_unit": "km",
+          "altitude_unit": "m",
+          "speed_unit": "kmh"
+        },
+        "imperial": {
+          "distance_unit": "mi",
+          "altitude_unit": "ft",
+          "speed_unit": "mph"
+        }
+      },
+      "options": [
+        {
+          "value": "aviation",
+          "label": "Aviation"
+        },
+        {
+          "value": "metric",
+          "label": "Metric"
+        },
+        {
+          "value": "imperial",
+          "label": "Imperial"
+        },
+        {
+          "value": "custom",
+          "label": "Custom"
+        }
+      ]
+    },
+    {
+      "key": "distance_unit",
+      "label": "Distance Unit",
+      "type": "toggle",
+      "size": "md",
+      "default": "nm",
+      "sync_parent": "units_preset",
+      "sync_parent_custom_value": "custom",
+      "options": [
+        {
+          "value": "km",
+          "label": "KM"
+        },
+        {
+          "value": "mi",
+          "label": "MI"
+        },
+        {
+          "value": "nm",
+          "label": "NM"
+        }
+      ]
+    },
+    {
+      "key": "altitude_unit",
+      "label": "Altitude Unit",
+      "type": "toggle",
+      "size": "md",
+      "default": "fl",
+      "sync_parent": "units_preset",
+      "sync_parent_custom_value": "custom",
+      "options": [
+        {
+          "value": "ft",
+          "label": "Feet"
+        },
+        {
+          "value": "fl",
+          "label": "Flight Level"
+        },
+        {
+          "value": "m",
+          "label": "Meters"
+        }
+      ]
+    },
+    {
+      "key": "speed_unit",
+      "label": "Speed Unit",
+      "type": "toggle",
+      "size": "md",
+      "default": "kt",
+      "sync_parent": "units_preset",
+      "sync_parent_custom_value": "custom",
+      "options": [
+        {
+          "value": "kt",
+          "label": "KT"
+        },
+        {
+          "value": "mph",
+          "label": "MPH"
+        },
+        {
+          "value": "kmh",
+          "label": "KMH"
+        }
+      ]
+    }
+  ]
+}

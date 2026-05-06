@@ -866,7 +866,7 @@ const LUCIDE_APP_ICONS = {
   'word-clock':'type', 'time-since':'hourglass', 'moon-phase':'moon',
   'art-clock':'palette', 'chuck-norris':'shield', 'trivia':'brain',
   'on-this-day':'scroll-text', 'national-today':'party-popper',
-  'news-headlines':'newspaper',
+  'news-headlines':'newspaper', 'planes_overhead':'plane',
 };
 function appLucideIcon(key){
   const id = key.replace('plugin_','');
@@ -1023,6 +1023,390 @@ async function uninstallApp(appId){
 // ── Per-app settings modal ──────────────────────────────────
 let currentAppSettingsKey = null;
 
+function getSettingsValue(key, fallback=''){
+  const value = globalSettings ? globalSettings[key] : undefined;
+  if(value === undefined || value === null || value === '') return fallback;
+  return value;
+}
+
+function normalizeSettingOption(opt){
+  if(opt && typeof opt === 'object'){
+    return {
+      value: String(opt.value ?? ''),
+      label: String(opt.label ?? opt.value ?? '')
+    };
+  }
+  return { value: String(opt ?? ''), label: String(opt ?? '') };
+}
+
+function normalizeToggleSize(rawSize){
+  const size = String(rawSize || 'md').toLowerCase();
+  if(size === 'small' || size === 'sm') return 'sm';
+  if(size === 'large' || size === 'lg') return 'lg';
+  return 'md';
+}
+
+function createSegmentedToggleControl({id, options, value, size='md'}){
+  const normalized = (options || []).map(normalizeSettingOption).filter(o=>o.value!=='' || o.label!=='');
+  const fallback = normalized[0] ? normalized[0].value : '';
+  const current = String(value ?? fallback);
+  const sizeClass = normalizeToggleSize(size);
+  const changeListeners = [];
+
+  const wrapper = document.createElement('div');
+  wrapper.className = `sf-segmented-toggle ${sizeClass}`;
+
+  const hidden = document.createElement('input');
+  hidden.type = 'hidden';
+  hidden.id = id;
+  hidden.value = normalized.some(o=>o.value===current) ? current : fallback;
+  wrapper.appendChild(hidden);
+
+  const setActive = (newValue, notify=false)=>{
+    const nextValue = String(newValue ?? fallback);
+    const resolved = normalized.some(o=>o.value===nextValue) ? nextValue : fallback;
+    const changed = hidden.value !== resolved;
+    hidden.value = resolved;
+    wrapper.querySelectorAll('button').forEach(btn=>{
+      btn.classList.toggle('active', btn.dataset.value===resolved);
+    });
+    if(notify && changed) changeListeners.forEach(cb=>cb(resolved));
+  };
+
+  normalized.forEach(opt=>{
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'sf-segmented-toggle-btn';
+    btn.dataset.value = opt.value;
+    btn.textContent = opt.label;
+    btn.onclick = ()=> setActive(opt.value, true);
+    wrapper.appendChild(btn);
+  });
+
+  wrapper._setValue = (newValue)=> setActive(newValue, false);
+  wrapper._addChangeListener = (cb)=>{
+    if(typeof cb === 'function') changeListeners.push(cb);
+  };
+
+  setActive(hidden.value);
+  return wrapper;
+}
+
+function getModalFieldValue(key){
+  const el = document.getElementById(`asf_${key}`);
+  return el ? String(el.value ?? '') : '';
+}
+
+// Set a modal field value without triggering change listeners.
+// Works for plain inputs/selects and segmented toggle controls.
+function setModalFieldValue(key, value){
+  const el = document.getElementById(`asf_${key}`);
+  if(!el) return;
+  const wrapper = el.parentElement && el.parentElement.classList.contains('sf-segmented-toggle')
+    ? el.parentElement
+    : null;
+  if(wrapper && typeof wrapper._setValue === 'function'){
+    wrapper._setValue(value);
+    return;
+  }
+  el.value = value ?? '';
+}
+
+// Bind a change callback for either native form controls or segmented toggle wrappers.
+function bindModalFieldChange(key, onChange){
+  const el = document.getElementById(`asf_${key}`);
+  if(!el || typeof onChange !== 'function') return;
+  const wrapper = el.parentElement && el.parentElement.classList.contains('sf-segmented-toggle')
+    ? el.parentElement
+    : null;
+  if(wrapper && typeof wrapper._addChangeListener === 'function'){
+    wrapper._addChangeListener(onChange);
+    return;
+  }
+  el.addEventListener('change', ()=> onChange(String(el.value ?? '')));
+}
+
+function appendInputWithInlineToggle(div, input, field){
+  const inlineToggle = field.inline_toggle;
+  if(!(inlineToggle && (inlineToggle.key || '').trim())){
+    div.appendChild(input);
+    return;
+  }
+
+  const inlineKey = inlineToggle.key.trim();
+  const inlineValue = getSettingsValue(inlineKey, inlineToggle.default ?? '');
+  const inlineSize = normalizeToggleSize(inlineToggle.size);
+  const inlineControl = createSegmentedToggleControl({
+    id: `asf_${inlineKey}`,
+    options: inlineToggle.options || [],
+    value: inlineValue,
+    size: inlineSize
+  });
+  inlineControl.classList.add('sf-inline-toggle');
+
+  const row = document.createElement('div');
+  row.className = 'sf-inline-field-row';
+  const position = inlineToggle.position === 'before' ? 'before' : 'after';
+  if(position === 'before'){
+    row.appendChild(inlineControl);
+    row.appendChild(input);
+  } else {
+    row.appendChild(input);
+    row.appendChild(inlineControl);
+  }
+  div.appendChild(row);
+}
+
+// ── Number stepper ──────────────────────────────────────────
+function createNumberStepper(input){
+  const wrap = document.createElement('div');
+  wrap.className = 'sf-num-stepper';
+  const min  = input.min  !== '' ? parseFloat(input.min)  : -Infinity;
+  const max  = input.max  !== '' ? parseFloat(input.max)  :  Infinity;
+  const step = input.step !== '' ? parseFloat(input.step) : 1;
+  function clamp(v){ return Math.min(max, Math.max(min, v)); }
+  const dec = document.createElement('button');
+  dec.type = 'button'; dec.className = 'sf-num-btn'; dec.textContent = '−';
+  dec.addEventListener('click', ()=>{
+    input.value = clamp((parseFloat(input.value)||0) - step);
+    input.dispatchEvent(new Event('change', {bubbles:true}));
+  });
+  const inc = document.createElement('button');
+  inc.type = 'button'; inc.className = 'sf-num-btn'; inc.textContent = '+';
+  inc.addEventListener('click', ()=>{
+    input.value = clamp((parseFloat(input.value)||0) + step);
+    input.dispatchEvent(new Event('change', {bubbles:true}));
+  });
+  wrap.appendChild(dec);
+  wrap.appendChild(input);
+  wrap.appendChild(inc);
+  return wrap;
+}
+
+// ── Computed field functions registry ────────────────────────
+// Each function receives an ordered array of watched field values
+// matching the "watches" array declared in the manifest.
+// Return a string, or { text, warn } for warning state.
+const FIELD_COMPUTE_FUNCTIONS = {};
+
+FIELD_COMPUTE_FUNCTIONS['polling_rate_stats'] = function(vals){
+  const rate   = Math.max(1, parseInt(vals[0]) || 60);
+  const source = vals[1] || 'opensky';
+  const perDay   = Math.round(86400 / rate);
+  const perMonth = perDay * 30;
+  const fmt = n => n >= 10000 ? Math.round(n/1000)+'k'
+                 : n >= 1000  ? (n/1000).toFixed(1)+'k'
+                 : String(n);
+  let warn = null;
+  if(source === 'opensky' && perDay > 400)
+    warn = 'Exceeds OpenSky anonymous limit (400 req/day). Register for 4,000/day.';
+  return { text: `~${fmt(perDay)} req/day · ~${fmt(perMonth)}/month`, warn };
+};
+
+function renderComputedInfo(el, result){
+  if(typeof result === 'string'){
+    el.className = 'sf-computed-info';
+    el.innerHTML = '';
+    el.appendChild(document.createTextNode(result));
+  } else {
+    el.className = 'sf-computed-info' + (result.warn ? ' warn' : '');
+    el.innerHTML = '';
+    const t = document.createElement('span');
+    t.textContent = result.text || '';
+    el.appendChild(t);
+    if(result.warn){
+      const w = document.createElement('span');
+      w.className = 'sf-computed-warn';
+      w.textContent = '⚠ ' + result.warn;
+      el.appendChild(w);
+    }
+  }
+}
+
+function renderAppSettingsField(fieldsContainer, field){
+  const div = document.createElement('div');
+  div.className = 'modal-field';
+  div.id = `asf_row_${field.key}`;
+  const label = document.createElement('label');
+  label.textContent = field.label;
+  div.appendChild(label);
+
+  const fieldValue = getSettingsValue(field.key, field.ph ?? '');
+
+  if(field.type==='toggle'){
+    const toggleSize = normalizeToggleSize(field.size || field.toggle_size);
+    const toggle = createSegmentedToggleControl({
+      id: `asf_${field.key}`,
+      options: field.opts || [],
+      value: fieldValue,
+      size: toggleSize
+    });
+    div.appendChild(toggle);
+    fieldsContainer.appendChild(div);
+    return;
+  }
+
+  let input;
+  if(field.type==='select'){
+    input = document.createElement('select');
+    (field.opts||[]).forEach(rawOpt=>{
+      const opt = normalizeSettingOption(rawOpt);
+      const optionEl = document.createElement('option');
+      optionEl.value = opt.value;
+      optionEl.textContent = opt.label;
+      if(String(fieldValue)===opt.value) optionEl.selected=true;
+      input.appendChild(optionEl);
+    });
+  } else if(field.type==='textarea'){
+    input = document.createElement('textarea');
+    input.rows = 8;
+    if(field.ph) input.placeholder = field.ph;
+    input.value = fieldValue;
+  } else if(field.type==='search_chips' && field.maxItems===1){
+    const wrapper = document.createElement('div');
+    div.appendChild(wrapper);
+    fieldsContainer.appendChild(div);
+    createSingleSearchPicker({
+      container: wrapper,
+      hiddenId: `asf_${field.key}`,
+      searchUrl: field.searchUrl,
+      resultKey: field.resultKey,
+      currentValue: fieldValue
+    });
+    return;
+  } else if(field.type==='search_chips'){
+    const wrapper = document.createElement('div');
+    wrapper.className = 'chip-picker';
+    div.appendChild(wrapper);
+    fieldsContainer.appendChild(div);
+    createSearchChipPicker({
+      container: wrapper,
+      hiddenId: `asf_${field.key}`,
+      searchUrl: field.searchUrl,
+      resultKey: field.resultKey,
+      maxItems: field.maxItems||null,
+      currentValues: fieldValue
+    });
+    return;
+  } else if(field.type === 'computed'){
+    const infoBox = document.createElement('div');
+    infoBox.className = 'sf-computed-info';
+    infoBox.dataset.computeKey = field.key;
+    div.appendChild(infoBox);
+    fieldsContainer.appendChild(div);
+    return;
+  } else if(field.type === 'number'){
+    input = document.createElement('input');
+    input.type = 'number';
+    if(field.min != null) input.min = field.min;
+    if(field.max != null) input.max = field.max;
+    if(field.step)        input.step = field.step;
+    input.value = String(fieldValue ?? '');
+  } else {
+    input = document.createElement('input');
+    input.type = field.type||'text';
+    if(field.min)  input.min  = field.min;
+    if(field.max)  input.max  = field.max;
+    if(field.step) input.step = field.step;
+    if(field.ph)   input.placeholder = field.ph;
+    let val = String(fieldValue ?? '');
+    if(field.type==='datetime-local' && val.length>16) val=val.slice(0,16);
+    input.value = val;
+  }
+
+  input.id = `asf_${field.key}`;
+  if(field.type === 'password'){
+    const wrap = document.createElement('div');
+    wrap.className = 'password-reveal-wrap';
+    wrap.appendChild(input);
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'password-reveal-btn';
+    btn.title = 'Show/hide';
+    btn.innerHTML = '&#128065;';
+    btn.addEventListener('click', ()=>{
+      input.type = input.type === 'password' ? 'text' : 'password';
+      btn.style.opacity = input.type === 'text' ? '1' : '';
+    });
+    wrap.appendChild(btn);
+    div.appendChild(wrap);
+  } else if(field.type === 'number'){
+    appendInputWithInlineToggle(div, field.stepper ? createNumberStepper(input) : input, field);
+  } else {
+    appendInputWithInlineToggle(div, input, field);
+  }
+  fieldsContainer.appendChild(div);
+}
+
+function wireAppSettingsSyncRules(fields){
+  const fieldsByKey = new Map(fields.map(f=>[f.key, f]));
+  let syncInProgress = false;
+
+  function applySyncValues(sourceKey){
+    const source = fieldsByKey.get(sourceKey);
+    if(!source || !source.sync_values) return;
+    const selected = getModalFieldValue(sourceKey);
+    const mapping = source.sync_values[selected];
+    if(!mapping || typeof mapping !== 'object') return;
+    syncInProgress = true;
+    Object.entries(mapping).forEach(([targetKey, targetValue])=>{
+      if(fieldsByKey.has(targetKey)) setModalFieldValue(targetKey, targetValue);
+    });
+    syncInProgress = false;
+  }
+
+  function applyVisibility(){
+    fields.forEach(f=>{
+      if(!f.visible_when) return;
+      const row = document.getElementById(`asf_row_${f.key}`);
+      if(!row) return;
+      const visible = Object.entries(f.visible_when).every(
+        ([parentKey, expected]) => getModalFieldValue(parentKey) === String(expected)
+      );
+      row.style.display = visible ? '' : 'none';
+    });
+  }
+
+  function onFieldChanged(fieldKey){
+    const field = fieldsByKey.get(fieldKey);
+    if(!field) return;
+
+    if(!syncInProgress && field.sync_parent){
+      const parentKey = field.sync_parent;
+      const customValue = field.sync_parent_custom_value || 'custom';
+      if(fieldsByKey.has(parentKey) && getModalFieldValue(parentKey) !== String(customValue)){
+        setModalFieldValue(parentKey, customValue);
+      }
+    }
+
+    applySyncValues(fieldKey);
+    applyVisibility();
+  }
+
+  function recomputeFields(){
+    fields.forEach(f=>{
+      if(f.type !== 'computed' || !f.compute) return;
+      const infoBox = document.querySelector(`[data-compute-key="${f.key}"]`);
+      if(!infoBox) return;
+      const fn = FIELD_COMPUTE_FUNCTIONS[f.compute];
+      if(!fn) return;
+      const vals = (f.watches || []).map(wk => getModalFieldValue(wk));
+      renderComputedInfo(infoBox, fn(vals));
+    });
+  }
+
+  fields.forEach(f=> bindModalFieldChange(f.key, ()=> onFieldChanged(f.key)));
+  fields.forEach(f=> applySyncValues(f.key));
+  applyVisibility();
+  recomputeFields();
+
+  // Re-run computed fields whenever any watched field changes
+  fields.forEach(f=>{
+    if(f.type !== 'computed' || !f.watches) return;
+    f.watches.forEach(wk=> bindModalFieldChange(wk, ()=> recomputeFields()));
+  });
+}
+
 async function openAppSettings(appKey){
   if(appKey==='sports'||appKey==='plugin_sports'){ openSportsSettings(); return; }
   currentAppSettingsKey = appKey;
@@ -1040,69 +1424,8 @@ async function openAppSettings(appKey){
   if(!cfg.fields.length){
     fields.innerHTML='<p style="color:#888;text-align:center">No configurable settings for this app.</p>';
   } else {
-    cfg.fields.forEach(f=>{
-      const div = document.createElement('div');
-      div.className = 'modal-field';
-      const label = document.createElement('label');
-      label.textContent = f.label;
-      div.appendChild(label);
-
-      let input;
-      if(f.type==='select'){
-        input = document.createElement('select');
-        (f.opts||[]).forEach(opt=>{
-          const o = document.createElement('option');
-          o.value = opt; o.textContent = opt;
-          if((globalSettings[f.key]||f.ph||'')===opt) o.selected=true;
-          input.appendChild(o);
-        });
-      } else if(f.type==='textarea'){
-        input = document.createElement('textarea');
-        input.rows = 8;
-        if(f.ph) input.placeholder = f.ph;
-        input.value = globalSettings[f.key]||'';
-      } else if(f.type==='search_chips' && f.maxItems===1){
-        const wrapper = document.createElement('div');
-        div.appendChild(wrapper);
-        fields.appendChild(div);
-        createSingleSearchPicker({
-          container: wrapper,
-          hiddenId: `asf_${f.key}`,
-          searchUrl: f.searchUrl,
-          resultKey: f.resultKey,
-          currentValue: globalSettings[f.key]||''
-        });
-        return;
-      } else if(f.type==='search_chips'){
-        const wrapper = document.createElement('div');
-        wrapper.className = 'chip-picker';
-        div.appendChild(wrapper);
-        fields.appendChild(div);
-        createSearchChipPicker({
-          container: wrapper,
-          hiddenId: `asf_${f.key}`,
-          searchUrl: f.searchUrl,
-          resultKey: f.resultKey,
-          maxItems: f.maxItems||null,
-          currentValues: globalSettings[f.key]||''
-        });
-        return;
-      } else {
-        input = document.createElement('input');
-        input.type = f.type||'text';
-        if(f.min)  input.min  = f.min;
-        if(f.max)  input.max  = f.max;
-        if(f.step) input.step = f.step;
-        if(f.ph)   input.placeholder = f.ph;
-        // Special: datetime-local needs T stripped to 16 chars
-        let val = globalSettings[f.key]||'';
-        if(f.type==='datetime-local' && val.length>16) val=val.slice(0,16);
-        input.value = val;
-      }
-      input.id = `asf_${f.key}`;
-      div.appendChild(input);
-      fields.appendChild(div);
-    });
+    cfg.fields.forEach(f=> renderAppSettingsField(fields, f));
+    wireAppSettingsSyncRules(cfg.fields);
   }
 
   document.getElementById('appSettingsModal').style.display='flex';
@@ -1118,7 +1441,12 @@ function saveAppSettings(){
   const payload = {action:'save_global'};
   cfg.fields.forEach(f=>{
     const el = document.getElementById(`asf_${f.key}`);
-    if(el) payload[f.key] = el.value;
+    if(el) payload[f.key] = el.type === 'checkbox' ? el.checked : el.value;
+    const inlineKey = f.inline_toggle && (f.inline_toggle.key || '').trim();
+    if(inlineKey){
+      const inlineEl = document.getElementById(`asf_${inlineKey}`);
+      if(inlineEl) payload[inlineKey] = inlineEl.value;
+    }
   });
   fetch('/settings',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
   .then(()=>{ showToast('Settings saved'); closeAppSettings(); });

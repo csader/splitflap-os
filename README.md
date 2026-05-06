@@ -59,30 +59,14 @@ setup/           — Raspberry Pi setup scripts and systemd services
 
 ## Creating an App
 
-Each app is a directory in `apps/` with two files:
+Each app is a directory in `apps/` with:
 
-**manifest.json**
-```json
-{
-  "id": "my-app",
-  "name": "My App",
-  "icon": "🎯",
-  "description": "What it does",
-  "category": "entertainment",
-  "type": "functional",
-  "refresh_interval": 60,
-  "loop_delay": 5,
-  "settings": []
-}
-```
+- `manifest.json` for metadata and settings schema
+- `app.py` with a `fetch(settings, format_lines, get_rows, get_cols)` function
 
-**app.py**
-```python
-def fetch(settings, format_lines, get_rows, get_cols):
-    return [format_lines("LINE 1", "LINE 2", "LINE 3")]
-```
+`fetch()` returns a list of page strings. Each page shows for `loop_delay` seconds, and results are cached by `refresh_interval`.
 
-`fetch()` returns a list of page strings. Each page is displayed for `loop_delay` seconds. Data is cached for `refresh_interval` seconds.
+For full app-development documentation, settings schema, and examples, see [APPS_README.md](APPS_README.md).
 
 ## Attribution
 

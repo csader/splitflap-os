@@ -933,7 +933,7 @@ def get_plugin_settings_config():
         ]
 
         configs[f"plugin_{app_id}"] = {
-            "title": manifest.get('name', app_id),
+            "title": f"{manifest.get('icon', '🧩')} {manifest.get('name', app_id)}",
             "fields": fields,
         }
     return configs

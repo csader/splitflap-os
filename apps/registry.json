@@ -207,6 +207,15 @@
       "category": "news",
       "type": "functional",
       "version": "1.0"
+    },
+    {
+      "id": "planes_overhead",
+      "name": "Planes Overhead",
+      "icon": "✈️",
+      "description": "Nearby aircraft",
+      "category": "data",
+      "type": "functional",
+      "version": "1.0"
     }
   ]
 }

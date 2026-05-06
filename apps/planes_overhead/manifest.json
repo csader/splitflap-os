@@ -4,7 +4,7 @@
   "icon": "✈️",
   "description": "Nearby aircraft",
   "type": "functional",
-  "refresh_interval": 20,
+  "refresh_interval": 1,
   "loop_delay": 4,
   "category": "data",
   "settings": [
@@ -12,13 +12,13 @@
       "key": "location",
       "label": "Location (lat,lon)",
       "type": "text",
-      "default": "42.3601,-71.0589"
+      "default": "41.97596460174016,-87.90326919959064"
     },
     {
       "key": "radius",
       "label": "Search Radius",
       "type": "number",
-      "default": 100,
+      "default": 25,
       "min": 10,
       "max": 250,
       "step": 5,
@@ -44,7 +44,7 @@
       "label": "Max Flights To Cycle",
       "type": "number",
       "stepper": true,
-      "default": 5,
+      "default": 9,
       "min": 1,
       "max": 10,
       "step": 1
@@ -54,7 +54,7 @@
       "label": "Dwell Time (seconds)",
       "type": "number",
       "stepper": true,
-      "default": 15,
+      "default": 20,
       "min": 1,
       "max": 60,
       "step": 1
@@ -64,7 +64,7 @@
       "label": "Polling Rate (seconds)",
       "type": "number",
       "stepper": true,
-      "default": 60,
+      "default": 240,
       "min": 15,
       "max": 3600,
       "step": 15
@@ -79,13 +79,14 @@
     {
       "key": "data_source",
       "label": "Datasource",
+      "note": "* APIs that are free or have a free tier.",
       "type": "toggle",
       "size": "md",
       "default": "opensky",
       "options": [
         {
           "value": "opensky",
-          "label": "OpenSky"
+          "label": "OpenSky*"
         },
         {
           "value": "flightaware",
@@ -97,13 +98,27 @@
         },
         {
           "value": "airlabs",
-          "label": "AirLabs"
+          "label": "AirLabs*"
         },
         {
           "value": "aviationstack",
-          "label": "AStack"
+          "label": "AStack*"
         }
       ]
+    },
+    {
+      "key": "opensky_client_id",
+      "label": "OpenSky Client ID (optional; leave blank for free API)",
+      "type": "password",
+      "default": "",
+      "visible_when": { "data_source": "opensky" }
+    },
+    {
+      "key": "opensky_client_secret",
+      "label": "OpenSky Client Secret (optional; higher limits with free account)",
+      "type": "password",
+      "default": "",
+      "visible_when": { "data_source": "opensky" }
     },
     {
       "key": "flightaware_api_key",

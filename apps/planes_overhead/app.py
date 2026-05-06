@@ -6,6 +6,21 @@ def fetch(settings, format_lines, get_rows, get_cols):
 
     import requests
 
+    # Keep provider polling state inside this plugin so settings changes
+    # can force an immediate refresh without server-side cache hooks.
+    state = getattr(fetch, "_state", None)
+    if state is None:
+        state = {
+            "last_sig": None,
+            "last_polled_at": 0.0,
+            "flights": [],
+            "last_error_provider": None,
+            "last_error": None,
+            "opensky_token": None,
+            "opensky_token_exp": 0.0,
+        }
+        setattr(fetch, "_state", state)
+
     def _to_float(value, default):
         try:
             return float(value)
@@ -150,7 +165,35 @@ def fetch(settings, format_lines, get_rows, get_cols):
             pass
         return normalized
 
-    def _fetch_opensky(lamin, lomin, lamax, lomax):
+    def _get_opensky_token(client_id, client_secret):
+        now = time.time()
+        if state.get("opensky_token") and now < float(state.get("opensky_token_exp", 0.0)):
+            return state.get("opensky_token")
+
+        response = requests.post(
+            "https://auth.opensky-network.org/auth/realms/opensky-network/protocol/openid-connect/token",
+            data={
+                "grant_type": "client_credentials",
+                "client_id": client_id,
+                "client_secret": client_secret,
+            },
+            timeout=12,
+        )
+        response.raise_for_status()
+        payload = response.json()
+        token = payload.get("access_token")
+        if not token:
+            raise ValueError("OpenSky token response missing access_token")
+        expires_in = int(payload.get("expires_in", 1800))
+        state["opensky_token"] = token
+        state["opensky_token_exp"] = now + max(60, expires_in - 30)
+        return token
+
+    def _fetch_opensky(lamin, lomin, lamax, lomax, client_id, client_secret):
+        headers = None
+        if client_id and client_secret:
+            token = _get_opensky_token(client_id, client_secret)
+            headers = {"Authorization": f"Bearer {token}"}
         response = requests.get(
             "https://opensky-network.org/api/states/all",
             params={
@@ -159,6 +202,7 @@ def fetch(settings, format_lines, get_rows, get_cols):
                 "lamax": round(lamax, 5),
                 "lomax": round(lomax, 5),
             },
+            headers=headers,
             timeout=12,
         )
         response.raise_for_status()
@@ -337,9 +381,70 @@ def fetch(settings, format_lines, get_rows, get_cols):
             "aviationstack": [("aviationstack_api_key", "AVSTACK KEY")],
         }.get(provider, [])
 
+    def _provider_tag(provider):
+        return {
+            "opensky": "OPENSKY",
+            "flightaware": "FLTAWARE",
+            "flightradar24": "FR24",
+            "airlabs": "AIRLABS",
+            "aviationstack": "AVSTACK",
+        }.get(provider, "API")
+
+    def _extract_error_text(response):
+        if not response:
+            return ""
+        try:
+            payload = response.json()
+            if isinstance(payload, dict):
+                for key in ("error", "message", "reason", "detail"):
+                    if key in payload and payload[key]:
+                        return str(payload[key])
+            return str(payload)
+        except Exception:
+            return (response.text or "").strip()
+
+    def _error_pages(provider, err, dwell_repeat):
+        tag = _provider_tag(provider)
+        if isinstance(err, requests.Timeout):
+            return [format_lines("PLANES", "API TIMEOUT", tag)] * dwell_repeat
+        if isinstance(err, requests.ConnectionError):
+            return [format_lines("PLANES", "CONNECTION ERR", tag)] * dwell_repeat
+
+        status = None
+        body_text = ""
+        if isinstance(err, requests.HTTPError):
+            response = getattr(err, "response", None)
+            if response is not None:
+                status = response.status_code
+                body_text = _extract_error_text(response).lower()
+
+        if status in (401, 403):
+            return [format_lines("PLANES", "AUTH ERROR", f"{tag} KEY")] * dwell_repeat
+
+        if status == 429 or any(token in body_text for token in ("rate", "limit", "quota", "usage", "too many")):
+            return [format_lines("PLANES", "RATE LIMITED", tag)] * dwell_repeat
+
+        if status == 402:
+            return [format_lines("PLANES", "PLAN LIMIT", tag)] * dwell_repeat
+
+        if status in (500, 502, 503, 504):
+            return [format_lines("PLANES", "API OFFLINE", tag)] * dwell_repeat
+
+        if status is not None:
+            return [format_lines("PLANES", f"API ERR {status}", tag)] * dwell_repeat
+
+        return [format_lines("PLANES", "DATA ERROR", "TRY AGAIN")] * dwell_repeat
+
     def _fetch_provider_flights(provider, lamin, lomin, lamax, lomax):
         if provider == "opensky":
-            return _fetch_opensky(lamin, lomin, lamax, lomax)
+            return _fetch_opensky(
+                lamin,
+                lomin,
+                lamax,
+                lomax,
+                str(settings.get("opensky_client_id", "")).strip(),
+                str(settings.get("opensky_client_secret", "")).strip(),
+            )
         if provider == "flightaware":
             return _fetch_flightaware(lamin, lomin, lamax, lomax, str(settings.get("flightaware_api_key", "")).strip())
         if provider == "flightradar24":
@@ -365,12 +470,13 @@ def fetch(settings, format_lines, get_rows, get_cols):
         _to_float(settings.get("radius", settings.get("radius_km", 100)), 100.0),
     )
     radius_unit = str(settings.get("radius_unit", "mi")).lower()
-    max_results = max(1, min(5, _to_int(settings.get("max_results", "5"), 5)))
+    max_results = max(1, min(10, _to_int(settings.get("max_results", "9"), 9)))
     units_preset = str(settings.get("units_preset", "aviation")).lower()
     distance_unit = str(settings.get("distance_unit", "nm")).lower()
     altitude_unit = str(settings.get("altitude_unit", "fl")).lower()
     speed_unit = str(settings.get("speed_unit", "kt")).lower()
     dwell_seconds = max(1.0, min(30.0, _to_float(settings.get("dwell_seconds", "15"), 15.0)))
+    polling_seconds = max(15.0, min(3600.0, _to_float(settings.get("polling_rate", "240"), 240.0)))
     data_source = str(settings.get("data_source", "opensky")).strip().lower()
     dwell_repeat = max(1, int(round(dwell_seconds / base_loop_seconds)))
 
@@ -419,10 +525,49 @@ def fetch(settings, format_lines, get_rows, get_cols):
     lomin = max(-180.0, lon - delta_lon)
     lomax = min(180.0, lon + delta_lon)
 
-    try:
-        flights = _fetch_provider_flights(data_source, lamin, lomin, lamax, lomax)
-    except Exception:
-        return [format_lines("PLANES", "DATA ERROR", "TRY AGAIN")] * dwell_repeat
+    settings_sig = (
+        location_raw,
+        radius_value,
+        radius_unit,
+        max_results,
+        units_preset,
+        distance_unit,
+        altitude_unit,
+        speed_unit,
+        dwell_seconds,
+        polling_seconds,
+        data_source,
+        str(settings.get("opensky_client_id", "")).strip(),
+        str(settings.get("opensky_client_secret", "")).strip(),
+        str(settings.get("flightaware_api_key", "")).strip(),
+        str(settings.get("flightradar24_api_key", "")).strip(),
+        str(settings.get("flightradar24_api_host", "")).strip(),
+        str(settings.get("airlabs_api_key", "")).strip(),
+        str(settings.get("aviationstack_api_key", "")).strip(),
+    )
+
+    now_ts = time.time()
+    sig_changed = settings_sig != state["last_sig"]
+    due_for_poll = (now_ts - state["last_polled_at"]) >= polling_seconds
+    need_poll = sig_changed or due_for_poll or (not state["flights"] and state["last_error"] is None)
+
+    if need_poll:
+        try:
+            state["flights"] = _fetch_provider_flights(data_source, lamin, lomin, lamax, lomax)
+            state["last_error_provider"] = None
+            state["last_error"] = None
+            state["last_polled_at"] = now_ts
+            state["last_sig"] = settings_sig
+        except Exception as err:
+            state["last_error_provider"] = data_source
+            state["last_error"] = err
+            state["last_polled_at"] = now_ts
+            state["last_sig"] = settings_sig
+
+    if state["last_error"] and not state["flights"]:
+        return _error_pages(state["last_error_provider"] or data_source, state["last_error"], dwell_repeat)
+
+    flights = state["flights"]
 
     now = int(time.time())
     nearby = []

@@ -20,10 +20,16 @@
     {
       "key": "time_format",
       "label": "Time Format",
-      "type": "select",
+      "type": "toggle",
       "options": [
-        "12hr",
-        "24hr"
+        {
+          "value": "12hr",
+          "label": "12hr"
+        },
+        {
+          "value": "24hr",
+          "label": "24hr"
+        }
       ],
       "global_key": true
     }

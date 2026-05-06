@@ -2319,44 +2319,69 @@ async function openSportsSettings(){
     _sportsState = {};
     list.innerHTML='';
 
-    // Display settings at top
-    const opts = document.createElement('div');
-    opts.style.cssText='display:flex;flex-wrap:wrap;gap:12px;margin-bottom:16px;padding:10px 14px;background:#1a1a1a;border:1px solid var(--border);border-radius:8px;align-items:center';
     const filterVal = allSettings.plugin_sports_sports_filter || allSettings.sports_filter || 'all';
     const leagueVal = allSettings.plugin_sports_sports_show_league || allSettings.sports_show_league || 'yes';
     const compactVal = allSettings.plugin_sports_sports_compact || allSettings.sports_compact || 'no';
     const delayVal = allSettings.plugin_sports_loop_delay || allSettings.sports_loop_delay || '5';
-    opts.innerHTML=`
-      <label style="font-size:.85rem;color:#ccc;display:flex;align-items:center;gap:6px">
-        Show
-        <select id="sportsFilterSelect" style="background:#111;color:#fff;border:1px solid #555;border-radius:4px;padding:4px 6px;font-size:.82rem">
-          <option value="all"${filterVal==='all'?' selected':''}>All Games</option>
-          <option value="live"${filterVal==='live'?' selected':''}>Live Only</option>
-          <option value="live+upcoming"${filterVal==='live+upcoming'?' selected':''}>Live + Upcoming</option>
-          <option value="live+final"${filterVal==='live+final'?' selected':''}>Live + Final</option>
-        </select>
-      </label>
-      <label style="font-size:.85rem;color:#ccc;display:flex;align-items:center;gap:6px">
-        League Name
-        <select id="sportsLeagueToggle" style="background:#111;color:#fff;border:1px solid #555;border-radius:4px;padding:4px 6px;font-size:.82rem">
-          <option value="yes"${leagueVal==='yes'?' selected':''}>Show</option>
-          <option value="no"${leagueVal==='no'?' selected':''}>Hide</option>
-        </select>
-      </label>
-      <label style="font-size:.85rem;color:#ccc;display:flex;align-items:center;gap:6px">
-        Layout
-        <select id="sportsCompactToggle" style="background:#111;color:#fff;border:1px solid #555;border-radius:4px;padding:4px 6px;font-size:.82rem">
-          <option value="no"${compactVal==='no'?' selected':''}>1 Game/Page</option>
-          <option value="yes"${compactVal==='yes'?' selected':''}>2 Games/Page</option>
-        </select>
-      </label>
-      <label style="font-size:.85rem;color:#ccc;display:flex;align-items:center;gap:6px">
-        Delay
-        <input type="number" id="sportsDelayInput" value="${delayVal}" min="2" max="30" step="1"
-          style="width:50px;padding:4px;background:#111;color:#fff;border:1px solid #555;border-radius:4px;text-align:center;font-size:.82rem">
-        s
-      </label>`;
+
+    // Display settings at top
+    const opts = document.createElement('div');
+    opts.style.cssText='display:flex;flex-direction:column;gap:12px;margin-bottom:16px;padding:12px 14px;background:#1a1a1a;border:1px solid var(--border);border-radius:8px';
+
+    // Show filter
+    const filterRow = document.createElement('div');
+    filterRow.style.cssText='display:flex;align-items:center;gap:8px;font-size:.85rem;color:#ccc';
+    filterRow.innerHTML='<span style="min-width:90px">Show</span>';
+    filterRow.appendChild(createSegmentedToggleControl({
+      id:'sportsFilterSelect',
+      options:[
+        {value:'all',label:'All'},
+        {value:'live',label:'Live'},
+        {value:'live+upcoming',label:'Live+Next'},
+        {value:'live+final',label:'Live+Final'},
+      ],
+      value: filterVal, size:'sm'
+    }));
+    opts.appendChild(filterRow);
+
+    // League name
+    const leagueRow = document.createElement('div');
+    leagueRow.style.cssText='display:flex;align-items:center;gap:8px;font-size:.85rem;color:#ccc';
+    leagueRow.innerHTML='<span style="min-width:90px">League Name</span>';
+    leagueRow.appendChild(createSegmentedToggleControl({
+      id:'sportsLeagueToggle',
+      options:[{value:'yes',label:'Show'},{value:'no',label:'Hide'}],
+      value: leagueVal, size:'sm'
+    }));
+    opts.appendChild(leagueRow);
+
+    // Layout
+    const layoutRow = document.createElement('div');
+    layoutRow.style.cssText='display:flex;align-items:center;gap:8px;font-size:.85rem;color:#ccc';
+    layoutRow.innerHTML='<span style="min-width:90px">Games per page</span>';
+    layoutRow.appendChild(createSegmentedToggleControl({
+      id:'sportsCompactToggle',
+      options:[{value:'no',label:'1'},{value:'yes',label:'2'}],
+      value: compactVal, size:'sm'
+    }));
+    opts.appendChild(layoutRow);
+
+    // Delay stepper
+    const delayRow = document.createElement('div');
+    delayRow.style.cssText='display:flex;align-items:center;gap:8px;font-size:.85rem;color:#ccc';
+    delayRow.innerHTML='<span style="min-width:90px">Delay</span>';
+    const delayWrap = document.createElement('span');
+    delayWrap.id='sportsDelayStepperWrap';
+    delayRow.appendChild(delayWrap);
+    delayRow.appendChild(Object.assign(document.createElement('span'),{textContent:' s'}));
+    opts.appendChild(delayRow);
     list.appendChild(opts);
+    // Build stepper for delay
+    const delayInput = document.createElement('input');
+    delayInput.type='number'; delayInput.id='sportsDelayInput';
+    delayInput.value=delayVal; delayInput.min='2'; delayInput.max='30'; delayInput.step='1';
+    delayInput.style.cssText='width:50px;padding:4px;background:#111;color:#fff;border:1px solid #555;border-radius:4px;text-align:center;font-size:.82rem';
+    document.getElementById('sportsDelayStepperWrap').appendChild(createNumberStepper(delayInput));
 
     for(const lg of data.leagues){
       const followed = lg.followed || '';

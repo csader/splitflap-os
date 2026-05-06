@@ -185,11 +185,11 @@ input:checked+.slider:before{transform:translateX(20px)}
 .password-reveal-btn:hover{color:#fff}
 
 /* ── NUMBER STEPPER ── */
-.sf-num-stepper{display:flex;align-items:stretch}
-.sf-num-stepper input[type=number]{flex:1;min-width:0;text-align:center;border-radius:0!important;-moz-appearance:textfield}
+.sf-num-stepper{display:flex;align-items:stretch;height:34px}
+.sf-num-stepper input[type=number]{flex:1;min-width:0;text-align:center;border-radius:0!important;-moz-appearance:textfield;height:100%;box-sizing:border-box}
 .sf-num-stepper input[type=number]::-webkit-inner-spin-button,
 .sf-num-stepper input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
-.sf-num-btn{flex-shrink:0;width:34px;background:#252525;border:1px solid var(--border);color:#ccc;font-size:1.15rem;line-height:1;cursor:pointer;transition:.15s;display:flex;align-items:center;justify-content:center}
+.sf-num-btn{flex-shrink:0;width:34px;height:34px;background:#252525;border:1px solid var(--border);color:#ccc;font-size:1.15rem;line-height:1;cursor:pointer;transition:.15s;display:flex;align-items:center;justify-content:center}
 .sf-num-btn:hover{background:#333;color:#fff}
 .sf-num-stepper .sf-num-btn:first-child{border-radius:8px 0 0 8px;border-right:none}
 .sf-num-stepper .sf-num-btn:last-child{border-radius:0 8px 8px 0;border-left:none}

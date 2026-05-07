@@ -2811,8 +2811,8 @@ function saveHotspotConfig(){
 // ============================================================
 //  SOFTWARE UPDATE
 // ============================================================
-function checkForUpdate(){
-  fetch('/check_update').then(r=>r.json()).then(data=>{
+function checkForUpdate(force=false){
+  fetch(`/check_update${force?'?force=1':''}`).then(r=>r.json()).then(data=>{
     const badge = document.getElementById('versionBadge');
     const statusEl = document.getElementById('updateStatus');
     const actionsEl = document.getElementById('updateActions');

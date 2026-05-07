@@ -2039,7 +2039,8 @@ def version_route():
 @app.route('/check_update')
 def check_update():
     now = time.time()
-    if _update_cache['result'] and (now - _update_cache['checked_at']) < 3600:
+    force = request.args.get('force') == '1'
+    if not force and _update_cache['result'] and (now - _update_cache['checked_at']) < 3600:
         return jsonify(_update_cache['result'])
     try:
         repo_url = 'https://api.github.com/repos/csader/splitflap-os/releases/latest'

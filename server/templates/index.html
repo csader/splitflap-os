@@ -211,9 +211,12 @@
     <div class="config-section">
       <h3>Software Update</h3>
       <div id="updateStatus" style="font-size:.85rem;color:#888;margin-bottom:12px">Checking for updates…</div>
-      <div id="updateActions" style="display:none;display:flex;gap:8px;flex-wrap:wrap">
-        <button class="btn btn-success btn-sm" id="applyUpdateBtn" onclick="applyUpdate()"><i data-lucide="download" style="width:14px;height:14px"></i> Update Now</button>
-        <a id="releaseLink" href="#" target="_blank" class="btn btn-secondary btn-sm" style="text-decoration:none">Release Notes</a>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+        <div id="updateActions" style="display:none;display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn btn-success btn-sm" id="applyUpdateBtn" onclick="applyUpdate()"><i data-lucide="download" style="width:14px;height:14px"></i> Update Now</button>
+          <a id="releaseLink" href="#" target="_blank" class="btn btn-secondary btn-sm" style="text-decoration:none">Release Notes</a>
+        </div>
+        <button class="btn btn-secondary btn-sm" onclick="checkForUpdate(true)" style="margin-left:auto"><i data-lucide="refresh-cw" style="width:14px;height:14px"></i> Check Again</button>
       </div>
     </div>
     <div class="config-section">

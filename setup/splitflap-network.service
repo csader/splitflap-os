@@ -1,7 +1,7 @@
 [Unit]
 Description=Splitflap OS Network Fallback (Hotspot)
-After=NetworkManager.service
-Wants=NetworkManager.service
+After=NetworkManager.service network-online.target
+Wants=NetworkManager.service network-online.target
 
 [Service]
 Type=oneshot
@@ -9,6 +9,7 @@ Environment=SPLITFLAP_HOTSPOT_SSID=SplitflapOS
 Environment=SPLITFLAP_HOTSPOT_PASS=splitflap
 ExecStart=/opt/splitflap-os/setup/network-check.sh
 RemainAfterExit=yes
+TimeoutStartSec=120
 
 [Install]
 WantedBy=multi-user.target

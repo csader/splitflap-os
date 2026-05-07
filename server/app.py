@@ -103,7 +103,7 @@ def load_settings():
         "sports_wnba":  "",
         "sports_pga":   "",
         "sports_ufc":   "",
-        "mqtt_enabled":  True,
+        "mqtt_enabled":  False,
         "mqtt_broker":   "homeassistant.local",
         "mqtt_port":     1883,
         "mqtt_user":     "",

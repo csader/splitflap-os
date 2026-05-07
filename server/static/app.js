@@ -2808,6 +2808,65 @@ function saveHotspotConfig(){
   .then(()=>showToast('Hotspot config saved'));
 }
 
+// ============================================================
+//  SOFTWARE UPDATE
+// ============================================================
+function checkForUpdate(){
+  fetch('/check_update').then(r=>r.json()).then(data=>{
+    const badge = document.getElementById('versionBadge');
+    const statusEl = document.getElementById('updateStatus');
+    const actionsEl = document.getElementById('updateActions');
+    const releaseLink = document.getElementById('releaseLink');
+
+    if(badge) badge.textContent = `v${data.current}`;
+
+    if(!statusEl) return;
+    if(data.error){
+      statusEl.textContent = `v${data.current} — update check failed`;
+      return;
+    }
+    if(data.has_update){
+      statusEl.innerHTML = `<strong style="color:var(--green)">Update available: v${data.latest}</strong>${data.release_name ? ` — ${data.release_name}` : ''}`;
+      if(actionsEl){ actionsEl.style.display='flex'; }
+      if(releaseLink && data.release_url) releaseLink.href = data.release_url;
+      if(badge){ badge.textContent = `v${data.current} ↑`; badge.style.color='var(--green)'; }
+      if(typeof lucide!=='undefined') lucide.createIcons();
+    } else {
+      statusEl.textContent = `v${data.current} — up to date`;
+      if(actionsEl) actionsEl.style.display='none';
+    }
+  }).catch(()=>{
+    const statusEl = document.getElementById('updateStatus');
+    if(statusEl) statusEl.textContent = 'Update check unavailable (offline?)';
+  });
+}
+
+function applyUpdate(){
+  const btn = document.getElementById('applyUpdateBtn');
+  const statusEl = document.getElementById('updateStatus');
+  if(btn){ btn.disabled=true; btn.textContent='Updating…'; }
+  if(statusEl) statusEl.textContent = 'Pulling update and restarting…';
+
+  fetch('/apply_update',{method:'POST'}).catch(()=>{});
+
+  // Server will restart — poll until it comes back
+  let attempts = 0;
+  const poll = setInterval(()=>{
+    attempts++;
+    fetch('/version').then(r=>r.json()).then(()=>{
+      clearInterval(poll);
+      location.reload();
+    }).catch(()=>{
+      if(attempts > 60){
+        clearInterval(poll);
+        if(statusEl) statusEl.textContent = 'Update may have failed — try refreshing manually.';
+      }
+    });
+  }, 2000);
+}
+
+checkForUpdate();
+
 buildAppsGrid();
 loadSavedPlaylists();
 loadSavedAppPlaylists();

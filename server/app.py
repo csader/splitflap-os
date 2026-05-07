@@ -27,6 +27,14 @@ CONFIG_PATH = os.environ.get(
     os.path.join(os.path.dirname(__file__), "settings.json")
 )
 APPS_PATH = os.path.join(os.path.dirname(__file__), '..', 'apps')
+VERSION_FILE = os.path.join(os.path.dirname(__file__), '..', 'VERSION')
+
+def _read_version():
+    try:
+        with open(VERSION_FILE, 'r') as f:
+            return f.read().strip()
+    except Exception:
+        return 'unknown'
 
 app = Flask(__name__)
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(message)s')
@@ -2016,6 +2024,65 @@ def installed_apps():
         apps=get_plugin_app_list(),
         settings_config=get_plugin_settings_config(),
     )
+
+
+# ============================================================
+#  UPDATE CHECK
+# ============================================================
+
+_update_cache = {'checked_at': 0, 'result': None}
+
+@app.route('/version')
+def version_route():
+    return jsonify(version=_read_version())
+
+@app.route('/check_update')
+def check_update():
+    now = time.time()
+    if _update_cache['result'] and (now - _update_cache['checked_at']) < 3600:
+        return jsonify(_update_cache['result'])
+    try:
+        repo_url = 'https://api.github.com/repos/csader/splitflap-os/releases/latest'
+        resp = requests.get(repo_url, timeout=5, headers={'User-Agent': 'SplitflapOS'})
+        resp.raise_for_status()
+        data = resp.json()
+        latest = data.get('tag_name', '').lstrip('v')
+        current = _read_version()
+        has_update = latest and latest != current
+        result = {
+            'current': current,
+            'latest': latest,
+            'has_update': has_update,
+            'release_name': data.get('name', ''),
+            'release_url': data.get('html_url', ''),
+        }
+        _update_cache['result'] = result
+        _update_cache['checked_at'] = now
+        return jsonify(result)
+    except Exception as e:
+        logging.error(f"Update check error: {e}")
+        return jsonify({'current': _read_version(), 'latest': None, 'has_update': False, 'error': str(e)})
+
+@app.route('/apply_update', methods=['POST'])
+def apply_update():
+    """Pull latest from main and restart the service."""
+    import subprocess
+    repo_dir = os.path.join(os.path.dirname(__file__), '..')
+    try:
+        subprocess.run(['git', 'pull', 'origin', 'main'], cwd=repo_dir, timeout=60, check=True)
+        _update_cache['checked_at'] = 0  # invalidate cache
+        # Restart via systemd if available, otherwise just reload
+        def _restart():
+            time.sleep(1)
+            try:
+                subprocess.run(['systemctl', 'restart', 'splitflap.service'], timeout=10)
+            except Exception:
+                os.execv('/usr/bin/python3', ['/usr/bin/python3'] + os.sys.argv)
+        threading.Thread(target=_restart, daemon=True).start()
+        return jsonify(status='updating')
+    except Exception as e:
+        logging.error(f"Update error: {e}")
+        return jsonify(status='error', message=str(e)), 500
 
 
 if __name__ == '__main__':

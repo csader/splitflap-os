@@ -43,6 +43,14 @@ If no WiFi is available, the Pi creates a hotspot:
 
 Configure WiFi from Settings > WiFi / Network in the UI.
 
+## Updating
+
+```bash
+cd ~/splitflap-os
+git pull origin main
+sudo bash setup/install.sh
+```
+
 ## Hardware
 
 This project is the **web UI only**. For the firmware and physical display hardware (3D printed parts, PCBs, BOM), see the original project by Adam G Makes:

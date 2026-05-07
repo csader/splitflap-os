@@ -44,6 +44,8 @@ sed "s|/opt/splitflap-os|$REPO_DIR|g" "$REPO_DIR/setup/splitflap.service" > /etc
 systemctl daemon-reload
 systemctl enable splitflap-network.service
 systemctl enable splitflap.service
+systemctl restart splitflap-network.service
+systemctl restart splitflap.service
 
 # Create settings.json if it doesn't exist
 if [ ! -f "$REPO_DIR/server/settings.json" ]; then

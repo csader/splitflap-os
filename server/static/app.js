@@ -2847,7 +2847,11 @@ function applyUpdate(){
   if(btn){ btn.disabled=true; btn.textContent='Updating…'; }
   if(statusEl) statusEl.textContent = 'Pulling update and restarting…';
 
-  fetch('/apply_update',{method:'POST'}).catch(()=>{});
+  fetch('/apply_update',{method:'POST'}).then(r=>r.json()).then(data=>{
+    if(data.needs_install && statusEl){
+      statusEl.innerHTML = 'Updating… <strong style="color:var(--orange)">New dependencies detected — run <code>sudo bash setup/install.sh</code> after restart.</strong>';
+    }
+  }).catch(()=>{});
 
   // Server will restart — poll until it comes back
   let attempts = 0;

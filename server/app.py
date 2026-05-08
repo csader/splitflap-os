@@ -2067,12 +2067,26 @@ def check_update():
 @app.route('/apply_update', methods=['POST'])
 def apply_update():
     """Pull latest from main and restart the service."""
-    import subprocess
+    import subprocess, hashlib
     repo_dir = os.path.join(os.path.dirname(__file__), '..')
+    req_path = os.path.join(repo_dir, 'server', 'requirements.txt')
+
+    def _hash_file(path):
+        try:
+            with open(path, 'rb') as f:
+                return hashlib.md5(f.read()).hexdigest()
+        except Exception:
+            return None
+
+    req_hash_before = _hash_file(req_path)
+
     try:
         subprocess.run(['git', 'pull', 'origin', 'main'], cwd=repo_dir, timeout=60, check=True)
         _update_cache['checked_at'] = 0  # invalidate cache
-        # Restart via systemd if available, otherwise just reload
+
+        req_hash_after = _hash_file(req_path)
+        needs_install = req_hash_before != req_hash_after
+
         def _restart():
             time.sleep(1)
             try:
@@ -2080,7 +2094,7 @@ def apply_update():
             except Exception:
                 os.execv('/usr/bin/python3', ['/usr/bin/python3'] + os.sys.argv)
         threading.Thread(target=_restart, daemon=True).start()
-        return jsonify(status='updating')
+        return jsonify(status='updating', needs_install=needs_install)
     except Exception as e:
         logging.error(f"Update error: {e}")
         return jsonify(status='error', message=str(e)), 500

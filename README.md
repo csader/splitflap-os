@@ -28,6 +28,11 @@ Built on [Adam G Makes' Split-Flap Display](https://github.com/adamgmakes/SplitF
 
 On your Split-Flap Display's Raspberry Pi:
 
+> **Raspberry Pi OS Lite users:** git may not be pre-installed. Run this first:
+> ```bash
+> sudo apt-get update && sudo apt-get install -y git
+> ```
+
 ```bash
 git clone https://github.com/csader/splitflap-os.git
 cd splitflap-os

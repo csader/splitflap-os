@@ -818,14 +818,19 @@ def get_plugin_pages(app_id):
 def get_plugin_app_list():
     entries = []
     for app_id, manifest in _plugin_registry.items():
-        entries.append({
+        entry = {
             "key": f"plugin_{app_id}",
             "icon": manifest.get("icon", "🧩"),
             "name": manifest.get("name", app_id),
             "desc": manifest.get("description", "")[:30],
             "plugin": True,
             "plugin_id": app_id,
-        })
+        }
+        if "min_rows" in manifest:
+            entry["min_rows"] = manifest["min_rows"]
+        if "min_cols" in manifest:
+            entry["min_cols"] = manifest["min_cols"]
+        entries.append(entry)
     entries.sort(key=lambda a: a['name'].lower())
     return entries
 

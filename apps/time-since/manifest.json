@@ -9,7 +9,19 @@
   "refresh_interval": 1,
   "loop_delay": 1,
   "settings": [
-    {"key": "event_name", "label": "Event Name", "type": "text", "default": "THE START"},
-    {"key": "event_date", "label": "Event Date (YYYY-MM-DD)", "type": "text", "default": "2024-01-01"}
-  ]
+    {
+      "key": "event_name",
+      "label": "Event Name",
+      "type": "text",
+      "default": "THE START"
+    },
+    {
+      "key": "event_date",
+      "label": "Event Date (YYYY-MM-DD)",
+      "type": "text",
+      "default": "2024-01-01"
+    }
+  ],
+  "min_rows": 3,
+  "min_cols": 10
 }

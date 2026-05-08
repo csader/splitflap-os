@@ -17,4 +17,7 @@ def fetch(settings, format_lines, get_rows, get_cols):
     days = diff.days
     hrs, rem = divmod(diff.seconds, 3600)
     mins, secs = divmod(rem, 60)
+    rows = get_rows()
+    if rows == 2:
+        return [format_lines(event.upper(), f'{days}D {hrs}H {mins}M {secs}S')]
     return [format_lines(event.upper(), f'{days}D {hrs}H {mins}M {secs}S', 'REMAINING')]

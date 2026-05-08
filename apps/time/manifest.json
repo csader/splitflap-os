@@ -33,5 +33,7 @@
       ],
       "global_key": true
     }
-  ]
+  ],
+  "min_rows": 1,
+  "min_cols": 8
 }

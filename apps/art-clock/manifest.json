@@ -9,5 +9,7 @@
   "refresh_interval": 60,
   "loop_delay": 1,
   "animation": true,
-  "settings": []
+  "settings": [],
+  "min_rows": 3,
+  "min_cols": 12
 }

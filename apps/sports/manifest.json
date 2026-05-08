@@ -18,5 +18,7 @@
       "stepper": true
     }
   ],
-  "category": "sports"
+  "category": "sports",
+  "min_rows": 1,
+  "min_cols": 8
 }

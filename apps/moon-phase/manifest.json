@@ -8,5 +8,7 @@
   "version": "1.0",
   "refresh_interval": 3600,
   "loop_delay": 10,
-  "settings": []
+  "settings": [],
+  "min_rows": 3,
+  "min_cols": 10
 }

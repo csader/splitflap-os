@@ -63,5 +63,7 @@
       "stepper": true
     }
   ],
-  "category": "animation"
+  "category": "animation",
+  "min_rows": 3,
+  "min_cols": 12
 }

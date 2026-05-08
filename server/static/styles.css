@@ -118,6 +118,8 @@ h3{margin-top:0;color:var(--text)}
 .app-card:hover{border-color:var(--accent);background:#252525;transform:translateY(-2px)}
 .app-card.running{border-color:var(--green);background:#1a2a1a}
 .app-card.running::after{content:'▶ LIVE';position:absolute;top:6px;left:12px;font-size:.65rem;color:var(--green);font-weight:bold;letter-spacing:.5px;line-height:1;display:flex;align-items:center;height:18px}
+.app-card.incompatible{opacity:.45;cursor:not-allowed;pointer-events:none}
+.app-card.incompatible .app-gear{pointer-events:none}
 .app-icon{font-size:2.2rem;display:block;margin-bottom:8px}
 .app-name{font-weight:bold;display:block;margin-bottom:3px;font-size:.9rem}
 .app-desc{font-size:.72rem;color:var(--text-muted)}

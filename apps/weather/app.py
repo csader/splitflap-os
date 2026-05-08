@@ -14,6 +14,14 @@ def fetch(settings, format_lines, get_rows, get_cols):
         desc = r['weather'][0]['description'].upper()
         hi = f"H {int(r['main']['temp_max'])}F"
         lo = f"L {int(r['main']['temp_min'])}F"
+        rows = get_rows()
+        if rows == 1:
+            return [format_lines(f'{temp} {desc}')]
+        if rows == 2:
+            return [
+                format_lines(f'{temp} {feels}', desc),
+                format_lines(f'{hi} {lo}', desc),
+            ]
         return [
             format_lines(city, f'{temp} {feels}', desc),
             format_lines(city, f'{hi} {lo}', desc),

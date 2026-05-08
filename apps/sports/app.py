@@ -50,32 +50,39 @@ def fetch(settings, format_lines, get_rows, get_cols):
             return [format_lines("SPORTS", "NO GAMES", filter_labels.get(game_filter, 'FOUND'))]
         return [format_lines("SPORTS", "NO TEAMS", "CONFIGURED")]
 
+    rows = get_rows()
+    cols = get_cols()
+
+    if rows == 1:
+        # Just score line
+        return [g['score_line'][:cols].center(cols) for g in all_games]
+
     if not compact:
-        # Standard 1-game-per-page
+        if rows == 2:
+            # score + status, no league name
+            return [g['score_line'][:cols].center(cols) + g['status'][:cols].center(cols) for g in all_games]
+        # 3+ rows: standard layout
         if show_league:
             return [g['page'] for g in all_games]
         else:
-            cols = get_cols()
             return [g['score_line'][:cols].center(cols) + (' ' * cols) + g['status'][:cols].center(cols) for g in all_games]
 
-    # Compact mode: 2 games per page
+    # Compact mode: games_per_page = rows - 1 (leave 1 row for statuses), min 1
+    games_per_page = max(1, rows - 1)
     pages = []
-    for i in range(0, len(all_games), 2):
-        g1 = all_games[i]
-        cols = get_cols()
-        if i + 1 < len(all_games):
-            g2 = all_games[i + 1]
-            r1 = g1['score_line'][:cols].center(cols)
-            r2 = g2['score_line'][:cols].center(cols)
-            s1 = g1['status'][:7].ljust(7)
-            s2 = g2['status'][:7].rjust(cols - 7)
-            r3 = (s1 + s2)[:cols]
-            pages.append(r1 + r2 + r3)
+    for i in range(0, len(all_games), games_per_page):
+        chunk = all_games[i:i+games_per_page]
+        score_rows = [g['score_line'][:cols].center(cols) for g in chunk]
+        # pad to games_per_page
+        while len(score_rows) < games_per_page:
+            score_rows.append(' ' * cols)
+        if rows > games_per_page:
+            # status row
+            statuses = [g['status'][:max(1, cols // games_per_page)] for g in chunk]
+            status_row = ''.join(s.ljust(cols // games_per_page) for s in statuses)[:cols]
+            pages.append(''.join(score_rows) + status_row)
         else:
-            r1 = g1['score_line'][:cols].center(cols)
-            r2 = ' ' * cols
-            r3 = g1['status'][:cols].center(cols)
-            pages.append(r1 + r2 + r3)
+            pages.append(''.join(score_rows))
     return pages
 
 def _fetch_league(key, info, team_filter, show_all, format_lines, get_cols, requests, game_filter):

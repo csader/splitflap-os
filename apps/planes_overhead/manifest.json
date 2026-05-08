@@ -74,7 +74,10 @@
       "label": "API Usage Estimate",
       "type": "computed",
       "compute": "polling_rate_stats",
-      "watches": ["polling_rate", "data_source"]
+      "watches": [
+        "polling_rate",
+        "data_source"
+      ]
     },
     {
       "key": "data_source",
@@ -111,49 +114,63 @@
       "label": "OpenSky Client ID (optional; leave blank for free API)",
       "type": "password",
       "default": "",
-      "visible_when": { "data_source": "opensky" }
+      "visible_when": {
+        "data_source": "opensky"
+      }
     },
     {
       "key": "opensky_client_secret",
       "label": "OpenSky Client Secret (optional; higher limits with free account)",
       "type": "password",
       "default": "",
-      "visible_when": { "data_source": "opensky" }
+      "visible_when": {
+        "data_source": "opensky"
+      }
     },
     {
       "key": "flightaware_api_key",
       "label": "FlightAware AeroAPI Key",
       "type": "password",
       "default": "",
-      "visible_when": { "data_source": "flightaware" }
+      "visible_when": {
+        "data_source": "flightaware"
+      }
     },
     {
       "key": "flightradar24_api_key",
       "label": "FR24 RapidAPI Key",
       "type": "password",
       "default": "",
-      "visible_when": { "data_source": "flightradar24" }
+      "visible_when": {
+        "data_source": "flightradar24"
+      }
     },
     {
       "key": "flightradar24_api_host",
       "label": "FR24 RapidAPI Host",
       "type": "text",
       "default": "flightradar24-com.p.rapidapi.com",
-      "visible_when": { "data_source": "flightradar24" }
+      "visible_when": {
+        "data_source": "flightradar24"
+      }
     },
     {
       "key": "airlabs_api_key",
       "label": "AirLabs API Key",
       "type": "password",
       "default": "",
-      "visible_when": { "data_source": "airlabs" }
+      "visible_when": {
+        "data_source": "airlabs"
+      }
     },
     {
       "key": "aviationstack_api_key",
       "label": "Aviationstack API Key",
       "type": "password",
       "default": "",
-      "visible_when": { "data_source": "aviationstack" }
+      "visible_when": {
+        "data_source": "aviationstack"
+      }
     },
     {
       "key": "units_preset",
@@ -266,5 +283,7 @@
         }
       ]
     }
-  ]
+  ],
+  "min_rows": 3,
+  "min_cols": 12
 }

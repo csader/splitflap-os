@@ -9,9 +9,10 @@ def fetch(settings, format_lines, get_rows, get_cols):
         ).json()
     except Exception:
         return [format_lines('CRYPTO', 'ERROR', 'API FAIL')]
+    rows = get_rows()
     pages = []
-    for i in range(0, len(coins), 3):
-        chunk = coins[i:i+3]
+    for i in range(0, len(coins), rows):
+        chunk = coins[i:i+rows]
         price_lines, change_lines = [], []
         for c in chunk:
             d = r.get(c, {})
@@ -25,7 +26,7 @@ def fetch(settings, format_lines, get_rows, get_cols):
             else:
                 price_lines.append(f'{sym} ERR')
                 change_lines.append(f'{sym} ERR')
-        pad = [''] * (3 - len(chunk))
+        pad = [''] * (rows - len(chunk))
         pages.append(format_lines(*(price_lines + pad)))
         pages.append(format_lines(*(change_lines + pad)))
     return pages or [format_lines('CRYPTO', 'NO DATA', '')]

@@ -1,10 +1,12 @@
 {
   "id": "iss",
   "name": "ISS Tracker",
-  "icon": "\ud83d\udef8",
+  "icon": "🛸",
   "description": "Space station",
   "type": "functional",
   "refresh_interval": 5,
   "loop_delay": 5,
-  "category": "data"
+  "category": "data",
+  "min_rows": 1,
+  "min_cols": 8
 }

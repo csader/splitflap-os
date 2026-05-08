@@ -26,5 +26,7 @@
       "stepper": true
     }
   ],
-  "category": "finance"
+  "category": "finance",
+  "min_rows": 1,
+  "min_cols": 8
 }

@@ -880,16 +880,27 @@ function buildAppCard(a, isPlugin) {
   const cfgKey = a.key in APP_SETTINGS_CONFIG ? a.key : (bareKey in APP_SETTINGS_CONFIG ? bareKey : a.key);
   const hasCfg = (APP_SETTINGS_CONFIG[cfgKey] && (APP_SETTINGS_CONFIG[cfgKey].fields||[]).length > 0) || bareKey === 'sports';
   const removable = isPlugin;
-  div.className = 'app-card has-app-actions';
+
+  // Check grid compatibility
+  const minRows = a.min_rows || 0;
+  const minCols = a.min_cols || 0;
+  const compatible = liveGridRows >= minRows && liveGridCols >= minCols;
+  const incompatibleReason = !compatible
+    ? `Requires ${minRows > liveGridRows ? minRows+'+ rows' : ''}${minRows > liveGridRows && minCols > liveGridCols ? ' and ' : ''}${minCols > liveGridCols ? minCols+'+ cols' : ''}`
+    : '';
+
+  div.className = 'app-card has-app-actions' + (compatible ? '' : ' incompatible');
   div.dataset.app = a.key;
-  div.onclick = () => runApp(a.key);
+  div.onclick = compatible ? () => runApp(a.key) : null;
+  if(!compatible) div.title = incompatibleReason;
+
   const icon = appLucideIcon(a.key) || appLucideIcon(a.plugin_id||'') || `<span style="font-size:2.2rem">${a.icon}</span>`;
   div.innerHTML = `
-    ${hasCfg ? `<button class="app-gear" style="right:${removable?'28':'8'}px" title="Settings" onclick="event.stopPropagation();openAppSettings('${cfgKey}')"><i data-lucide="settings" style="width:14px;height:14px"></i></button>` : ''}
+    ${hasCfg && compatible ? `<button class="app-gear" style="right:${removable?'28':'8'}px" title="Settings" onclick="event.stopPropagation();openAppSettings('${cfgKey}')"><i data-lucide="settings" style="width:14px;height:14px"></i></button>` : ''}
     ${removable ? `<button class="app-gear" title="Remove" onclick="event.stopPropagation();removeApp('${a.plugin_id||a.key.replace('plugin_','')}')"><i data-lucide="x" style="width:14px;height:14px"></i></button>` : ''}
     <span class="app-icon">${icon}</span>
     <span class="app-name">${a.name}</span>
-    <span class="app-desc">${a.desc}</span>`;
+    <span class="app-desc">${compatible ? a.desc : incompatibleReason}</span>`;
   return div;
 }
 
@@ -1819,6 +1830,8 @@ function saveGlobal(){
     mqtt_password: document.getElementById('mqttPassword').value,
   })}).then(()=>{
     initLiveGrids(rows, cols);
+    buildAppsGrid(); // re-check compatibility after grid change
+    initComposeGrid(); // resize compose grid to match new dimensions
     showToast('Settings saved');
     setSettingsDirty(false);
     // Reconnect MQTT if credentials changed
@@ -2830,7 +2843,7 @@ function checkForUpdate(force=false){
       if(actionsEl){ actionsEl.style.display='flex'; }
       if(releaseLink && data.release_url) releaseLink.href = data.release_url;
       if(badge){
-        badge.textContent = `v${data.current} ↑`;
+        badge.textContent = 'update available';
         badge.style.color='var(--green)';
         badge.onclick = ()=>{ openMenuPage('settings'); setTimeout(()=>{ const el=document.getElementById('softwareUpdateSection'); if(el) el.scrollIntoView({behavior:'smooth'}); },200); };
       }

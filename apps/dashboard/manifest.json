@@ -27,5 +27,7 @@
       "stepper": true
     }
   ],
-  "category": "data"
+  "category": "data",
+  "min_rows": 3,
+  "min_cols": 12
 }

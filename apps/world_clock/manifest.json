@@ -17,5 +17,7 @@
       "maxItems": 3,
       "global_key": true
     }
-  ]
+  ],
+  "min_rows": 1,
+  "min_cols": 10
 }

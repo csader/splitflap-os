@@ -19,5 +19,7 @@
       "step": "1",
       "stepper": true
     }
-  ]
+  ],
+  "min_rows": 3,
+  "min_cols": 10
 }

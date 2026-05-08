@@ -73,9 +73,9 @@ if [ ! -f "$REPO_DIR/server/settings.json" ]; then
 fi
 
 echo ""
-echo "=== Splitflap OS installed ==="
+echo "=== Splitflap OS installed and running ==="
 echo ""
-echo "  Start now:     sudo systemctl start splitflap.service"
+echo "  Access UI:     http://$(hostname -I | awk '{print $1}')"
 echo "  View logs:     journalctl -u splitflap -f"
 echo "  Network logs:  journalctl -u splitflap-network -f"
 echo ""

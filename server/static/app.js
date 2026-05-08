@@ -289,7 +289,9 @@ function hideHamburgerSection(){
 
 let _prevTab = 'apps';
 function openMenuPage(name){
-  toggleHamburger();
+  // Close hamburger if open (don't toggle — callers outside the drawer would open it)
+  const drawer = document.getElementById('hamburgerDrawer');
+  if(drawer && drawer.classList.contains('open')) toggleHamburger();
   const active = document.querySelector('.bottom-tab.active');
   if(active) _prevTab = active.id.replace('tab-','');
   document.getElementById('bottomTabs').style.display='none';
@@ -2859,33 +2861,55 @@ function checkForUpdate(force=false){
 }
 
 function applyUpdate(){
-  const btn = document.getElementById('applyUpdateBtn');
-  const statusEl = document.getElementById('updateStatus');
-  if(btn){ btn.disabled=true; btn.textContent='Updating…'; }
-  if(statusEl) statusEl.textContent = 'Pulling update and restarting…';
+  // Show update modal
+  const modal = document.getElementById('updateModal');
+  const icon = document.getElementById('updateModalIcon');
+  const title = document.getElementById('updateModalTitle');
+  const msg = document.getElementById('updateModalMsg');
+  const spinner = document.getElementById('updateModalSpinner');
+  const reloadBtn = document.getElementById('updateModalReloadBtn');
+  const closeBtn = document.getElementById('updateModalCloseBtn');
+  if(modal){ modal.style.display='flex'; }
+
+  function setStep(iconStr, titleStr, msgStr, showSpinner, showReload, showClose){
+    if(icon) icon.textContent=iconStr;
+    if(title) title.textContent=titleStr;
+    if(msg) msg.textContent=msgStr;
+    if(spinner) spinner.style.display=showSpinner?'block':'none';
+    if(reloadBtn) reloadBtn.style.display=showReload?'block':'none';
+    if(closeBtn) closeBtn.style.display=showClose?'block':'none';
+  }
+
+  setStep('⬇️','Downloading update…','Pulling latest from GitHub, please wait.',true,false,false);
 
   fetch('/apply_update',{method:'POST'}).then(r=>r.json()).then(data=>{
     if(data.status === 'error'){
+      setStep('❌','Update failed',data.message||'Unknown error',false,false,true);
+      // Also reset the button in settings
+      const btn = document.getElementById('applyUpdateBtn');
       if(btn){ btn.disabled=false; btn.innerHTML='<i data-lucide="download" style="width:14px;height:14px"></i> Update Now'; if(typeof lucide!=='undefined') lucide.createIcons(); }
-      if(statusEl) statusEl.innerHTML = `<strong style="color:var(--red)">Update failed:</strong> ${data.message || 'Unknown error'}`;
       return;
     }
-    if(data.needs_install && statusEl){
-      statusEl.textContent = 'Updating and installing dependencies… this may take a minute.';
-    }
-  }).catch(()=>{});
+    const restartMsg = data.needs_install
+      ? 'Installing dependencies and restarting… this may take a minute.'
+      : 'Restarting server…';
+    setStep('🔄','Restarting…',restartMsg,true,false,false);
+  }).catch(()=>{
+    // Server went down mid-response — that's expected
+    setStep('🔄','Restarting…','Server is restarting…',true,false,false);
+  });
 
-  // Server will restart — poll until it comes back
+  // Poll until server comes back
   let attempts = 0;
   const poll = setInterval(()=>{
     attempts++;
-    fetch('/version').then(r=>r.json()).then(()=>{
+    fetch('/version').then(r=>r.json()).then(data=>{
       clearInterval(poll);
-      location.reload();
+      setStep('✅','Update complete!',`v${data.version} installed successfully.`,false,true,false);
     }).catch(()=>{
-      if(attempts > 60){
+      if(attempts > 90){
         clearInterval(poll);
-        if(statusEl) statusEl.textContent = 'Update may have failed — try refreshing manually.';
+        setStep('⚠️','Taking longer than expected','The server may still be restarting. Try reloading manually.',false,true,true);
       }
     });
   }, 2000);

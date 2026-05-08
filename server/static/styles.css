@@ -82,6 +82,7 @@ h3{margin-top:0;color:var(--text)}
 .live-flap .fd{position:absolute;left:0;right:0;height:1px;top:50%;background:#000;z-index:3}
 @keyframes lfDown{from{transform:rotateX(0)}to{transform:rotateX(-90deg)}}
 @keyframes lfUp{from{transform:rotateX(90deg)}to{transform:rotateX(0)}}
+@keyframes spin{to{transform:rotate(360deg)}}
 .homing-overlay{position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.85);color:var(--orange);display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:1.4rem;letter-spacing:2px;border-radius:6px}
 
 /* ── CONTROL INPUTS ── */

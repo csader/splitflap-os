@@ -460,6 +460,20 @@
   </div>
 </div>
 
+<!-- UPDATE MODAL -->
+<div class="modal-overlay" id="updateModal" style="display:none">
+  <div class="modal-content" style="max-width:400px;text-align:center">
+    <div id="updateModalIcon" style="font-size:2.5rem;margin-bottom:12px">⬇️</div>
+    <h3 id="updateModalTitle" style="color:var(--accent);margin-bottom:8px">Updating…</h3>
+    <p id="updateModalMsg" style="color:#888;font-size:.9rem;margin-bottom:20px">Downloading update, please wait.</p>
+    <div id="updateModalSpinner" style="margin-bottom:20px">
+      <div style="width:40px;height:40px;border:3px solid #333;border-top-color:var(--accent);border-radius:50%;animation:spin 1s linear infinite;margin:0 auto"></div>
+    </div>
+    <button id="updateModalReloadBtn" class="btn btn-success" style="display:none;width:100%" onclick="location.reload()">Reload Page</button>
+    <button id="updateModalCloseBtn" class="btn" style="display:none;width:100%;background:#333;color:#aaa;border:1px solid #555;margin-top:8px" onclick="document.getElementById('updateModal').style.display='none'">Close</button>
+  </div>
+</div>
+
 <!-- TOAST -->
 <div class="toast-container" id="toastContainer"></div>
 

@@ -206,6 +206,7 @@ async function applyGridConfig() {
     body: JSON.stringify({action:'save_global', sim_rows:rows, sim_cols:cols})
   });
   initLiveGrids(rows, cols);
+  initComposeGrid();
   showToast(`Grid set to ${rows}x${cols}`);
 }
 
@@ -218,6 +219,7 @@ setInterval(()=>{
     const rows = data.rows || 3, cols = data.cols || 15;
     if (rows !== liveGridRows || cols !== liveGridCols) {
       initLiveGrids(rows, cols);
+      initComposeGrid();
     }
 
     // Homing overlay (single, hide in sim mode)

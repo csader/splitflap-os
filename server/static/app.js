@@ -695,27 +695,14 @@ function removeFromPlaylist(idx){
 }
 
 function sync(){
-  let pages;
-  const delay = document.getElementById('delayInput').value;
-  if(document.getElementById('modeToggle').checked){
-    // Rich objects — each page carries its own delay/style/speed
-    pages = playlist.map(p=>({
-      text:  p.text,
-      delay: p.delay||5,
-      style: p.style||'ltr',
-      speed: p.speed||15,
-    }));
-  } else {
-    // Single page — use compose-area defaults
-    pages = [{
-      text:  updatePreview(),
-      delay: parseFloat(delay)||5,
-      style: document.getElementById('styleInput').value||'ltr',
-      speed: parseInt(document.getElementById('speedInput').value)||15,
-    }];
-  }
+  const pages = [{
+    text:  updatePreview(),
+    delay: 5,
+    style: 'ltr',
+    speed: 15,
+  }];
   fetch('/update_playlist',{method:'POST',headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({pages, delay})});
+    body:JSON.stringify({pages, delay: 5})});
   showToast('Pushed to display');
 }
 

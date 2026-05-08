@@ -20,7 +20,7 @@ fi
 # Install system packages
 echo "[1/4] Installing system packages..."
 apt-get update -qq
-apt-get install -y -qq python3-pip python3-venv network-manager > /dev/null
+apt-get install -y -qq python3-pip python3-venv network-manager libopenblas0 > /dev/null
 
 # Ensure NetworkManager manages WiFi
 echo "[2/4] Configuring NetworkManager..."

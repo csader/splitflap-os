@@ -2098,7 +2098,11 @@ def apply_update():
         def _restart():
             time.sleep(1)
             try:
-                subprocess.run(['systemctl', 'restart', 'splitflap.service'], timeout=10)
+                if needs_install:
+                    install_script = os.path.join(repo_dir, 'setup', 'install.sh')
+                    subprocess.run(['bash', install_script], timeout=120)
+                else:
+                    subprocess.run(['systemctl', 'restart', 'splitflap.service'], timeout=10)
             except Exception:
                 os.execv('/usr/bin/python3', ['/usr/bin/python3'] + os.sys.argv)
         threading.Thread(target=_restart, daemon=True).start()

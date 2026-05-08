@@ -37,10 +37,30 @@ pip3 install -q -r "$REPO_DIR/server/requirements.txt"
 # Make scripts executable
 chmod +x "$REPO_DIR/setup/network-check.sh"
 
-# Install systemd services (with actual repo path substituted in)
+# Install systemd services (preserve existing Environment= variables)
 echo "[4/4] Setting up systemd services..."
-sed "s|/opt/splitflap-os|$REPO_DIR|g" "$REPO_DIR/setup/splitflap-network.service" > /etc/systemd/system/splitflap-network.service
-sed "s|/opt/splitflap-os|$REPO_DIR|g" "$REPO_DIR/setup/splitflap.service" > /etc/systemd/system/splitflap.service
+
+install_service() {
+    local src="$1"
+    local dest="$2"
+    local tmp=$(mktemp)
+    sed "s|/opt/splitflap-os|$REPO_DIR|g" "$src" > "$tmp"
+    # Preserve existing Environment= lines if service already installed
+    if [ -f "$dest" ]; then
+        while IFS= read -r line; do
+            if [[ "$line" == Environment=* ]]; then
+                key="${line%%=*}=${line#*=}"
+                key="${line%%=*}"
+                # Replace matching Environment= line with existing value
+                sed -i "s|^${key}=.*|${line}|" "$tmp"
+            fi
+        done < "$dest"
+    fi
+    mv "$tmp" "$dest"
+}
+
+install_service "$REPO_DIR/setup/splitflap-network.service" /etc/systemd/system/splitflap-network.service
+install_service "$REPO_DIR/setup/splitflap.service" /etc/systemd/system/splitflap.service
 systemctl daemon-reload
 systemctl enable splitflap-network.service
 systemctl enable splitflap.service

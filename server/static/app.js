@@ -2829,7 +2829,11 @@ function checkForUpdate(force=false){
       statusEl.innerHTML = `<strong style="color:var(--green)">Update available: v${data.latest}</strong>${data.release_name ? ` — ${data.release_name}` : ''}`;
       if(actionsEl){ actionsEl.style.display='flex'; }
       if(releaseLink && data.release_url) releaseLink.href = data.release_url;
-      if(badge){ badge.textContent = `v${data.current} ↑`; badge.style.color='var(--green)'; }
+      if(badge){
+        badge.textContent = `v${data.current} ↑`;
+        badge.style.color='var(--green)';
+        badge.onclick = ()=>{ openMenuPage('settings'); setTimeout(()=>{ const el=document.getElementById('softwareUpdateSection'); if(el) el.scrollIntoView({behavior:'smooth'}); },200); };
+      }
       if(typeof lucide!=='undefined') lucide.createIcons();
     } else {
       statusEl.textContent = `v${data.current} — up to date`;
@@ -2854,7 +2858,7 @@ function applyUpdate(){
       return;
     }
     if(data.needs_install && statusEl){
-      statusEl.innerHTML = 'Updating… <strong style="color:var(--orange)">New dependencies detected — run <code>sudo bash setup/install.sh</code> after restart.</strong>';
+      statusEl.textContent = 'Updating and installing dependencies… this may take a minute.';
     }
   }).catch(()=>{});
 

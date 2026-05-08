@@ -2848,6 +2848,11 @@ function applyUpdate(){
   if(statusEl) statusEl.textContent = 'Pulling update and restarting…';
 
   fetch('/apply_update',{method:'POST'}).then(r=>r.json()).then(data=>{
+    if(data.status === 'error'){
+      if(btn){ btn.disabled=false; btn.innerHTML='<i data-lucide="download" style="width:14px;height:14px"></i> Update Now'; if(typeof lucide!=='undefined') lucide.createIcons(); }
+      if(statusEl) statusEl.innerHTML = `<strong style="color:var(--red)">Update failed:</strong> ${data.message || 'Unknown error'}`;
+      return;
+    }
     if(data.needs_install && statusEl){
       statusEl.innerHTML = 'Updating… <strong style="color:var(--orange)">New dependencies detected — run <code>sudo bash setup/install.sh</code> after restart.</strong>';
     }

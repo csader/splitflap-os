@@ -2081,7 +2081,15 @@ def apply_update():
     req_hash_before = _hash_file(req_path)
 
     try:
-        subprocess.run(['git', 'pull', 'origin', 'main'], cwd=repo_dir, timeout=60, check=True)
+        # Run git as the repo directory owner, not root
+        stat = os.stat(repo_dir)
+        repo_uid = stat.st_uid
+        import pwd
+        repo_user = pwd.getpwuid(repo_uid).pw_name
+        subprocess.run(
+            ['sudo', '-u', repo_user, 'git', 'pull', 'origin', 'main'],
+            cwd=repo_dir, timeout=60, check=True
+        )
         _update_cache['checked_at'] = 0  # invalidate cache
 
         req_hash_after = _hash_file(req_path)

@@ -556,17 +556,24 @@ function initComposeGrid(){
   const container = document.getElementById('composeGridContainer');
   if(!container) return;
   container.innerHTML = '';
-  composeGrid = createComposeGrid(container, {
+  let _grid = null;
+  _grid = createComposeGrid(container, {
     rows: get_rows(), cols: get_cols(),
     onChange: (text) => {
-      composeBuffer = composeGrid.getBuffer();
-      composeCursor = composeGrid.getCursor();
+      if(!_grid) return;
+      composeGrid = _grid;
+      composeBuffer = _grid.getBuffer();
+      composeCursor = _grid.getCursor();
       const cols = get_cols();
-      document.getElementById('L1').value = composeBuffer.slice(0, cols).join('').trimEnd();
-      document.getElementById('L2').value = composeBuffer.slice(cols, cols*2).join('').trimEnd();
-      document.getElementById('L3').value = composeBuffer.slice(cols*2, cols*3).join('').trimEnd();
+      const l1 = document.getElementById('L1');
+      const l2 = document.getElementById('L2');
+      const l3 = document.getElementById('L3');
+      if(l1) l1.value = composeBuffer.slice(0, cols).join('').trimEnd();
+      if(l2) l2.value = composeBuffer.slice(cols, cols*2).join('').trimEnd();
+      if(l3) l3.value = composeBuffer.slice(cols*2, cols*3).join('').trimEnd();
     }
   });
+  composeGrid = _grid;
 }
 
 function initComposeBuffer(){ if(composeGrid) composeGrid.render(); }
@@ -719,6 +726,7 @@ function loadSavedPlaylists(){
 
 function renderSavedPlaylists(data){
   const list = document.getElementById('savedPlaylistList');
+  if(!list) return;
   const names = Object.keys(data||{});
   if(!names.length){
     list.innerHTML='<div style="color:#666;font-style:italic;font-size:.85rem">No saved playlists yet.</div>';

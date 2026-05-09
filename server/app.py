@@ -1187,7 +1187,7 @@ threading.Thread(target=playlist_loop, daemon=True).start()
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('index.html', version=_read_version())
 
 @app.route('/current_state')
 def current_state():

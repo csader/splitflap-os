@@ -2879,10 +2879,12 @@ function applyUpdate(){
 
   setStep('⬇️','Downloading update…','Pulling latest from GitHub, please wait.',true,false,false);
 
+  let done = false;
+
   fetch('/apply_update',{method:'POST'}).then(r=>r.json()).then(data=>{
+    if(done) return;
     if(data.status === 'error'){
       setStep('❌','Update failed',data.message||'Unknown error',false,false,true);
-      // Also reset the button in settings
       const btn = document.getElementById('applyUpdateBtn');
       if(btn){ btn.disabled=false; btn.innerHTML='<i data-lucide="download" style="width:14px;height:14px"></i> Update Now'; if(typeof lucide!=='undefined') lucide.createIcons(); }
       return;
@@ -2892,7 +2894,7 @@ function applyUpdate(){
       : 'Restarting server…';
     setStep('🔄','Restarting…',restartMsg,true,false,false);
   }).catch(()=>{
-    // Server went down mid-response — that's expected
+    if(done) return; // poll already completed, don't overwrite
     setStep('🔄','Restarting…','Server is restarting…',true,false,false);
   });
 
@@ -2902,6 +2904,7 @@ function applyUpdate(){
     attempts++;
     fetch('/version').then(r=>r.json()).then(data=>{
       clearInterval(poll);
+      done = true;
       setStep('✅','Update complete!',`v${data.version} installed successfully.`,false,true,false);
     }).catch(()=>{
       if(attempts > 90){

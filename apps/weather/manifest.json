@@ -29,6 +29,26 @@
       "resultKey": "zones",
       "maxItems": 1,
       "global_key": true
+    },
+    {
+      "key": "show_aqi",
+      "label": "Show Air Quality Index (AQI)",
+      "type": "toggle",
+      "default": "yes",
+      "options": [
+        { "value": "yes", "label": "On" },
+        { "value": "no", "label": "Off" }
+      ]
+    },
+    {
+      "key": "show_pollen",
+      "label": "Show Pollen / Allergy Index",
+      "type": "toggle",
+      "default": "yes",
+      "options": [
+        { "value": "yes", "label": "On" },
+        { "value": "no", "label": "Off" }
+      ]
     }
   ],
   "min_rows": 1,

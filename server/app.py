@@ -720,7 +720,7 @@ def load_installed_plugins():
             _plugin_registry[app_id] = manifest
             if manifest.get("type") == "channel":
                 _load_channel_data(app_id, app_dir)
-            elif manifest.get("type") in ("functional", "inbox"):
+            elif manifest.get("type") == "functional":
                 _load_functional_module(app_id, app_dir)
             logging.info(f"Plugin loaded: {app_id} ({manifest.get('type')})")
         except Exception as e:
@@ -779,7 +779,7 @@ def get_plugin_pages(app_id):
         pages = _plugin_data.get(app_id, [])
         return pages or [format_lines(manifest.get("name", app_id).upper()[:get_cols()], "NO DATA", "")]
 
-    elif app_type in ("functional", "inbox"):
+    elif app_type == "functional":
         mod = _plugin_modules.get(app_id)
         if not mod:
             return [format_lines("PLUGIN ERROR", app_id.upper()[:get_cols()], "NOT LOADED")]
@@ -1662,7 +1662,7 @@ def app_library_install():
                 with urllib.request.urlopen(req, timeout=10) as resp:
                     with open(os.path.join(app_dir, "data.json"), "wb") as f:
                         f.write(resp.read())
-            elif app_type in ("functional", "inbox"):
+            elif app_type == "functional":
                 code_url = f"{base_url}/{app_id}/app.py"
                 req = urllib.request.Request(code_url, headers={"User-Agent": "SplitFlap/1.0"})
                 with urllib.request.urlopen(req, timeout=10) as resp:
@@ -2029,72 +2029,6 @@ def installed_apps():
         apps=get_plugin_app_list(),
         settings_config=get_plugin_settings_config(),
     )
-
-
-# ============================================================
-#  INBOX (push-based message endpoint)
-# ============================================================
-
-@app.route('/inbox', methods=['POST'])
-def inbox_push():
-    """
-    Receive a message to display on the split-flap.
-    
-    POST JSON body:
-        text (required): Message text to display
-        source (optional): Sender identifier (default: 'unknown')
-        priority (optional): 'low', 'normal', 'high' (default: 'normal')
-        ttl (optional): Minutes before message expires (default: app setting)
-        animation (optional): Animation order for this message
-        style (optional): Dict with extra display hints
-    
-    Returns:
-        JSON with message id and queue position
-    """
-    try:
-        from apps.inbox.app import push_message
-    except ImportError:
-        return jsonify(error='Inbox app not installed'), 404
-
-    data = request.get_json(force=True, silent=True) or {}
-    text = data.get('text', '').strip()
-    if not text:
-        return jsonify(error='text field is required'), 400
-
-    result = push_message(
-        text=text,
-        source=data.get('source', 'unknown'),
-        priority=data.get('priority', 'normal'),
-        ttl_minutes=data.get('ttl'),
-        animation=data.get('animation'),
-        style=data.get('style'),
-    )
-    return jsonify(result), 201
-
-
-@app.route('/inbox', methods=['GET'])
-def inbox_list():
-    """List current inbox messages."""
-    try:
-        from apps.inbox.app import get_messages
-    except ImportError:
-        return jsonify(error='Inbox app not installed'), 404
-
-    messages = get_messages()
-    return jsonify(messages=messages, count=len(messages))
-
-
-@app.route('/inbox', methods=['DELETE'])
-def inbox_clear():
-    """Clear inbox messages. Optional ?source= to clear only from one sender."""
-    try:
-        from apps.inbox.app import clear_messages
-    except ImportError:
-        return jsonify(error='Inbox app not installed'), 404
-
-    source = request.args.get('source')
-    clear_messages(source=source)
-    return jsonify(ok=True)
 
 
 # ============================================================

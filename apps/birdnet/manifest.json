@@ -23,12 +23,12 @@
     {
       "key": "display_mode",
       "label": "Display Mode",
-      "type": "select",
+      "type": "toggle",
       "default": "latest",
       "options": [
-        {"label": "Latest Detection", "value": "latest"},
-        {"label": "Last 3 Birds", "value": "last_3"},
-        {"label": "Today's Leaderboard", "value": "leaderboard"}
+        {"label": "Latest", "value": "latest"},
+        {"label": "Last 3", "value": "last_3"},
+        {"label": "Leaderboard", "value": "leaderboard"}
       ]
     },
     {
@@ -50,7 +50,7 @@
       "max": "5",
       "step": "1",
       "stepper": true,
-      "visible_when": {"key": "display_mode", "value": "leaderboard"}
+      "visible_when": {"display_mode": "leaderboard"}
     }
   ],
   "min_rows": 1,

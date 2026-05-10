@@ -1,0 +1,54 @@
+{
+  "id": "inbox",
+  "name": "Inbox",
+  "icon": "📬",
+  "description": "Receive pushed messages from external services",
+  "type": "inbox",
+  "loop_delay": 8,
+  "category": "data",
+  "settings": [
+    {
+      "key": "max_messages",
+      "label": "Max Messages in Queue",
+      "type": "number",
+      "default": "20",
+      "min": "5",
+      "max": "100",
+      "step": "5",
+      "stepper": true
+    },
+    {
+      "key": "default_ttl",
+      "label": "Default Message TTL (minutes)",
+      "type": "number",
+      "default": "60",
+      "min": "5",
+      "max": "1440",
+      "step": "5",
+      "stepper": true
+    },
+    {
+      "key": "show_timestamp",
+      "label": "Show Timestamp",
+      "type": "toggle",
+      "default": "on",
+      "options": [
+        {"label": "On", "value": "on"},
+        {"label": "Off", "value": "off"}
+      ]
+    },
+    {
+      "key": "priority_filter",
+      "label": "Minimum Priority",
+      "type": "select",
+      "default": "all",
+      "options": [
+        {"label": "All Messages", "value": "all"},
+        {"label": "Normal+", "value": "normal"},
+        {"label": "High Only", "value": "high"}
+      ]
+    }
+  ],
+  "min_rows": 1,
+  "min_cols": 8
+}

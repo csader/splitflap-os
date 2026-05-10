@@ -1,0 +1,58 @@
+{
+  "id": "birdnet",
+  "name": "BirdNET",
+  "icon": "🐦",
+  "description": "Live bird detections from BirdNET-Pi",
+  "type": "functional",
+  "refresh_interval": 60,
+  "loop_delay": 5,
+  "category": "data",
+  "settings": [
+    {
+      "key": "birdnet_host",
+      "label": "BirdNET-Pi Host",
+      "type": "text",
+      "default": "192.168.86.139"
+    },
+    {
+      "key": "birdnet_port",
+      "label": "Port",
+      "type": "number",
+      "default": "80"
+    },
+    {
+      "key": "display_mode",
+      "label": "Display Mode",
+      "type": "select",
+      "default": "latest",
+      "options": [
+        {"label": "Latest Detection", "value": "latest"},
+        {"label": "Last 3 Birds", "value": "last_3"},
+        {"label": "Today's Leaderboard", "value": "leaderboard"}
+      ]
+    },
+    {
+      "key": "min_confidence",
+      "label": "Min Confidence %",
+      "type": "number",
+      "default": "70",
+      "min": "50",
+      "max": "99",
+      "step": "5",
+      "stepper": true
+    },
+    {
+      "key": "leaderboard_count",
+      "label": "Leaderboard Entries",
+      "type": "number",
+      "default": "3",
+      "min": "1",
+      "max": "5",
+      "step": "1",
+      "stepper": true,
+      "visible_when": {"key": "display_mode", "value": "leaderboard"}
+    }
+  ],
+  "min_rows": 1,
+  "min_cols": 10
+}

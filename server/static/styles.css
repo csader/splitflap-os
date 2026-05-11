@@ -182,6 +182,12 @@ input:checked+.slider:before{transform:translateX(20px)}
 .modal-content select option{background:#222}
 .modal-field{margin-bottom:14px}
 .modal-field label{display:block;color:#aaa;font-size:.83rem;margin-bottom:5px}
+.modal-field.is-disabled{opacity:.55}
+.modal-field.is-disabled label{color:#777}
+.modal-field.is-disabled input,
+.modal-field.is-disabled select,
+.modal-field.is-disabled textarea,
+.modal-field.is-disabled button{cursor:not-allowed}
 .password-reveal-wrap{position:relative;display:flex}
 .password-reveal-wrap input{flex:1;padding-right:36px}
 .password-reveal-btn{position:absolute;right:0;top:0;bottom:0;width:34px;background:none;border:none;cursor:pointer;color:#888;display:flex;align-items:center;justify-content:center;font-size:1rem;transition:color .15s}
@@ -203,11 +209,31 @@ input:checked+.slider:before{transform:translateX(20px)}
 .sf-computed-info.warn{border-color:#f59e0b;color:#bbb}
 .sf-computed-warn{display:block;color:#f59e0b;margin-top:3px;font-size:.8rem}
 
+/* ── NOTICE FIELD ── */
+.sf-notice{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--border);border-radius:10px;padding:10px 12px;background:#181818;color:#bbb;line-height:1.5}
+.sf-notice-icon{flex:0 0 auto;font-size:1rem;line-height:1.2;margin-top:1px}
+.sf-notice-body{min-width:0}
+.sf-notice-title{font-size:.86rem;font-weight:700;color:#f2f2f2;margin-bottom:2px}
+.sf-notice-text{font-size:.82rem;color:#b7b7b7}
+.sf-notice-list{margin:6px 0 0 18px;padding:0;color:#b7b7b7;font-size:.82rem}
+.sf-notice-link{display:inline-block;margin-top:6px;font-size:.82rem;color:var(--accent);text-decoration:none}
+.sf-notice-link:hover{text-decoration:underline}
+.sf-notice-info{border-color:#2f4a5e;background:#16212a}
+.sf-notice-warning{border-color:#7a5a12;background:#241b08}
+.sf-notice-warning .sf-notice-title{color:#ffd166}
+.sf-notice-success{border-color:#1f6b4a;background:#10251c}
+.sf-notice-success .sf-notice-title{color:#7ee2a8}
+.sf-notice-error{border-color:#7a2d2d;background:#261111}
+.sf-notice-error .sf-notice-title{color:#ff8a8a}
+
 /* ── APP SETTINGS SEGMENTED TOGGLES ── */
 .sf-segmented-toggle{display:inline-flex;gap:4px;flex-wrap:wrap;padding:3px;border:1px solid var(--border);border-radius:12px;background:#1a1a1a}
 .sf-segmented-toggle-btn{border:none;background:transparent;color:#bbb;border-radius:9px;padding:6px 12px;font-size:.9rem;font-weight:700;cursor:pointer;transition:.15s}
 .sf-segmented-toggle-btn:hover{background:#2b2b2b;color:#fff}
 .sf-segmented-toggle-btn.active{background:var(--accent);color:#000}
+.sf-segmented-toggle-btn:disabled{opacity:.55;cursor:not-allowed}
+.sf-segmented-toggle-btn:disabled:hover{background:transparent;color:#bbb}
+.sf-segmented-toggle-btn.active:disabled{background:#666;color:#ddd}
 .sf-segmented-toggle.sm .sf-segmented-toggle-btn{padding:4px 9px;font-size:.78rem;border-radius:8px}
 .sf-segmented-toggle.md .sf-segmented-toggle-btn{padding:6px 12px;font-size:.9rem;border-radius:9px}
 .sf-segmented-toggle.lg .sf-segmented-toggle-btn{padding:9px 16px;font-size:1rem;border-radius:10px}

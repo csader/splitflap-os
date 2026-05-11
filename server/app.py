@@ -840,6 +840,7 @@ def get_plugin_app_list():
 
 _SETTING_PASSTHROUGH_KEYS = (
     "size",
+    "ph",
     "min",
     "max",
     "step",
@@ -848,6 +849,15 @@ _SETTING_PASSTHROUGH_KEYS = (
     "resultKey",
     "maxItems",
     "compute",
+    "compute_config",
+    "disabled_when",
+    "variant",
+    "title",
+    "text",
+    "items",
+    "icon",
+    "linkText",
+    "linkHref",
 )
 
 
@@ -894,6 +904,7 @@ def _normalize_sync_values(sync_values, map_related_key):
 def _build_plugin_setting_field(app_id, setting, resolved_keys):
     raw_key = setting["key"]
     key = resolved_keys[raw_key]
+    field_type = setting.get("type", "text")
 
     def map_related_key(raw_related_key):
         if raw_related_key in resolved_keys:
@@ -902,8 +913,8 @@ def _build_plugin_setting_field(app_id, setting, resolved_keys):
 
     field = {
         "key": key,
-        "label": setting.get("label", raw_key),
-        "type": setting.get("type", "text"),
+        "label": setting.get("label", "" if field_type == "notice" else raw_key),
+        "type": field_type,
         "ph": setting.get("default", ""),
     }
 
@@ -930,6 +941,12 @@ def _build_plugin_setting_field(app_id, setting, resolved_keys):
         field["visible_when"] = {
             map_related_key(k): v
             for k, v in setting["visible_when"].items()
+        }
+
+    if "disabled_when" in setting:
+        field["disabled_when"] = {
+            map_related_key(k): v
+            for k, v in setting["disabled_when"].items()
         }
 
     if "watches" in setting:
@@ -1228,7 +1245,16 @@ threading.Thread(target=playlist_loop, daemon=True).start()
 
 @app.route('/')
 def index():
-    return render_template('index.html', version=_read_version())
+    version = _read_version()
+    static_mtime = 0
+    try:
+        css_mtime = int(os.path.getmtime(os.path.join(app.static_folder, 'styles.css')))
+        js_mtime = int(os.path.getmtime(os.path.join(app.static_folder, 'app.js')))
+        static_mtime = max(css_mtime, js_mtime)
+    except Exception:
+        pass
+    static_v = f"{version}-{static_mtime}" if static_mtime else version
+    return render_template('index.html', version=version, static_v=static_v)
 
 @app.route('/current_state')
 def current_state():

@@ -9,8 +9,6 @@ def fetch(settings, format_lines, get_rows, get_cols):
     leaderboard_count = int(settings.get('leaderboard_count', '3'))
     base_url = f"http://{host}:{port}"
 
-    # Bird color mapping for split-flap color characters
-    # Maps common bird color keywords to flap color codes
     BIRD_COLORS = {
         'red': 'r', 'cardinal': 'r', 'tanager': 'r',
         'orange': 'o', 'oriole': 'o',
@@ -21,8 +19,35 @@ def fetch(settings, format_lines, get_rows, get_cols):
         'white': 'w', 'dove': 'w', 'egret': 'w', 'gull': 'w',
     }
 
+    ABBREV_WORDS = {
+        'northern', 'southern', 'eastern', 'western', 'american', 'common',
+        'carolina', 'great', 'lesser', 'greater', 'little', 'dark',
+        'rufous', 'spotted', 'striped',
+    }
+
+    def shorten_name(species, max_len):
+        """Shorten a bird species name to fit max_len characters."""
+        words = species.split()
+        parts = []
+        for word in words:
+            if '-' in word:
+                # White-Winged → WW
+                parts.append(''.join(p[0].upper() for p in word.split('-') if p))
+            elif word.lower() in ABBREV_WORDS:
+                parts.append(word[0].upper() + '.')
+            else:
+                parts.append(word)
+        name = ' '.join(parts)
+        if len(name) <= max_len:
+            return name
+        # Drop abbreviated prefixes, keep core words
+        core = [p for p in parts if not (len(p) == 2 and p.endswith('.'))]
+        name = ' '.join(core)
+        if len(name) <= max_len:
+            return name
+        return name[:max_len]
+
     def get_color_char(species_name):
-        """Try to match a bird species to a flap color character."""
         name_lower = species_name.lower()
         for keyword, color in BIRD_COLORS.items():
             if keyword in name_lower:
@@ -30,13 +55,10 @@ def fetch(settings, format_lines, get_rows, get_cols):
         return ''
 
     try:
-        # Fetch enough detections for all modes
         limit = 50 if mode == 'leaderboard' else 10
         r = requests.get(f"{base_url}/api/v1/detections/recent?limit={limit}", timeout=10)
         r.raise_for_status()
         detections = r.json()
-
-        # Filter by confidence
         detections = [d for d in detections if d['confidence'] >= min_conf]
 
         if not detections:
@@ -47,61 +69,37 @@ def fetch(settings, format_lines, get_rows, get_cols):
 
         if mode == 'latest':
             bird = detections[0]
-            name = bird['species'].upper()
             conf = f"{int(bird['confidence'] * 100)}%"
-            time_str = bird['time'][:5]  # HH:MM
             color = get_color_char(bird['species'])
-            indicator = color * 2 + ' ' if color else ''
-
-            if rows == 1:
-                return [format_lines(f"{name} {conf}")]
-            elif rows == 2:
-                return [format_lines(f"{indicator}{name}", f"{conf} {time_str}")]
-            else:
-                return [format_lines(f"{indicator}{name}", f"CONFIDENCE {conf}", f"DETECTED {time_str}")]
+            indicator = color + ' ' if color else ''
+            short = shorten_name(bird['species'], cols - len(conf) - len(indicator) - 1)
+            return [format_lines(f"{indicator}{short} {conf}")]
 
         elif mode == 'last_3':
             pages = []
             for bird in detections[:3]:
-                name = bird['species'].upper()
                 conf = f"{int(bird['confidence'] * 100)}%"
-                time_str = bird['time'][:5]
                 color = get_color_char(bird['species'])
-                indicator = color * 2 + ' ' if color else ''
-
-                if rows == 1:
-                    pages.append(format_lines(f"{name} {conf}"))
-                elif rows == 2:
-                    pages.append(format_lines(f"{indicator}{name}", f"{conf} {time_str}"))
-                else:
-                    pages.append(format_lines(f"{indicator}{name}", f"CONFIDENCE {conf}", f"DETECTED {time_str}"))
+                indicator = color + ' ' if color else ''
+                short = shorten_name(bird['species'], cols - len(conf) - len(indicator) - 1)
+                pages.append(format_lines(f"{indicator}{short} {conf}"))
             return pages
 
         elif mode == 'leaderboard':
-            # Count species from today's detections
             species_count = Counter(d['species'] for d in detections)
-            top = species_count.most_common(leaderboard_count)
-
-            pages = []
-            # Title page
-            if rows >= 2:
-                pages.append(format_lines('BIRDNET', f"TOP {len(top)} TODAY"))
-            else:
-                pages.append(format_lines(f"TOP {len(top)} BIRDS TODAY"))
-
-            # One page per leader
-            for rank, (species, count) in enumerate(top, 1):
-                name = species.upper()
+            # Show as many birds as we have rows
+            top = species_count.most_common(min(leaderboard_count, rows))
+            lines = []
+            for species, count in top:
+                count_str = str(count)
                 color = get_color_char(species)
-                indicator = color * 3 + ' ' if color else ''
-
-                if rows == 1:
-                    pages.append(format_lines(f"#{rank} {name} x{count}"))
-                elif rows == 2:
-                    pages.append(format_lines(f"#{rank} {indicator}{name}", f"{count} DETECTIONS"))
-                else:
-                    pages.append(format_lines(f"#{rank} {indicator}{name}", f"{count} DETECTIONS", f"TODAY"))
-            return pages
+                indicator = color + ' ' if color else ''
+                short = shorten_name(species, cols - len(count_str) - len(indicator) - 1)
+                lines.append(f"{count_str} {indicator}{short}")
+            # Pad to rows
+            while len(lines) < rows:
+                lines.append('')
+            return [format_lines(*lines[:rows])]
 
     except Exception as e:
-        return [format_lines('BIRDNET', 'ERROR', str(e)[:cols] if get_cols() > 10 else 'ERR')]
+        return [format_lines('BIRDNET', 'ERROR', str(e)[:cols] if cols > 10 else 'ERR')]

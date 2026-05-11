@@ -209,6 +209,15 @@
       "version": "1.0"
     },
     {
+      "id": "birdnet",
+      "name": "BirdNET",
+      "icon": "🐦",
+      "description": "Live bird detections from BirdNET-Pi",
+      "category": "data",
+      "type": "functional",
+      "version": "1.0"
+    },
+    {
       "id": "planes_overhead",
       "name": "Planes Overhead",
       "icon": "✈️",

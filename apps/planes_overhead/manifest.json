@@ -73,11 +73,25 @@
       "key": "_polling_stats",
       "label": "API Usage Estimate",
       "type": "computed",
-      "compute": "polling_rate_stats",
+      "compute": "polling_usage_estimate",
       "watches": [
         "polling_rate",
         "data_source"
-      ]
+      ],
+      "compute_config": {
+        "min_rate": 15,
+        "default_rate": 240,
+        "selector_index": 1,
+        "selector_default": "opensky",
+        "text_template": "~{reqPerDay} req/day · ~{reqPerMonth}/month",
+        "profiles": {
+          "opensky": {
+            "calls_per_poll": 1,
+            "limit_per_day": 400,
+            "warn_prefix": "Exceeds OpenSky anonymous limit. Register for 4,000/day."
+          }
+        }
+      }
     },
     {
       "key": "data_source",

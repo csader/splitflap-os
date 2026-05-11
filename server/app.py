@@ -1246,15 +1246,7 @@ threading.Thread(target=playlist_loop, daemon=True).start()
 @app.route('/')
 def index():
     version = _read_version()
-    static_mtime = 0
-    try:
-        css_mtime = int(os.path.getmtime(os.path.join(app.static_folder, 'styles.css')))
-        js_mtime = int(os.path.getmtime(os.path.join(app.static_folder, 'app.js')))
-        static_mtime = max(css_mtime, js_mtime)
-    except Exception:
-        pass
-    static_v = f"{version}-{static_mtime}" if static_mtime else version
-    return render_template('index.html', version=version, static_v=static_v)
+    return render_template('index.html', version=version)
 
 @app.route('/current_state')
 def current_state():

@@ -119,6 +119,10 @@ def load_settings():
         "sim_rows": 3,
         "sim_cols": 15,
         "app_library_url": "https://raw.githubusercontent.com/csader/splitflap-os/main/apps",
+        "inbox_enabled": False,
+        "inbox_interrupt_enabled": True,
+        "inbox_interrupt_ttl": 10,
+        "inbox_sources": {},
         "installed_apps": [
             "time", "date", "weather", "stocks", "sports", "countdown",
             "world_clock", "crypto", "iss", "metro", "youtube", "yt_comments",
@@ -969,6 +973,43 @@ active_app_playlist = None
 app_playlist_loop = True
 app_playlist_name = None
 
+# ── Inbox ──────────────────────────────────────────────────
+_inbox_queue = []
+_inbox_lock  = threading.Lock()
+
+
+def _prune_inbox():
+    """Remove expired messages. Must be called with _inbox_lock held."""
+    now = time.time()
+    _inbox_queue[:] = [m for m in _inbox_queue if m['expires_at'] > now]
+
+
+def _pop_inbox_interrupt():
+    """Return and remove the oldest high-priority non-expired message, or None."""
+    with _inbox_lock:
+        _prune_inbox()
+        for i, msg in enumerate(_inbox_queue):
+            if msg.get('priority') == 'high':
+                return _inbox_queue.pop(i)
+    return None
+
+
+def _show_inbox_message(msg):
+    """Display an inbox message for its TTL, then return."""
+    global last_sent_page
+    text = msg.get('text', '')
+    ttl  = float(msg.get('ttl', 10))
+    order = get_animation_order(msg.get('animation', 'ltr'))
+    max_dist = send_to_display(format_lines(*text.split('|')), order)
+    last_sent_page = text
+    rotation_time = max_dist * (4.0 / 64.0)
+    for _ in range(int(rotation_time * 10)):
+        if stop_event.is_set(): return
+        time.sleep(0.1)
+    for _ in range(int(ttl * 10)):
+        if stop_event.is_set(): return
+        time.sleep(0.1)
+
 
 def _run_app_playlist():
     """Execute one pass through the app playlist entries."""
@@ -1173,6 +1214,12 @@ def playlist_loop():
             for _ in range(int(page_delay * 10)):
                 if stop_event.is_set(): break
                 time.sleep(0.1)
+
+            # Check for high-priority inbox interrupts between pages
+            if settings.get('inbox_interrupt_enabled', True):
+                msg = _pop_inbox_interrupt()
+                if msg:
+                    _show_inbox_message(msg)
 
         if stop_event.is_set():
             stop_event.clear()
@@ -2021,6 +2068,73 @@ def wifi_connect():
             return jsonify(status="error", message=result.stderr.strip() or "Connection failed"), 400
     except Exception as e:
         return jsonify(status="error", message=str(e)), 500
+
+
+# ============================================================
+#  INBOX
+# ============================================================
+
+def _inbox_auth():
+    """Validate Authorization header against inbox_sources. Returns source name or None."""
+    auth = request.headers.get('Authorization', '')
+    if not auth.startswith('Bearer '):
+        return None
+    token = auth[7:].strip()
+    sources = settings.get('inbox_sources', {})
+    for source, key in sources.items():
+        if key == token:
+            return source
+    return None
+
+
+@app.route('/inbox', methods=['POST'])
+def inbox_push():
+    if not settings.get('inbox_enabled', False):
+        return jsonify(error='Inbox is disabled'), 503
+    source = _inbox_auth()
+    if source is None:
+        return jsonify(error='Unauthorized'), 401
+    data = request.get_json(force=True, silent=True) or {}
+    text = data.get('text', '').strip()
+    if not text:
+        return jsonify(error='text is required'), 400
+    priority = data.get('priority', 'normal')
+    if priority not in ('high', 'normal'):
+        priority = 'normal'
+    ttl = float(data.get('ttl', settings.get('inbox_interrupt_ttl', 10)))
+    now = time.time()
+    msg = {
+        'id': f"msg_{int(now * 1000)}",
+        'text': text,
+        'source': source,
+        'priority': priority,
+        'ttl': ttl,
+        'animation': data.get('animation', 'ltr'),
+        'created_at': now,
+        'expires_at': now + ttl * 60,  # TTL in minutes for expiry, seconds for display
+    }
+    with _inbox_lock:
+        _inbox_queue.append(msg)
+    logging.info(f"Inbox: {source} pushed '{text[:30]}' ({priority})")
+    return jsonify(id=msg['id'], source=source, position=len(_inbox_queue)), 201
+
+
+@app.route('/inbox', methods=['GET'])
+def inbox_list():
+    with _inbox_lock:
+        _prune_inbox()
+        return jsonify(messages=list(_inbox_queue), count=len(_inbox_queue))
+
+
+@app.route('/inbox', methods=['DELETE'])
+def inbox_clear():
+    source = request.args.get('source')
+    with _inbox_lock:
+        if source:
+            _inbox_queue[:] = [m for m in _inbox_queue if m.get('source') != source]
+        else:
+            _inbox_queue.clear()
+    return jsonify(ok=True)
 
 
 @app.route('/installed_apps')

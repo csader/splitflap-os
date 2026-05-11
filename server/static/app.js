@@ -1664,6 +1664,13 @@ function loadSettingsData(){
     document.getElementById('mqttPort').value = data.mqtt_port || 1883;
     document.getElementById('mqttUser').value = data.mqtt_user || '';
     document.getElementById('mqttPassword').value = data.mqtt_password || '';
+    // Inbox settings
+    const inboxEnabled = !!data.inbox_enabled;
+    document.getElementById('inboxEnabled').checked = inboxEnabled;
+    document.getElementById('inboxConfig').style.display = inboxEnabled ? 'block' : 'none';
+    document.getElementById('inboxInterruptEnabled').checked = data.inbox_interrupt_enabled !== false;
+    document.getElementById('inboxInterruptTtl').value = data.inbox_interrupt_ttl || 10;
+    renderInboxSources(data.inbox_sources || {});
     // Global timezone picker
     const tzEl = document.getElementById('globalTzPicker');
     if(tzEl){
@@ -1811,6 +1818,63 @@ function setSettingsDirty(isDirty){
   fab.classList.toggle('visible', !!isDirty);
 }
 
+// ============================================================
+//  INBOX SETTINGS
+// ============================================================
+let _inboxSources = {};
+
+function renderInboxSources(sources){
+  _inboxSources = Object.assign({}, sources);
+  const el = document.getElementById('inboxSourceList');
+  if(!el) return;
+  el.innerHTML='';
+  const names = Object.keys(_inboxSources);
+  if(!names.length){
+    el.innerHTML='<div style="color:#666;font-size:.85rem;margin-bottom:8px">No sources configured.</div>';
+    return;
+  }
+  names.forEach(name=>{
+    const key = _inboxSources[name];
+    const row = document.createElement('div');
+    row.style.cssText='display:flex;align-items:center;gap:8px;padding:8px 10px;background:#1a1a1a;border:1px solid var(--border);border-radius:6px;margin-bottom:6px';
+    row.innerHTML=`
+      <span style="flex:1;font-size:.88rem;font-weight:600;font-family:monospace">${name}</span>
+      <code style="font-size:.75rem;color:#888;background:#111;padding:2px 6px;border-radius:4px;cursor:pointer" title="Click to copy" onclick="navigator.clipboard.writeText('${key}');showToast('Key copied')">${key.slice(0,8)}…</code>
+      <button class="ap-entry-btn" onclick="deleteInboxSource('${name}')" title="Remove">✕</button>`;
+    el.appendChild(row);
+  });
+}
+
+function addInboxSource(){
+  const name = prompt('Source name (e.g. frigate, openclaw, n8n):');
+  if(!name || !name.trim()) return;
+  const key = (Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2)).slice(0,20);
+  _inboxSources[name.trim()] = key;
+  renderInboxSources(_inboxSources);
+  saveInboxSources();
+  // Show the key once
+  setTimeout(()=>{ if(confirm(`Key for "${name}":\n\n${key}\n\nCopy it now — it won't be shown again in full.`)){} }, 100);
+}
+
+function deleteInboxSource(name){
+  if(!confirm(`Remove source "${name}"? Its key will stop working immediately.`)) return;
+  delete _inboxSources[name];
+  renderInboxSources(_inboxSources);
+  saveInboxSources();
+}
+
+function saveInboxSources(){
+  fetch('/settings',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({action:'save_global', inbox_sources: _inboxSources})});
+}
+
+document.addEventListener('DOMContentLoaded', ()=>{
+  const toggle = document.getElementById('inboxEnabled');
+  if(toggle) toggle.addEventListener('change', ()=>{
+    document.getElementById('inboxConfig').style.display = toggle.checked ? 'block' : 'none';
+  });
+});
+
 function saveGlobal(){
   const rows = parseInt(document.getElementById('simRows').value) || 3;
   const cols = parseInt(document.getElementById('simCols').value) || 15;
@@ -1827,6 +1891,9 @@ function saveGlobal(){
     mqtt_port: parseInt(document.getElementById('mqttPort').value) || 1883,
     mqtt_user: document.getElementById('mqttUser').value,
     mqtt_password: document.getElementById('mqttPassword').value,
+    inbox_enabled: document.getElementById('inboxEnabled').checked,
+    inbox_interrupt_enabled: document.getElementById('inboxInterruptEnabled').checked,
+    inbox_interrupt_ttl: parseInt(document.getElementById('inboxInterruptTtl').value) || 10,
   })}).then(()=>{
     initLiveGrids(rows, cols);
     buildAppsGrid(); // re-check compatibility after grid change

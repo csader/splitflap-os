@@ -1664,13 +1664,12 @@ function loadSettingsData(){
     document.getElementById('mqttPort').value = data.mqtt_port || 1883;
     document.getElementById('mqttUser').value = data.mqtt_user || '';
     document.getElementById('mqttPassword').value = data.mqtt_password || '';
-    // Inbox settings
-    const inboxEnabled = !!data.inbox_enabled;
-    document.getElementById('inboxEnabled').checked = inboxEnabled;
-    document.getElementById('inboxConfig').style.display = inboxEnabled ? 'block' : 'none';
-    document.getElementById('inboxInterruptEnabled').checked = data.inbox_interrupt_enabled !== false;
-    document.getElementById('inboxInterruptTtl').value = data.inbox_interrupt_ttl || 10;
-    renderInboxSources(data.inbox_sources || {});
+    // Notification settings
+    const notifyEnabled = !!data.notify_enabled;
+    document.getElementById('notifyEnabled').checked = notifyEnabled;
+    document.getElementById('notifyConfig').style.display = notifyEnabled ? 'block' : 'none';
+    document.getElementById('notifyDisplaySeconds').value = data.notify_display_seconds || 10;
+    renderNotifySources(data.notify_sources || {});
     // Global timezone picker
     const tzEl = document.getElementById('globalTzPicker');
     if(tzEl){
@@ -1819,59 +1818,58 @@ function setSettingsDirty(isDirty){
 }
 
 // ============================================================
-//  INBOX SETTINGS
+//  NOTIFICATION SETTINGS
 // ============================================================
-let _inboxSources = {};
+let _notifySources = {};
 
-function renderInboxSources(sources){
-  _inboxSources = Object.assign({}, sources);
-  const el = document.getElementById('inboxSourceList');
+function renderNotifySources(sources){
+  _notifySources = Object.assign({}, sources);
+  const el = document.getElementById('notifySourceList');
   if(!el) return;
   el.innerHTML='';
-  const names = Object.keys(_inboxSources);
+  const names = Object.keys(_notifySources);
   if(!names.length){
     el.innerHTML='<div style="color:#666;font-size:.85rem;margin-bottom:8px">No sources configured.</div>';
     return;
   }
   names.forEach(name=>{
-    const key = _inboxSources[name];
+    const key = _notifySources[name];
     const row = document.createElement('div');
     row.style.cssText='display:flex;align-items:center;gap:8px;padding:8px 10px;background:#1a1a1a;border:1px solid var(--border);border-radius:6px;margin-bottom:6px';
     row.innerHTML=`
       <span style="flex:1;font-size:.88rem;font-weight:600;font-family:monospace">${name}</span>
       <code style="font-size:.75rem;color:#888;background:#111;padding:2px 6px;border-radius:4px;cursor:pointer" title="Click to copy" onclick="navigator.clipboard.writeText('${key}');showToast('Key copied')">${key.slice(0,8)}…</code>
-      <button class="ap-entry-btn" onclick="deleteInboxSource('${name}')" title="Remove">✕</button>`;
+      <button class="ap-entry-btn" onclick="deleteNotifySource('${name}')" title="Remove">✕</button>`;
     el.appendChild(row);
   });
 }
 
-function addInboxSource(){
+function addNotifySource(){
   const name = prompt('Source name (e.g. frigate, openclaw, n8n):');
   if(!name || !name.trim()) return;
   const key = (Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2)).slice(0,20);
-  _inboxSources[name.trim()] = key;
-  renderInboxSources(_inboxSources);
-  saveInboxSources();
-  // Show the key once
-  setTimeout(()=>{ if(confirm(`Key for "${name}":\n\n${key}\n\nCopy it now — it won't be shown again in full.`)){} }, 100);
+  _notifySources[name.trim()] = key;
+  renderNotifySources(_notifySources);
+  saveNotifySources();
+  setTimeout(()=>{ confirm(`Key for "${name}":\n\n${key}\n\nCopy it now — it won't be shown again in full.`); }, 100);
 }
 
-function deleteInboxSource(name){
+function deleteNotifySource(name){
   if(!confirm(`Remove source "${name}"? Its key will stop working immediately.`)) return;
-  delete _inboxSources[name];
-  renderInboxSources(_inboxSources);
-  saveInboxSources();
+  delete _notifySources[name];
+  renderNotifySources(_notifySources);
+  saveNotifySources();
 }
 
-function saveInboxSources(){
+function saveNotifySources(){
   fetch('/settings',{method:'POST',headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({action:'save_global', inbox_sources: _inboxSources})});
+    body:JSON.stringify({action:'save_global', notify_sources: _notifySources})});
 }
 
 document.addEventListener('DOMContentLoaded', ()=>{
-  const toggle = document.getElementById('inboxEnabled');
+  const toggle = document.getElementById('notifyEnabled');
   if(toggle) toggle.addEventListener('change', ()=>{
-    document.getElementById('inboxConfig').style.display = toggle.checked ? 'block' : 'none';
+    document.getElementById('notifyConfig').style.display = toggle.checked ? 'block' : 'none';
   });
 });
 
@@ -1891,9 +1889,8 @@ function saveGlobal(){
     mqtt_port: parseInt(document.getElementById('mqttPort').value) || 1883,
     mqtt_user: document.getElementById('mqttUser').value,
     mqtt_password: document.getElementById('mqttPassword').value,
-    inbox_enabled: document.getElementById('inboxEnabled').checked,
-    inbox_interrupt_enabled: document.getElementById('inboxInterruptEnabled').checked,
-    inbox_interrupt_ttl: parseInt(document.getElementById('inboxInterruptTtl').value) || 10,
+    notify_enabled: document.getElementById('notifyEnabled').checked,
+    notify_display_seconds: parseInt(document.getElementById('notifyDisplaySeconds').value) || 10,
   })}).then(()=>{
     initLiveGrids(rows, cols);
     buildAppsGrid(); // re-check compatibility after grid change

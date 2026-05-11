@@ -119,10 +119,9 @@ def load_settings():
         "sim_rows": 3,
         "sim_cols": 15,
         "app_library_url": "https://raw.githubusercontent.com/csader/splitflap-os/main/apps",
-        "inbox_enabled": False,
-        "inbox_interrupt_enabled": True,
-        "inbox_interrupt_ttl": 10,
-        "inbox_sources": {},
+        "notify_enabled": False,
+        "notify_display_seconds": 10,
+        "notify_sources": {},
         "installed_apps": [
             "time", "date", "weather", "stocks", "sports", "countdown",
             "world_clock", "crypto", "iss", "metro", "youtube", "yt_comments",
@@ -973,32 +972,27 @@ active_app_playlist = None
 app_playlist_loop = True
 app_playlist_name = None
 
-# ── Inbox ──────────────────────────────────────────────────
-_inbox_queue = []
-_inbox_lock  = threading.Lock()
+# ── Notification Interrupts ────────────────────────────────
+_notify_queue = []
+_notify_lock  = threading.Lock()
 
 
-def _prune_inbox():
-    """Remove expired messages. Must be called with _inbox_lock held."""
+def _pop_notify():
+    """Return and remove the oldest non-expired notification, or None."""
     now = time.time()
-    _inbox_queue[:] = [m for m in _inbox_queue if m['expires_at'] > now]
-
-
-def _pop_inbox_interrupt():
-    """Return and remove the oldest high-priority non-expired message, or None."""
-    with _inbox_lock:
-        _prune_inbox()
-        for i, msg in enumerate(_inbox_queue):
-            if msg.get('priority') == 'high':
-                return _inbox_queue.pop(i)
+    with _notify_lock:
+        # Prune stale messages (not shown within 5 minutes)
+        _notify_queue[:] = [m for m in _notify_queue if m['expires_at'] > now]
+        if _notify_queue:
+            return _notify_queue.pop(0)
     return None
 
 
-def _show_inbox_message(msg):
-    """Display an inbox message for its TTL, then return."""
+def _show_notify_message(msg):
+    """Display a notification for its display_seconds, then return."""
     global last_sent_page
     text = msg.get('text', '')
-    ttl  = float(msg.get('ttl', 10))
+    secs = float(msg.get('display_seconds', settings.get('notify_display_seconds', 10)))
     order = get_animation_order(msg.get('animation', 'ltr'))
     max_dist = send_to_display(format_lines(*text.split('|')), order)
     last_sent_page = text
@@ -1006,7 +1000,7 @@ def _show_inbox_message(msg):
     for _ in range(int(rotation_time * 10)):
         if stop_event.is_set(): return
         time.sleep(0.1)
-    for _ in range(int(ttl * 10)):
+    for _ in range(int(secs * 10)):
         if stop_event.is_set(): return
         time.sleep(0.1)
 
@@ -1215,11 +1209,11 @@ def playlist_loop():
                 if stop_event.is_set(): break
                 time.sleep(0.1)
 
-            # Check for high-priority inbox interrupts between pages
-            if settings.get('inbox_interrupt_enabled', True):
-                msg = _pop_inbox_interrupt()
+            # Check for notification interrupts between pages
+            if settings.get('notify_enabled', False):
+                msg = _pop_notify()
                 if msg:
-                    _show_inbox_message(msg)
+                    _show_notify_message(msg)
 
         if stop_event.is_set():
             stop_event.clear()
@@ -2071,69 +2065,66 @@ def wifi_connect():
 
 
 # ============================================================
-#  INBOX
+#  NOTIFICATION INTERRUPTS
 # ============================================================
 
-def _inbox_auth():
-    """Validate Authorization header against inbox_sources. Returns source name or None."""
+def _notify_auth():
+    """Validate Authorization header against notify_sources. Returns source name or None."""
     auth = request.headers.get('Authorization', '')
     if not auth.startswith('Bearer '):
         return None
     token = auth[7:].strip()
-    sources = settings.get('inbox_sources', {})
+    sources = settings.get('notify_sources', {})
     for source, key in sources.items():
         if key == token:
             return source
     return None
 
 
-@app.route('/inbox', methods=['POST'])
-def inbox_push():
-    if not settings.get('inbox_enabled', False):
-        return jsonify(error='Inbox is disabled'), 503
-    source = _inbox_auth()
+@app.route('/notify', methods=['POST'])
+def notify_push():
+    if not settings.get('notify_enabled', False):
+        return jsonify(error='Notification interrupts are disabled'), 503
+    source = _notify_auth()
     if source is None:
         return jsonify(error='Unauthorized'), 401
     data = request.get_json(force=True, silent=True) or {}
     text = data.get('text', '').strip()
     if not text:
         return jsonify(error='text is required'), 400
-    priority = data.get('priority', 'normal')
-    if priority not in ('high', 'normal'):
-        priority = 'normal'
-    ttl = float(data.get('ttl', settings.get('inbox_interrupt_ttl', 10)))
+    display_seconds = float(data.get('display_seconds', settings.get('notify_display_seconds', 10)))
     now = time.time()
     msg = {
         'id': f"msg_{int(now * 1000)}",
         'text': text,
         'source': source,
-        'priority': priority,
-        'ttl': ttl,
+        'display_seconds': display_seconds,
         'animation': data.get('animation', 'ltr'),
         'created_at': now,
-        'expires_at': now + ttl * 60,  # TTL in minutes for expiry, seconds for display
+        'expires_at': now + 300,  # expire if not shown within 5 minutes
     }
-    with _inbox_lock:
-        _inbox_queue.append(msg)
-    logging.info(f"Inbox: {source} pushed '{text[:30]}' ({priority})")
-    return jsonify(id=msg['id'], source=source, position=len(_inbox_queue)), 201
+    with _notify_lock:
+        _notify_queue.append(msg)
+    logging.info(f"Notify: {source} pushed '{text[:30]}'")
+    return jsonify(id=msg['id'], source=source, position=len(_notify_queue)), 201
 
 
-@app.route('/inbox', methods=['GET'])
-def inbox_list():
-    with _inbox_lock:
-        _prune_inbox()
-        return jsonify(messages=list(_inbox_queue), count=len(_inbox_queue))
+@app.route('/notify', methods=['GET'])
+def notify_list():
+    now = time.time()
+    with _notify_lock:
+        active = [m for m in _notify_queue if m['expires_at'] > now]
+        return jsonify(messages=active, count=len(active))
 
 
-@app.route('/inbox', methods=['DELETE'])
-def inbox_clear():
+@app.route('/notify', methods=['DELETE'])
+def notify_clear():
     source = request.args.get('source')
-    with _inbox_lock:
+    with _notify_lock:
         if source:
-            _inbox_queue[:] = [m for m in _inbox_queue if m.get('source') != source]
+            _notify_queue[:] = [m for m in _notify_queue if m.get('source') != source]
         else:
-            _inbox_queue.clear()
+            _notify_queue.clear()
     return jsonify(ok=True)
 
 

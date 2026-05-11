@@ -196,25 +196,22 @@
       </div>
     </div>
     <div class="config-section">
-      <h3>Inbox</h3>
+      <h3>Notification Interrupts</h3>
+      <p style="color:#888;font-size:.85rem;margin-top:0">External services can push messages that interrupt the display between pages.</p>
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
-        <label class="field-label" style="margin:0">Enable Inbox</label>
-        <label class="switch"><input type="checkbox" id="inboxEnabled"><span class="slider"></span></label>
+        <label class="field-label" style="margin:0">Enable</label>
+        <label class="switch"><input type="checkbox" id="notifyEnabled"><span class="slider"></span></label>
       </div>
-      <div id="inboxConfig" style="display:none">
+      <div id="notifyConfig" style="display:none">
         <div class="settings-grid" style="margin-bottom:12px">
-          <div style="display:flex;align-items:center;gap:10px">
-            <label class="field-label" style="margin:0">Interrupt on High Priority</label>
-            <label class="switch"><input type="checkbox" id="inboxInterruptEnabled" checked><span class="slider"></span></label>
-          </div>
-          <div><label class="field-label">Interrupt Display Time (seconds)</label><input type="number" id="inboxInterruptTtl" value="10" min="3" max="60" step="1" class="line-input" style="font-size:.95rem;margin:0"></div>
+          <div><label class="field-label">Display Time (seconds)</label><input type="number" id="notifyDisplaySeconds" value="10" min="3" max="60" step="1" class="line-input" style="font-size:.95rem;margin:0"></div>
         </div>
         <div style="margin-bottom:8px;display:flex;justify-content:space-between;align-items:center">
           <label class="field-label" style="margin:0">API Sources</label>
-          <button class="btn btn-success btn-sm" onclick="addInboxSource()">+ Add Source</button>
+          <button class="btn btn-success btn-sm" onclick="addNotifySource()">+ Add Source</button>
         </div>
-        <div id="inboxSourceList" style="margin-bottom:8px"></div>
-        <p style="color:#666;font-size:.8rem;margin:0">Each source gets a unique API key. Use <code>Authorization: Bearer &lt;key&gt;</code> to push messages.</p>
+        <div id="notifySourceList" style="margin-bottom:8px"></div>
+        <p style="color:#666;font-size:.8rem;margin:0">POST to <code>/notify</code> with <code>Authorization: Bearer &lt;key&gt;</code> and <code>{"text": "YOUR MESSAGE"}</code>.</p>
       </div>
     </div>
     <div class="config-section">

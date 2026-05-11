@@ -1271,14 +1271,14 @@ FIELD_COMPUTE_FUNCTIONS['polling_usage_estimate'] = function(vals, field){
     : String(vals[selectorIndex] ?? cfg.selector_default ?? '').toLowerCase();
 
   const profiles = (cfg.profiles && typeof cfg.profiles === 'object') ? cfg.profiles : {};
+  const profileKeys = Object.keys(profiles);
   if(!selector){
-    const keys = Object.keys(profiles);
-    const matched = vals.map(v => String(v ?? '').toLowerCase()).find(v => keys.includes(v));
-    selector = matched || String(cfg.selector_default ?? '').toLowerCase() || (keys.length === 1 ? keys[0] : null);
+    const matched = vals.map(v => String(v ?? '').toLowerCase()).find(v => profileKeys.includes(v));
+    selector = matched || String(cfg.selector_default ?? '').toLowerCase() || (profileKeys.length === 1 ? profileKeys[0] : null);
   }
   const selectedProfile = selector && profiles[selector] && typeof profiles[selector] === 'object'
     ? profiles[selector]
-    : (Object.keys(profiles).length === 1 ? profiles[Object.keys(profiles)[0]] : {});
+    : (!selector && profileKeys.length === 1 ? profiles[profileKeys[0]] : {});
 
   const callsPerPoll = resolveCallsPerPoll(selectedProfile, vals, truthyValues);
   const limitPerDay = selectedProfile.limit_per_day == null ? null : Number(selectedProfile.limit_per_day);

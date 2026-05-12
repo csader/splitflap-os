@@ -5,7 +5,7 @@
   "description": "Current conditions",
   "type": "functional",
   "refresh_interval": 300,
-  "loop_delay": 5,
+  "loop_delay": 8,
   "category": "data",
   "settings": [
     {
@@ -16,12 +16,6 @@
       "global_key": true
     },
     {
-      "key": "weather_api_key",
-      "label": "OpenWeatherMap API Key",
-      "type": "password",
-      "global_key": true
-    },
-    {
       "key": "timezone",
       "label": "Timezone (override global)",
       "type": "search_chips",
@@ -29,6 +23,198 @@
       "resultKey": "zones",
       "maxItems": 1,
       "global_key": true
+    },
+    {
+      "key": "temperature_unit",
+      "label": "Temperature Unit",
+      "type": "toggle",
+      "size": "sm",
+      "default": "f",
+      "options": [
+        { "value": "f", "label": "F" },
+        { "value": "c", "label": "C" },
+        { "value": "k", "label": "K" }
+      ]
+    },
+    {
+      "key": "weather_provider",
+      "label": "Weather Provider",
+      "note": "Open-Meteo is keyless. OpenWeather, WeatherAPI.com, and QWeather require API keys.",
+      "type": "toggle",
+      "size": "md",
+      "default": "openmeteo",
+      "sync_values": {
+        "openweather": {
+          "show_uv": "no",
+          "show_pollen": "no"
+        },
+        "qweather": {
+          "show_uv": "no",
+          "show_pollen": "no"
+        }
+      },
+      "options": [
+        { "value": "openmeteo", "label": "Open-Meteo" },
+        { "value": "weatherapi", "label": "WeatherAPI.com" },
+        { "value": "qweather", "label": "QWeather" },
+        { "value": "openweather", "label": "OpenWeather" }
+      ]
+    },
+    {
+      "key": "weather_api_key",
+      "label": "Weather Provider API Key",
+      "type": "password",
+      "global_key": true,
+      "ph": "Optional for Open-Meteo",
+      "note": "Optional for Open-Meteo. Required for OpenWeather, WeatherAPI.com, and QWeather."
+    },
+    {
+      "key": "polling_rate",
+      "label": "Refresh Frequency (seconds)",
+      "type": "number",
+      "stepper": true,
+      "default": 300,
+      "min": 30,
+      "max": 86400,
+      "step": 30
+    },
+    {
+      "key": "_api_budget",
+      "label": "API Usage Estimate",
+      "type": "computed",
+      "compute": "polling_usage_estimate",
+      "watches": [
+        "polling_rate",
+        "weather_provider",
+        "show_aqi",
+        "show_uv",
+        "show_pollen"
+      ],
+      "compute_config": {
+        "min_rate": 30,
+        "default_rate": 300,
+        "selector_index": 1,
+        "selector_default": "openmeteo",
+        "text_template": "~{reqPerDay} provider req/day · ~{reqPerMonth}/month · {callsPerPoll} provider call(s)/refresh · Limit: {limitText}",
+        "profiles": {
+          "openmeteo": {
+            "call_formula": {
+              "type": "base_plus_any_true",
+              "base_calls": 1,
+              "per_true_calls": 1,
+              "flag_indices": [2, 3, 4]
+            },
+            "limit_text": "Open-Meteo free API: 10k/day, 300k/month",
+            "limit_per_day": 10000,
+            "limit_per_month": 300000,
+            "warn_prefix": "Estimated usage exceeds Open-Meteo free API limits."
+          },
+          "weatherapi": {
+            "calls_per_poll": 1,
+            "limit_text": "WeatherAPI free plan: 100k/month",
+            "limit_per_month": 100000,
+            "warn_prefix": "Estimated usage exceeds WeatherAPI free-plan calls."
+          },
+          "qweather": {
+            "call_formula": {
+              "type": "base_plus_true_count",
+              "base_calls": 2,
+              "per_true_calls": 1,
+              "flag_indices": [2]
+            },
+            "limit_text": "QWeather free tier: first 50k/month included; additional usage is billed",
+            "limit_per_month": 50000,
+            "warn_prefix": "Estimated usage exceeds QWeather free-tier included requests; billing may apply."
+          },
+          "openweather": {
+            "call_formula": {
+              "type": "base_plus_true_count",
+              "base_calls": 1,
+              "per_true_calls": 1,
+              "flag_indices": [2]
+            },
+            "limit_text": "OpenWeather free plan: 1M/month",
+            "limit_per_month": 1000000,
+            "warn_prefix": "Estimated usage exceeds OpenWeather free-plan calls."
+          }
+        }
+      }
+    },
+    {
+      "key": "weatherapi_attribution_notice",
+      "type": "notice",
+      "variant": "info",
+      "text": "Powered by WeatherAPI.com",
+      "linkText": "WeatherAPI.com",
+      "linkHref": "https://www.weatherapi.com/",
+      "visible_when": {
+        "weather_provider": "weatherapi"
+      }
+    },
+    {
+      "key": "qweather_attribution_notice",
+      "type": "notice",
+      "variant": "info",
+      "text": "Powered by QWeather",
+      "linkText": "QWeather",
+      "linkHref": "https://www.qweather.com/",
+      "visible_when": {
+        "weather_provider": "qweather"
+      }
+    },
+    {
+      "key": "openweather_capability_notice",
+      "type": "notice",
+      "variant": "warning",
+      "text": "OpenWeather in this app currently supports weather + AQI only.",
+      "visible_when": {
+        "weather_provider": "openweather"
+      }
+    },
+    {
+      "key": "qweather_capability_notice",
+      "type": "notice",
+      "variant": "warning",
+      "text": "QWeather in this app currently supports weather + AQI only.",
+      "visible_when": {
+        "weather_provider": "qweather"
+      }
+    },
+    {
+      "key": "show_aqi",
+      "label": "Show Air Quality Index (AQI)",
+      "type": "toggle",
+      "default": "yes",
+      "options": [
+        { "value": "no", "label": "Off" },
+        { "value": "yes", "label": "On" }
+      ]
+    },
+    {
+      "key": "show_uv",
+      "label": "Show UV Index",
+      "type": "toggle",
+      "default": "yes",
+      "disabled_when": {
+        "weather_provider": ["openweather", "qweather"]
+      },
+      "options": [
+        { "value": "no", "label": "Off" },
+        { "value": "yes", "label": "On" }
+      ]
+    },
+    {
+      "key": "show_pollen",
+      "label": "Show Pollen / Allergy Index",
+      "type": "toggle",
+      "default": "no",
+      "disabled_when": {
+        "weather_provider": ["openweather", "qweather"]
+      },
+      "options": [
+        { "value": "no", "label": "Off" },
+        { "value": "yes", "label": "On" }
+      ]
     }
   ],
   "min_rows": 1,

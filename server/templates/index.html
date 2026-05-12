@@ -155,6 +155,10 @@
           <button class="btn-adj pos" onclick="adjustOffset(32)">+32</button>
         </div>
         <div style="text-align:center;color:#666;font-size:.75rem;margin-top:-6px">(Saves instantly; press Home to verify)</div>
+        <div style="display:flex;gap:6px;margin-top:8px;align-items:center">
+          <input type="number" id="offsetDirectInput" placeholder="Set offset…" class="line-input" style="flex:1;font-size:.9rem;margin:0;text-align:center">
+          <button class="btn btn-secondary btn-sm" onclick="setOffsetDirect()">Set</button>
+        </div>
         <div style="display:flex;gap:10px;margin-top:4px">
           <button class="btn" style="flex:1;background:#444;color:#fff" onclick="homeSelected()">HOME MOTOR</button>
           <button class="btn" style="flex:1;background:#333;color:#aaa;border:1px solid #555" onclick="calibrateSelected()">MEASURE REEL (360°)</button>

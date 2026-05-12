@@ -1901,6 +1901,17 @@ function renderCharGrid(){
   }
 }
 
+function setOffsetDirect(){
+  const input = document.getElementById('offsetDirectInput');
+  const target = parseInt(input.value);
+  if(isNaN(target)){ showToast('Enter a valid number','warn'); return; }
+  const current = parseInt(globalSettings.offsets?.[selectedModule.toString()] ?? 2832);
+  const delta = target - current;
+  if(delta === 0){ showToast('Already at '+target); input.value=''; return; }
+  adjustOffset(delta);
+  input.value='';
+}
+
 function resetOffset(){
   const current = parseInt(globalSettings.offsets?.[selectedModule.toString()] ?? 2832);
   const delta = 2832 - current;

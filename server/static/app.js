@@ -2172,7 +2172,7 @@ function closeAutoTune(){
 }
 
 async function atBegin(){
-  const startIdx = parseInt(document.getElementById('atStartIdx').value) || 63;
+  const startIdx = parseInt(document.getElementById('atStartIdx').value) || 1;
   const stepSize = parseInt(document.getElementById('atStepSize').value) || 25;
   at.charIndex = Math.max(1, Math.min(63, startIdx));
 
@@ -2392,8 +2392,8 @@ function atSkipToPhase(phase){
 }
 
 function atNextChar(){
-  const next = at.charIndex - 1;
-  if(next < 1){
+  const next = at.charIndex + 1;
+  if(next > 63){
     // Done!
     document.getElementById('atActive').style.display='none';
     document.getElementById('atDone').style.display='block';

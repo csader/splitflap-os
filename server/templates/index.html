@@ -134,7 +134,10 @@
       <div class="inspector-panel" id="inspectorPanel" style="display:none">
         <div style="display:flex;justify-content:space-between;align-items:center">
           <h3 style="margin:0;color:#fff" id="inspectTitle">MODULE 00</h3>
-          <button class="btn btn-secondary btn-sm" onclick="syncOneFromHardware()">Sync EEPROM</button>
+          <div style="display:flex;gap:6px">
+            <button class="btn btn-secondary btn-sm" onclick="resetOffset()" title="Set offset to 2832 (default home position)">Reset Offset</button>
+            <button class="btn btn-secondary btn-sm" onclick="syncOneFromHardware()">Sync EEPROM</button>
+          </div>
         </div>
         <div class="inspector-stats">
           <div class="stat-box"><span class="stat-label">Home Offset</span><span class="stat-val" id="inspectOffset">2832</span></div>

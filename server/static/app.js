@@ -146,7 +146,7 @@ class LiveFlap {
   }
 }
 
-let liveFlipSpeedMs = 62;
+let liveFlipSpeedMs = 28;
 let liveGridRows = 3, liveGridCols = 15;
 let simMode = false;
 
@@ -1899,6 +1899,13 @@ function renderCharGrid(){
     cell.onclick=()=>openCharModal(i,disp,expected,actual);
     grid.appendChild(cell);
   }
+}
+
+function resetOffset(){
+  const current = parseInt(globalSettings.offsets?.[selectedModule.toString()] ?? 2832);
+  const delta = 2832 - current;
+  if(delta === 0){ showToast('Already at 2832'); return; }
+  adjustOffset(delta);
 }
 
 function adjustOffset(delta){

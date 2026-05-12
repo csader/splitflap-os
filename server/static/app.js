@@ -820,12 +820,17 @@ async function buildAppsGrid(){
     const res = await fetch('/installed_apps');
     const data = await res.json();
     const pluginConfigs = data.settings_config || {};
-    // Merge plugin settings with hardcoded configs (don't overwrite, combine fields)
+    // Merge plugin settings with hardcoded configs.
+    // Prefer latest server definitions for matching keys so schema updates propagate live.
     for(const [key, cfg] of Object.entries(pluginConfigs)){
       if(APP_SETTINGS_CONFIG[key]){
         const existing = APP_SETTINGS_CONFIG[key].fields||[];
-        const newFields = (cfg.fields||[]).filter(f=>!existing.some(e=>e.key===f.key));
-        APP_SETTINGS_CONFIG[key].fields = existing.concat(newFields);
+        const incoming = cfg.fields||[];
+        const incomingByKey = new Map(incoming.map(f => [f.key, f]));
+        const mergedExisting = existing.map(f => incomingByKey.get(f.key) || f);
+        const existingKeys = new Set(existing.map(f => f.key));
+        const appendedIncoming = incoming.filter(f => !existingKeys.has(f.key));
+        APP_SETTINGS_CONFIG[key].fields = mergedExisting.concat(appendedIncoming);
       } else {
         APP_SETTINGS_CONFIG[key] = cfg;
       }
@@ -1167,6 +1172,15 @@ function appendInputWithInlineToggle(div, input, field){
   div.appendChild(row);
 }
 
+function setFieldDisabledState(fieldKey, disabled){
+  const row = document.getElementById(`asf_row_${fieldKey}`);
+  if(!row) return;
+  row.classList.toggle('is-disabled', !!disabled);
+  row.querySelectorAll('input, select, textarea, button').forEach(el=>{
+    el.disabled = !!disabled;
+  });
+}
+
 // ── Number stepper ──────────────────────────────────────────
 function createNumberStepper(input){
   const wrap = document.createElement('div');
@@ -1199,18 +1213,100 @@ function createNumberStepper(input){
 // Return a string, or { text, warn } for warning state.
 const FIELD_COMPUTE_FUNCTIONS = {};
 
-FIELD_COMPUTE_FUNCTIONS['polling_rate_stats'] = function(vals){
-  const rate   = Math.max(1, parseInt(vals[0]) || 60);
-  const source = vals[1] || 'opensky';
-  const perDay   = Math.round(86400 / rate);
-  const perMonth = perDay * 30;
-  const fmt = n => n >= 10000 ? Math.round(n/1000)+'k'
-                 : n >= 1000  ? (n/1000).toFixed(1)+'k'
-                 : String(n);
+function formatCompactCount(n){
+  if(n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
+  if(n >= 10000) return Math.round(n / 1000) + 'k';
+  if(n >= 1000) return (n / 1000).toFixed(1) + 'k';
+  return String(n);
+}
+
+function isTruthySetting(value, truthyValues){
+  const actual = String(value ?? '').toLowerCase();
+  return truthyValues.includes(actual);
+}
+
+function resolveCallsPerPoll(profile, vals, truthyValues){
+  if(!profile || typeof profile !== 'object') return 1;
+  if(profile.call_formula && typeof profile.call_formula === 'object'){
+    const formula = profile.call_formula;
+    const indices = Array.isArray(formula.flag_indices) ? formula.flag_indices : [];
+    const baseCalls = Number(formula.base_calls ?? 1);
+    const perTrueCalls = Number(formula.per_true_calls ?? 1);
+    const trueCount = indices.reduce((count, idx)=>{
+      return count + (isTruthySetting(vals[idx], truthyValues) ? 1 : 0);
+    }, 0);
+    if(formula.type === 'base_plus_any_true'){
+      return baseCalls + (trueCount > 0 ? perTrueCalls : 0);
+    }
+    if(formula.type === 'base_plus_true_count'){
+      return baseCalls + (trueCount * perTrueCalls);
+    }
+    return Math.max(1, Number(profile.calls_per_poll ?? 1));
+  }
+  return Math.max(1, Number(profile.calls_per_poll ?? 1));
+}
+
+function applyTemplate(template, data){
+  return String(template || '').replace(/\{(\w+)\}/g, (_, key)=> {
+    const value = data[key];
+    return value == null ? '' : String(value);
+  });
+}
+
+FIELD_COMPUTE_FUNCTIONS['polling_usage_estimate'] = function(vals, field){
+  const cfg = (field && field.compute_config && typeof field.compute_config === 'object')
+    ? field.compute_config
+    : {};
+
+  const minRate = Math.max(1, Number(cfg.min_rate ?? 1));
+  const defaultRate = Math.max(minRate, Number(cfg.default_rate ?? 60));
+  const rateIndex = Number(cfg.rate_index ?? 0);
+  const rate = Math.max(minRate, parseInt(vals[rateIndex]) || defaultRate);
+  const truthyValues = (Array.isArray(cfg.truthy_values) ? cfg.truthy_values : ['yes', 'true', '1', 'on'])
+    .map(v => String(v).toLowerCase());
+
+  const selectorIndex = cfg.selector_index == null ? null : Number(cfg.selector_index);
+  let selector = selectorIndex == null
+    ? null
+    : String(vals[selectorIndex] ?? cfg.selector_default ?? '').toLowerCase();
+
+  const profiles = (cfg.profiles && typeof cfg.profiles === 'object') ? cfg.profiles : {};
+  const profileKeys = Object.keys(profiles);
+  if(!selector){
+    const matched = vals.map(v => String(v ?? '').toLowerCase()).find(v => profileKeys.includes(v));
+    selector = matched || String(cfg.selector_default ?? '').toLowerCase() || (profileKeys.length === 1 ? profileKeys[0] : null);
+  }
+  const selectedProfile = selector && profiles[selector] && typeof profiles[selector] === 'object'
+    ? profiles[selector]
+    : (!selector && profileKeys.length === 1 ? profiles[profileKeys[0]] : {});
+
+  const callsPerPoll = resolveCallsPerPoll(selectedProfile, vals, truthyValues);
+  const limitPerDay = selectedProfile.limit_per_day == null ? null : Number(selectedProfile.limit_per_day);
+  const limitPerMonth = selectedProfile.limit_per_month == null ? null : Number(selectedProfile.limit_per_month);
+  const warnPrefix = String(selectedProfile.warn_prefix || 'Estimated usage exceeds configured limits.');
+  const limitText = String(selectedProfile.limit_text || cfg.default_limit_text || 'Plan dependent');
+
+  const pollsPerDay = Math.ceil(86400 / rate);
+  const reqPerDay = pollsPerDay * callsPerPoll;
+  const reqPerMonth = reqPerDay * 30;
+
   let warn = null;
-  if(source === 'opensky' && perDay > 400)
-    warn = 'Exceeds OpenSky anonymous limit (400 req/day). Register for 4,000/day.';
-  return { text: `~${fmt(perDay)} req/day · ~${fmt(perMonth)}/month`, warn };
+  if(limitPerDay && reqPerDay > limitPerDay){
+    warn = `${warnPrefix} ${formatCompactCount(reqPerDay)}/day exceeds ${formatCompactCount(limitPerDay)}/day.`;
+  } else if(limitPerMonth && reqPerMonth > limitPerMonth){
+    warn = `${warnPrefix} ${formatCompactCount(reqPerMonth)}/month exceeds ${formatCompactCount(limitPerMonth)}/month.`;
+  }
+
+  const textTemplate = String(cfg.text_template || '~{reqPerDay} req/day · ~{reqPerMonth}/month');
+  const text = applyTemplate(textTemplate, {
+    selector,
+    reqPerDay: formatCompactCount(reqPerDay),
+    reqPerMonth: formatCompactCount(reqPerMonth),
+    callsPerPoll,
+    limitText,
+  });
+
+  return { text, warn };
 };
 
 function renderComputedInfo(el, result){
@@ -1233,10 +1329,74 @@ function renderComputedInfo(el, result){
   }
 }
 
+function renderNoticeField(div, field){
+  const box = document.createElement('div');
+  const variant = String(field.variant || 'info').toLowerCase();
+  box.className = `sf-notice sf-notice-${variant}`;
+
+  if(field.icon){
+    const icon = document.createElement('div');
+    icon.className = 'sf-notice-icon';
+    icon.textContent = String(field.icon);
+    box.appendChild(icon);
+  }
+
+  const body = document.createElement('div');
+  body.className = 'sf-notice-body';
+
+  if(field.title){
+    const title = document.createElement('div');
+    title.className = 'sf-notice-title';
+    title.textContent = String(field.title);
+    body.appendChild(title);
+  }
+
+  if(field.text){
+    const text = document.createElement('div');
+    text.className = 'sf-notice-text';
+    text.textContent = String(field.text);
+    body.appendChild(text);
+  }
+
+  if(Array.isArray(field.items) && field.items.length){
+    const list = document.createElement('ul');
+    list.className = 'sf-notice-list';
+    field.items.forEach(item=>{
+      const li = document.createElement('li');
+      li.textContent = String(item);
+      list.appendChild(li);
+    });
+    body.appendChild(list);
+  }
+
+  if(field.linkHref){
+    const link = document.createElement('a');
+    link.className = 'sf-notice-link';
+    link.href = String(field.linkHref);
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    link.textContent = String(field.linkText || field.linkHref);
+    body.appendChild(link);
+  }
+
+  box.appendChild(body);
+  div.appendChild(box);
+}
+
 function renderAppSettingsField(fieldsContainer, field){
   const div = document.createElement('div');
   div.className = 'modal-field';
   div.id = `asf_row_${field.key}`;
+  if(field.type === 'notice'){
+    if(field.label){
+      const label = document.createElement('label');
+      label.textContent = field.label;
+      div.appendChild(label);
+    }
+    renderNoticeField(div, field);
+    fieldsContainer.appendChild(div);
+    return;
+  }
   const label = document.createElement('label');
   label.textContent = field.label;
   div.appendChild(label);
@@ -1352,6 +1512,12 @@ function wireAppSettingsSyncRules(fields){
   const fieldsByKey = new Map(fields.map(f=>[f.key, f]));
   let syncInProgress = false;
 
+  function conditionMatches(actualValue, expected){
+    const actual = String(actualValue ?? '');
+    if(Array.isArray(expected)) return expected.map(v => String(v)).includes(actual);
+    return actual === String(expected);
+  }
+
   function applySyncValues(sourceKey){
     const source = fieldsByKey.get(sourceKey);
     if(!source || !source.sync_values) return;
@@ -1371,9 +1537,18 @@ function wireAppSettingsSyncRules(fields){
       const row = document.getElementById(`asf_row_${f.key}`);
       if(!row) return;
       const visible = Object.entries(f.visible_when).every(
-        ([parentKey, expected]) => getModalFieldValue(parentKey) === String(expected)
+        ([parentKey, expected]) => conditionMatches(getModalFieldValue(parentKey), expected)
       );
       row.style.display = visible ? '' : 'none';
+    });
+  }
+
+  function applyDisabledState(){
+    fields.forEach(f=>{
+      const disabled = !!f.disabled_when && Object.entries(f.disabled_when).every(
+        ([parentKey, expected]) => conditionMatches(getModalFieldValue(parentKey), expected)
+      );
+      setFieldDisabledState(f.key, disabled);
     });
   }
 
@@ -1391,6 +1566,7 @@ function wireAppSettingsSyncRules(fields){
 
     applySyncValues(fieldKey);
     applyVisibility();
+    applyDisabledState();
   }
 
   function recomputeFields(){
@@ -1401,13 +1577,14 @@ function wireAppSettingsSyncRules(fields){
       const fn = FIELD_COMPUTE_FUNCTIONS[f.compute];
       if(!fn) return;
       const vals = (f.watches || []).map(wk => getModalFieldValue(wk));
-      renderComputedInfo(infoBox, fn(vals));
+      renderComputedInfo(infoBox, fn(vals, f));
     });
   }
 
   fields.forEach(f=> bindModalFieldChange(f.key, ()=> onFieldChanged(f.key)));
   fields.forEach(f=> applySyncValues(f.key));
   applyVisibility();
+  applyDisabledState();
   recomputeFields();
 
   // Re-run computed fields whenever any watched field changes

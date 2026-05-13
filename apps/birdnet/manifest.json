@@ -12,19 +12,22 @@
       "key": "birdnet_host",
       "label": "BirdNET-Pi Host",
       "type": "text",
-      "default": "192.168.86.139"
+      "default": "192.168.86.139",
+      "global_key": true
     },
     {
       "key": "birdnet_port",
       "label": "Port",
       "type": "number",
-      "default": "80"
+      "default": "80",
+      "global_key": true
     },
     {
       "key": "display_mode",
       "label": "Display Mode",
       "type": "toggle",
       "default": "latest",
+      "global_key": true,
       "options": [
         {"label": "Latest", "value": "latest"},
         {"label": "Last 3", "value": "last_3"},
@@ -39,7 +42,8 @@
       "min": "50",
       "max": "99",
       "step": "5",
-      "stepper": true
+      "stepper": true,
+      "global_key": true
     },
     {
       "key": "leaderboard_count",
@@ -50,6 +54,7 @@
       "max": "5",
       "step": "1",
       "stepper": true,
+      "global_key": true,
       "visible_when": {"display_mode": "leaderboard"}
     }
   ],

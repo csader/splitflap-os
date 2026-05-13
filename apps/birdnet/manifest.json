@@ -4,7 +4,7 @@
   "icon": "🐦",
   "description": "Live bird detections from BirdNET-Pi",
   "type": "functional",
-  "refresh_interval": 60,
+  "refresh_interval": 1,
   "loop_delay": 5,
   "category": "data",
   "settings": [

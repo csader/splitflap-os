@@ -74,10 +74,15 @@ def fetch(settings, format_lines, get_rows, get_cols):
 
         elif mode == 'last_3':
             pages = []
-            for bird in detections[:3]:
-                conf = f"{int(bird['confidence'] * 100)}%"
-                short = shorten_name(bird['species'], cols - len(conf) - 1)
-                pages.append(vcenter(f"{short} {conf}", rows))
+            seen = set()
+            for bird in detections:
+                if bird['species'] not in seen:
+                    seen.add(bird['species'])
+                    conf = f"{int(bird['confidence'] * 100)}%"
+                    short = shorten_name(bird['species'], cols - len(conf) - 1)
+                    pages.append(vcenter(f"{short} {conf}", rows))
+                    if len(pages) == 3:
+                        break
 
         elif mode == 'leaderboard':
             species_count = Counter(d['species'] for d in detections)

@@ -9,6 +9,16 @@ def fetch(settings, format_lines, get_rows, get_cols):
     leaderboard_count = int(settings.get('leaderboard_count', '3'))
     base_url = f"http://{host}:{port}"
 
+    # Cache invalidation: re-fetch when settings change
+    state = getattr(fetch, '_state', None)
+    if state is None:
+        state = {'last_sig': None, 'last_pages': None}
+        setattr(fetch, '_state', state)
+    sig = (host, port, mode, min_conf, leaderboard_count)
+    if sig != state['last_sig']:
+        state['last_pages'] = None
+        state['last_sig'] = sig
+
     ABBREV_WORDS = {
         'northern', 'southern', 'eastern', 'western', 'american', 'common',
         'carolina', 'great', 'lesser', 'greater', 'little', 'dark',
@@ -34,6 +44,13 @@ def fetch(settings, format_lines, get_rows, get_cols):
             return name
         return name[:max_len]
 
+    def vcenter(text, rows):
+        """Vertically center a single line of text in a rows-tall display."""
+        mid = rows // 2
+        lines = [''] * rows
+        lines[mid] = text
+        return format_lines(*lines)
+
     try:
         limit = 50 if mode == 'leaderboard' else 10
         r = requests.get(f"{base_url}/api/v1/detections/recent?limit={limit}", timeout=10)
@@ -42,7 +59,9 @@ def fetch(settings, format_lines, get_rows, get_cols):
         detections = [d for d in detections if d['confidence'] >= min_conf]
 
         if not detections:
-            return [format_lines('BIRDNET', 'NO DETECTIONS', 'CHECK SETTINGS')]
+            pages = [format_lines('BIRDNET', 'NO DETECTIONS', 'CHECK SETTINGS')]
+            state['last_pages'] = pages
+            return pages
 
         rows = get_rows()
         cols = get_cols()
@@ -51,15 +70,14 @@ def fetch(settings, format_lines, get_rows, get_cols):
             bird = detections[0]
             conf = f"{int(bird['confidence'] * 100)}%"
             short = shorten_name(bird['species'], cols - len(conf) - 1)
-            return [format_lines(f"{short} {conf}")]
+            pages = [vcenter(f"{short} {conf}", rows)]
 
         elif mode == 'last_3':
             pages = []
             for bird in detections[:3]:
                 conf = f"{int(bird['confidence'] * 100)}%"
                 short = shorten_name(bird['species'], cols - len(conf) - 1)
-                pages.append(format_lines(f"{short} {conf}"))
-            return pages
+                pages.append(vcenter(f"{short} {conf}", rows))
 
         elif mode == 'leaderboard':
             species_count = Counter(d['species'] for d in detections)
@@ -71,7 +89,15 @@ def fetch(settings, format_lines, get_rows, get_cols):
                 lines.append(f"{count_str} {short}")
             while len(lines) < rows:
                 lines.append('')
-            return [format_lines(*lines[:rows])]
+            pages = [format_lines(*lines[:rows])]
+
+        else:
+            pages = [format_lines('BIRDNET', 'UNKNOWN MODE', '')]
+
+        state['last_pages'] = pages
+        return pages
 
     except Exception as e:
+        if state['last_pages']:
+            return state['last_pages']
         return [format_lines('BIRDNET', 'ERROR', str(e)[:cols] if cols > 10 else 'ERR')]

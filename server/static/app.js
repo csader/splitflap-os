@@ -1847,6 +1847,14 @@ function loadSettingsData(){
     document.getElementById('notifyConfig').style.display = notifyEnabled ? 'block' : 'none';
     document.getElementById('notifyDisplaySeconds').value = data.notify_display_seconds || 10;
     renderNotifySources(data.notify_sources || {});
+    // Flap effect settings
+    const flapEffect = document.getElementById('flapEffect');
+    if(flapEffect){
+      flapEffect.value = data.flap_effect || 'none';
+      toggleFlapEffectSpeed();
+    }
+    const flapEffectSpeed = document.getElementById('flapEffectSpeed');
+    if(flapEffectSpeed) flapEffectSpeed.value = data.flap_effect_speed || 80;
     // Global timezone picker
     const tzEl = document.getElementById('globalTzPicker');
     if(tzEl){
@@ -2086,6 +2094,8 @@ function saveGlobal(){
     mqtt_password: document.getElementById('mqttPassword').value,
     notify_enabled: document.getElementById('notifyEnabled').checked,
     notify_display_seconds: parseInt(document.getElementById('notifyDisplaySeconds').value) || 10,
+    flap_effect: document.getElementById('flapEffect') ? document.getElementById('flapEffect').value : 'none',
+    flap_effect_speed: parseInt(document.getElementById('flapEffectSpeed') ? document.getElementById('flapEffectSpeed').value : 80) || 80,
   })}).then(()=>{
     initLiveGrids(rows, cols);
     buildAppsGrid(); // re-check compatibility after grid change
@@ -2097,6 +2107,12 @@ function saveGlobal(){
       fetch('/mqtt_reconnect',{method:'POST'});
     }
   });
+}
+
+function toggleFlapEffectSpeed(){
+  const v = document.getElementById('flapEffect');
+  const wrap = document.getElementById('flapEffectSpeedWrap');
+  if(v && wrap) wrap.style.display = v.value !== 'none' ? 'flex' : 'none';
 }
 
 function toggleAutoHome(){

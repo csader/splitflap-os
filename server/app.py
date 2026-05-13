@@ -121,6 +121,8 @@ def load_settings():
         "notify_enabled": False,
         "notify_display_seconds": 10,
         "notify_sources": {},
+        "flap_effect": "none",
+        "flap_effect_speed": 80,
         "installed_apps": [
             "time", "date", "weather", "stocks", "sports", "countdown",
             "world_clock", "crypto", "iss", "metro", "youtube", "yt_comments",
@@ -626,6 +628,113 @@ COLOR_MAP = {
     '\U0001f7e6': 'b', '\U0001f7ea': 'p', '\u2b1c': 'w', '\u2b1b': ' ',
 }
 
+def send_to_display_sync(text):
+    """Send modules staggered so all arrive at their target character simultaneously."""
+    global current_indices, current_display_string, is_homed
+    if not text:
+        return 0
+    clean_text = text.upper()
+    for emoji, char in COLOR_MAP.items():
+        clean_text = clean_text.replace(emoji, char)
+    clean_text = clean_text.replace('"', 'q')
+    n = get_module_count()
+    clean_text = clean_text.ljust(n)[:n]
+    logging.info(f"DISPLAY (sync): {clean_text}")
+
+    dists = []
+    for i in range(n):
+        char = clean_text[i]
+        target_idx = FLAP_CHARS.find(char)
+        if target_idx == -1:
+            target_idx = 0
+        dist = 128 if current_indices[i] == -1 else (target_idx - current_indices[i]) % 64
+        dists.append((i, char, target_idx, dist))
+
+    max_dist = max(d[3] for d in dists) if dists else 0
+    dists_sorted = sorted(dists, key=lambda x: -x[3])
+
+    t0 = time.time()
+    with serial_lock:
+        for i, char, target_idx, dist in dists_sorted:
+            delay_before = (max_dist - dist) * (4.0 / 64.0)
+            elapsed = time.time() - t0
+            remaining = delay_before - elapsed
+            if remaining > 0:
+                time.sleep(remaining)
+            if ser and not sim_mode:
+                ser.write(f"m{i:02d}-{char}\n".encode())
+                ser.flush()
+            current_indices[i] = target_idx
+
+    current_display_string = clean_text
+    is_homed = True
+    mqtt_publish_state()
+    return max_dist
+
+
+def send_to_display_slot(text, effect_speed=80):
+    """Slot machine: all modules spin to random chars, then lock in L→R."""
+    global current_indices, current_display_string, is_homed
+    if not text:
+        return 0
+    clean_text = text.upper()
+    for emoji, char in COLOR_MAP.items():
+        clean_text = clean_text.replace(emoji, char)
+    clean_text = clean_text.replace('"', 'q')
+    n = get_module_count()
+    clean_text = clean_text.ljust(n)[:n]
+    logging.info(f"DISPLAY (slot): {clean_text}")
+
+    # Phase 1: all modules spin to random intermediate chars simultaneously
+    spin_chars = [FLAP_CHARS[random.randint(1, len(FLAP_CHARS) - 5)] for _ in range(n)]
+    with serial_lock:
+        for i in range(n):
+            if ser and not sim_mode:
+                ser.write(f"m{i:02d}-{spin_chars[i]}\n".encode())
+                ser.flush()
+            idx = FLAP_CHARS.find(spin_chars[i])
+            current_indices[i] = idx if idx != -1 else 0
+
+    time.sleep(1.5)
+
+    # Phase 2: lock in final chars L→R
+    max_dist = 0
+    with serial_lock:
+        for i in range(n):
+            char = clean_text[i]
+            if ser and not sim_mode:
+                ser.write(f"m{i:02d}-{char}\n".encode())
+                ser.flush()
+                time.sleep(effect_speed / 1000.0)
+            target_idx = FLAP_CHARS.find(char)
+            if target_idx == -1:
+                target_idx = 0
+            dist = (target_idx - current_indices[i]) % 64
+            if dist > max_dist:
+                max_dist = dist
+            current_indices[i] = target_idx
+
+    current_display_string = clean_text
+    is_homed = True
+    mqtt_publish_state()
+    return max_dist
+
+
+def _send_with_effect(page_text, page_order, page_speed, is_anim):
+    """Dispatch a page send through the active global flap effect."""
+    if is_anim:
+        return send_to_display(page_text, page_order, raw=True, step_delay_ms=page_speed)
+    effect = settings.get('flap_effect', 'none')
+    effect_speed = int(settings.get('flap_effect_speed', 80))
+    if effect == 'wave':
+        return send_to_display(page_text, get_animation_order('ltr'), step_delay_ms=effect_speed)
+    elif effect == 'sync':
+        return send_to_display_sync(page_text)
+    elif effect == 'slot':
+        return send_to_display_slot(page_text, effect_speed=effect_speed)
+    return send_to_display(page_text, page_order, step_delay_ms=page_speed)
+
+
 def send_to_display(text, order=None, raw=False, step_delay_ms=15):
     global current_indices, current_display_string, is_homed
     if not text:
@@ -1106,7 +1215,7 @@ def _run_app_playlist():
                         page_delay = float(page.get('delay', eff_delay)) if isinstance(page, dict) else eff_delay
 
                         if is_anim or page_text != last_sent_page:
-                            max_dist = send_to_display(page_text, page_order, raw=is_anim, step_delay_ms=page_speed)
+                            max_dist = _send_with_effect(page_text, page_order, page_speed, is_anim)
                             last_sent_page = page_text
 
                         rotation_time = max_dist * (4.0 / 64.0)
@@ -1213,7 +1322,7 @@ def playlist_loop():
             max_dist = 0
             # Animations always resend each frame; other apps skip unchanged pages
             if is_anim or page_text != last_sent_page:
-                max_dist = send_to_display(page_text, page_order, raw=is_anim, step_delay_ms=page_speed)
+                max_dist = _send_with_effect(page_text, page_order, page_speed, is_anim)
                 last_sent_page = page_text
 
             rotation_time = max_dist * (4.0 / 64.0)

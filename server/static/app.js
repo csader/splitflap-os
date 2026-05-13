@@ -2103,6 +2103,12 @@ function saveGlobal(){
   });
 }
 
+function toggleFlapEffectSpeed(){
+  const v = document.getElementById('flapEffect');
+  const wrap = document.getElementById('flapEffectSpeedWrap');
+  if(v && wrap) wrap.style.display = v.value !== 'none' ? 'flex' : 'none';
+}
+
 function toggleAutoHome(){
   fetch('/toggle_autohome',{method:'POST',headers:{'Content-Type':'application/json'},
     body:JSON.stringify({enabled:document.getElementById('autoHomeToggle').checked})});

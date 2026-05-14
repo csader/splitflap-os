@@ -121,8 +121,8 @@ def load_settings():
         "notify_enabled": False,
         "notify_display_seconds": 10,
         "notify_sources": {},
-        "flap_effect": "none",
-        "flap_effect_speed": 80,
+        "transition_style": "ltr",
+        "transition_speed": 15,
         "installed_apps": [
             "time", "date", "weather", "stocks", "sports", "countdown",
             "world_clock", "crypto", "iss", "metro", "youtube", "yt_comments",
@@ -720,19 +720,22 @@ def send_to_display_slot(text, effect_speed=80):
     return max_dist
 
 
-def _send_with_effect(page_text, page_order, page_speed, is_anim):
-    """Dispatch a page send through the active global flap effect."""
+def _send_with_effect(page_text, page_style, page_speed, is_anim, app_id=None):
+    """Dispatch a page send using the active transition style (per-page > per-app > global)."""
     if is_anim:
-        return send_to_display(page_text, page_order, raw=True, step_delay_ms=page_speed)
-    effect = settings.get('flap_effect', 'none')
-    effect_speed = int(settings.get('flap_effect_speed', 80))
-    if effect == 'wave':
-        return send_to_display(page_text, get_animation_order('ltr'), step_delay_ms=effect_speed)
-    elif effect == 'sync':
+        return send_to_display(page_text, get_animation_order(page_style or 'ltr'), raw=True, step_delay_ms=page_speed)
+    # Priority: per-page > per-app > global
+    style = page_style or \
+            (settings.get(f'plugin_{app_id}_transition_style') if app_id else None) or \
+            settings.get('transition_style', 'ltr')
+    app_speed = settings.get(f'plugin_{app_id}_transition_speed') if app_id else None
+    speed = page_speed if page_speed is not None else \
+            (int(app_speed) if app_speed else int(settings.get('transition_speed', 15)))
+    if style == 'sync':
         return send_to_display_sync(page_text)
-    elif effect == 'slot':
-        return send_to_display_slot(page_text, effect_speed=effect_speed)
-    return send_to_display(page_text, page_order, step_delay_ms=page_speed)
+    if style == 'slot':
+        return send_to_display_slot(page_text, effect_speed=speed)
+    return send_to_display(page_text, get_animation_order(style), step_delay_ms=speed)
 
 
 def send_to_display(text, order=None, raw=False, step_delay_ms=15):
@@ -1210,12 +1213,12 @@ def _run_app_playlist():
                         if stop_event.is_set() or time.time() >= deadline:
                             break
                         page_text = page.get('text', '') if isinstance(page, dict) else page
-                        page_order = get_animation_order(page.get('style', 'ltr')) if isinstance(page, dict) else active_order
+                        page_style = page.get('style') if isinstance(page, dict) else None
                         page_speed = int(page.get('speed', 15)) if isinstance(page, dict) else 15
                         page_delay = float(page.get('delay', eff_delay)) if isinstance(page, dict) else eff_delay
 
                         if is_anim or page_text != last_sent_page:
-                            max_dist = _send_with_effect(page_text, page_order, page_speed, is_anim)
+                            max_dist = _send_with_effect(page_text, page_style if not is_anim else (settings.get('anim_style','ltr')), page_speed, is_anim, app_id=reg)
                             last_sent_page = page_text
 
                         rotation_time = max_dist * (4.0 / 64.0)
@@ -1311,18 +1314,19 @@ def playlist_loop():
             if isinstance(page, dict):
                 page_text  = page.get('text', '')
                 page_delay = float(page.get('delay', eff_delay))
-                page_order = get_animation_order(page.get('style', 'ltr'))
+                page_style = page.get('style')
                 page_speed = int(page.get('speed', 15))
             else:
                 page_text  = page
                 page_delay = eff_delay
-                page_order = active_order
+                page_style = None
                 page_speed = 15
 
             max_dist = 0
             # Animations always resend each frame; other apps skip unchanged pages
             if is_anim or page_text != last_sent_page:
-                max_dist = _send_with_effect(page_text, page_order, page_speed, is_anim)
+                anim_style = settings.get('anim_style', 'ltr') if is_anim else None
+                max_dist = _send_with_effect(page_text, anim_style or page_style, page_speed, is_anim, app_id=reg_key)
                 last_sent_page = page_text
 
             rotation_time = max_dist * (4.0 / 64.0)

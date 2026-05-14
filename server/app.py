@@ -1376,7 +1376,9 @@ def current_state():
     return jsonify(is_homed=is_homed, state=current_display_string, active_app=active_app,
                    active_app_playlist=active_app_playlist is not None,
                    app_playlist_name=app_playlist_name,
-                   rows=get_rows(), cols=get_cols(), sim_mode=sim_mode, hardware_connected=ser is not None)
+                   rows=get_rows(), cols=get_cols(), sim_mode=sim_mode, hardware_connected=ser is not None,
+                   transition_style=settings.get('transition_style', 'ltr'),
+                   transition_speed=int(settings.get('transition_speed', 15)))
 
 @app.route('/grid_config')
 def grid_config():

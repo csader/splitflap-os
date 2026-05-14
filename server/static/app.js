@@ -151,6 +151,80 @@ class LiveFlap {
 let liveFlipSpeedMs = 28;
 let liveGridRows = 3, liveGridCols = 15;
 let simMode = false;
+let liveTransitionStyle = 'ltr';
+let liveTransitionSpeed = 15;
+
+function getAnimationOrder(style, rows, cols){
+  const total = rows * cols;
+  const m = (r, c) => r * cols + c;
+  if(style === 'rtl') return Array.from({length:total},(_,i)=>total-1-i);
+  if(style === 'rain') return Array.from({length:total},(_,i)=>i);
+  if(style === 'reverse_rain'){
+    const o=[];
+    for(let r=rows-1;r>=0;r--) for(let c=0;c<cols;c++) o.push(m(r,c));
+    return o;
+  }
+  if(style === 'columns'){
+    const o=[];
+    for(let c=0;c<cols;c++) for(let r=0;r<rows;r++) o.push(m(r,c));
+    return o;
+  }
+  if(style === 'columns_rtl'){
+    const o=[];
+    for(let c=cols-1;c>=0;c--) for(let r=0;r<rows;r++) o.push(m(r,c));
+    return o;
+  }
+  if(style === 'center_out'){
+    const o=[], seen=new Set(), center=Math.floor(cols/2);
+    for(let d=0;d<=center;d++){
+      for(let r=0;r<rows;r++){
+        const cs = d===0 ? [center] : [center-d, center+d];
+        for(const c of cs){ if(c>=0&&c<cols){ const idx=m(r,c); if(!seen.has(idx)){seen.add(idx);o.push(idx);} } }
+      }
+    }
+    return o;
+  }
+  if(style === 'outside_in') return getAnimationOrder('center_out',rows,cols).slice().reverse();
+  if(style === 'diagonal'){
+    const o=[], seen=new Set();
+    for(let d=0;d<rows+cols-1;d++){
+      for(let r=0;r<rows;r++){ const c=d-r; if(c>=0&&c<cols){ const idx=m(r,c); if(!seen.has(idx)){seen.add(idx);o.push(idx);} } }
+    }
+    return o;
+  }
+  if(style === 'anti_diagonal'){
+    const o=[], seen=new Set();
+    for(let d=0;d<rows+cols-1;d++){
+      for(let r=0;r<rows;r++){ const c=(cols-1-d)+r; if(c>=0&&c<cols){ const idx=m(r,c); if(!seen.has(idx)){seen.add(idx);o.push(idx);} } }
+    }
+    return o;
+  }
+  if(style === 'spiral'){
+    const vis=Array.from({length:rows},()=>new Array(cols).fill(false));
+    const o=[];
+    let top=0,bottom=rows-1,left=0,right=cols-1;
+    while(top<=bottom&&left<=right){
+      for(let c=left;c<=right;c++) if(!vis[top][c]){vis[top][c]=true;o.push(m(top,c));}
+      for(let r=top+1;r<=bottom;r++) if(!vis[r][right]){vis[r][right]=true;o.push(m(r,right));}
+      if(top<bottom) for(let c=right-1;c>=left;c--) if(!vis[bottom][c]){vis[bottom][c]=true;o.push(m(bottom,c));}
+      if(left<right) for(let r=bottom-1;r>top;r--) if(!vis[r][left]){vis[r][left]=true;o.push(m(r,left));}
+      top++;bottom--;left++;right--;
+    }
+    return o;
+  }
+  if(style === 'alternating'){
+    const o=[];
+    for(let c=0;c<cols;c++) for(let r=0;r<rows;r++) o.push(m(r, r%2===0 ? c : cols-1-c));
+    return o;
+  }
+  if(style === 'random'){
+    const a=Array.from({length:total},(_,i)=>i);
+    for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; }
+    return a;
+  }
+  // default ltr
+  return Array.from({length:total},(_,i)=>i);
+}
 
 function updateSimModeUI() {
   const toggle = document.getElementById('simModeToggle');
@@ -239,10 +313,41 @@ setInterval(()=>{
     // Animated live display (single grid)
     const s = data.state || '';
     const fa = liveFlaps['control'];
-    if(fa) for(let i=0; i<fa.length; i++){
-      const ch = s[i] || ' ';
-      const idx = CHAR_MAP.indexOf(ch);
-      fa[i].setTarget(idx >= 0 ? idx : 0, i * 5);
+    liveTransitionStyle = data.transition_style || 'ltr';
+    liveTransitionSpeed = data.transition_speed || 15;
+    if(fa){
+      const rows = data.rows || liveGridRows, cols = data.cols || liveGridCols;
+      const style = liveTransitionStyle, speed = liveTransitionSpeed;
+      if(style === 'sync'){
+        const flipTime = liveFlipSpeedMs * 2;
+        const dists = fa.map((f, i) => {
+          const tgt = CHAR_MAP.indexOf(s[i] || ' ');
+          return tgt >= 0 ? (tgt - f.curIdx + 64) % 64 : 0;
+        });
+        const maxDist = Math.max(...dists, 0);
+        fa.forEach((f, i) => {
+          const tgt = CHAR_MAP.indexOf(s[i] || ' ');
+          f.setTarget(tgt >= 0 ? tgt : 0, (maxDist - dists[i]) * flipTime);
+        });
+      } else if(style === 'slot'){
+        const SLOT_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        const targets = fa.map((_, i) => { const t = CHAR_MAP.indexOf(s[i] || ' '); return t >= 0 ? t : 0; });
+        fa.forEach((f, i) => {
+          let spin;
+          do { spin = CHAR_MAP.indexOf(SLOT_CHARS[Math.floor(Math.random()*SLOT_CHARS.length)]); }
+          while(spin === targets[i]);
+          f.setTarget(spin, 0);
+        });
+        setTimeout(() => { fa.forEach((f, i) => f.setTarget(targets[i], i * speed)); }, 1500);
+      } else {
+        const order = getAnimationOrder(style, rows, cols);
+        const posInOrder = new Array(fa.length).fill(0);
+        order.forEach((modIdx, pos) => { posInOrder[modIdx] = pos; });
+        fa.forEach((f, i) => {
+          const tgt = CHAR_MAP.indexOf(s[i] || ' ');
+          f.setTarget(tgt >= 0 ? tgt : 0, posInOrder[i] * Math.max(speed, 1));
+        });
+      }
     }
 
     // Active app banner (single)

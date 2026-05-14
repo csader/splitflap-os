@@ -647,7 +647,9 @@ def send_to_display_sync(text):
         target_idx = FLAP_CHARS.find(char)
         if target_idx == -1:
             target_idx = 0
-        dist = 128 if current_indices[i] == -1 else (target_idx - current_indices[i]) % 64
+        # Treat -1 (pre-home unknown) as position 0 so sync stagger works on first run
+        current = 0 if current_indices[i] == -1 else current_indices[i]
+        dist = (target_idx - current) % 64
         dists.append((i, char, target_idx, dist))
 
     max_dist = max(d[3] for d in dists) if dists else 0
@@ -686,7 +688,13 @@ def send_to_display_slot(text, effect_speed=80):
     logging.info(f"DISPLAY (slot): {clean_text}")
 
     # Phase 1: all modules spin to random intermediate chars simultaneously
-    spin_chars = [FLAP_CHARS[random.randint(1, len(FLAP_CHARS) - 5)] for _ in range(n)]
+    # Ensure spin char differs from target so the lock-in is always visible
+    spin_chars = []
+    for i in range(n):
+        target_idx = FLAP_CHARS.find(clean_text[i])
+        if target_idx == -1: target_idx = 0
+        candidates = [c for c in FLAP_CHARS[1:len(FLAP_CHARS)-4] if FLAP_CHARS.find(c) != target_idx]
+        spin_chars.append(random.choice(candidates) if candidates else FLAP_CHARS[1])
     with serial_lock:
         for i in range(n):
             if ser and not sim_mode:
@@ -761,6 +769,12 @@ def send_to_display(text, order=None, raw=False, step_delay_ms=15):
     if order is None:
         order = list(range(n))
 
+    # Update sim state immediately so the browser reflects the new text without waiting
+    # for the serial loop to complete (fixes sim lag on hardware transitions)
+    current_display_string = clean_text
+    is_homed = True
+    mqtt_publish_state()
+
     max_dist = 0
     with serial_lock:
         for i in order:
@@ -780,9 +794,6 @@ def send_to_display(text, order=None, raw=False, step_delay_ms=15):
                 max_dist = dist
             current_indices[i] = target_idx
 
-    current_display_string = clean_text
-    is_homed = True
-    mqtt_publish_state()
     return max_dist
 
 

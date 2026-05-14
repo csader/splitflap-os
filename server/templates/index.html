@@ -192,7 +192,7 @@
         <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
           <div>
             <label class="field-label" style="margin-bottom:4px">Effect</label>
-            <select id="flapEffect" onchange="toggleFlapEffectSpeed()" class="line-input" style="font-size:.9rem;margin:0">
+            <select id="flapEffect" onchange="toggleFlapEffectSpeed();setSettingsDirty(true)" class="line-input" style="font-size:.9rem;margin:0">
               <option value="none">None</option>
               <option value="wave">Wave (L→R stagger)</option>
               <option value="sync">Synchronized arrival</option>
@@ -201,7 +201,7 @@
           </div>
           <div id="flapEffectSpeedWrap" style="display:none;flex-direction:column">
             <label class="field-label" style="margin-bottom:4px">Speed (ms between modules)</label>
-            <input type="number" id="flapEffectSpeed" value="80" min="20" max="500" step="10" class="line-input" style="font-size:.9rem;margin:0;width:90px">
+            <input type="number" id="flapEffectSpeed" value="80" min="20" max="500" step="10" oninput="setSettingsDirty(true)" class="line-input" style="font-size:.9rem;margin:0;width:90px">
           </div>
         </div>
       </div>

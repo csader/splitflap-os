@@ -2110,6 +2110,14 @@ function saveGlobal(){
   });
 }
 
+function updateTransitionSpeedDefault(style){
+  const speedEl = document.getElementById('transitionSpeed');
+  if(!speedEl) return;
+  if(style === 'slot') speedEl.value = 80;
+  else if(style === 'sync') speedEl.value = 0;
+  else speedEl.value = 15;
+}
+
 function toggleAutoHome(){
   fetch('/toggle_autohome',{method:'POST',headers:{'Content-Type':'application/json'},
     body:JSON.stringify({enabled:document.getElementById('autoHomeToggle').checked})});

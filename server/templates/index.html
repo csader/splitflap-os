@@ -205,7 +205,7 @@
         <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end">
           <div>
             <label class="field-label" style="margin-bottom:4px">Style</label>
-            <select id="transitionStyle" onchange="setSettingsDirty(true)" class="line-input" style="font-size:.9rem;margin:0"></select>
+            <select id="transitionStyle" onchange="setSettingsDirty(true);updateTransitionSpeedDefault(this.value)" class="line-input" style="font-size:.9rem;margin:0"></select>
           </div>
           <div>
             <label class="field-label" style="margin-bottom:4px">Speed (ms/module)</label>

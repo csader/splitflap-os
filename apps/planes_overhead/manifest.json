@@ -334,8 +334,9 @@
       "type": "toggle",
       "default": "any",
       "options": [
-        {"value": "any",     "label": "Any new aircraft"},
-        {"value": "keyword", "label": "Callsign keyword"}
+        {"value": "any",      "label": "Any new aircraft"},
+        {"value": "keyword",  "label": "Callsign keyword"},
+        {"value": "military", "label": "Military aircraft"}
       ]
     },
     {

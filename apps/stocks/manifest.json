@@ -17,12 +17,13 @@
       "default": "pct_change",
       "options": [
         {"value": "pct_change",    "label": "% Move"},
-        {"value": "price_target",  "label": "Price target"}
+        {"value": "price_target",  "label": "Price target"},
+        {"value": "52w_extreme",   "label": "52-week high/low"}
       ]
     },
     {
       "key": "threshold",
-      "label": "Move more than (%) ",
+      "label": "Move more than (%)",
       "type": "number",
       "default": "3",
       "min": "1",
@@ -51,6 +52,18 @@
       "min": "0",
       "step": "1",
       "visible_when": {"condition_type": "price_target"}
+    },
+    {
+      "key": "extreme",
+      "label": "Extreme",
+      "type": "toggle",
+      "default": "high",
+      "options": [
+        {"value": "high",   "label": "52-week high"},
+        {"value": "low",    "label": "52-week low"},
+        {"value": "either", "label": "Either"}
+      ],
+      "visible_when": {"condition_type": "52w_extreme"}
     }
   ],
   "settings": [

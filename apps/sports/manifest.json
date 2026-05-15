@@ -21,7 +21,8 @@
         {"value": "close_game", "label": "Close game (within 5)"},
         {"value": "final", "label": "Game ends"},
         {"value": "overtime", "label": "Overtime / extra time"},
-        {"value": "playoff", "label": "Playoff / postseason game"}
+        {"value": "playoff", "label": "Playoff / postseason game"},
+        {"value": "comeback", "label": "Comeback alert"}
       ]
     },
     {
@@ -29,6 +30,16 @@
       "label": "Specific teams (empty = all followed)",
       "type": "text",
       "default": ""
+    },
+    {
+      "key": "comeback_margin",
+      "label": "Was down by at least (points)",
+      "type": "number",
+      "default": "10",
+      "min": "3",
+      "max": "30",
+      "step": "1",
+      "visible_when": {"event": "comeback"}
     }
   ],
   "settings": [

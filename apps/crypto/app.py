@@ -33,14 +33,18 @@ def fetch(settings, format_lines, get_rows, get_cols):
 
 
 def trigger(settings, conditions):
-    """Fire when any followed coin moves beyond the configured threshold."""
+    """Fire when any followed coin moves beyond threshold or hits a price target."""
     import requests
 
-    threshold = float(conditions.get('threshold', 5))
-    direction = conditions.get('direction', 'either')
+    condition_type = conditions.get('condition_type', 'pct_change')
     coins = [s.strip() for s in settings.get('crypto_list', '').split(',') if s.strip()]
     if not coins:
         return False
+
+    state = getattr(trigger, '_state', None)
+    if state is None:
+        state = {'fired_targets': set()}
+        setattr(trigger, '_state', state)
 
     try:
         r = requests.get(
@@ -48,16 +52,38 @@ def trigger(settings, conditions):
             params={'ids': ','.join(coins), 'vs_currencies': 'usd', 'include_24hr_change': 'true'},
             timeout=10
         ).json()
+
         for c in coins:
-            chg = r.get(c, {}).get('usd_24h_change')
-            if chg is None:
-                continue
-            if direction == 'up' and chg >= threshold:
-                return True
-            if direction == 'down' and chg <= -threshold:
-                return True
-            if direction == 'either' and abs(chg) >= threshold:
-                return True
+            d = r.get(c, {})
+            price = d.get('usd')
+            chg = d.get('usd_24h_change')
+
+            if condition_type == 'pct_change':
+                threshold = float(conditions.get('threshold', 5))
+                direction = conditions.get('direction', 'either')
+                if chg is None:
+                    continue
+                if direction == 'up' and chg >= threshold:
+                    return True
+                if direction == 'down' and chg <= -threshold:
+                    return True
+                if direction == 'either' and abs(chg) >= threshold:
+                    return True
+
+            elif condition_type == 'price_target' and price is not None:
+                target = float(conditions.get('price_target', 0))
+                direction = conditions.get('direction', 'above')
+                if not target:
+                    continue
+                key = f"{c}:{direction}:{target}"
+                crossed = (direction == 'above' and price >= target) or \
+                          (direction == 'below' and price <= target)
+                if crossed and key not in state['fired_targets']:
+                    state['fired_targets'].add(key)
+                    return True
+                if not crossed:
+                    state['fired_targets'].discard(key)
+
     except Exception:
         pass
     return False

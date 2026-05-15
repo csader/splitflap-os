@@ -151,6 +151,19 @@ def trigger(settings, conditions):
             return bool(watchlist) and any(w in species.lower() for w in watchlist)
         if filt == 'high_confidence':
             return confidence >= high_conf_threshold
+        if filt == 'busy_feeder':
+            count = int(conditions.get('busy_count', 5))
+            window_mins = int(conditions.get('busy_window', 10))
+            import time as _time
+            now_ts = _time.time()
+            # Store recent detection timestamps
+            if 'recent_times' not in state:
+                state['recent_times'] = []
+            state['recent_times'].append(now_ts)
+            # Prune to window
+            cutoff = now_ts - (window_mins * 60)
+            state['recent_times'] = [t for t in state['recent_times'] if t >= cutoff]
+            return len(state['recent_times']) >= count
         return False
     except Exception:
         return False

@@ -12,13 +12,24 @@
   "trigger_cooldown": 300,
   "trigger_conditions": [
     {
+      "key": "condition_type",
+      "label": "Fire when",
+      "type": "toggle",
+      "default": "arriving",
+      "options": [
+        {"value": "arriving", "label": "Train arriving"},
+        {"value": "alert",    "label": "Service alert"}
+      ]
+    },
+    {
       "key": "minutes",
-      "label": "Fire when next train is within",
+      "label": "Arriving within (minutes)",
       "type": "number",
       "default": "5",
       "min": "1",
       "max": "15",
-      "step": "1"
+      "step": "1",
+      "visible_when": {"condition_type": "arriving"}
     },
     {
       "key": "direction",
@@ -29,7 +40,8 @@
         {"value": "either", "label": "Either"},
         {"value": "0",      "label": "Direction 0"},
         {"value": "1",      "label": "Direction 1"}
-      ]
+      ],
+      "visible_when": {"condition_type": "arriving"}
     }
   ],
   "settings": [

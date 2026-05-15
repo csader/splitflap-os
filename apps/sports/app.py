@@ -345,6 +345,29 @@ def trigger(settings, conditions):
                         state_obj['seen_game_ids'].add(game_id)
                         return True
 
+                elif event_type == 'comeback':
+                    if state == 'in':
+                        margin = int(conditions.get('comeback_margin', 10))
+                        prev = state_obj['last_scores'].get(score_key)
+                        curr = (a_score, h_score)
+                        state_obj['last_scores'][score_key] = curr
+                        if prev:
+                            # Check if a team was down by margin and is now within 3
+                            prev_diff = prev[0] - prev[1]
+                            curr_diff = curr[0] - curr[1]
+                            # Away was down big, now close
+                            if prev_diff <= -margin and abs(curr_diff) <= 3:
+                                comeback_key = f"comeback_a_{game_id}"
+                                if comeback_key not in state_obj['seen_game_ids']:
+                                    state_obj['seen_game_ids'].add(comeback_key)
+                                    return True
+                            # Home was down big, now close
+                            if prev_diff >= margin and abs(curr_diff) <= 3:
+                                comeback_key = f"comeback_h_{game_id}"
+                                if comeback_key not in state_obj['seen_game_ids']:
+                                    state_obj['seen_game_ids'].add(comeback_key)
+                                    return True
+
     except Exception:
         pass
     return False

@@ -607,10 +607,17 @@ def fetch(settings, format_lines, get_rows, get_cols):
 
 def trigger(settings, conditions):
     """Fire when aircraft matching the configured filter appear overhead."""
-    import math, requests
+    import requests
 
     filter_type = conditions.get('filter', 'any')
     keyword = conditions.get('keyword', '').upper().strip()
+
+    # Common US military callsign prefixes
+    MILITARY_PREFIXES = (
+        'RCH', 'REACH', 'SPAR', 'SAM', 'VENUS', 'EVAC', 'JAKE',
+        'TOPGUN', 'VIPER', 'MAGMA', 'IRON', 'DOOM', 'SKULL', 'GHOST',
+        'ARMY', 'NAVY', 'USMC', 'USCG', 'AFSOC', 'DUKE', 'BOXER',
+    )
 
     state = getattr(trigger, '_state', None)
     if state is None:
@@ -643,6 +650,8 @@ def trigger(settings, conditions):
         if not cs:
             continue
         if filter_type == 'keyword' and keyword and keyword not in cs:
+            continue
+        if filter_type == 'military' and not any(cs.startswith(p) for p in MILITARY_PREFIXES):
             continue
         if cs not in state['seen_callsigns']:
             state['seen_callsigns'].add(cs)

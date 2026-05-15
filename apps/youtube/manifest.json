@@ -10,6 +10,27 @@
   "trigger_interval": 300,
   "trigger_display_seconds": 30,
   "trigger_cooldown": 3600,
+  "trigger_conditions": [
+    {
+      "key": "condition_type",
+      "label": "Fire when",
+      "type": "toggle",
+      "default": "new_video",
+      "options": [
+        {"value": "new_video",      "label": "New video posted"},
+        {"value": "view_milestone", "label": "View milestone hit"}
+      ]
+    },
+    {
+      "key": "view_milestone",
+      "label": "View milestone",
+      "type": "number",
+      "default": "1000000",
+      "min": "1000",
+      "step": "1000",
+      "visible_when": {"condition_type": "view_milestone"}
+    }
+  ],
   "settings": [
     {
       "key": "yt_channel_id",

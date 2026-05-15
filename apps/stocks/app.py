@@ -73,6 +73,31 @@ def trigger(settings, conditions):
                 if not crossed and key in state['fired_targets']:
                     state['fired_targets'].discard(key)  # reset when price moves away
 
+            elif condition_type == '52w_extreme':
+                extreme = conditions.get('extreme', 'high')
+                try:
+                    hist = yf.Ticker(sym).history(period='1y')
+                    if hist.empty:
+                        continue
+                    week52_high = hist['High'].max()
+                    week52_low = hist['Low'].min()
+                    key_h = f"{sym}:52wh"
+                    key_l = f"{sym}:52wl"
+                    if extreme in ('high', 'either') and price >= week52_high * 0.995:
+                        if key_h not in state['fired_targets']:
+                            state['fired_targets'].add(key_h)
+                            return True
+                    else:
+                        state['fired_targets'].discard(key_h)
+                    if extreme in ('low', 'either') and price <= week52_low * 1.005:
+                        if key_l not in state['fired_targets']:
+                            state['fired_targets'].add(key_l)
+                            return True
+                    else:
+                        state['fired_targets'].discard(key_l)
+                except Exception:
+                    continue
+
     except Exception:
         pass
     return False

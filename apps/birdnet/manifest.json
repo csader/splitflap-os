@@ -21,7 +21,8 @@
         {"value": "new_today",        "label": "New species today"},
         {"value": "specific",         "label": "Specific species"},
         {"value": "watchlist",        "label": "Watchlist species"},
-        {"value": "high_confidence",  "label": "High confidence"}
+        {"value": "high_confidence",  "label": "High confidence"},
+        {"value": "busy_feeder",       "label": "Busy feeder"}
       ]
     },
     {
@@ -47,6 +48,26 @@
       "max": "99",
       "step": "5",
       "visible_when": {"filter": "high_confidence"}
+    },
+    {
+      "key": "busy_count",
+      "label": "Detections within window",
+      "type": "number",
+      "default": "5",
+      "min": "2",
+      "max": "20",
+      "step": "1",
+      "visible_when": {"filter": "busy_feeder"}
+    },
+    {
+      "key": "busy_window",
+      "label": "Window (minutes)",
+      "type": "number",
+      "default": "10",
+      "min": "1",
+      "max": "60",
+      "step": "1",
+      "visible_when": {"filter": "busy_feeder"}
     }
   ],
   "settings": [

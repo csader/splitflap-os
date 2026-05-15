@@ -129,6 +129,8 @@ def load_settings():
         "quiet_hours_start": "22:00",
         "quiet_hours_end": "07:00",
         "quiet_hours_days": ["sun","mon","tue","wed","thu","fri","sat"],
+        "triggers_enabled": True,
+        "triggers": [],
         "installed_apps": [
             "time", "date", "weather", "stocks", "sports", "countdown",
             "world_clock", "crypto", "iss", "metro", "youtube", "yt_comments",
@@ -831,16 +833,18 @@ def format_lines(*lines, cols=None):
 
 _plugin_registry = {}
 _plugin_modules = {}
+_plugin_triggers = {}
 _plugin_data = {}
 _plugin_caches = {}
 _registry_cache = {'data': None, 'fetched_at': 0}
 
 
 def load_installed_plugins():
-    global _plugin_registry, _plugin_modules, _plugin_data
+    global _plugin_registry, _plugin_modules, _plugin_data, _plugin_triggers
     _plugin_registry.clear()
     _plugin_modules.clear()
     _plugin_data.clear()
+    _plugin_triggers.clear()
     if not os.path.isdir(APPS_PATH):
         return
     enabled = settings.get('installed_apps', [])
@@ -895,6 +899,9 @@ def _load_functional_module(app_id, app_dir):
             _plugin_modules[app_id] = mod
         else:
             logging.error(f"Plugin {app_id}: app.py has no fetch() function")
+        if hasattr(mod, "trigger") and callable(mod.trigger):
+            _plugin_triggers[app_id] = mod.trigger
+            logging.info(f"Plugin {app_id}: trigger() loaded")
     except Exception as e:
         logging.error(f"Plugin {app_id}: error importing app.py: {e}")
 
@@ -1519,6 +1526,79 @@ def playlist_loop():
 
 
 threading.Thread(target=playlist_loop, daemon=True).start()
+
+
+# ============================================================
+#  TRIGGER RUNTIME
+# ============================================================
+
+_trigger_cooldowns = {}  # trigger_id → last_fired timestamp
+_trigger_last_check = {}  # trigger_id → last_checked timestamp
+
+
+def _check_triggers():
+    if not settings.get('triggers_enabled', True):
+        return
+    if _quiet_hours_active:
+        return
+    now = time.time()
+    for trig in settings.get('triggers', []):
+        if not trig.get('enabled', True):
+            continue
+        trig_id = trig.get('id', '')
+        app_id = trig.get('app', '')
+        trigger_fn = _plugin_triggers.get(app_id)
+        if not trigger_fn:
+            continue
+        manifest = _plugin_registry.get(app_id, {})
+        interval = float(manifest.get('trigger_interval', 60))
+        cooldown = float(trig.get('cooldown', manifest.get('trigger_cooldown', 300)))
+        # Check interval
+        if now - _trigger_last_check.get(trig_id, 0) < interval:
+            continue
+        _trigger_last_check[trig_id] = now
+        # Check cooldown
+        if now - _trigger_cooldowns.get(trig_id, 0) < cooldown:
+            continue
+        try:
+            plugin_settings = dict(settings)
+            for s in manifest.get('settings', []):
+                if not s.get('global_key'):
+                    key = f"plugin_{app_id}_{s['key']}"
+                    plugin_settings[s['key']] = settings.get(key, s.get('default', ''))
+            conditions = trig.get('conditions', {})
+            fired = trigger_fn(plugin_settings, conditions)
+        except Exception as e:
+            logging.error(f"Trigger {trig_id} ({app_id}) error: {e}")
+            continue
+        if fired:
+            _trigger_cooldowns[trig_id] = now
+            display_seconds = float(trig.get('display_seconds',
+                                             manifest.get('trigger_display_seconds', 30)))
+            pages = get_plugin_pages(app_id)
+            if pages:
+                text = pages[0] if isinstance(pages[0], str) else pages[0].get('text', '')
+                msg = {
+                    'id': f"trig_{trig_id}_{int(now*1000)}",
+                    'text': text,
+                    'source': f"trigger:{app_id}",
+                    'display_seconds': display_seconds,
+                    'animation': 'ltr',
+                    'created_at': now,
+                    'expires_at': now + 300,
+                }
+                with _notify_lock:
+                    _notify_queue.append(msg)
+                logging.info(f"Trigger fired: {trig.get('name',trig_id)} ({app_id})")
+
+
+def _trigger_loop():
+    while True:
+        time.sleep(10)
+        _check_triggers()
+
+
+threading.Thread(target=_trigger_loop, daemon=True).start()
 
 
 # ============================================================
@@ -2468,10 +2548,40 @@ def notify_clear():
 
 @app.route('/installed_apps')
 def installed_apps():
+    # Include trigger capability info
+    apps = get_plugin_app_list()
+    for a in apps:
+        app_id = a.get('plugin_id', '')
+        manifest = _plugin_registry.get(app_id, {})
+        a['has_trigger'] = app_id in _plugin_triggers
+        a['trigger_conditions'] = manifest.get('trigger_conditions', [])
     return jsonify(
-        apps=get_plugin_app_list(),
+        apps=apps,
         settings_config=get_plugin_settings_config(),
     )
+
+
+@app.route('/triggers', methods=['GET', 'POST'])
+def triggers_route():
+    if request.method == 'GET':
+        trigs = settings.get('triggers', [])
+        # Annotate with last_fired info
+        now = time.time()
+        result = []
+        for t in trigs:
+            entry = dict(t)
+            last = _trigger_cooldowns.get(t.get('id', ''))
+            entry['last_fired'] = last
+            result.append(entry)
+        return jsonify(triggers=result,
+                       triggers_enabled=settings.get('triggers_enabled', True))
+    data = request.json
+    if 'triggers' in data:
+        settings['triggers'] = data['triggers']
+    if 'triggers_enabled' in data:
+        settings['triggers_enabled'] = bool(data['triggers_enabled'])
+    save_settings(settings)
+    return jsonify(status="saved")
 
 
 # ============================================================

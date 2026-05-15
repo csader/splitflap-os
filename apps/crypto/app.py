@@ -30,3 +30,34 @@ def fetch(settings, format_lines, get_rows, get_cols):
         pages.append(format_lines(*(price_lines + pad)))
         pages.append(format_lines(*(change_lines + pad)))
     return pages or [format_lines('CRYPTO', 'NO DATA', '')]
+
+
+def trigger(settings, conditions):
+    """Fire when any followed coin moves beyond the configured threshold."""
+    import requests
+
+    threshold = float(conditions.get('threshold', 5))
+    direction = conditions.get('direction', 'either')
+    coins = [s.strip() for s in settings.get('crypto_list', '').split(',') if s.strip()]
+    if not coins:
+        return False
+
+    try:
+        r = requests.get(
+            'https://api.coingecko.com/api/v3/simple/price',
+            params={'ids': ','.join(coins), 'vs_currencies': 'usd', 'include_24hr_change': 'true'},
+            timeout=10
+        ).json()
+        for c in coins:
+            chg = r.get(c, {}).get('usd_24h_change')
+            if chg is None:
+                continue
+            if direction == 'up' and chg >= threshold:
+                return True
+            if direction == 'down' and chg <= -threshold:
+                return True
+            if direction == 'either' and abs(chg) >= threshold:
+                return True
+    except Exception:
+        pass
+    return False

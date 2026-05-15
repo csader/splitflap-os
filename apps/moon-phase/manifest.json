@@ -8,6 +8,21 @@
   "version": "1.0",
   "refresh_interval": 3600,
   "loop_delay": 10,
+  "trigger_interval": 3600,
+  "trigger_display_seconds": 30,
+  "trigger_cooldown": 86400,
+  "trigger_conditions": [
+    {
+      "key": "phase",
+      "label": "Fire on",
+      "type": "toggle",
+      "default": "full",
+      "options": [
+        {"value": "full", "label": "Full moon"},
+        {"value": "new",  "label": "New moon"}
+      ]
+    }
+  ],
   "settings": [],
   "min_rows": 3,
   "min_cols": 10

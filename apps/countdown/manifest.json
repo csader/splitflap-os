@@ -7,6 +7,24 @@
   "refresh_interval": 1,
   "loop_delay": 1,
   "category": "time",
+  "trigger_interval": 60,
+  "trigger_display_seconds": 30,
+  "trigger_cooldown": 86400,
+  "trigger_conditions": [
+    {
+      "key": "milestone",
+      "label": "Fire when",
+      "type": "toggle",
+      "default": "1d",
+      "options": [
+        {"value": "30d", "label": "30 days left"},
+        {"value": "7d",  "label": "7 days left"},
+        {"value": "1d",  "label": "1 day left"},
+        {"value": "1h",  "label": "1 hour left"},
+        {"value": "0",   "label": "Event arrives"}
+      ]
+    }
+  ],
   "settings": [
     {
       "key": "countdown_enabled",
@@ -214,5 +232,23 @@
     }
   ],
   "min_rows": 1,
-  "min_cols": 6
+  "min_cols": 6,
+  "trigger_interval": 60,
+  "trigger_display_seconds": 30,
+  "trigger_cooldown": 86400,
+  "trigger_conditions": [
+    {
+      "key": "milestone",
+      "label": "Fire when",
+      "type": "toggle",
+      "default": "1d",
+      "options": [
+        {"value": "30d", "label": "30 days left"},
+        {"value": "7d",  "label": "7 days left"},
+        {"value": "1d",  "label": "1 day left"},
+        {"value": "1h",  "label": "1 hour left"},
+        {"value": "0",   "label": "Event arrives"}
+      ]
+    }
+  ]
 }

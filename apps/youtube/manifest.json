@@ -7,6 +7,9 @@
   "refresh_interval": 30,
   "loop_delay": 5,
   "category": "data",
+  "trigger_interval": 300,
+  "trigger_display_seconds": 30,
+  "trigger_cooldown": 3600,
   "settings": [
     {
       "key": "yt_channel_id",

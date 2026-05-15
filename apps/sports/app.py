@@ -241,3 +241,91 @@ def _mma(events, info, format_lines):
         r3 = detail.upper()[:15] if detail else ("LIVE" if state == 'in' else "UPCOMING")
         pages.append(format_lines("UFC", f"{n1} V {n2}", r3))
     return pages or [format_lines("UFC", "NO FIGHTS", "SCHEDULED")]
+
+
+def trigger(settings, conditions):
+    """Fire when a followed team's game matches the configured event condition."""
+    import requests
+    from datetime import datetime, timedelta
+
+    event_type = conditions.get('event', 'game_start')
+    teams_str = conditions.get('teams', '').strip()
+    trigger_teams = {t.strip().upper() for t in teams_str.split(',') if t.strip()} if teams_str else None
+
+    # Build set of all followed teams if no specific teams configured
+    if not trigger_teams:
+        trigger_teams = set()
+        for key in LEAGUES:
+            val = settings.get(f'sports_{key}', '').strip()
+            if val and val != '*':
+                trigger_teams.update(t.strip().upper() for t in val.split(',') if t.strip())
+            elif val == '*':
+                trigger_teams.add('*')  # follow-all league
+
+    if not trigger_teams:
+        return False
+
+    state_obj = getattr(trigger, '_state', None)
+    if state_obj is None:
+        state_obj = {'seen_game_ids': set(), 'last_scores': {}}
+        setattr(trigger, '_state', state_obj)
+
+    try:
+        start = (datetime.now() - timedelta(days=1)).strftime('%Y%m%d')
+        end = (datetime.now() + timedelta(days=1)).strftime('%Y%m%d')
+        for key, info in LEAGUES.items():
+            if key in ('pga', 'ufc'):
+                continue
+            teams_setting = settings.get(f'sports_{key}', '').strip()
+            if not teams_setting:
+                continue
+            url = f"https://site.api.espn.com/apis/site/v2/sports/{info['path']}/scoreboard?dates={start}-{end}&limit=50"
+            data = requests.get(url, timeout=8).json()
+            for event in data.get('events', []):
+                comp = event.get('competitions', [{}])[0]
+                competitors = comp.get('competitors', [])
+                if len(competitors) < 2:
+                    continue
+                away = home = None
+                for c in competitors:
+                    if c.get('homeAway') == 'home': home = c
+                    else: away = c
+                if not away or not home:
+                    continue
+                aa = away['team'].get('abbreviation', '').upper()
+                ha = home['team'].get('abbreviation', '').upper()
+                if '*' not in trigger_teams and aa not in trigger_teams and ha not in trigger_teams:
+                    continue
+                game_id = event.get('id', '')
+                state = event.get('status', {}).get('type', {}).get('state', 'pre')
+                a_score = int(away.get('score', 0) or 0)
+                h_score = int(home.get('score', 0) or 0)
+                score_key = f"{game_id}"
+
+                if event_type == 'game_start':
+                    if state == 'in' and game_id not in state_obj['seen_game_ids']:
+                        state_obj['seen_game_ids'].add(game_id)
+                        return True
+
+                elif event_type == 'score_change':
+                    if state == 'in':
+                        prev = state_obj['last_scores'].get(score_key)
+                        curr = (a_score, h_score)
+                        state_obj['last_scores'][score_key] = curr
+                        if prev and prev != curr:
+                            return True
+
+                elif event_type == 'close_game':
+                    if state == 'in' and abs(a_score - h_score) <= 5:
+                        if score_key not in state_obj['seen_game_ids']:
+                            state_obj['seen_game_ids'].add(score_key)
+                            return True
+
+                elif event_type == 'final':
+                    if state == 'post' and game_id not in state_obj['seen_game_ids']:
+                        state_obj['seen_game_ids'].add(game_id)
+                        return True
+
+    except Exception:
+        pass
+    return False

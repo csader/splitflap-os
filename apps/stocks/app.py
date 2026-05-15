@@ -23,3 +23,33 @@ def fetch(settings, format_lines, get_rows, get_cols):
         pages.append(format_lines(*(price_lines + pad)))
         pages.append(format_lines(*(change_lines + pad)))
     return pages or [format_lines('STOCKS', 'NO DATA', '')]
+
+
+def trigger(settings, conditions):
+    """Fire when any followed ticker moves beyond the configured threshold."""
+    import yfinance as yf
+
+    threshold = float(conditions.get('threshold', 3))
+    direction = conditions.get('direction', 'either')
+    tickers = [s.strip() for s in settings.get('stocks_list', '').split(',') if s.strip()]
+    if not tickers:
+        return False
+
+    try:
+        for sym in tickers:
+            t = yf.Ticker(sym)
+            info = t.fast_info
+            price = info['lastPrice']
+            prev = info['previousClose']
+            if not prev:
+                continue
+            chg = ((price - prev) / prev) * 100
+            if direction == 'up' and chg >= threshold:
+                return True
+            if direction == 'down' and chg <= -threshold:
+                return True
+            if direction == 'either' and abs(chg) >= threshold:
+                return True
+    except Exception:
+        pass
+    return False

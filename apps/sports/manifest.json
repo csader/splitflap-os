@@ -6,6 +6,29 @@
   "type": "functional",
   "refresh_interval": 15,
   "loop_delay": 5,
+  "trigger_interval": 60,
+  "trigger_display_seconds": 45,
+  "trigger_cooldown": 300,
+  "trigger_conditions": [
+    {
+      "key": "event",
+      "label": "Fire when",
+      "type": "toggle",
+      "default": "game_start",
+      "options": [
+        {"value": "game_start", "label": "Game starts"},
+        {"value": "score_change", "label": "Score changes"},
+        {"value": "close_game", "label": "Close game (within 5)"},
+        {"value": "final", "label": "Game ends"}
+      ]
+    },
+    {
+      "key": "teams",
+      "label": "Specific teams (empty = all followed)",
+      "type": "text",
+      "default": ""
+    }
+  ],
   "settings": [
     {
       "key": "loop_delay",

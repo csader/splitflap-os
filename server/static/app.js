@@ -902,11 +902,11 @@ function buildAppCard(a, isPlugin) {
 
   const icon = appLucideIcon(a.key) || appLucideIcon(a.plugin_id||'') || `<span style="font-size:2.2rem">${a.icon}</span>`;
   const hasTrigger = !!(a.has_trigger);
-  const gearRight = (removable ? 28 : 8) + (hasTrigger ? 20 : 0);
+  const gearRight = (removable ? 28 : 8);
   div.innerHTML = `
     ${hasCfg && compatible ? `<button class="app-gear" style="right:${gearRight}px" title="Settings" onclick="event.stopPropagation();openAppSettings('${cfgKey}')"><i data-lucide="settings" style="width:14px;height:14px"></i></button>` : ''}
     ${removable ? `<button class="app-gear" title="Remove" onclick="event.stopPropagation();removeApp('${a.plugin_id||a.key.replace('plugin_','')}')"><i data-lucide="x" style="width:14px;height:14px"></i></button>` : ''}
-    ${hasTrigger && compatible ? `<button class="app-gear" style="right:8px" title="Add Trigger" onclick="event.stopPropagation();openAddTrigger('${a.plugin_id||a.key.replace('plugin_','')}')"><i data-lucide="bell" style="width:14px;height:14px"></i></button>` : ''}
+    ${hasTrigger && compatible ? `<button class="app-gear" style="left:8px;right:auto" title="Add Trigger" onclick="event.stopPropagation();openAddTrigger('${a.plugin_id||a.key.replace('plugin_','')}')"><i data-lucide="bell" style="width:14px;height:14px"></i></button>` : ''}
     <span class="app-icon">${icon}</span>
     <span class="app-name">${a.name}</span>
     <span class="app-desc">${compatible ? a.desc : incompatibleReason}</span>`;

@@ -7,6 +7,29 @@
   "refresh_interval": 1,
   "loop_delay": 5,
   "category": "data",
+  "trigger_interval": 30,
+  "trigger_display_seconds": 30,
+  "trigger_cooldown": 120,
+  "trigger_conditions": [
+    {
+      "key": "filter",
+      "label": "Fire for",
+      "type": "toggle",
+      "default": "any",
+      "options": [
+        {"value": "any", "label": "Any detection"},
+        {"value": "new_today", "label": "New species today"},
+        {"value": "specific", "label": "Specific species"}
+      ]
+    },
+    {
+      "key": "species",
+      "label": "Species name (partial match)",
+      "type": "text",
+      "default": "",
+      "visible_when": {"filter": "specific"}
+    }
+  ],
   "settings": [
     {
       "key": "birdnet_host",

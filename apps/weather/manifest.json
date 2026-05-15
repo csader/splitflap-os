@@ -218,5 +218,31 @@
     }
   ],
   "min_rows": 1,
-  "min_cols": 8
+  "min_cols": 8,
+  "trigger_interval": 300,
+  "trigger_display_seconds": 30,
+  "trigger_cooldown": 1800,
+  "trigger_conditions": [
+    {
+      "key": "condition",
+      "label": "Fire when",
+      "type": "toggle",
+      "default": "severe",
+      "options": [
+        {"value": "severe", "label": "Severe weather"},
+        {"value": "temp_above", "label": "Temp above threshold"},
+        {"value": "temp_below", "label": "Temp below threshold"}
+      ]
+    },
+    {
+      "key": "temp_threshold",
+      "label": "Temperature threshold (°F)",
+      "type": "number",
+      "default": "90",
+      "min": "-40",
+      "max": "130",
+      "step": "1",
+      "visible_when": {"condition": ["temp_above", "temp_below"]}
+    }
+  ]
 }

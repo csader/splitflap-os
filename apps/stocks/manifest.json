@@ -6,6 +6,31 @@
   "type": "functional",
   "refresh_interval": 60,
   "loop_delay": 5,
+  "trigger_interval": 120,
+  "trigger_display_seconds": 30,
+  "trigger_cooldown": 600,
+  "trigger_conditions": [
+    {
+      "key": "threshold",
+      "label": "Fire when any ticker moves more than",
+      "type": "number",
+      "default": "3",
+      "min": "1",
+      "max": "50",
+      "step": "1"
+    },
+    {
+      "key": "direction",
+      "label": "Direction",
+      "type": "toggle",
+      "default": "either",
+      "options": [
+        {"value": "either", "label": "Either"},
+        {"value": "up", "label": "Up only"},
+        {"value": "down", "label": "Down only"}
+      ]
+    }
+  ],
   "settings": [
     {
       "key": "stocks_list",

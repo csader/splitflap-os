@@ -594,3 +594,44 @@ def fetch(settings, format_lines, get_rows, get_cols):
         if state['last_pages'] is not None:
             return state['last_pages']
         return [format_lines('WEATHER', 'ERROR', 'CHECK API KEY')]
+
+
+def trigger(settings, conditions):
+    """Fire on severe weather or when temperature crosses a threshold."""
+    import requests
+
+    condition = conditions.get('condition', 'severe')
+    threshold_f = float(conditions.get('temp_threshold', 90))
+    zip_code = settings.get('zip_code', '02118')
+
+    # Severe weather codes (WMO): thunderstorm, heavy rain, snow, hail
+    SEVERE_CODES = {65, 67, 75, 77, 82, 86, 95, 96, 99}
+
+    try:
+        # Geocode zip to lat/lon
+        geo = requests.get(
+            f'https://nominatim.openstreetmap.org/search?postalcode={zip_code}&country=US&format=json&limit=1',
+            timeout=5, headers={'User-Agent': 'SplitFlapOS/1.0'}
+        ).json()
+        if not geo:
+            return False
+        lat, lon = geo[0]['lat'], geo[0]['lon']
+
+        data = requests.get(
+            f'https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}'
+            '&current=temperature_2m,weather_code&temperature_unit=fahrenheit',
+            timeout=8
+        ).json()
+        current = data.get('current', {})
+        temp_f = current.get('temperature_2m')
+        code = current.get('weather_code')
+
+        if condition == 'severe':
+            return int(code or 0) in SEVERE_CODES
+        if condition == 'temp_above' and temp_f is not None:
+            return float(temp_f) >= threshold_f
+        if condition == 'temp_below' and temp_f is not None:
+            return float(temp_f) <= threshold_f
+    except Exception:
+        pass
+    return False

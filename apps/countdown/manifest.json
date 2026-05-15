@@ -9,17 +9,199 @@
   "category": "time",
   "settings": [
     {
+      "key": "countdown_enabled",
+      "label": "Countdown 1",
+      "type": "toggle",
+      "default": "on",
+      "global_key": true,
+      "options": [
+        {
+          "value": "off",
+          "label": "Off"
+        },
+        {
+          "value": "on",
+          "label": "On"
+        }
+      ]
+    },
+    {
       "key": "countdown_event",
-      "label": "Event Name (15 chars)",
+      "label": "Countdown 1 Name (up to sign width)",
       "type": "text",
       "default": "NEW YEAR",
-      "global_key": true
+      "global_key": true,
+      "visible_when": {
+        "countdown_enabled": "on"
+      }
     },
     {
       "key": "countdown_target",
-      "label": "Target Date & Time",
+      "label": "Countdown 1 Target",
       "type": "datetime-local",
-      "global_key": true
+      "global_key": true,
+      "visible_when": {
+        "countdown_enabled": "on"
+      }
+    },
+    {
+      "key": "countdown_2_enabled",
+      "label": "Countdown 2",
+      "type": "toggle",
+      "default": "off",
+      "global_key": true,
+      "options": [
+        {
+          "value": "off",
+          "label": "Off"
+        },
+        {
+          "value": "on",
+          "label": "On"
+        }
+      ]
+    },
+    {
+      "key": "countdown_2_event",
+      "label": "Countdown 2 Name (up to sign width)",
+      "type": "text",
+      "default": "",
+      "global_key": true,
+      "visible_when": {
+        "countdown_2_enabled": "on"
+      }
+    },
+    {
+      "key": "countdown_2_target",
+      "label": "Countdown 2 Target",
+      "type": "datetime-local",
+      "global_key": true,
+      "visible_when": {
+        "countdown_2_enabled": "on"
+      }
+    },
+    {
+      "key": "countdown_3_enabled",
+      "label": "Countdown 3",
+      "type": "toggle",
+      "default": "off",
+      "global_key": true,
+      "options": [
+        {
+          "value": "off",
+          "label": "Off"
+        },
+        {
+          "value": "on",
+          "label": "On"
+        }
+      ]
+    },
+    {
+      "key": "countdown_3_event",
+      "label": "Countdown 3 Name (up to sign width)",
+      "type": "text",
+      "default": "",
+      "global_key": true,
+      "visible_when": {
+        "countdown_3_enabled": "on"
+      }
+    },
+    {
+      "key": "countdown_3_target",
+      "label": "Countdown 3 Target",
+      "type": "datetime-local",
+      "global_key": true,
+      "visible_when": {
+        "countdown_3_enabled": "on"
+      }
+    },
+    {
+      "key": "countdown_4_enabled",
+      "label": "Countdown 4",
+      "type": "toggle",
+      "default": "off",
+      "global_key": true,
+      "options": [
+        {
+          "value": "off",
+          "label": "Off"
+        },
+        {
+          "value": "on",
+          "label": "On"
+        }
+      ]
+    },
+    {
+      "key": "countdown_4_event",
+      "label": "Countdown 4 Name (up to sign width)",
+      "type": "text",
+      "default": "",
+      "global_key": true,
+      "visible_when": {
+        "countdown_4_enabled": "on"
+      }
+    },
+    {
+      "key": "countdown_4_target",
+      "label": "Countdown 4 Target",
+      "type": "datetime-local",
+      "global_key": true,
+      "visible_when": {
+        "countdown_4_enabled": "on"
+      }
+    },
+    {
+      "key": "countdown_5_enabled",
+      "label": "Countdown 5",
+      "type": "toggle",
+      "default": "off",
+      "global_key": true,
+      "options": [
+        {
+          "value": "off",
+          "label": "Off"
+        },
+        {
+          "value": "on",
+          "label": "On"
+        }
+      ]
+    },
+    {
+      "key": "countdown_5_event",
+      "label": "Countdown 5 Name (up to sign width)",
+      "type": "text",
+      "default": "",
+      "global_key": true,
+      "visible_when": {
+        "countdown_5_enabled": "on"
+      }
+    },
+    {
+      "key": "countdown_5_target",
+      "label": "Countdown 5 Target",
+      "type": "datetime-local",
+      "global_key": true,
+      "visible_when": {
+        "countdown_5_enabled": "on"
+      }
+    },
+    {
+      "key": "countdown_warning_all_off",
+      "type": "notice",
+      "variant": "warning",
+      "title": "Slot 1 Fallback",
+      "text": "If all countdown slots are off, Slot 1 will be used.",
+      "global_key": true,
+      "visible_when": {
+        "countdown_enabled": "off",
+        "countdown_2_enabled": "off",
+        "countdown_3_enabled": "off",
+        "countdown_4_enabled": "off",
+        "countdown_5_enabled": "off"
+      }
     },
     {
       "key": "timezone",
@@ -31,6 +213,6 @@
       "global_key": true
     }
   ],
-  "min_rows": 2,
-  "min_cols": 12
+  "min_rows": 1,
+  "min_cols": 6
 }

@@ -3235,10 +3235,10 @@ function _loadTriggerConditions(existingConditions){
         const v = typeof o==='string'?o:o.value;
         const l = typeof o==='string'?o:o.label;
         return `<button type="button" data-condkey="${c.key}" data-condval="${v}"
-          style="flex:1;padding:5px 8px;font-size:.8rem;border-radius:4px;border:1px solid #555;cursor:pointer;background:${v===val?'var(--accent)':'#333'};color:#fff"
+          style="flex:1;min-width:0;padding:5px 6px;font-size:.75rem;border-radius:4px;border:1px solid #555;cursor:pointer;background:${v===val?'var(--accent)':'#333'};color:#fff;white-space:normal;text-align:center;line-height:1.2"
           onclick="document.querySelectorAll('[data-condkey=\\'${c.key}\\']').forEach(b=>b.style.background='#333');this.style.background='var(--accent)'">${l}</button>`;
       }).join('');
-      return `<div style="margin-bottom:10px"><label class="field-label">${c.label||c.key}</label><div style="display:flex;gap:5px">${opts}</div></div>`;
+      return `<div style="margin-bottom:10px"><label class="field-label">${c.label||c.key}</label><div style="display:flex;flex-wrap:wrap;gap:5px">${opts}</div></div>`;
     }
     return `<div style="margin-bottom:10px"><label class="field-label">${c.label||c.key}</label>
       <input type="text" data-condkey="${c.key}" value="${val}" placeholder="${c.default||''}" class="line-input" style="font-size:.9rem;margin:0"></div>`;

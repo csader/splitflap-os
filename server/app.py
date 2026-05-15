@@ -730,6 +730,7 @@ def send_to_display_slot(text, effect_speed=80):
 
 def _send_with_effect(page_text, page_style, page_speed, is_anim, app_id=None):
     """Dispatch a page send using the active transition style (per-page > per-app > global)."""
+    global last_transition_style, last_transition_speed
     if is_anim:
         return send_to_display(page_text, get_animation_order(page_style or 'ltr'), raw=True, step_delay_ms=page_speed)
     # Priority: per-page > per-app > global
@@ -739,6 +740,8 @@ def _send_with_effect(page_text, page_style, page_speed, is_anim, app_id=None):
     app_speed = settings.get(f'plugin_{app_id}_transition_speed') if app_id else None
     speed = page_speed if page_speed is not None else \
             (int(app_speed) if app_speed else int(settings.get('transition_speed', 15)))
+    last_transition_style = style
+    last_transition_speed = speed
     if style == 'sync':
         return send_to_display_sync(page_text)
     if style == 'slot':
@@ -1110,6 +1113,8 @@ active_app  = None
 active_app_playlist = None
 app_playlist_loop = True
 app_playlist_name = None
+last_transition_style = 'ltr'
+last_transition_speed = 15
 
 # ── Notification Interrupts ────────────────────────────────
 _notify_queue = []
@@ -1147,6 +1152,7 @@ def _show_notify_message(msg):
 def _run_app_playlist():
     """Execute one pass through the app playlist entries."""
     global active_app_playlist, active_app, last_sent_page
+    global last_transition_style, last_transition_speed
 
     entries = active_app_playlist
     if not entries:
@@ -1228,8 +1234,14 @@ def _run_app_playlist():
                         page_speed = int(page.get('speed', 15)) if isinstance(page, dict) else 15
                         page_delay = float(page.get('delay', eff_delay)) if isinstance(page, dict) else eff_delay
 
+                        anim_style_ap = settings.get('anim_style','ltr') if is_anim else None
+                        eff_style_ap = (anim_style_ap or page_style or
+                                        (settings.get(f'plugin_{reg}_transition_style') if reg else None) or
+                                        settings.get('transition_style', 'ltr'))
+                        last_transition_style = eff_style_ap
+                        last_transition_speed = page_speed if page_speed is not None else int(settings.get('transition_speed', 15))
                         if is_anim or page_text != last_sent_page:
-                            max_dist = _send_with_effect(page_text, page_style if not is_anim else (settings.get('anim_style','ltr')), page_speed, is_anim, app_id=reg)
+                            max_dist = _send_with_effect(page_text, page_style if not is_anim else anim_style_ap, page_speed, is_anim, app_id=reg)
                             last_sent_page = page_text
 
                         rotation_time = max_dist * (4.0 / 64.0)
@@ -1262,6 +1274,7 @@ def _get_pages_for_app(app_key):
 def playlist_loop():
     global current_playlist, loop_delay, last_sent_page, active_app
     global active_app_playlist, app_playlist_loop
+    global last_transition_style, last_transition_speed
 
     while True:
         now = time.time()
@@ -1335,8 +1348,14 @@ def playlist_loop():
 
             max_dist = 0
             # Animations always resend each frame; other apps skip unchanged pages
+            anim_style = settings.get('anim_style', 'ltr') if is_anim else None
+            eff_style = anim_style or page_style or \
+                        (settings.get(f'plugin_{reg_key}_transition_style') if reg_key else None) or \
+                        settings.get('transition_style', 'ltr')
+            eff_speed = page_speed if page_speed is not None else int(settings.get('transition_speed', 15))
+            last_transition_style = eff_style
+            last_transition_speed = eff_speed
             if is_anim or page_text != last_sent_page:
-                anim_style = settings.get('anim_style', 'ltr') if is_anim else None
                 max_dist = _send_with_effect(page_text, anim_style or page_style, page_speed, is_anim, app_id=reg_key)
                 last_sent_page = page_text
 
@@ -1377,8 +1396,8 @@ def current_state():
                    active_app_playlist=active_app_playlist is not None,
                    app_playlist_name=app_playlist_name,
                    rows=get_rows(), cols=get_cols(), sim_mode=sim_mode, hardware_connected=ser is not None,
-                   transition_style=settings.get('transition_style', 'ltr'),
-                   transition_speed=int(settings.get('transition_speed', 15)))
+                   transition_style=last_transition_style,
+                   transition_speed=last_transition_speed)
 
 @app.route('/grid_config')
 def grid_config():

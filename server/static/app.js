@@ -3187,7 +3187,7 @@ function _openTriggerModal(idx, preselectedApp){
   }).join('');
 
   modal.innerHTML=`
-    <div class="modal-content" style="max-width:440px">
+    <div class="modal-content" style="max-width:min(600px,90vw);width:max-content;min-width:320px">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
         <h3 style="color:var(--accent);margin:0">${isEdit?'Edit':'Add'} Trigger</h3>
         <button style="background:none;border:none;color:#888;font-size:1.3rem;cursor:pointer;line-height:1" onclick="this.closest('.modal-overlay').remove()">✕</button>

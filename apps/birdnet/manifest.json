@@ -19,10 +19,11 @@
       "options": [
         {"value": "any",              "label": "Any detection"},
         {"value": "new_today",        "label": "New species today"},
+        {"value": "first_today",      "label": "First detection of the day"},
         {"value": "specific",         "label": "Specific species"},
         {"value": "watchlist",        "label": "Watchlist species"},
         {"value": "high_confidence",  "label": "High confidence"},
-        {"value": "busy_feeder",       "label": "Busy feeder"}
+        {"value": "busy_feeder",      "label": "Busy feeder"}
       ]
     },
     {

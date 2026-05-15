@@ -98,6 +98,27 @@ def trigger(settings, conditions):
                 except Exception:
                     continue
 
+            elif condition_type == 'market_hours':
+                from datetime import datetime
+                import pytz
+                event = conditions.get('market_event', 'open')
+                et = pytz.timezone('US/Eastern')
+                now = datetime.now(et)
+                # Skip weekends
+                if now.weekday() >= 5:
+                    return False
+                hour, minute = now.hour, now.minute
+                key = f"market:{event}:{now.strftime('%Y-%m-%d')}"
+                if event == 'open' and hour == 9 and 30 <= minute < 35:
+                    if key not in state['fired_targets']:
+                        state['fired_targets'].add(key)
+                        return True
+                elif event == 'close' and hour == 16 and minute < 5:
+                    if key not in state['fired_targets']:
+                        state['fired_targets'].add(key)
+                        return True
+                return False
+
     except Exception:
         pass
     return False

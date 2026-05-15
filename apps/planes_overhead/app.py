@@ -640,10 +640,12 @@ def trigger(settings, conditions):
                 params={'lamin': lat-d, 'lomin': lon-d, 'lamax': lat+d, 'lomax': lon+d},
                 timeout=8
             ).json()
-            flights = [{'callsign': (s[1] or '').strip().upper()} for s in (r.get('states') or [])]
+            flights = [{'callsign': (s[1] or '').strip().upper(),
+                        'altitude_m': s[7]} for s in (r.get('states') or [])]
         except Exception:
             return False
 
+    alt_threshold_ft = float(conditions.get('altitude_ft', 0))
     new_found = False
     for f in flights:
         cs = f.get('callsign', '')
@@ -653,6 +655,13 @@ def trigger(settings, conditions):
             continue
         if filter_type == 'military' and not any(cs.startswith(p) for p in MILITARY_PREFIXES):
             continue
+        if filter_type == 'altitude' and alt_threshold_ft > 0:
+            alt_m = f.get('altitude_m')
+            if alt_m is None:
+                continue
+            alt_ft = float(alt_m) * 3.28084
+            if alt_ft < alt_threshold_ft:
+                continue
         if cs not in state['seen_callsigns']:
             state['seen_callsigns'].add(cs)
             new_found = True

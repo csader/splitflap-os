@@ -147,6 +147,12 @@ def trigger(settings, conditions):
             if species not in state['seen_today']:
                 state['seen_today'].add(species)
                 return True
+        if filt == 'first_today':
+            import time as _time
+            today = int(_time.time() // 86400)
+            if state.get('last_fired_day') != today:
+                state['last_fired_day'] = today
+                return True
         if filt == 'watchlist':
             return bool(watchlist) and any(w in species.lower() for w in watchlist)
         if filt == 'high_confidence':

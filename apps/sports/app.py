@@ -352,21 +352,35 @@ def trigger(settings, conditions):
                         curr = (a_score, h_score)
                         state_obj['last_scores'][score_key] = curr
                         if prev:
-                            # Check if a team was down by margin and is now within 3
                             prev_diff = prev[0] - prev[1]
                             curr_diff = curr[0] - curr[1]
-                            # Away was down big, now close
                             if prev_diff <= -margin and abs(curr_diff) <= 3:
                                 comeback_key = f"comeback_a_{game_id}"
                                 if comeback_key not in state_obj['seen_game_ids']:
                                     state_obj['seen_game_ids'].add(comeback_key)
                                     return True
-                            # Home was down big, now close
                             if prev_diff >= margin and abs(curr_diff) <= 3:
                                 comeback_key = f"comeback_h_{game_id}"
                                 if comeback_key not in state_obj['seen_game_ids']:
                                     state_obj['seen_game_ids'].add(comeback_key)
                                     return True
+
+                elif event_type == 'rival':
+                    rivals_str = conditions.get('rivals', '').strip()
+                    rivals = {r.strip().upper() for r in rivals_str.split(',') if r.strip()}
+                    if rivals and state == 'in' and game_id not in state_obj['seen_game_ids']:
+                        if (aa in trigger_teams and ha in rivals) or (ha in trigger_teams and aa in rivals):
+                            state_obj['seen_game_ids'].add(game_id)
+                            return True
+
+                elif event_type == 'shutout':
+                    if state == 'in':
+                        # Fire when one team has 0 and the other has scored
+                        if (a_score == 0 and h_score > 0) or (h_score == 0 and a_score > 0):
+                            shutout_key = f"shutout_{game_id}"
+                            if shutout_key not in state_obj['seen_game_ids']:
+                                state_obj['seen_game_ids'].add(shutout_key)
+                                return True
 
     except Exception:
         pass

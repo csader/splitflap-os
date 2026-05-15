@@ -603,3 +603,53 @@ def fetch(settings, format_lines, get_rows, get_cols):
         pages.extend([page] * dwell_repeat)
 
     return pages
+
+
+def trigger(settings, conditions):
+    """Fire when aircraft matching the configured filter appear overhead."""
+    import math, requests
+
+    filter_type = conditions.get('filter', 'any')
+    keyword = conditions.get('keyword', '').upper().strip()
+
+    state = getattr(trigger, '_state', None)
+    if state is None:
+        state = {'seen_callsigns': set()}
+        setattr(trigger, '_state', state)
+
+    # Reuse fetch state's cached flights if available (avoids extra API calls)
+    fetch_state = getattr(fetch, '_state', None)
+    flights = fetch_state['flights'] if fetch_state and fetch_state.get('flights') else []
+
+    if not flights:
+        # No cached data — do a quick OpenSky poll
+        try:
+            loc = settings.get('location', '41.97,-87.90')
+            lat, lon = [float(x.strip()) for x in loc.split(',')]
+            radius_km = 50
+            d = radius_km / 111.0
+            r = requests.get(
+                'https://opensky-network.org/api/states/all',
+                params={'lamin': lat-d, 'lomin': lon-d, 'lamax': lat+d, 'lomax': lon+d},
+                timeout=8
+            ).json()
+            flights = [{'callsign': (s[1] or '').strip().upper()} for s in (r.get('states') or [])]
+        except Exception:
+            return False
+
+    new_found = False
+    for f in flights:
+        cs = f.get('callsign', '')
+        if not cs:
+            continue
+        if filter_type == 'keyword' and keyword and keyword not in cs:
+            continue
+        if cs not in state['seen_callsigns']:
+            state['seen_callsigns'].add(cs)
+            new_found = True
+
+    # Prune seen set to avoid unbounded growth
+    if len(state['seen_callsigns']) > 500:
+        state['seen_callsigns'] = set(list(state['seen_callsigns'])[-200:])
+
+    return new_found

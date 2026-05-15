@@ -29,3 +29,38 @@ def fetch(settings, format_lines, get_rows, get_cols):
         return [format_lines(header, f'DIR0 {line0}', f'DIR1 {line1}')]
     except Exception:
         return [format_lines('METRO', 'ERROR', 'CHECK CONFIG')]
+
+
+def trigger(settings, conditions):
+    """Fire when the next train is arriving within the configured window."""
+    import requests
+    from datetime import datetime, timezone
+
+    minutes = int(conditions.get('minutes', 5))
+    direction = conditions.get('direction', 'either')
+    stop = settings.get('mbta_stop', 'place-bbsta')
+    route = settings.get('mbta_route', 'Orange')
+
+    try:
+        r = requests.get(
+            'https://api-v3.mbta.com/predictions',
+            params={'filter[stop]': stop, 'filter[route]': route, 'sort': 'arrival_time'},
+            timeout=10
+        ).json()
+        now = datetime.now(timezone.utc)
+        for p in r.get('data', []):
+            arr = p['attributes'].get('arrival_time')
+            d_id = p['attributes'].get('direction_id', 0)
+            if not arr:
+                continue
+            if direction == '0' and d_id != 0:
+                continue
+            if direction == '1' and d_id != 1:
+                continue
+            dt = datetime.fromisoformat(arr)
+            mins_away = (dt - now).total_seconds() / 60
+            if 0 <= mins_away <= minutes:
+                return True
+    except Exception:
+        pass
+    return False

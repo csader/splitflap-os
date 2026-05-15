@@ -3154,7 +3154,15 @@ function _deleteTrigger(idx){
 }
 
 function openAddTrigger(preselectedApp){
-  _openTriggerModal(null, preselectedApp);
+  // Ensure trigger apps are loaded before opening modal (may be called from app card)
+  if(!_triggerApps.length){
+    fetch('/installed_apps').then(r=>r.json()).then(data=>{
+      _triggerApps = (data.apps||[]).filter(a=>a.has_trigger);
+      _openTriggerModal(null, preselectedApp);
+    });
+  } else {
+    _openTriggerModal(null, preselectedApp);
+  }
 }
 
 function openEditTrigger(idx){
@@ -3203,7 +3211,7 @@ function _openTriggerModal(idx, preselectedApp){
         </div>
       </div>
       <div style="display:flex;gap:8px">
-        <button class="btn btn-success" style="flex:1" onclick="_saveTriggerModal(${isEdit?idx:'null'},'${t.id}')">Save</button>
+        <button class="btn btn-success" style="flex:1" onclick="_saveTriggerModal(this,${isEdit?idx:'null'},'${t.id}')">Save</button>
         <button class="btn" style="background:#333;color:#aaa;border:1px solid #555" onclick="this.closest('.modal-overlay').remove()">Cancel</button>
       </div>
     </div>`;
@@ -3237,8 +3245,8 @@ function _loadTriggerConditions(existingConditions){
   }).join('');
 }
 
-function _saveTriggerModal(idx, id){
-  const modal = document.querySelector('.modal-overlay');
+function _saveTriggerModal(btn, idx, id){
+  const modal = btn.closest('.modal-overlay');
   const name = document.getElementById('trigModalName').value.trim();
   const app = document.getElementById('trigModalApp').value;
   const display_seconds = parseInt(document.getElementById('trigModalDisplay').value)||30;

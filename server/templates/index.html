@@ -117,6 +117,39 @@
     </div>
   </div>
 
+  <!-- ══════════ SCHEDULES PAGE ══════════ -->
+  <div id="page-schedules" class="page">
+    <button class="hamburger-back" onclick="closeMenuPage()"><i data-lucide="arrow-left" style="width:14px;height:14px"></i> Back</button>
+
+    <div class="config-section">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
+        <h3 style="margin:0">Schedules</h3>
+        <button class="btn btn-success btn-sm" onclick="openAddSchedule()"><i data-lucide="plus" style="width:14px;height:14px"></i> Add Schedule</button>
+      </div>
+      <p style="color:#888;font-size:.85rem;margin-top:0">Automatically switch apps or playlists at set times. Manual changes persist until the next schedule boundary.</p>
+      <div id="scheduleList"><div style="color:#666;font-style:italic;font-size:.85rem">No schedules yet.</div></div>
+    </div>
+
+    <div class="config-section">
+      <h3>Quiet Hours</h3>
+      <p style="color:#888;font-size:.85rem;margin-top:0">Stop the display during these hours. Also suppresses notification interrupts.</p>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+        <label class="field-label" style="margin:0">Enable</label>
+        <label class="switch"><input type="checkbox" id="quietHoursEnabled" onchange="setSchedulesDirty(true)"><span class="slider"></span></label>
+      </div>
+      <div id="quietHoursConfig">
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:10px">
+          <div><label class="field-label">From</label><input type="time" id="quietHoursStart" value="22:00" onchange="setSchedulesDirty(true)" class="line-input" style="font-size:.9rem;margin:0"></div>
+          <div><label class="field-label">To</label><input type="time" id="quietHoursEnd" value="07:00" onchange="setSchedulesDirty(true)" class="line-input" style="font-size:.9rem;margin:0"></div>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap" id="quietHoursDays">
+          <!-- populated by JS -->
+        </div>
+      </div>
+      <button class="btn btn-success btn-sm" style="margin-top:12px" onclick="saveSchedules()"><i data-lucide="save" style="width:14px;height:14px"></i> Save</button>
+    </div>
+  </div>
+
   <!-- ══════════ CALIBRATION PAGE ══════════ -->
   <div id="page-calibration" class="page">
     <button class="hamburger-back" onclick="closeMenuPage()"><i data-lucide="arrow-left" style="width:14px;height:14px"></i> Back</button>
@@ -280,6 +313,7 @@
 
   <div class="hamburger-nav" id="hamburgerNav">
     <button class="hamburger-item" onclick="openMenuPage('library')"><i data-lucide="package-plus" style="width:18px;height:18px"></i> App Library</button>
+    <button class="hamburger-item" onclick="openMenuPage('schedules')"><i data-lucide="clock" style="width:18px;height:18px"></i> Schedules</button>
     <button class="hamburger-item" onclick="openMenuPage('calibration')"><i data-lucide="wrench" style="width:18px;height:18px"></i> Calibration</button>
     <button class="hamburger-item" onclick="openMenuPage('settings')"><i data-lucide="settings" style="width:18px;height:18px"></i> Settings</button>
   </div>

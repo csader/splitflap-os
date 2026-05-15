@@ -121,6 +121,11 @@ def load_settings():
         "notify_enabled": False,
         "notify_display_seconds": 10,
         "notify_sources": {},
+        "schedules": [],
+        "quiet_hours_enabled": False,
+        "quiet_hours_start": "22:00",
+        "quiet_hours_end": "07:00",
+        "quiet_hours_days": ["sun","mon","tue","wed","thu","fri","sat"],
         "installed_apps": [
             "time", "date", "weather", "stocks", "sports", "countdown",
             "world_clock", "crypto", "iss", "metro", "youtube", "yt_comments",
@@ -995,6 +1000,8 @@ _notify_lock  = threading.Lock()
 
 def _pop_notify():
     """Return and remove the oldest non-expired notification, or None."""
+    if _quiet_hours_active:
+        return None
     now = time.time()
     with _notify_lock:
         # Prune stale messages (not shown within 5 minutes)
@@ -1135,6 +1142,134 @@ def _get_pages_for_app(app_key):
         return get_plugin_pages(app_key[7:])
     return []
 
+
+# ============================================================
+#  SCHEDULER + QUIET HOURS
+# ============================================================
+
+_active_schedule_id = None
+_quiet_hours_active = False
+
+
+def _in_time_window(start, end, t):
+    """Return True if time string t (HH:MM) is within [start, end). Supports overnight ranges."""
+    if start <= end:
+        return start <= t < end
+    return t >= start or t < end  # overnight e.g. 22:00–07:00
+
+
+def _is_quiet_hours():
+    """Return True if quiet hours are currently active."""
+    if not settings.get('quiet_hours_enabled', False):
+        return False
+    tz = pytz.timezone(settings.get('timezone', 'US/Eastern'))
+    now = datetime.now(tz)
+    day = ['mon','tue','wed','thu','fri','sat','sun'][now.weekday()]
+    if day not in settings.get('quiet_hours_days', []):
+        return False
+    t = now.strftime('%H:%M')
+    return _in_time_window(settings.get('quiet_hours_start', '22:00'),
+                           settings.get('quiet_hours_end', '07:00'), t)
+
+
+def _schedule_tick():
+    global _active_schedule_id, _quiet_hours_active
+    global active_app, active_app_playlist, app_playlist_loop, app_playlist_name
+    global current_playlist, last_sent_page, loop_delay
+
+    quiet = _is_quiet_hours()
+
+    # Quiet hours transition: entering
+    if quiet and not _quiet_hours_active:
+        _quiet_hours_active = True
+        active_app = None
+        active_app_playlist = None
+        stop_event.set()
+        mqtt_publish_state()
+        logging.info("Quiet hours: display stopped")
+        return
+
+    # Quiet hours transition: leaving
+    if not quiet and _quiet_hours_active:
+        _quiet_hours_active = False
+        logging.info("Quiet hours ended")
+        # Fall through to check schedules
+
+    if quiet:
+        return  # stay quiet, don't evaluate schedules
+
+    # Evaluate schedules
+    tz = pytz.timezone(settings.get('timezone', 'US/Eastern'))
+    now = datetime.now(tz)
+    day = ['mon','tue','wed','thu','fri','sat','sun'][now.weekday()]
+    t = now.strftime('%H:%M')
+
+    matched = None
+    for sched in settings.get('schedules', []):
+        if not sched.get('enabled', True):
+            continue
+        if day not in sched.get('days', []):
+            continue
+        if _in_time_window(sched.get('start_time', '00:00'), sched.get('end_time', '00:00'), t):
+            matched = sched
+            break
+
+    new_id = matched['id'] if matched else None
+    if new_id == _active_schedule_id:
+        return  # no change
+
+    _active_schedule_id = new_id
+    if matched is None:
+        logging.info("Schedule: no active schedule")
+        return  # schedule ended — don't force stop, let user's state persist
+
+    action = matched.get('action', {})
+    atype = action.get('type', 'off')
+    name = matched.get('name', '')
+
+    if atype == 'off':
+        active_app = None
+        active_app_playlist = None
+        stop_event.set()
+        mqtt_publish_state()
+        logging.info(f"Schedule '{name}': display off")
+
+    elif atype == 'app':
+        app_id = action.get('value', '')
+        if app_id in _plugin_registry:
+            manifest = _plugin_registry[app_id]
+            active_app = app_id
+            active_app_playlist = None
+            saved = settings.get(f'plugin_{app_id}_loop_delay', '')
+            loop_delay = float(saved) if saved else float(manifest.get('loop_delay', settings.get('global_loop_delay', 5)))
+            stop_event.set()
+            mqtt_publish_state()
+            logging.info(f"Schedule '{name}': started app {app_id}")
+
+    elif atype == 'playlist':
+        pl_name = action.get('value', '')
+        playlists = settings.get('saved_app_playlists', {})
+        if pl_name in playlists:
+            pl = playlists[pl_name]
+            active_app_playlist = pl.get('entries', [])
+            app_playlist_loop = pl.get('loop', True)
+            app_playlist_name = pl_name
+            active_app = None
+            current_playlist = []
+            last_sent_page = None
+            stop_event.set()
+            mqtt_publish_state()
+            logging.info(f"Schedule '{name}': started playlist '{pl_name}'")
+
+
+def _schedule_loop():
+    while True:
+        time.sleep(60)
+        _schedule_tick()
+
+
+threading.Thread(target=_schedule_loop, daemon=True).start()
+threading.Thread(target=_schedule_tick, daemon=True).start()
 
 def playlist_loop():
     global current_playlist, loop_delay, last_sent_page, active_app
@@ -1615,6 +1750,42 @@ def delete_playlist(name):
         settings['saved_playlists'] = plists
         save_settings(settings)
     return jsonify(status="deleted")
+
+
+# ============================================================
+#  SCHEDULES + QUIET HOURS
+# ============================================================
+
+@app.route('/schedules', methods=['GET', 'POST'])
+def schedules_route():
+    if request.method == 'GET':
+        return jsonify(schedules=settings.get('schedules', []),
+                       quiet_hours_enabled=settings.get('quiet_hours_enabled', False),
+                       quiet_hours_start=settings.get('quiet_hours_start', '22:00'),
+                       quiet_hours_end=settings.get('quiet_hours_end', '07:00'),
+                       quiet_hours_days=settings.get('quiet_hours_days', ['mon','tue','wed','thu','fri','sat','sun']))
+    data = request.json
+    if 'schedules' in data:
+        settings['schedules'] = data['schedules']
+    if 'quiet_hours_enabled' in data:
+        settings['quiet_hours_enabled'] = bool(data['quiet_hours_enabled'])
+    if 'quiet_hours_start' in data:
+        settings['quiet_hours_start'] = data['quiet_hours_start']
+    if 'quiet_hours_end' in data:
+        settings['quiet_hours_end'] = data['quiet_hours_end']
+    if 'quiet_hours_days' in data:
+        settings['quiet_hours_days'] = data['quiet_hours_days']
+    save_settings(settings)
+    return jsonify(status="saved")
+
+
+@app.route('/schedule_tick', methods=['POST'])
+def schedule_tick_route():
+    """Force an immediate schedule evaluation (e.g. after saving schedules)."""
+    global _active_schedule_id
+    _active_schedule_id = None  # reset so current window re-fires
+    threading.Thread(target=_schedule_tick, daemon=True).start()
+    return jsonify(status="ok")
 
 
 # ============================================================

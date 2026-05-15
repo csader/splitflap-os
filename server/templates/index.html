@@ -117,6 +117,24 @@
     </div>
   </div>
 
+  <!-- ══════════ TRIGGERS PAGE ══════════ -->
+  <div id="page-triggers" class="page">
+    <button class="hamburger-back" onclick="closeMenuPage()"><i data-lucide="arrow-left" style="width:14px;height:14px"></i> Back</button>
+    <div class="config-section">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;flex-wrap:wrap;gap:8px">
+        <h3 style="margin:0">Triggers</h3>
+        <div style="display:flex;align-items:center;gap:10px">
+          <label style="font-size:.85rem;color:#aaa;display:flex;align-items:center;gap:6px">
+            <input type="checkbox" id="triggersEnabled" onchange="saveTriggersMaster()"> Enable all
+          </label>
+          <button class="btn btn-success btn-sm" onclick="openAddTrigger()"><i data-lucide="plus" style="width:14px;height:14px"></i> Add Trigger</button>
+        </div>
+      </div>
+      <p style="color:#888;font-size:.85rem;margin-top:0">Apps watch for events and interrupt the display when something worth showing happens.</p>
+      <div id="triggerList"><div style="color:#666;font-style:italic;font-size:.85rem">No triggers yet.</div></div>
+    </div>
+  </div>
+
   <!-- ══════════ CALIBRATION PAGE ══════════ -->
   <div id="page-calibration" class="page">
     <button class="hamburger-back" onclick="closeMenuPage()"><i data-lucide="arrow-left" style="width:14px;height:14px"></i> Back</button>
@@ -280,6 +298,7 @@
 
   <div class="hamburger-nav" id="hamburgerNav">
     <button class="hamburger-item" onclick="openMenuPage('library')"><i data-lucide="package-plus" style="width:18px;height:18px"></i> App Library</button>
+    <button class="hamburger-item" onclick="openMenuPage('triggers')"><i data-lucide="bell" style="width:18px;height:18px"></i> Triggers</button>
     <button class="hamburger-item" onclick="openMenuPage('calibration')"><i data-lucide="wrench" style="width:18px;height:18px"></i> Calibration</button>
     <button class="hamburger-item" onclick="openMenuPage('settings')"><i data-lucide="settings" style="width:18px;height:18px"></i> Settings</button>
   </div>

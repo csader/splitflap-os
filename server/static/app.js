@@ -302,6 +302,8 @@ function openMenuPage(name){
   if(name==='calibration') loadSettingsData();
   if(name==='settings') loadSettingsData();
   if(name==='library') loadAppLibrary();
+  if(name==='schedules') loadSchedules();
+  if(name==='triggers') loadTriggers();
   if(typeof lucide!=='undefined') lucide.createIcons();
 }
 
@@ -899,9 +901,12 @@ function buildAppCard(a, isPlugin) {
   if(!compatible) div.title = incompatibleReason;
 
   const icon = appLucideIcon(a.key) || appLucideIcon(a.plugin_id||'') || `<span style="font-size:2.2rem">${a.icon}</span>`;
+  const hasTrigger = !!(a.has_trigger);
+  const gearRight = (removable ? 28 : 8) + (hasTrigger ? 20 : 0);
   div.innerHTML = `
-    ${hasCfg && compatible ? `<button class="app-gear" style="right:${removable?'28':'8'}px" title="Settings" onclick="event.stopPropagation();openAppSettings('${cfgKey}')"><i data-lucide="settings" style="width:14px;height:14px"></i></button>` : ''}
+    ${hasCfg && compatible ? `<button class="app-gear" style="right:${gearRight}px" title="Settings" onclick="event.stopPropagation();openAppSettings('${cfgKey}')"><i data-lucide="settings" style="width:14px;height:14px"></i></button>` : ''}
     ${removable ? `<button class="app-gear" title="Remove" onclick="event.stopPropagation();removeApp('${a.plugin_id||a.key.replace('plugin_','')}')"><i data-lucide="x" style="width:14px;height:14px"></i></button>` : ''}
+    ${hasTrigger && compatible ? `<button class="app-gear" style="right:8px" title="Add Trigger" onclick="event.stopPropagation();openAddTrigger('${a.plugin_id||a.key.replace('plugin_','')}')"><i data-lucide="bell" style="width:14px;height:14px"></i></button>` : ''}
     <span class="app-icon">${icon}</span>
     <span class="app-name">${a.name}</span>
     <span class="app-desc">${compatible ? a.desc : incompatibleReason}</span>`;
@@ -3077,6 +3082,179 @@ function saveHotspotConfig(){
   fetch('/network_config',{method:'POST',headers:{'Content-Type':'application/json'},
     body:JSON.stringify({hotspot_ssid:ssid, hotspot_password:pass})})
   .then(()=>showToast('Hotspot config saved'));
+}
+
+// ============================================================
+//  TRIGGERS
+// ============================================================
+let _triggers = [];
+let _triggerApps = [];  // apps with has_trigger=true
+
+function loadTriggers(){
+  fetch('/installed_apps').then(r=>r.json()).then(data=>{
+    _triggerApps = (data.apps||[]).filter(a=>a.has_trigger);
+  });
+  fetch('/triggers').then(r=>r.json()).then(data=>{
+    _triggers = data.triggers || [];
+    document.getElementById('triggersEnabled').checked = !!data.triggers_enabled;
+    _renderTriggerList();
+    if(typeof lucide!=='undefined') lucide.createIcons();
+  });
+}
+
+function saveTriggersMaster(){
+  fetch('/triggers',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({triggers_enabled: document.getElementById('triggersEnabled').checked})});
+}
+
+function _renderTriggerList(){
+  const el = document.getElementById('triggerList');
+  if(!el) return;
+  if(!_triggers.length){
+    el.innerHTML='<div style="color:#666;font-style:italic;font-size:.85rem">No triggers yet. Add one to watch for events.</div>';
+    return;
+  }
+  el.innerHTML='';
+  _triggers.forEach((t, i) => {
+    const app = _triggerApps.find(a=>(a.plugin_id||a.key.replace('plugin_',''))===t.app) || {name:t.app, icon:'🔔'};
+    const lastFired = t.last_fired ? _timeAgo(t.last_fired) : 'Never';
+    const row = document.createElement('div');
+    row.style.cssText='display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid #2a2a2a';
+    row.innerHTML=`
+      <label class="switch" style="flex-shrink:0"><input type="checkbox" ${t.enabled!==false?'checked':''} onchange="_toggleTrigger(${i},this.checked)"><span class="slider"></span></label>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:.9rem;font-weight:600;color:#fff">${t.name||'Unnamed'}</div>
+        <div style="font-size:.75rem;color:#888">${app.icon} ${app.name} · Last fired: ${lastFired}</div>
+      </div>
+      <button class="btn btn-secondary btn-sm" onclick="openEditTrigger(${i})">Edit</button>
+      <button class="btn-del btn-sm" style="padding:4px 8px;border-radius:4px" onclick="_deleteTrigger(${i})">✕</button>`;
+    el.appendChild(row);
+  });
+}
+
+function _timeAgo(ts){
+  const diff = Math.floor(Date.now()/1000 - ts);
+  if(diff < 60) return `${diff}s ago`;
+  if(diff < 3600) return `${Math.floor(diff/60)}m ago`;
+  if(diff < 86400) return `${Math.floor(diff/3600)}h ago`;
+  return `${Math.floor(diff/86400)}d ago`;
+}
+
+function _toggleTrigger(idx, enabled){
+  _triggers[idx].enabled = enabled;
+  fetch('/triggers',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({triggers:_triggers})});
+}
+
+function _deleteTrigger(idx){
+  _triggers.splice(idx,1);
+  fetch('/triggers',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({triggers:_triggers})})
+  .then(()=>_renderTriggerList());
+}
+
+function openAddTrigger(preselectedApp){
+  _openTriggerModal(null, preselectedApp);
+}
+
+function openEditTrigger(idx){
+  _openTriggerModal(idx);
+}
+
+function _openTriggerModal(idx, preselectedApp){
+  const isEdit = idx !== null && idx !== undefined;
+  const t = isEdit ? JSON.parse(JSON.stringify(_triggers[idx])) : {
+    id: 'trig_'+Date.now(), name:'', enabled:true,
+    app: preselectedApp||'', conditions:{},
+    display_seconds:30, cooldown:300
+  };
+
+  const modal = document.createElement('div');
+  modal.className='modal-overlay';
+  modal.style.display='flex';
+
+  const appOptions = _triggerApps.map(a=>{
+    const id = a.plugin_id||a.key.replace('plugin_','');
+    return `<option value="${id}"${id===t.app?' selected':''}>${a.icon} ${a.name}</option>`;
+  }).join('');
+
+  modal.innerHTML=`
+    <div class="modal-content" style="max-width:440px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+        <h3 style="color:var(--accent);margin:0">${isEdit?'Edit':'Add'} Trigger</h3>
+        <button style="background:none;border:none;color:#888;font-size:1.3rem;cursor:pointer;line-height:1" onclick="this.closest('.modal-overlay').remove()">✕</button>
+      </div>
+      <label class="field-label">Name</label>
+      <input type="text" id="trigModalName" value="${t.name||''}" placeholder="e.g. Red Sox close game" class="line-input" style="font-size:.9rem;margin-bottom:12px">
+      <label class="field-label">App</label>
+      <select id="trigModalApp" class="line-input" style="font-size:.9rem;margin-bottom:12px" onchange="_loadTriggerConditions()">
+        <option value="">— Select app —</option>
+        ${appOptions}
+      </select>
+      <div id="trigModalConditions" style="margin-bottom:12px"></div>
+      <div style="display:flex;gap:12px;margin-bottom:14px">
+        <div style="flex:1">
+          <label class="field-label">Display (seconds)</label>
+          <input type="number" id="trigModalDisplay" value="${t.display_seconds||30}" min="5" max="300" step="5" class="line-input" style="font-size:.9rem;margin:0">
+        </div>
+        <div style="flex:1">
+          <label class="field-label">Cooldown (seconds)</label>
+          <input type="number" id="trigModalCooldown" value="${t.cooldown||300}" min="30" max="86400" step="30" class="line-input" style="font-size:.9rem;margin:0">
+        </div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-success" style="flex:1" onclick="_saveTriggerModal(${isEdit?idx:'null'},'${t.id}')">Save</button>
+        <button class="btn" style="background:#333;color:#aaa;border:1px solid #555" onclick="this.closest('.modal-overlay').remove()">Cancel</button>
+      </div>
+    </div>`;
+  document.body.appendChild(modal);
+  if(t.app) _loadTriggerConditions(t.conditions);
+  setTimeout(()=>document.getElementById('trigModalName').focus(),50);
+}
+
+function _loadTriggerConditions(existingConditions){
+  const appId = document.getElementById('trigModalApp')?.value;
+  const el = document.getElementById('trigModalConditions');
+  if(!el) return;
+  if(!appId){ el.innerHTML=''; return; }
+  const app = _triggerApps.find(a=>(a.plugin_id||a.key.replace('plugin_',''))===appId);
+  const conditions = app?.trigger_conditions || [];
+  if(!conditions.length){ el.innerHTML=''; return; }
+  el.innerHTML = conditions.map(c => {
+    const val = existingConditions?.[c.key] ?? c.default ?? '';
+    if(c.type==='toggle'){
+      const opts = (c.options||[]).map(o=>{
+        const v = typeof o==='string'?o:o.value;
+        const l = typeof o==='string'?o:o.label;
+        return `<button type="button" data-condkey="${c.key}" data-condval="${v}"
+          style="flex:1;padding:5px 8px;font-size:.8rem;border-radius:4px;border:1px solid #555;cursor:pointer;background:${v===val?'var(--accent)':'#333'};color:#fff"
+          onclick="document.querySelectorAll('[data-condkey=\\'${c.key}\\']').forEach(b=>b.style.background='#333');this.style.background='var(--accent)'">${l}</button>`;
+      }).join('');
+      return `<div style="margin-bottom:10px"><label class="field-label">${c.label||c.key}</label><div style="display:flex;gap:5px">${opts}</div></div>`;
+    }
+    return `<div style="margin-bottom:10px"><label class="field-label">${c.label||c.key}</label>
+      <input type="text" data-condkey="${c.key}" value="${val}" placeholder="${c.default||''}" class="line-input" style="font-size:.9rem;margin:0"></div>`;
+  }).join('');
+}
+
+function _saveTriggerModal(idx, id){
+  const modal = document.querySelector('.modal-overlay');
+  const name = document.getElementById('trigModalName').value.trim();
+  const app = document.getElementById('trigModalApp').value;
+  const display_seconds = parseInt(document.getElementById('trigModalDisplay').value)||30;
+  const cooldown = parseInt(document.getElementById('trigModalCooldown').value)||300;
+  const conditions = {};
+  document.querySelectorAll('[data-condkey]').forEach(el => {
+    const key = el.dataset.condkey;
+    if(el.tagName==='BUTTON' && el.style.background.includes('accent')) conditions[key]=el.dataset.condval;
+    else if(el.tagName==='INPUT') conditions[key]=el.value;
+  });
+  const trig = {id, name, enabled:true, app, conditions, display_seconds, cooldown};
+  if(idx===null||idx==='null') _triggers.push(trig);
+  else _triggers[idx]=trig;
+  fetch('/triggers',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({triggers:_triggers})})
+  .then(()=>{ _renderTriggerList(); modal.remove(); showToast('Trigger saved'); });
 }
 
 // ============================================================

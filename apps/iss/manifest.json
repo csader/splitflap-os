@@ -10,6 +10,19 @@
   "trigger_interval": 60,
   "trigger_display_seconds": 30,
   "trigger_cooldown": 3600,
+  "trigger_conditions": [
+    {
+      "key": "condition_type",
+      "label": "Fire when",
+      "type": "toggle",
+      "default": "overhead",
+      "options": [
+        {"value": "overhead",     "label": "ISS overhead"},
+        {"value": "visible_pass", "label": "Visible pass (night + clear)"},
+        {"value": "crew_change",  "label": "Crew change"}
+      ]
+    }
+  ],
   "min_rows": 1,
   "min_cols": 8
 }

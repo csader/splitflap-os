@@ -117,6 +117,9 @@ def trigger(settings, conditions):
     min_conf = int(settings.get('min_confidence', '70')) / 100
     filt = conditions.get('filter', 'any')
     species_query = conditions.get('species', '').lower().strip()
+    watchlist_str = conditions.get('watchlist', '').lower()
+    watchlist = [s.strip() for s in watchlist_str.split(',') if s.strip()]
+    high_conf_threshold = float(conditions.get('high_confidence', 95)) / 100
 
     state = getattr(trigger, '_state', None)
     if state is None:
@@ -134,6 +137,7 @@ def trigger(settings, conditions):
             return False  # nothing new
         state['last_id'] = det_id
         species = latest.get('species', '')
+        confidence = latest.get('confidence', 0)
 
         if filt == 'any':
             return True
@@ -143,6 +147,10 @@ def trigger(settings, conditions):
             if species not in state['seen_today']:
                 state['seen_today'].add(species)
                 return True
+        if filt == 'watchlist':
+            return bool(watchlist) and any(w in species.lower() for w in watchlist)
+        if filt == 'high_confidence':
+            return confidence >= high_conf_threshold
         return False
     except Exception:
         return False

@@ -326,6 +326,25 @@ def trigger(settings, conditions):
                         state_obj['seen_game_ids'].add(game_id)
                         return True
 
+                elif event_type == 'overtime':
+                    detail = event.get('status', {}).get('type', {}).get('shortDetail', '').upper()
+                    ot_keywords = ('OT', 'OVERTIME', 'EXTRA', 'SHOOTOUT', 'PENALTY')
+                    if state == 'in' and any(k in detail for k in ot_keywords):
+                        ot_key = f"ot_{game_id}"
+                        if ot_key not in state_obj['seen_game_ids']:
+                            state_obj['seen_game_ids'].add(ot_key)
+                            return True
+
+                elif event_type == 'playoff':
+                    notes = comp.get('notes', [])
+                    is_playoff = any('playoff' in str(n).lower() or 'postseason' in str(n).lower() for n in notes)
+                    if not is_playoff:
+                        season_type = event.get('season', {}).get('type', 2)
+                        is_playoff = season_type in (3, 4)  # 3=postseason, 4=offseason
+                    if is_playoff and state == 'in' and game_id not in state_obj['seen_game_ids']:
+                        state_obj['seen_game_ids'].add(game_id)
+                        return True
+
     except Exception:
         pass
     return False

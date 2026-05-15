@@ -19,7 +19,9 @@
         {"value": "game_start", "label": "Game starts"},
         {"value": "score_change", "label": "Score changes"},
         {"value": "close_game", "label": "Close game (within 5)"},
-        {"value": "final", "label": "Game ends"}
+        {"value": "final", "label": "Game ends"},
+        {"value": "overtime", "label": "Overtime / extra time"},
+        {"value": "playoff", "label": "Playoff / postseason game"}
       ]
     },
     {

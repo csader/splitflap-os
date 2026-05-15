@@ -11,13 +11,24 @@
   "trigger_cooldown": 600,
   "trigger_conditions": [
     {
+      "key": "condition_type",
+      "label": "Condition",
+      "type": "toggle",
+      "default": "pct_change",
+      "options": [
+        {"value": "pct_change",    "label": "% Move"},
+        {"value": "price_target",  "label": "Price target"}
+      ]
+    },
+    {
       "key": "threshold",
-      "label": "Fire when any ticker moves more than",
+      "label": "Move more than (%) ",
       "type": "number",
       "default": "3",
       "min": "1",
       "max": "50",
-      "step": "1"
+      "step": "1",
+      "visible_when": {"condition_type": "pct_change"}
     },
     {
       "key": "direction",
@@ -26,9 +37,20 @@
       "default": "either",
       "options": [
         {"value": "either", "label": "Either"},
-        {"value": "up", "label": "Up only"},
-        {"value": "down", "label": "Down only"}
+        {"value": "up",     "label": "Up only"},
+        {"value": "down",   "label": "Down only"},
+        {"value": "above",  "label": "Above target"},
+        {"value": "below",  "label": "Below target"}
       ]
+    },
+    {
+      "key": "price_target",
+      "label": "Price target ($)",
+      "type": "number",
+      "default": "0",
+      "min": "0",
+      "step": "1",
+      "visible_when": {"condition_type": "price_target"}
     }
   ],
   "settings": [

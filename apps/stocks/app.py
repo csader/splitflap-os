@@ -26,14 +26,18 @@ def fetch(settings, format_lines, get_rows, get_cols):
 
 
 def trigger(settings, conditions):
-    """Fire when any followed ticker moves beyond the configured threshold."""
+    """Fire when any followed ticker moves beyond the configured threshold or hits a price target."""
     import yfinance as yf
 
-    threshold = float(conditions.get('threshold', 3))
-    direction = conditions.get('direction', 'either')
+    condition_type = conditions.get('condition_type', 'pct_change')
     tickers = [s.strip() for s in settings.get('stocks_list', '').split(',') if s.strip()]
     if not tickers:
         return False
+
+    state = getattr(trigger, '_state', None)
+    if state is None:
+        state = {'fired_targets': set()}
+        setattr(trigger, '_state', state)
 
     try:
         for sym in tickers:
@@ -41,15 +45,34 @@ def trigger(settings, conditions):
             info = t.fast_info
             price = info['lastPrice']
             prev = info['previousClose']
-            if not prev:
-                continue
-            chg = ((price - prev) / prev) * 100
-            if direction == 'up' and chg >= threshold:
-                return True
-            if direction == 'down' and chg <= -threshold:
-                return True
-            if direction == 'either' and abs(chg) >= threshold:
-                return True
+
+            if condition_type == 'pct_change':
+                threshold = float(conditions.get('threshold', 3))
+                direction = conditions.get('direction', 'either')
+                if not prev:
+                    continue
+                chg = ((price - prev) / prev) * 100
+                if direction == 'up' and chg >= threshold:
+                    return True
+                if direction == 'down' and chg <= -threshold:
+                    return True
+                if direction == 'either' and abs(chg) >= threshold:
+                    return True
+
+            elif condition_type == 'price_target':
+                target = float(conditions.get('price_target', 0))
+                direction = conditions.get('direction', 'above')
+                if not target:
+                    continue
+                key = f"{sym}:{direction}:{target}"
+                crossed = (direction == 'above' and price >= target) or \
+                          (direction == 'below' and price <= target)
+                if crossed and key not in state['fired_targets']:
+                    state['fired_targets'].add(key)
+                    return True
+                if not crossed and key in state['fired_targets']:
+                    state['fired_targets'].discard(key)  # reset when price moves away
+
     except Exception:
         pass
     return False

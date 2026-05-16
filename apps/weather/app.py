@@ -594,3 +594,77 @@ def fetch(settings, format_lines, get_rows, get_cols):
         if state['last_pages'] is not None:
             return state['last_pages']
         return [format_lines('WEATHER', 'ERROR', 'CHECK API KEY')]
+
+
+def trigger(settings, conditions):
+    """Fire on severe weather, temperature threshold, rain starting, rapid temp change, UV, or wind."""
+    import requests
+
+    condition = conditions.get('condition', 'severe')
+    threshold_f = float(conditions.get('temp_threshold', 90))
+    uv_threshold = float(conditions.get('uv_threshold', 7))
+    wind_threshold = float(conditions.get('wind_threshold', 25))
+    zip_code = settings.get('zip_code', '02118')
+
+    SEVERE_CODES = {65, 67, 75, 77, 82, 86, 95, 96, 99}
+    RAIN_CODES = {51, 53, 55, 61, 63, 65, 66, 67, 80, 81, 82}
+    DRY_CODES = {0, 1, 2, 3, 45, 48}
+
+    state = getattr(trigger, '_state', None)
+    if state is None:
+        state = {'last_code': None, 'last_temp': None}
+        setattr(trigger, '_state', state)
+
+    try:
+        geo = requests.get(
+            f'https://nominatim.openstreetmap.org/search?postalcode={zip_code}&country=US&format=json&limit=1',
+            timeout=5, headers={'User-Agent': 'SplitFlapOS/1.0'}
+        ).json()
+        if not geo:
+            return False
+        lat, lon = geo[0]['lat'], geo[0]['lon']
+
+        data = requests.get(
+            f'https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}'
+            '&current=temperature_2m,weather_code,uv_index,wind_speed_10m'
+            '&temperature_unit=fahrenheit&wind_speed_unit=mph',
+            timeout=8
+        ).json()
+        current = data.get('current', {})
+        temp_f = current.get('temperature_2m')
+        code = int(current.get('weather_code') or 0)
+        uv = current.get('uv_index')
+        wind = current.get('wind_speed_10m')
+
+        if condition == 'severe':
+            return code in SEVERE_CODES
+
+        if condition == 'temp_above' and temp_f is not None:
+            return float(temp_f) >= threshold_f
+
+        if condition == 'temp_below' and temp_f is not None:
+            return float(temp_f) <= threshold_f
+
+        if condition == 'rain_starting':
+            prev_code = state['last_code']
+            state['last_code'] = code
+            was_dry = prev_code is not None and prev_code in DRY_CODES
+            now_rain = code in RAIN_CODES
+            return was_dry and now_rain
+
+        if condition == 'rapid_temp_change' and temp_f is not None:
+            prev_temp = state['last_temp']
+            state['last_temp'] = float(temp_f)
+            if prev_temp is not None:
+                return abs(float(temp_f) - prev_temp) >= threshold_f
+            return False
+
+        if condition == 'uv_high' and uv is not None:
+            return float(uv) >= uv_threshold
+
+        if condition == 'wind_high' and wind is not None:
+            return float(wind) >= wind_threshold
+
+    except Exception:
+        pass
+    return False

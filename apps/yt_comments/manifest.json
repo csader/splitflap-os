@@ -6,6 +6,17 @@
   "type": "functional",
   "refresh_interval": 60,
   "loop_delay": 8,
+  "trigger_interval": 120,
+  "trigger_display_seconds": 30,
+  "trigger_cooldown": 300,
+  "trigger_conditions": [
+    {
+      "key": "keyword",
+      "label": "Keyword in comment (empty = any new comment)",
+      "type": "text",
+      "default": ""
+    }
+  ],
   "settings": [
     {
       "key": "yt_video_id",

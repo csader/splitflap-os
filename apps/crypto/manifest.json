@@ -6,6 +6,53 @@
   "type": "functional",
   "refresh_interval": 60,
   "loop_delay": 5,
+  "trigger_interval": 120,
+  "trigger_display_seconds": 30,
+  "trigger_cooldown": 600,
+  "trigger_conditions": [
+    {
+      "key": "condition_type",
+      "label": "Condition",
+      "type": "toggle",
+      "default": "pct_change",
+      "options": [
+        {"value": "pct_change",   "label": "% Move"},
+        {"value": "price_target", "label": "Price target"}
+      ]
+    },
+    {
+      "key": "threshold",
+      "label": "Move more than (%)",
+      "type": "number",
+      "default": "5",
+      "min": "1",
+      "max": "100",
+      "step": "1",
+      "visible_when": {"condition_type": "pct_change"}
+    },
+    {
+      "key": "direction",
+      "label": "Direction",
+      "type": "toggle",
+      "default": "either",
+      "options": [
+        {"value": "either", "label": "Either"},
+        {"value": "up",     "label": "Up only"},
+        {"value": "down",   "label": "Down only"},
+        {"value": "above",  "label": "Above target"},
+        {"value": "below",  "label": "Below target"}
+      ]
+    },
+    {
+      "key": "price_target",
+      "label": "Price target ($)",
+      "type": "number",
+      "default": "0",
+      "min": "0",
+      "step": "1",
+      "visible_when": {"condition_type": "price_target"}
+    }
+  ],
   "settings": [
     {
       "key": "crypto_list",

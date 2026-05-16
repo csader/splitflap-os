@@ -27,5 +27,16 @@
     }
   ],
   "min_rows": 3,
-  "min_cols": 10
+  "min_cols": 10,
+  "trigger_interval": 300,
+  "trigger_display_seconds": 30,
+  "trigger_cooldown": 600,
+  "trigger_conditions": [
+    {
+      "key": "keywords",
+      "label": "Keywords (comma-separated, empty = any new headline)",
+      "type": "text",
+      "default": ""
+    }
+  ]
 }

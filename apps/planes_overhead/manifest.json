@@ -323,5 +323,39 @@
     }
   ],
   "min_rows": 3,
-  "min_cols": 12
+  "min_cols": 12,
+  "trigger_interval": 120,
+  "trigger_display_seconds": 30,
+  "trigger_cooldown": 60,
+  "trigger_conditions": [
+    {
+      "key": "filter",
+      "label": "Fire for",
+      "type": "toggle",
+      "default": "any",
+      "options": [
+        {"value": "any",      "label": "Any new aircraft"},
+        {"value": "keyword",  "label": "Callsign keyword"},
+        {"value": "military", "label": "Military aircraft"},
+        {"value": "altitude", "label": "Above altitude"}
+      ]
+    },
+    {
+      "key": "keyword",
+      "label": "Callsign contains (e.g. UAL, N12)",
+      "type": "text",
+      "default": "",
+      "visible_when": {"filter": "keyword"}
+    },
+    {
+      "key": "altitude_ft",
+      "label": "Minimum altitude (feet)",
+      "type": "number",
+      "default": "30000",
+      "min": "1000",
+      "max": "60000",
+      "step": "1000",
+      "visible_when": {"filter": "altitude"}
+    }
+  ]
 }

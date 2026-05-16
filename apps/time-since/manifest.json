@@ -8,6 +8,24 @@
   "version": "1.0",
   "refresh_interval": 1,
   "loop_delay": 1,
+  "trigger_interval": 3600,
+  "trigger_display_seconds": 30,
+  "trigger_cooldown": 86400,
+  "trigger_conditions": [
+    {
+      "key": "milestone",
+      "label": "Fire when elapsed time reaches",
+      "type": "toggle",
+      "default": "1y",
+      "options": [
+        {"value": "100d", "label": "100 days"},
+        {"value": "365d", "label": "1 year"},
+        {"value": "2y",   "label": "2 years"},
+        {"value": "5y",   "label": "5 years"},
+        {"value": "10y",  "label": "10 years"}
+      ]
+    }
+  ],
   "settings": [
     {
       "key": "event_name",

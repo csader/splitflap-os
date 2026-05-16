@@ -189,3 +189,49 @@ def fetch(settings, format_lines, get_rows, get_cols):
     if rows == 2:
         return [format_lines('COUNTDOWN', 'CHECK CONFIG')]
     return [format_lines('COUNTDOWN', 'CHECK CONFIG', '')]
+
+
+def trigger(settings, conditions):
+    """Fire when the countdown reaches a configured milestone."""
+    from datetime import datetime
+    import pytz
+
+    milestone = conditions.get('milestone', '1d')
+    target_str = settings.get('countdown_target', '')
+    tz = pytz.timezone(settings.get('timezone', 'US/Eastern'))
+    now = datetime.now(tz)
+
+    if not target_str:
+        return False
+
+    try:
+        target = datetime.fromisoformat(target_str)
+        if target.tzinfo is None:
+            target = tz.localize(target)
+        diff = target - now
+        total_secs = diff.total_seconds()
+        if total_secs <= 0:
+            return False
+
+        windows = {
+            '30d': (30 * 86400, 29 * 86400),
+            '7d':  (7 * 86400,  6 * 86400),
+            '1d':  (86400,      82800),
+            '1h':  (3600,       3540),
+            '0':   (60,         0),
+        }
+        lo, hi = windows.get(milestone, (86400, 82800))
+        in_window = hi <= total_secs <= lo
+
+        state = getattr(trigger, '_state', None)
+        if state is None:
+            state = {'fired_milestone': None}
+            setattr(trigger, '_state', state)
+
+        key = f"{milestone}:{target_str}"
+        if in_window and state['fired_milestone'] != key:
+            state['fired_milestone'] = key
+            return True
+    except Exception:
+        pass
+    return False

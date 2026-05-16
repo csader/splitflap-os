@@ -106,3 +106,70 @@ def fetch(settings, format_lines, get_rows, get_cols):
         if state['last_pages']:
             return state['last_pages']
         return [format_lines('BIRDNET', 'ERROR', str(e)[:cols] if cols > 10 else 'ERR')]
+
+
+def trigger(settings, conditions):
+    """Fire when a new bird detection matches the configured filter."""
+    import requests
+
+    host = settings.get('birdnet_host', '192.168.86.139')
+    port = settings.get('birdnet_port', '80')
+    min_conf = int(settings.get('min_confidence', '70')) / 100
+    filt = conditions.get('filter', 'any')
+    species_query = conditions.get('species', '').lower().strip()
+    watchlist_str = conditions.get('watchlist', '').lower()
+    watchlist = [s.strip() for s in watchlist_str.split(',') if s.strip()]
+    high_conf_threshold = float(conditions.get('high_confidence', 95)) / 100
+
+    state = getattr(trigger, '_state', None)
+    if state is None:
+        state = {'last_id': None, 'seen_today': set()}
+        setattr(trigger, '_state', state)
+
+    try:
+        r = requests.get(f"http://{host}:{port}/api/v1/detections/recent?limit=5", timeout=5)
+        detections = [d for d in r.json() if d.get('confidence', 0) >= min_conf]
+        if not detections:
+            return False
+        latest = detections[0]
+        det_id = latest.get('id') or latest.get('timestamp') or latest.get('time')
+        if det_id == state['last_id']:
+            return False  # nothing new
+        state['last_id'] = det_id
+        species = latest.get('species', '')
+        confidence = latest.get('confidence', 0)
+
+        if filt == 'any':
+            return True
+        if filt == 'specific':
+            return bool(species_query) and species_query in species.lower()
+        if filt == 'new_today':
+            if species not in state['seen_today']:
+                state['seen_today'].add(species)
+                return True
+        if filt == 'first_today':
+            import time as _time
+            today = int(_time.time() // 86400)
+            if state.get('last_fired_day') != today:
+                state['last_fired_day'] = today
+                return True
+        if filt == 'watchlist':
+            return bool(watchlist) and any(w in species.lower() for w in watchlist)
+        if filt == 'high_confidence':
+            return confidence >= high_conf_threshold
+        if filt == 'busy_feeder':
+            count = int(conditions.get('busy_count', 5))
+            window_mins = int(conditions.get('busy_window', 10))
+            import time as _time
+            now_ts = _time.time()
+            # Store recent detection timestamps
+            if 'recent_times' not in state:
+                state['recent_times'] = []
+            state['recent_times'].append(now_ts)
+            # Prune to window
+            cutoff = now_ts - (window_mins * 60)
+            state['recent_times'] = [t for t in state['recent_times'] if t >= cutoff]
+            return len(state['recent_times']) >= count
+        return False
+    except Exception:
+        return False

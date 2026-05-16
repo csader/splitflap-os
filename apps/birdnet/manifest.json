@@ -7,6 +7,70 @@
   "refresh_interval": 1,
   "loop_delay": 5,
   "category": "data",
+  "trigger_interval": 30,
+  "trigger_display_seconds": 30,
+  "trigger_cooldown": 120,
+  "trigger_conditions": [
+    {
+      "key": "filter",
+      "label": "Fire for",
+      "type": "toggle",
+      "default": "any",
+      "options": [
+        {"value": "any",              "label": "Any detection"},
+        {"value": "new_today",        "label": "New species today"},
+        {"value": "first_today",      "label": "First detection of the day"},
+        {"value": "specific",         "label": "Specific species"},
+        {"value": "watchlist",        "label": "Watchlist species"},
+        {"value": "high_confidence",  "label": "High confidence"},
+        {"value": "busy_feeder",      "label": "Busy feeder"}
+      ]
+    },
+    {
+      "key": "species",
+      "label": "Species name (partial match)",
+      "type": "text",
+      "default": "",
+      "visible_when": {"filter": "specific"}
+    },
+    {
+      "key": "watchlist",
+      "label": "Watchlist (comma-separated species names)",
+      "type": "text",
+      "default": "",
+      "visible_when": {"filter": "watchlist"}
+    },
+    {
+      "key": "high_confidence",
+      "label": "Minimum confidence %",
+      "type": "number",
+      "default": "95",
+      "min": "80",
+      "max": "99",
+      "step": "5",
+      "visible_when": {"filter": "high_confidence"}
+    },
+    {
+      "key": "busy_count",
+      "label": "Detections within window",
+      "type": "number",
+      "default": "5",
+      "min": "2",
+      "max": "20",
+      "step": "1",
+      "visible_when": {"filter": "busy_feeder"}
+    },
+    {
+      "key": "busy_window",
+      "label": "Window (minutes)",
+      "type": "number",
+      "default": "10",
+      "min": "1",
+      "max": "60",
+      "step": "1",
+      "visible_when": {"filter": "busy_feeder"}
+    }
+  ],
   "settings": [
     {
       "key": "birdnet_host",

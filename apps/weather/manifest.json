@@ -218,5 +218,55 @@
     }
   ],
   "min_rows": 1,
-  "min_cols": 8
+  "min_cols": 8,
+  "trigger_interval": 300,
+  "trigger_display_seconds": 30,
+  "trigger_cooldown": 1800,
+  "trigger_conditions": [
+    {
+      "key": "condition",
+      "label": "Fire when",
+      "type": "toggle",
+      "default": "severe",
+      "options": [
+        {"value": "severe",             "label": "Severe weather"},
+        {"value": "temp_above",         "label": "Temp above threshold"},
+        {"value": "temp_below",         "label": "Temp below threshold"},
+        {"value": "rain_starting",      "label": "Rain starting"},
+        {"value": "rapid_temp_change",  "label": "Rapid temp change"},
+        {"value": "uv_high",            "label": "UV index high"},
+        {"value": "wind_high",          "label": "Wind speed high"}
+      ]
+    },
+    {
+      "key": "temp_threshold",
+      "label": "Temperature threshold (°F)",
+      "type": "number",
+      "default": "90",
+      "min": "-40",
+      "max": "130",
+      "step": "1",
+      "visible_when": {"condition": ["temp_above", "temp_below", "rapid_temp_change"]}
+    },
+    {
+      "key": "uv_threshold",
+      "label": "UV index threshold",
+      "type": "number",
+      "default": "7",
+      "min": "1",
+      "max": "11",
+      "step": "1",
+      "visible_when": {"condition": "uv_high"}
+    },
+    {
+      "key": "wind_threshold",
+      "label": "Wind speed threshold (mph)",
+      "type": "number",
+      "default": "25",
+      "min": "5",
+      "max": "100",
+      "step": "5",
+      "visible_when": {"condition": "wind_high"}
+    }
+  ]
 }

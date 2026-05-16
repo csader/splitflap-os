@@ -603,3 +603,71 @@ def fetch(settings, format_lines, get_rows, get_cols):
         pages.extend([page] * dwell_repeat)
 
     return pages
+
+
+def trigger(settings, conditions):
+    """Fire when aircraft matching the configured filter appear overhead."""
+    import requests
+
+    filter_type = conditions.get('filter', 'any')
+    keyword = conditions.get('keyword', '').upper().strip()
+
+    # Common US military callsign prefixes
+    MILITARY_PREFIXES = (
+        'RCH', 'REACH', 'SPAR', 'SAM', 'VENUS', 'EVAC', 'JAKE',
+        'TOPGUN', 'VIPER', 'MAGMA', 'IRON', 'DOOM', 'SKULL', 'GHOST',
+        'ARMY', 'NAVY', 'USMC', 'USCG', 'AFSOC', 'DUKE', 'BOXER',
+    )
+
+    state = getattr(trigger, '_state', None)
+    if state is None:
+        state = {'seen_callsigns': set()}
+        setattr(trigger, '_state', state)
+
+    # Reuse fetch state's cached flights if available (avoids extra API calls)
+    fetch_state = getattr(fetch, '_state', None)
+    flights = fetch_state['flights'] if fetch_state and fetch_state.get('flights') else []
+
+    if not flights:
+        # No cached data — do a quick OpenSky poll
+        try:
+            loc = settings.get('location', '41.97,-87.90')
+            lat, lon = [float(x.strip()) for x in loc.split(',')]
+            radius_km = 50
+            d = radius_km / 111.0
+            r = requests.get(
+                'https://opensky-network.org/api/states/all',
+                params={'lamin': lat-d, 'lomin': lon-d, 'lamax': lat+d, 'lomax': lon+d},
+                timeout=8
+            ).json()
+            flights = [{'callsign': (s[1] or '').strip().upper(),
+                        'altitude_m': s[7]} for s in (r.get('states') or [])]
+        except Exception:
+            return False
+
+    alt_threshold_ft = float(conditions.get('altitude_ft', 0))
+    new_found = False
+    for f in flights:
+        cs = f.get('callsign', '')
+        if not cs:
+            continue
+        if filter_type == 'keyword' and keyword and keyword not in cs:
+            continue
+        if filter_type == 'military' and not any(cs.startswith(p) for p in MILITARY_PREFIXES):
+            continue
+        if filter_type == 'altitude' and alt_threshold_ft > 0:
+            alt_m = f.get('altitude_m')
+            if alt_m is None:
+                continue
+            alt_ft = float(alt_m) * 3.28084
+            if alt_ft < alt_threshold_ft:
+                continue
+        if cs not in state['seen_callsigns']:
+            state['seen_callsigns'].add(cs)
+            new_found = True
+
+    # Prune seen set to avoid unbounded growth
+    if len(state['seen_callsigns']) > 500:
+        state['seen_callsigns'] = set(list(state['seen_callsigns'])[-200:])
+
+    return new_found

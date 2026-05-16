@@ -211,6 +211,180 @@ Use these keys to synchronize related fields:
 - Use `visible_when` and sync rules only when they improve UX.
 - Keep `fetch()` fast and resilient to network/API errors.
 
+---
+
+## App Triggers
+
+Triggers let your app interrupt the display when something worth showing happens — a live game, a rare bird, a weather alert. Users configure triggers in the **Triggers** page and can create multiple triggers from the same app with different conditions.
+
+### How it works
+
+1. You declare a `trigger_conditions` schema in `manifest.json` — the fields a user fills in when creating a trigger from your app.
+2. You implement a `trigger(settings, conditions)` function in `app.py` that returns `True` when the condition is met.
+3. The OS calls `trigger()` on a background thread at `trigger_interval` seconds. When it returns `True`, the app's pages are fetched and shown as an interrupt.
+
+### manifest.json additions
+
+```json
+{
+  "trigger_interval": 60,
+  "trigger_display_seconds": 30,
+  "trigger_cooldown": 300,
+  "trigger_conditions": [
+    {
+      "key": "events",
+      "label": "Fire when",
+      "type": "toggle",
+      "options": [
+        {"value": "game_start", "label": "Game starts"},
+        {"value": "score_change", "label": "Score changes"},
+        {"value": "close_game", "label": "Close game (within 5)"},
+        {"value": "final", "label": "Game ends"}
+      ],
+      "default": "game_start"
+    },
+    {
+      "key": "teams",
+      "label": "Specific teams (empty = all followed)",
+      "type": "text",
+      "default": ""
+    }
+  ]
+}
+```
+
+| Field | Description |
+|-------|-------------|
+| `trigger_interval` | How often (seconds) the OS calls `trigger()`. Keep this reasonable — 30–300s for most apps. |
+| `trigger_display_seconds` | How long to show the interrupt. Default shown in trigger UI; user can override. |
+| `trigger_cooldown` | Minimum seconds between fires for the same trigger. Prevents spam. |
+| `trigger_conditions` | Schema for per-trigger condition fields. Same field types as `settings`. |
+
+`trigger_conditions` supports all the same field types as `settings`: `text`, `number`, `toggle`, `select`, `search_chips`, `visible_when`, etc.
+
+### app.py trigger function
+
+```python
+def trigger(settings, conditions):
+    """
+    Called periodically by the OS. Return True to interrupt the display.
+
+    Args:
+        settings: dict — full app settings (same as fetch() receives)
+        conditions: dict — the user-configured condition values for this trigger
+
+    Returns:
+        bool — True to fire, False to skip
+    """
+    event_type = conditions.get('events', 'game_start')
+    teams = conditions.get('teams', '').split(',') if conditions.get('teams') else []
+    # ... check your data source ...
+    return False
+```
+
+The function must be **fast and non-blocking** — it runs on the trigger thread and blocks other trigger checks. If you need to make a network call, cache the result and return quickly.
+
+### State between calls
+
+Use the same `setattr` pattern as `fetch()` to persist state across calls:
+
+```python
+def trigger(settings, conditions):
+    state = getattr(trigger, '_state', None)
+    if state is None:
+        state = {'last_seen': set()}
+        setattr(trigger, '_state', state)
+
+    # check for new items not in last_seen
+    new_items = fetch_new_items(settings)
+    fired = bool(new_items - state['last_seen'])
+    state['last_seen'] = new_items
+    return fired
+```
+
+### Example: BirdNET rare species trigger
+
+```json
+// manifest.json trigger_conditions
+[
+  {
+    "key": "species_filter",
+    "label": "Fire for",
+    "type": "toggle",
+    "options": [
+      {"value": "any", "label": "Any detection"},
+      {"value": "new", "label": "New species (not seen today)"},
+      {"value": "specific", "label": "Specific species"}
+    ],
+    "default": "any"
+  },
+  {
+    "key": "species_name",
+    "label": "Species name",
+    "type": "text",
+    "default": "",
+    "visible_when": {"species_filter": "specific"}
+  }
+]
+```
+
+```python
+# app.py
+def trigger(settings, conditions):
+    import requests
+    host = settings.get('birdnet_host', '192.168.86.139')
+    port = settings.get('birdnet_port', '80')
+    min_conf = int(settings.get('min_confidence', '70')) / 100
+    species_filter = conditions.get('species_filter', 'any')
+    species_name = conditions.get('species_name', '').lower()
+
+    state = getattr(trigger, '_state', None)
+    if state is None:
+        state = {'seen_today': set(), 'last_id': None}
+        setattr(trigger, '_state', state)
+
+    try:
+        r = requests.get(f"http://{host}:{port}/api/v1/detections/recent?limit=5", timeout=5)
+        detections = [d for d in r.json() if d['confidence'] >= min_conf]
+        if not detections:
+            return False
+        latest = detections[0]
+        if latest.get('id') == state['last_id']:
+            return False  # nothing new
+        state['last_id'] = latest.get('id')
+
+        if species_filter == 'any':
+            return True
+        if species_filter == 'specific':
+            return species_name in latest['species'].lower()
+        if species_filter == 'new':
+            sp = latest['species']
+            if sp not in state['seen_today']:
+                state['seen_today'].add(sp)
+                return True
+        return False
+    except Exception:
+        return False
+```
+
+### Triggers that don't need conditions
+
+If your app has a single obvious trigger condition (e.g. "ISS is overhead"), you can omit `trigger_conditions` entirely. The trigger UI will show just the display duration and cooldown controls.
+
+```json
+{
+  "trigger_interval": 60,
+  "trigger_display_seconds": 30,
+  "trigger_cooldown": 600
+}
+```
+
+```python
+def trigger(settings, conditions):
+    return is_iss_overhead(settings)
+```
+
+
 ## Optional: Lucide Icon in Settings Modal
 
 The settings modal title uses the emoji from `manifest.json` by default. If you want a Lucide icon instead, add your app to the `LUCIDE_APP_ICONS` map in `server/static/app.js`:

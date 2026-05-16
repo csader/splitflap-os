@@ -302,6 +302,7 @@ function openMenuPage(name){
   if(name==='calibration') loadSettingsData();
   if(name==='settings') loadSettingsData();
   if(name==='library') loadAppLibrary();
+  if(name==='schedules') loadSchedules();
   if(typeof lucide!=='undefined') lucide.createIcons();
 }
 
@@ -3077,6 +3078,190 @@ function saveHotspotConfig(){
   fetch('/network_config',{method:'POST',headers:{'Content-Type':'application/json'},
     body:JSON.stringify({hotspot_ssid:ssid, hotspot_password:pass})})
   .then(()=>showToast('Hotspot config saved'));
+}
+
+// ============================================================
+//  SCHEDULES + QUIET HOURS
+// ============================================================
+const DAYS = ['sun','mon','tue','wed','thu','fri','sat'];
+const DAY_LABELS = ['S','M','T','W','T','F','S'];
+let _schedules = [];
+let _schedulesDirty = false;
+
+function setSchedulesDirty(v){ _schedulesDirty = v; }
+
+function loadSchedules(){
+  fetch('/schedules').then(r=>r.json()).then(data=>{
+    _schedules = data.schedules || [];
+    document.getElementById('quietHoursEnabled').checked = !!data.quiet_hours_enabled;
+    document.getElementById('quietHoursStart').value = data.quiet_hours_start || '22:00';
+    document.getElementById('quietHoursEnd').value = data.quiet_hours_end || '07:00';
+    _renderQuietHoursDays(data.quiet_hours_days || DAYS);
+    _renderScheduleList();
+    setSchedulesDirty(false);
+    if(typeof lucide!=='undefined') lucide.createIcons();
+  });
+}
+
+function _renderQuietHoursDays(activeDays){
+  const el = document.getElementById('quietHoursDays');
+  if(!el) return;
+  el.innerHTML = '';
+  DAYS.forEach((d, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'btn btn-sm';
+    btn.style.cssText = `min-width:32px;padding:4px 6px;font-size:.8rem;background:${activeDays.includes(d)?'var(--accent)':'#333'};color:#fff;border:1px solid #555`;
+    btn.textContent = DAY_LABELS[i];
+    btn.dataset.day = d;
+    btn.onclick = () => {
+      btn.style.background = btn.style.background.includes('accent') ? '#333' : 'var(--accent)';
+      setSchedulesDirty(true);
+    };
+    el.appendChild(btn);
+  });
+}
+
+function _getQuietHoursDays(){
+  return Array.from(document.querySelectorAll('#quietHoursDays button'))
+    .filter(b => b.style.background.includes('accent'))
+    .map(b => b.dataset.day);
+}
+
+function _renderScheduleList(){
+  const el = document.getElementById('scheduleList');
+  if(!el) return;
+  if(!_schedules.length){
+    el.innerHTML='<div style="color:#666;font-style:italic;font-size:.85rem">No schedules yet.</div>';
+    return;
+  }
+  el.innerHTML='';
+  _schedules.forEach((s, i) => {
+    const row = document.createElement('div');
+    row.style.cssText='display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid #2a2a2a';
+    const days = s.days.map(d=>DAY_LABELS[DAYS.indexOf(d)]).join('');
+    const action = s.action.type==='off' ? 'Off' : s.action.type==='app' ? `App: ${s.action.value}` : `Playlist: ${s.action.value}`;
+    row.innerHTML=`
+      <label class="switch" style="flex-shrink:0"><input type="checkbox" ${s.enabled?'checked':''} onchange="_toggleSchedule(${i},this.checked)"><span class="slider"></span></label>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:.9rem;font-weight:600;color:#fff">${s.name||'Unnamed'}</div>
+        <div style="font-size:.75rem;color:#888">${days} · ${s.start_time}–${s.end_time} · ${action}</div>
+      </div>
+      <button class="btn btn-secondary btn-sm" onclick="openEditSchedule(${i})">Edit</button>
+      <button class="btn-del btn-sm" style="padding:4px 8px;border-radius:4px" onclick="_deleteSchedule(${i})">✕</button>`;
+    el.appendChild(row);
+  });
+}
+
+function _toggleSchedule(idx, enabled){
+  _schedules[idx].enabled = enabled;
+  fetch('/schedules',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({schedules:_schedules})});
+}
+
+function _deleteSchedule(idx){
+  _schedules.splice(idx,1);
+  fetch('/schedules',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({schedules:_schedules})})
+  .then(()=>_renderScheduleList());
+}
+
+function saveSchedules(){
+  const data = {
+    schedules: _schedules,
+    quiet_hours_enabled: document.getElementById('quietHoursEnabled').checked,
+    quiet_hours_start: document.getElementById('quietHoursStart').value,
+    quiet_hours_end: document.getElementById('quietHoursEnd').value,
+    quiet_hours_days: _getQuietHoursDays(),
+  };
+  fetch('/schedules',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify(data)})
+  .then(()=>{ showToast('Schedules saved'); setSchedulesDirty(false); });
+}
+
+function openAddSchedule(){ _openScheduleModal(null); }
+function openEditSchedule(idx){ _openScheduleModal(idx); }
+
+function _openScheduleModal(idx){
+  const isEdit = idx !== null;
+  const s = isEdit ? {..._schedules[idx], action:{..._schedules[idx].action}} : {
+    id: 'sched_'+Date.now(), name:'', enabled:true,
+    days:[...DAYS], start_time:'07:00', end_time:'09:00',
+    action:{type:'app', value:''}
+  };
+
+  const modal = document.createElement('div');
+  modal.className='modal-overlay';
+  modal.style.display='flex';
+  modal.innerHTML=`
+    <div class="modal-content" style="max-width:420px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+        <h3 style="color:var(--accent);margin:0">${isEdit?'Edit':'Add'} Schedule</h3>
+        <button style="background:none;border:none;color:#888;font-size:1.3rem;cursor:pointer;line-height:1" onclick="this.closest('.modal-overlay').remove()">✕</button>
+      </div>
+      <label class="field-label">Name</label>
+      <input type="text" id="schedModalName" value="${s.name||''}" placeholder="e.g. Morning weather" class="line-input" style="font-size:.9rem;margin-bottom:12px">
+      <label class="field-label">Days</label>
+      <div style="display:flex;gap:5px;margin-bottom:12px" id="schedModalDays">
+        ${DAYS.map((d,i)=>`<button type="button" data-day="${d}" style="min-width:30px;padding:4px 5px;font-size:.8rem;border-radius:4px;border:1px solid #555;cursor:pointer;background:${s.days.includes(d)?'var(--accent)':'#333'};color:#fff" onclick="this.style.background=this.style.background.includes('accent')?'#333':'var(--accent)'">${DAY_LABELS[i]}</button>`).join('')}
+      </div>
+      <div style="display:flex;gap:12px;margin-bottom:12px">
+        <div style="flex:1"><label class="field-label">From</label><input type="time" id="schedModalStart" value="${s.start_time}" class="line-input" style="font-size:.9rem;margin:0"></div>
+        <div style="flex:1"><label class="field-label">To</label><input type="time" id="schedModalEnd" value="${s.end_time}" class="line-input" style="font-size:.9rem;margin:0"></div>
+      </div>
+      <label class="field-label">Action</label>
+      <div style="display:flex;gap:6px;margin-bottom:10px">
+        ${['app','playlist','off'].map(t=>`<button type="button" class="btn btn-sm" data-atype="${t}" style="flex:1;background:${s.action.type===t?'var(--accent)':'#333'};color:#fff;border:1px solid #555" onclick="document.querySelectorAll('[data-atype]').forEach(b=>b.style.background='#333');this.style.background='var(--accent)';_updateSchedActionValue()">${t==='off'?'Off':t==='app'?'App':'Playlist'}</button>`).join('')}
+      </div>
+      <div id="schedModalActionValue" style="margin-bottom:14px"></div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-success" style="flex:1" onclick="_saveScheduleModal(${isEdit?idx:'null'},'${s.id}')">Save</button>
+        <button class="btn" style="background:#333;color:#aaa;border:1px solid #555" onclick="this.closest('.modal-overlay').remove()">Cancel</button>
+      </div>
+    </div>`;
+  document.body.appendChild(modal);
+  _updateSchedActionValue(s.action);
+  setTimeout(()=>document.getElementById('schedModalName').focus(),50);
+}
+
+function _updateSchedActionValue(action){
+  const el = document.getElementById('schedModalActionValue');
+  if(!el) return;
+  const atype = (document.querySelector('[data-atype][style*="accent"]')||{}).dataset?.atype || (action?.type||'app');
+  if(atype==='off'){ el.innerHTML=''; return; }
+  const val = action?.value||'';
+  if(atype==='app'){
+    fetch('/installed_apps').then(r=>r.json()).then(data=>{
+      const apps = (data.apps||[]);
+      el.innerHTML=`<label class="field-label">App</label><select id="schedModalValue" class="line-input" style="font-size:.9rem;margin:0">
+        ${apps.map(a=>`<option value="${a.plugin_id||a.key}"${(a.plugin_id||a.key)===val?' selected':''}>${a.name}</option>`).join('')}
+      </select>`;
+    });
+  } else {
+    fetch('/app_playlists').then(r=>r.json()).then(data=>{
+      const names = Object.keys(data);
+      el.innerHTML=`<label class="field-label">Playlist</label><select id="schedModalValue" class="line-input" style="font-size:.9rem;margin:0">
+        ${names.map(n=>`<option value="${n}"${n===val?' selected':''}>${n}</option>`).join('')}
+      </select>`;
+    });
+  }
+}
+
+function _saveScheduleModal(idx, id){
+  const modal = document.querySelector('.modal-overlay');
+  const name = document.getElementById('schedModalName').value.trim();
+  const days = Array.from(document.querySelectorAll('#schedModalDays [data-day]'))
+    .filter(b=>b.style.background.includes('accent')).map(b=>b.dataset.day);
+  const start_time = document.getElementById('schedModalStart').value;
+  const end_time = document.getElementById('schedModalEnd').value;
+  const atype = (document.querySelector('[data-atype][style*="accent"]')||{}).dataset?.atype||'app';
+  const valEl = document.getElementById('schedModalValue');
+  const value = valEl ? valEl.value : '';
+  const sched = {id, name, enabled:true, days, start_time, end_time, action:{type:atype, value}};
+  if(idx===null || idx==='null') _schedules.push(sched);
+  else _schedules[idx] = sched;
+  fetch('/schedules',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({schedules:_schedules})})
+  .then(()=>{ fetch('/schedule_tick',{method:'POST'}); _renderScheduleList(); modal.remove(); showToast('Schedule saved'); });
 }
 
 // ============================================================

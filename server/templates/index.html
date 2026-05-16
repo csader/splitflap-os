@@ -16,7 +16,7 @@
     <div style="display:flex;align-items:center;gap:8px">
       <button class="hamburger-btn" onclick="toggleHamburger()"><i data-lucide="menu" style="width:20px;height:20px"></i></button>
       <a href="/" style="display:flex;align-items:center"><img src="/static/logo.svg" alt="Splitflap OS" style="height:24px"></a>
-      <span id="versionBadge" style="font-size:.65rem;color:#555;font-weight:bold;letter-spacing:.5px;cursor:pointer" onclick="openMenuPage('settings')">v0.1.12</span>
+      <span id="versionBadge" style="font-size:.65rem;color:#555;font-weight:bold;letter-spacing:.5px;cursor:pointer" onclick="openMenuPage('settings')">v{{ version }}</span>
     </div>
     <div style="display:flex;align-items:center;gap:6px">
       <span id="networkIndicator" title="Network status" style="cursor:pointer;display:flex;align-items:center" onclick="openMenuPage('settings')"><i data-lucide="wifi" style="width:14px;height:14px;color:#555"></i></span>
@@ -46,6 +46,19 @@
     <div id="composeGridContainer"></div>
     <!-- Hidden line inputs for playlist compat -->
     <input type="hidden" id="L1"><input type="hidden" id="L2"><input type="hidden" id="L3">
+
+    <div style="display:flex;align-items:center;gap:10px;margin:8px 0;flex-wrap:wrap">
+      <label style="font-size:.8rem;color:#aaa;display:flex;align-items:center;gap:4px">
+        ↔
+        <select id="composeStyleInput" style="background:#111;color:#fff;border:1px solid #444;border-radius:3px;padding:3px 5px;font-size:.78rem"></select>
+      </label>
+      <label id="composeSpeedWrap" style="font-size:.8rem;color:#aaa;display:flex;align-items:center;gap:4px">
+        ⚡
+        <input type="number" id="composeSpeedInput" value="15" min="0" max="500" step="5"
+          style="width:50px;background:#111;color:#fff;border:1px solid #444;border-radius:3px;padding:3px 5px;font-size:.8rem;text-align:center">
+        ms
+      </label>
+    </div>
 
     <button class="btn btn-primary" onclick="sync()">PUSH TO DISPLAY</button>
   </div>
@@ -185,6 +198,21 @@
         <div><label class="field-label">Display Cols</label><input type="number" id="simCols" value="15" min="1" max="50" class="line-input" style="font-size:.95rem;margin:0"></div>
         <div><label class="field-label">Delay Between Pages (seconds)</label><input type="number" id="globalLoopDelay" value="5" min="1" max="60" step="1" class="line-input" style="font-size:.95rem;margin:0"></div>
         <div class="span2"><label class="field-label">Timezone</label><div id="globalTzPicker"></div></div>
+      </div>
+      <div style="margin-top:14px;padding-top:12px;border-top:1px solid #333">
+        <h4 style="margin:0 0 8px;font-size:.9rem;color:#aaa">Transition Style</h4>
+        <p style="color:#666;font-size:.8rem;margin:0 0 10px 0">Default style and speed for all display transitions.</p>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end">
+          <div>
+            <label class="field-label" style="margin-bottom:4px">Style</label>
+            <select id="transitionStyle" onchange="setSettingsDirty(true);updateTransitionSpeedDefault(this.value)" class="line-input" style="font-size:.9rem;margin:0"></select>
+          </div>
+          <div id="transitionSpeedWrap">
+            <label class="field-label" style="margin-bottom:4px">Speed (ms/module)</label>
+            <input type="number" id="transitionSpeed" value="15" min="0" max="500" step="5"
+              oninput="setSettingsDirty(true)" class="line-input" style="font-size:.9rem;margin:0;width:80px">
+          </div>
+        </div>
       </div>
   <button class="settings-fab" id="settingsFab" onclick="saveGlobal()"><i data-lucide="save" style="width:16px;height:16px"></i> Save Settings</button>
     </div>

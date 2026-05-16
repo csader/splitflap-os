@@ -7,7 +7,7 @@ Wants=splitflap-network.service
 Type=simple
 User=root
 WorkingDirectory=/opt/splitflap-os/server
-ExecStart=/usr/bin/python3 -c "import app; app.app.run(host='0.0.0.0', port=80)"
+ExecStart=/opt/splitflap-os/venv/bin/python -c "import app; app.app.run(host='0.0.0.0', port=80)"
 Restart=on-failure
 RestartSec=5
 Environment=SPLITFLAP_CONFIG=/opt/splitflap-os/server/settings.json

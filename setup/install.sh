@@ -1,11 +1,12 @@
 #!/bin/bash
-# install.sh — Set up Splitflap OS on a Raspberry Pi (Bookworm)
+# install.sh — Set up Splitflap OS on a Raspberry Pi (Bookworm / Trixie)
 # Run as root from the repo directory: sudo bash setup/install.sh
 
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_DIR="$(dirname "$SCRIPT_DIR")"
+VENV_DIR="$REPO_DIR/venv"
 
 echo "=== Splitflap OS Installer ==="
 echo "  Installing from: $REPO_DIR"
@@ -20,7 +21,7 @@ fi
 # Install system packages
 echo "[1/4] Installing system packages..."
 apt-get update -qq
-apt-get install -y -qq python3-pip python3-venv network-manager libopenblas0 > /dev/null
+apt-get install -y python3-pip python3-venv network-manager libopenblas0
 
 # Ensure NetworkManager manages WiFi
 echo "[2/4] Configuring NetworkManager..."
@@ -29,10 +30,17 @@ if ! systemctl is-active --quiet NetworkManager; then
     systemctl start NetworkManager
 fi
 
-# Install Python dependencies
+# Create venv and install Python dependencies
+# Using a venv avoids PEP 668 conflicts on Bookworm/Trixie and keeps
+# dependencies isolated from the system Python.
+# --prefer-binary uses pre-built wheels — much faster on Pi Zero W (ARMv6).
 echo "[3/4] Installing Python dependencies..."
-pip3 install -q --break-system-packages -r "$REPO_DIR/server/requirements.txt" 2>/dev/null || \
-pip3 install -q -r "$REPO_DIR/server/requirements.txt"
+if [ ! -d "$VENV_DIR" ]; then
+    echo "  Creating virtual environment..."
+    python3 -m venv "$VENV_DIR"
+fi
+echo "  Installing packages (this may take a while on Pi Zero W)..."
+"$VENV_DIR/bin/pip" install --prefer-binary -r "$REPO_DIR/server/requirements.txt"
 
 # Make scripts executable
 chmod +x "$REPO_DIR/setup/network-check.sh"

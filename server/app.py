@@ -2232,7 +2232,7 @@ def apply_update():
                 else:
                     subprocess.run(['systemctl', 'restart', 'splitflap.service'], timeout=10)
             except Exception:
-                os.execv('/usr/bin/python3', ['/usr/bin/python3'] + os.sys.argv)
+                os.execv(os.sys.executable, [os.sys.executable] + os.sys.argv)
         threading.Thread(target=_restart, daemon=True).start()
         return jsonify(status='updating', needs_install=needs_install)
     except Exception as e:

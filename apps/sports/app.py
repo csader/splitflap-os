@@ -22,10 +22,6 @@ LEAGUES = {
 
 def fetch(settings, format_lines, get_rows, get_cols):
     import requests, logging
-    # One-time migration from old nhl_teams key
-    if settings.get('nhl_teams') and not settings.get('sports_nhl'):
-        settings['sports_nhl'] = settings['nhl_teams']
-        settings['nhl_teams'] = ''
 
     game_filter = settings.get('sports_filter', 'all')
     show_league = settings.get('sports_show_league', 'yes') == 'yes'

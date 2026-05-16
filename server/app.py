@@ -2221,7 +2221,8 @@ def apply_update():
         _update_cache['checked_at'] = 0  # invalidate cache
 
         req_hash_after = _hash_file(req_path)
-        needs_install = req_hash_before != req_hash_after
+        venv_exists = os.path.isfile(os.path.join(repo_dir, 'venv', 'bin', 'python'))
+        needs_install = req_hash_before != req_hash_after or not venv_exists
 
         def _restart():
             time.sleep(1)

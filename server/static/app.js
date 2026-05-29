@@ -54,10 +54,13 @@ const TRANSITION_STYLES = [
   {v:'slot',         l:'Slot machine'},
 ];
 
-function buildStyleOptions(selected='ltr'){
-  return TRANSITION_STYLES.map(s=>
+function buildStyleOptions(selected='ltr', includeDefault=false){
+  let html = '';
+  if(includeDefault) html += `<option value=""${!selected?' selected':''}>Default (global)</option>`;
+  html += TRANSITION_STYLES.map(s=>
     `<option value="${s.v}"${s.v===selected?' selected':''}>${s.l}</option>`
   ).join('');
+  return html;
 }
 
 // Update a single property on a playlist item in-place (called from rendered list)
@@ -767,7 +770,7 @@ function renderPlaylist(){
           ↔
           <select style="background:#111;color:#fff;border:1px solid #444;border-radius:3px;padding:3px 5px;font-size:.78rem"
             onchange="updatePlaylistItem(${idx},'style',this.value)">
-            ${buildStyleOptions(item.style||'ltr')}
+            ${buildStyleOptions(item.style||'', true)}
           </select>
         </label>
         <label style="font-size:.78rem;color:#aaa;display:flex;align-items:center;gap:4px">
@@ -812,8 +815,10 @@ function removeFromPlaylist(idx){
 }
 
 function sync(){
-  const style = document.getElementById('composeStyleInput')?.value || 'ltr';
-  const speed = parseInt(document.getElementById('composeSpeedInput')?.value) || 15;
+  const styleEl = document.getElementById('composeStyleInput');
+  const style = styleEl?.value || document.getElementById('transitionStyle')?.value || 'ltr';
+  const speedEl = document.getElementById('composeSpeedInput');
+  const speed = parseInt(speedEl?.value) || parseInt(document.getElementById('transitionSpeed')?.value) || 15;
   const pages = [{
     text:  updatePreview(),
     delay: 5,
@@ -2707,7 +2712,7 @@ function tmFinishEarly(){
   const ts = document.getElementById('transitionStyle');
   if(ts) ts.innerHTML = buildStyleOptions('ltr');
   const cs = document.getElementById('composeStyleInput');
-  if(cs) cs.innerHTML = buildStyleOptions('ltr');
+  if(cs) cs.innerHTML = buildStyleOptions('', true);
 })();
 
 document.querySelectorAll('button[onclick="saveGlobal()"]:not(#settingsFab)').forEach(el => el.remove());
@@ -2966,7 +2971,7 @@ function renderAppPlaylistEntries(){
         <span style="font-size:.75rem;color:#888">s</span>
         <select style="background:#111;color:#fff;border:1px solid #444;border-radius:3px;padding:2px 4px;font-size:.72rem"
           onchange="appPlaylistEntries[${i}].style=this.value" title="Transition style">
-          ${buildStyleOptions(entry.style||'ltr')}
+          ${buildStyleOptions(entry.style||'', true)}
         </select>
         <input type="number" value="${entry.speed||15}" min="0" max="500" step="5" title="Speed (ms/module)"
           style="width:40px;background:#111;color:#fff;border:1px solid #444;border-radius:3px;padding:2px 4px;font-size:.72rem;text-align:center"

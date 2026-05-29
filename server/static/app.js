@@ -3759,15 +3759,25 @@ function applyUpdate(){
     setStep('🔄','Restarting…','Server is restarting…',true,false,false);
   });
 
-  // Poll until server comes back
+  // Poll until server goes down and comes back with a new version
   let attempts = 0;
+  let serverWentDown = false;
+  const startVersion = document.getElementById('versionBadge')?.textContent?.replace('v','').trim() || '';
   const poll = setInterval(()=>{
     attempts++;
     fetch('/version').then(r=>r.json()).then(data=>{
-      clearInterval(poll);
-      done = true;
-      setStep('✅','Update complete!',`v${data.version} installed successfully.`,false,true,false);
+      if(!serverWentDown && data.version === startVersion && attempts < 5) return; // still old process
+      serverWentDown = true; // if version changed, treat as restarted
+      if(data.version !== startVersion){
+        clearInterval(poll);
+        done = true;
+        setStep('✅','Update complete!',`v${data.version} installed successfully.`,false,true,false);
+      } else if(attempts > 90){
+        clearInterval(poll);
+        setStep('⚠️','Update may have failed',`Server is still on v${data.version}. Try restarting manually: sudo systemctl restart splitflap.service`,false,true,true);
+      }
     }).catch(()=>{
+      serverWentDown = true; // server is down — restart in progress
       if(attempts > 90){
         clearInterval(poll);
         setStep('⚠️','Taking longer than expected','The server may still be restarting. Try reloading manually.',false,true,true);

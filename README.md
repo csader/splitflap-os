@@ -14,6 +14,7 @@ Built on [Adam G Makes' Split-Flap Display](https://github.com/adamgmakes/SplitF
 - **Calibration tools** — hardware inspector, auto fine-tune, teach mode
 - **MQTT** — Home Assistant integration with auto-discovery
 - **Configurable serial port** — auto-detect available ports or enter a custom path; supports env var, settings UI, and Docker deployments
+- **SplitFlap Gateway (MQTT)** — alternatively drive the display remotely through an ESP32 gateway over MQTT instead of a local serial port; configure broker, port, topic prefix, and optional credentials in the settings UI
 - **WiFi hotspot fallback** — Pi creates its own network when no WiFi is found, so you can always access the UI
 - **Offline resilience** — internet-dependent apps degrade gracefully, offline apps keep running
 - **Plugin architecture** — community apps via manifest + fetch pattern
@@ -62,6 +63,34 @@ sudo bash setup/install.sh
 This project is the **web UI only**. For the firmware and physical display hardware (3D printed parts, PCBs, BOM), see the original project by Adam G Makes:
 
 **https://github.com/adamgmakes/SplitFlapDisplay**
+
+## SplitFlap Gateway (MQTT)
+
+Instead of a local serial connection, SplitFlap OS can drive the display through a **SplitFlap Gateway** (an ESP32 running `SplitFlapGateway_2.ino`) over MQTT. This is useful when the display and the server aren't physically wired together.
+
+Switch modes under **Settings > Hardware Connection > Connection Type**. When "SplitFlap Gateway (MQTT)" is selected, enter the broker address, port, topic prefix, and optional username/password, then click **Connect Gateway**.
+
+SplitFlap OS only interacts with two topics, so the impact on the rest of the system is minimal:
+
+| Topic | Direction | Payload |
+|-------|-----------|---------|
+| `<prefix>/send` | OS → gateway | Raw RS485 frame (e.g. `m05-A\n`), forwarded verbatim to the bus |
+| `<prefix>/rx`   | gateway → OS | JSON `{"command":"<frame>", ...}` for each frame received from a module |
+
+The gateway transport presents the same interface as a serial port internally, so calibration, EEPROM sync, and all display writes work identically in either mode.
+
+These settings can also be supplied via environment variables (useful for Docker/headless deployments), which take precedence over the settings file:
+
+```
+SPLITFLAP_CONNECTION_TYPE=gateway     # 'serial' (default) or 'gateway'
+SPLITFLAP_GATEWAY_BROKER=192.168.1.50
+SPLITFLAP_GATEWAY_PORT=1883
+SPLITFLAP_GATEWAY_PREFIX=splitflap
+SPLITFLAP_GATEWAY_USER=               # optional
+SPLITFLAP_GATEWAY_PASSWORD=           # optional
+```
+
+> Note: this MQTT connection (display transport) is independent of the existing **MQTT / Home Assistant** integration (state publishing & control), which continues to use its own broker settings.
 
 ## Repo Structure
 

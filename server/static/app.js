@@ -2066,6 +2066,7 @@ function loadSettingsData(){
     selectModule(selectedModule);
     setSettingsDirty(false);
     refreshSerialPorts();
+    loadConnectionConfig();
   });
 }
 
@@ -2133,11 +2134,74 @@ function applySerialPort(){
       if(data.status==='success'){
         status.textContent = data.sim_mode ? 'Set (simulation — could not open)' : 'Connected';
         status.style.color = data.sim_mode ? '#f90' : '#0f0';
+        const ctSel = document.getElementById('connectionType');
+        if(ctSel){ ctSel.value = 'serial'; onConnectionTypeChange('serial'); }
         showToast(data.sim_mode ? 'Port saved but could not open — simulation mode' : 'Serial port connected');
       } else {
         status.textContent = data.message||'Error';
         status.style.color = '#f44';
         showToast(data.message||'Error setting port','error');
+      }
+    }).catch(()=>{
+      status.textContent = 'Request failed';
+      status.style.color = '#f44';
+    });
+}
+
+// --- Hardware Connection (serial vs MQTT gateway) UI ---
+function onConnectionTypeChange(val){
+  const isGw = val === 'gateway';
+  document.getElementById('connSerialPanel').style.display = isGw ? 'none' : '';
+  document.getElementById('connGatewayPanel').style.display = isGw ? '' : 'none';
+}
+
+function loadConnectionConfig(){
+  fetch('/connection').then(r=>r.json()).then(data=>{
+    const type = data.type || 'serial';
+    const sel = document.getElementById('connectionType');
+    if(sel) sel.value = type;
+    document.getElementById('gatewayBroker').value = data.gateway_broker || '';
+    document.getElementById('gatewayPort').value = data.gateway_port || 1883;
+    document.getElementById('gatewayPrefix').value = data.gateway_prefix || 'splitflap';
+    document.getElementById('gatewayUser').value = data.gateway_user || '';
+    // Password is never echoed; show a placeholder hint if one is set.
+    const pwEl = document.getElementById('gatewayPassword');
+    pwEl.value = '';
+    pwEl.placeholder = data.gateway_password_set ? '•••••• (leave blank to keep current)' : '(optional)';
+    onConnectionTypeChange(type);
+    if(type === 'gateway'){
+      const status = document.getElementById('gatewayStatus');
+      if(status){
+        status.textContent = data.sim_mode ? 'Not connected (simulation)' : 'Connected';
+        status.style.color = data.sim_mode ? '#f90' : '#0f0';
+      }
+    }
+  });
+}
+
+function applyGatewayConnection(){
+  const broker = document.getElementById('gatewayBroker').value.trim();
+  if(!broker){ showToast('Enter the MQTT broker address','error'); return; }
+  const port = parseInt(document.getElementById('gatewayPort').value) || 1883;
+  const prefix = document.getElementById('gatewayPrefix').value.trim() || 'splitflap';
+  const user = document.getElementById('gatewayUser').value.trim();
+  const password = document.getElementById('gatewayPassword').value; // blank = keep current
+  const status = document.getElementById('gatewayStatus');
+  status.textContent = 'Connecting...';
+  status.style.color = '#888';
+  fetch('/connection',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({type:'gateway', broker, port, prefix, user, password})})
+    .then(r=>r.json()).then(data=>{
+      if(data.status==='success'){
+        status.textContent = data.sim_mode ? 'Saved (gateway unreachable — simulation)' : 'Connected';
+        status.style.color = data.sim_mode ? '#f90' : '#0f0';
+        showToast(data.message || 'Gateway settings saved');
+        // Clear the password field; it's persisted server-side now.
+        document.getElementById('gatewayPassword').value = '';
+      } else {
+        status.textContent = data.message || 'Error';
+        status.style.color = '#f44';
+        showToast(data.message || 'Error connecting gateway','error');
       }
     }).catch(()=>{
       status.textContent = 'Request failed';

@@ -270,25 +270,53 @@
   <button class="settings-fab" id="settingsFab" onclick="saveGlobal()"><i data-lucide="save" style="width:16px;height:16px"></i> Save Settings</button>
     </div>
     <div class="config-section">
-      <h3>Serial Port</h3>
-      <p style="color:#888;font-size:.85rem;margin-top:0">Select a detected port or enter a custom path (e.g. /tmp/ttyVSF0).</p>
+      <h3>Hardware Connection</h3>
+      <p style="color:#888;font-size:.85rem;margin-top:0">Choose how splitflap-os talks to the display: directly over a local serial port, or remotely via a <strong>SplitFlap Gateway</strong> over MQTT.</p>
       <div class="settings-grid">
         <div class="span2">
-          <label class="field-label">Port</label>
-          <div style="display:flex;gap:8px;align-items:center">
-            <select id="serialPortSelect" class="line-input" style="font-size:.9rem;margin:0;flex:1" onchange="onSerialPortSelect(this.value)">
-              <option value="">Loading...</option>
-            </select>
-            <button class="btn btn-secondary btn-sm" onclick="refreshSerialPorts()" title="Refresh"><i data-lucide="refresh-cw" style="width:14px;height:14px"></i></button>
-          </div>
-        </div>
-        <div class="span2" id="serialPortManualWrap" style="display:none">
-          <label class="field-label">Custom Path</label>
-          <input type="text" id="serialPortManual" class="line-input" style="font-size:.95rem;margin:0" placeholder="/dev/ttyUSB0 or /tmp/ttyVSF0">
+          <label class="field-label">Connection Type</label>
+          <select id="connectionType" class="line-input" style="font-size:.9rem;margin:0" onchange="onConnectionTypeChange(this.value)">
+            <option value="serial">Serial Port (local USB)</option>
+            <option value="gateway">SplitFlap Gateway (MQTT)</option>
+          </select>
         </div>
       </div>
-      <button class="btn btn-success btn-sm" style="margin-top:10px" onclick="applySerialPort()">Apply</button>
-      <span id="serialPortStatus" style="margin-left:10px;font-size:.85rem;color:#888"></span>
+
+      <!-- Serial panel -->
+      <div id="connSerialPanel" style="margin-top:14px">
+        <p style="color:#888;font-size:.85rem;margin-top:0">Select a detected port or enter a custom path (e.g. /tmp/ttyVSF0).</p>
+        <div class="settings-grid">
+          <div class="span2">
+            <label class="field-label">Port</label>
+            <div style="display:flex;gap:8px;align-items:center">
+              <select id="serialPortSelect" class="line-input" style="font-size:.9rem;margin:0;flex:1" onchange="onSerialPortSelect(this.value)">
+                <option value="">Loading...</option>
+              </select>
+              <button class="btn btn-secondary btn-sm" onclick="refreshSerialPorts()" title="Refresh"><i data-lucide="refresh-cw" style="width:14px;height:14px"></i></button>
+            </div>
+          </div>
+          <div class="span2" id="serialPortManualWrap" style="display:none">
+            <label class="field-label">Custom Path</label>
+            <input type="text" id="serialPortManual" class="line-input" style="font-size:.95rem;margin:0" placeholder="/dev/ttyUSB0 or /tmp/ttyVSF0">
+          </div>
+        </div>
+        <button class="btn btn-success btn-sm" style="margin-top:10px" onclick="applySerialPort()">Apply</button>
+        <span id="serialPortStatus" style="margin-left:10px;font-size:.85rem;color:#888"></span>
+      </div>
+
+      <!-- Gateway (MQTT) panel -->
+      <div id="connGatewayPanel" style="margin-top:14px;display:none">
+        <p style="color:#888;font-size:.85rem;margin-top:0">splitflap-os publishes frames to <code>&lt;prefix&gt;/send</code> and listens on <code>&lt;prefix&gt;/rx</code>. Make sure these match the gateway's configured topic prefix.</p>
+        <div class="settings-grid">
+          <div><label class="field-label">Broker Address</label><input type="text" id="gatewayBroker" class="line-input" style="font-size:.95rem;margin:0" placeholder="192.168.1.50 or mqtt.local"></div>
+          <div><label class="field-label">Port</label><input type="number" id="gatewayPort" class="line-input" style="font-size:.95rem;margin:0" value="1883"></div>
+          <div><label class="field-label">Topic Prefix</label><input type="text" id="gatewayPrefix" class="line-input" style="font-size:.95rem;margin:0" placeholder="splitflap"></div>
+          <div><label class="field-label">Username <span style="color:#666">(optional)</span></label><input type="text" id="gatewayUser" class="line-input" style="font-size:.95rem;margin:0" placeholder="(optional)"></div>
+          <div class="span2"><label class="field-label">Password <span style="color:#666">(optional)</span></label><input type="password" id="gatewayPassword" class="line-input" style="font-size:.95rem;margin:0" placeholder="(leave blank to keep current)"></div>
+        </div>
+        <button class="btn btn-success btn-sm" style="margin-top:10px" onclick="applyGatewayConnection()">Connect Gateway</button>
+        <span id="gatewayStatus" style="margin-left:10px;font-size:.85rem;color:#888"></span>
+      </div>
     </div>
     <div class="config-section">
       <h3>WiFi / Network</h3>
@@ -325,6 +353,7 @@
     </div>
     <div class="config-section">
       <h3>MQTT / Home Assistant</h3>
+      <p style="color:#888;font-size:.85rem;margin-top:0">Publishes display state and accepts control commands for Home Assistant. This is separate from the <strong>SplitFlap Gateway</strong> hardware connection above.</p>
       <div class="settings-grid">
         <div class="span2" style="display:flex;align-items:center;gap:10px">
           <label class="field-label" style="margin:0">Enabled</label>

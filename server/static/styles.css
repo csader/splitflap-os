@@ -210,6 +210,8 @@ h3{margin-top:0;color:var(--text)}
 .provision-danger{margin-top:14px;border-top:1px solid #333;padding-top:12px;color:#888;font-size:.78rem}
 .provision-danger summary{cursor:pointer;color:#9a7777;font-weight:650}
 .provision-danger p{line-height:1.5;max-width:620px}
+.provision-danger-warning{padding:9px 11px;border:1px solid #704c0b;border-radius:7px;background:#302109;color:#e2b96d}
+.provision-danger-warning strong{color:#ffd27c}
 .provision-danger .btn-del{font-size:.8rem}
 .provision-diagnostics-modal{max-width:580px}
 .provision-modal-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:14px}

@@ -2481,7 +2481,12 @@ async function deprovisionUniversalModule(id){
 }
 
 async function deprovisionAllUniversalModules(){
-  const confirmation = prompt('This erases EVERY module ID on the bus. Type DEPROVISION ALL to continue.');
+  const confirmation = prompt(
+    'This erases EVERY module ID on the bus.\n\n' +
+    'On large displays, provision in batches of about 10–15 unprovisioned modules. ' +
+    'Too many modules advertising together can make discovery unreliable.\n\n' +
+    'Type DEPROVISION ALL to continue.'
+  );
   if(confirmation !== 'DEPROVISION ALL') return;
   try {
     await universalRequest('/universal/deprovision', {

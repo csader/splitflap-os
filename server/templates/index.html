@@ -238,7 +238,18 @@
 
         <details class="provision-danger">
           <summary>Advanced: de-provision all modules</summary>
-          <p>This erases every module ID on the bus. Calibration data is preserved, but every module must be assigned again.</p>
+          <p>
+            This erases every module ID on the bus. Calibration data is preserved,
+            but every module must be assigned again.
+          </p>
+          <p class="provision-danger-warning">
+            <strong>Large displays:</strong> If more than roughly 10–15 modules are
+            unprovisioned at once, their periodic advertisements may overlap on the
+            shared RS-485 bus and make discovery unreliable. Provision in batches:
+            temporarily power off or disconnect enough modules to leave about
+            10–15 unprovisioned modules connected, assign IDs to that batch, then
+            reconnect the next group.
+          </p>
           <button class="btn-del" onclick="deprovisionAllUniversalModules()">De-provision All Modules</button>
         </details>
       </div>

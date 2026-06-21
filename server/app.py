@@ -14,6 +14,10 @@ import urllib.request
 import shutil
 from datetime import datetime
 from flask import Flask, render_template, request, jsonify
+from hardware.universal_firmware import (
+    UniversalFirmwareError,
+    UniversalFirmwareManager,
+)
 
 try:
     import paho.mqtt.client as mqtt
@@ -165,6 +169,13 @@ current_indices = [-1] * 45  # resized after settings load
 current_display_string = " " * 45
 is_homed = False
 sim_mode = not ser  # auto-enable simulation if no serial hardware
+
+universal_firmware = UniversalFirmwareManager(
+    get_serial=lambda: ser,
+    serial_lock=serial_lock,
+    get_sim_mode=lambda: sim_mode,
+)
+universal_firmware.start()
 
 
 # ============================================================
@@ -684,6 +695,7 @@ def set_serial_port():
                 pass
         ser, SERIAL_PORT = _open_serial(new_port)
         sim_mode = not ser
+        universal_firmware.reset()
 
     settings['serial_port'] = new_port
     settings['connection_type'] = 'serial'
@@ -763,6 +775,7 @@ def connection_config():
                 "user": user, "password": password,
             })
             sim_mode = not ser
+            universal_firmware.reset()
         return jsonify(
             status="success",
             type="gateway",
@@ -784,6 +797,7 @@ def connection_config():
         port = (data.get('port') or settings.get('serial_port') or '').strip() or None
         ser, SERIAL_PORT = _open_serial(port)
         sim_mode = not ser
+        universal_firmware.reset()
     return jsonify(
         status="success",
         type="serial",
@@ -792,6 +806,94 @@ def connection_config():
         message="Serial connected" if not sim_mode
                 else "Saved, but could not open serial — simulation mode",
     )
+
+
+def _universal_error_response(exc, status=400):
+    return jsonify(status="error", message=str(exc)), status
+
+
+@app.route('/universal/status')
+def universal_status():
+    """Return Universal Firmware modules and recent unprovisioned adverts."""
+    return jsonify(universal_firmware.status(get_module_count()))
+
+
+@app.route('/universal/scan', methods=['POST'])
+def universal_scan():
+    """Discover provisioned Universal Firmware modules in the configured grid."""
+    try:
+        universal_firmware.scan(get_module_count() - 1)
+        return jsonify(status="scanning")
+    except UniversalFirmwareError as exc:
+        return _universal_error_response(exc)
+
+
+@app.route('/universal/home', methods=['POST'])
+def universal_home():
+    """Home a provisioned module by ID or an unprovisioned module by serial."""
+    data = request.get_json(silent=True) or {}
+    try:
+        if data.get('serial'):
+            universal_firmware.home_by_serial(data['serial'])
+        elif data.get('id') is not None:
+            universal_firmware.home_module(data['id'])
+        else:
+            return jsonify(status="error", message="serial or id is required"), 400
+        return jsonify(status="sent")
+    except UniversalFirmwareError as exc:
+        return _universal_error_response(exc)
+
+
+@app.route('/universal/provision', methods=['POST'])
+def universal_provision():
+    """Assign an ID by chip serial and wait for the firmware acknowledgement."""
+    data = request.get_json(silent=True) or {}
+    try:
+        acknowledged = universal_firmware.provision(
+            data.get('serial'),
+            data.get('id'),
+        )
+        response = {
+            "status": "success" if acknowledged else "unconfirmed",
+            "acknowledged": acknowledged,
+            "message": (
+                "Module acknowledged its new ID."
+                if acknowledged
+                else "No acknowledgement was received. The assignment may still have succeeded."
+            ),
+        }
+        return jsonify(response), 200 if acknowledged else 202
+    except UniversalFirmwareError as exc:
+        return _universal_error_response(exc)
+
+
+@app.route('/universal/deprovision', methods=['POST'])
+def universal_deprovision():
+    """Reset one module's ID, or every module when ``all`` is explicitly true."""
+    data = request.get_json(silent=True) or {}
+    try:
+        if data.get('all') is True:
+            universal_firmware.deprovision_all()
+            return jsonify(status="sent", message="All modules are returning to provisioning mode.")
+        universal_firmware.deprovision(data.get('id'))
+        return jsonify(status="sent", message="Module is returning to provisioning mode.")
+    except UniversalFirmwareError as exc:
+        return _universal_error_response(exc)
+
+
+@app.route('/universal/diagnose', methods=['POST'])
+def universal_diagnose():
+    """Run a Universal Firmware Q, T, or M diagnostic transaction."""
+    data = request.get_json(silent=True) or {}
+    try:
+        result = universal_firmware.run_diagnostic(
+            data.get('id'),
+            kind=data.get('kind', 'snapshot'),
+            revolutions=data.get('revolutions', 5),
+        )
+        return jsonify(status="success", result=result)
+    except UniversalFirmwareError as exc:
+        return _universal_error_response(exc, 504)
 
 
 # ============================================================

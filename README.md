@@ -12,6 +12,7 @@ Built on [Adam G Makes' Split-Flap Display](https://github.com/adamgmakes/SplitF
 - **Playlists** — sequence apps and composed messages with per-entry timing and transitions
 - **Live preview** — animated flap simulation in the browser
 - **Calibration tools** — hardware inspector, auto fine-tune, teach mode
+- **Universal Firmware provisioning** — automatically discover, identify, assign, diagnose, and de-provision modules from the calibration page
 - **MQTT** — Home Assistant integration with auto-discovery
 - **Configurable serial port** — auto-detect available ports or enter a custom path; supports env var, settings UI, and Docker deployments
 - **SplitFlap Gateway (MQTT)** — alternatively drive the display remotely through an ESP32 gateway over MQTT instead of a local serial port; configure broker, port, topic prefix, and optional credentials in the settings UI
@@ -91,6 +92,22 @@ SPLITFLAP_GATEWAY_PASSWORD=           # optional
 ```
 
 > Note: this MQTT connection (display transport) is independent of the existing **MQTT / Home Assistant** integration (state publishing & control), which continues to use its own broker settings.
+## Universal Firmware
+
+Universal Firmware is an **optional alternative** to the original per-module
+firmware. It lets every module run the same firmware image instead of compiling
+a different build for each module ID. IDs are assigned later over RS-485,
+making it much easier to add, replace, or rearrange modules.
+
+You can find and download the universal version of the firmware from
+[avandeputte/SplitFlapUniversalFirmware](https://github.com/avandeputte/SplitFlapUniversalFirmware).
+When it is used, Splitflap OS can discover new modules, identify them by moving
+the reel, assign IDs, and run supported diagnostics from the Calibration page.
+The original module firmware remains supported.
+
+Learn more: [firmware and protocol documentation](https://github.com/avandeputte/SplitFlapUniversalFirmware/blob/main/README.md)
+| [`provision.py` example](https://github.com/avandeputte/SplitFlapUniversalFirmware/blob/main/provision.py)
+| [architecture notes](https://github.com/avandeputte/SplitFlapUniversalFirmware/blob/main/ARCHITECTURE.md)
 
 ## Repo Structure
 
@@ -113,7 +130,17 @@ For full app-development documentation, settings schema, and examples, see [APPS
 
 ## Attribution
 
-Based on the [Split-Flap Display](https://github.com/adamgmakes/SplitFlapDisplay) by **Adam G Makes**, licensed under [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/).
+- Splitflap OS is based on the
+  [Split-Flap Display](https://github.com/adamgmakes/SplitFlapDisplay) by
+  **Adam G Makes**, licensed under
+  [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/).
+
+- Thanks to **[@avandeputte](https://github.com/avandeputte)** for
+  [SplitFlapUniversalFirmware](https://github.com/avandeputte/SplitFlapUniversalFirmware),
+  its documented RS-485 provisioning protocol and `provision.py` reference, and
+  [SplitFlapGateway](https://github.com/avandeputte/SplitFlapGateway), whose
+  [web UI](https://github.com/avandeputte/SplitFlapGateway#web-ui) helped inform
+  this independent provisioning interface.
 
 ## License
 

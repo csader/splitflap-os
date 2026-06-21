@@ -165,6 +165,73 @@ h3{margin-top:0;color:var(--text)}
 .span2{grid-column:span 2}
 .field-label{display:block;margin-bottom:5px;color:#888;font-size:.85rem}
 
+/* ── UNIVERSAL FIRMWARE PROVISIONING ── */
+.provision-card{padding:0;border-left:5px solid var(--green);overflow:hidden;transition:border-color .2s}
+.provision-card.has-unprovisioned{border-left-color:var(--orange)}
+.provision-card-header{width:100%;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:17px 18px;background:none;border:none;color:var(--text);cursor:pointer;text-align:left}
+.provision-card-header:hover{background:#242424}
+.provision-card-title{display:flex;align-items:center;gap:11px;min-width:0}
+.provision-card-icon{width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:8px;background:#173822;color:#6ee7a0;flex:0 0 auto}
+.provision-card-name{display:block;font-size:1.05rem;font-weight:750;color:#fff}
+.provision-card-subtitle{display:block;color:#888;font-size:.78rem;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:430px}
+.provision-card-meta{display:flex;align-items:center;justify-content:flex-end;gap:7px;flex:0 0 auto}
+.provision-badge{display:inline-flex;align-items:center;min-height:23px;padding:3px 8px;border-radius:999px;background:#173822;border:1px solid #28603b;color:#82e7a7;font-size:.72rem;font-weight:700;white-space:nowrap}
+.provision-badge.attention{background:#3b260b;border-color:#794e0b;color:#ffbd58}
+.provision-chevron{color:#777;transition:transform .2s}
+.provision-card.collapsed .provision-chevron{transform:rotate(-90deg)}
+.provision-card-body{padding:0 18px 18px}
+.provision-card.collapsed .provision-card-body{display:none}
+.provision-intro{color:#aaa;font-size:.86rem;line-height:1.55;margin:0 0 14px}
+.provision-notice{display:none;padding:10px 12px;border-radius:8px;margin-bottom:14px;font-size:.82rem;line-height:1.45}
+.provision-notice.visible{display:block}
+.provision-notice.warn{background:#302109;border:1px solid #704c0b;color:#f7c66e}
+.provision-notice.error{background:#311414;border:1px solid #6c2929;color:#ff9b9b}
+.provision-section{background:#191919;border:1px solid #343434;border-radius:10px;padding:14px;margin-top:12px}
+.provision-section-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:11px}
+.provision-section-heading h4{margin:0 0 3px;color:#eee;font-size:.92rem}
+.provision-section-heading p{margin:0;color:#777;font-size:.76rem;line-height:1.45}
+.provision-list{display:flex;flex-direction:column;gap:8px}
+.provision-empty{color:#666;font-size:.82rem;padding:9px 2px}
+.provision-unassigned{display:grid;grid-template-columns:minmax(190px,1fr) auto minmax(74px,100px) auto;gap:8px;align-items:center;padding:10px;background:#211b12;border:1px solid #604415;border-radius:8px}
+.provision-serial{font-family:'Courier New',monospace;font-size:.79rem;color:#f5bf5c;word-break:break-all}
+.provision-id-input{width:100%;min-width:0;background:#0e0e0e;color:#fff;border:1px solid #555;border-radius:6px;padding:7px 8px;font-family:monospace;font-size:.86rem}
+.provision-id-input:focus{outline:none;border-color:var(--accent)}
+.provision-module-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(205px,1fr));gap:8px}
+.provision-module{position:relative;background:#121a15;border:1px solid #31563c;border-radius:9px;padding:12px;min-width:0}
+.provision-module.offline{background:#191919;border-color:#3a3a3a}
+.provision-module-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:7px}
+.provision-module-id{font-size:1rem;font-weight:750;color:#fff}
+.provision-module-id strong{color:#7ce4a2}
+.provision-fw{font-family:monospace;font-size:.72rem;color:#8ee9ae;background:#173822;border:1px solid #28603b;padding:2px 6px;border-radius:999px}
+.provision-module-sn{font-family:'Courier New',monospace;font-size:.7rem;color:#888;word-break:break-all}
+.provision-module-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.provision-module-actions .btn,.provision-module-actions .btn-del{padding:6px 9px;font-size:.75rem;display:inline-flex;align-items:center;gap:4px}
+.provision-module-actions .btn-del{margin-left:auto;background:#572329;color:#ffb2b8}
+.provision-danger{margin-top:14px;border-top:1px solid #333;padding-top:12px;color:#888;font-size:.78rem}
+.provision-danger summary{cursor:pointer;color:#9a7777;font-weight:650}
+.provision-danger p{line-height:1.5;max-width:620px}
+.provision-danger .btn-del{font-size:.8rem}
+.provision-diagnostics-modal{max-width:580px}
+.provision-modal-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:14px}
+.provision-modal-header h3{margin:0 0 3px;color:var(--accent)}
+.provision-modal-header #universalDiagnosticsSubtitle{color:#777;font-family:monospace;font-size:.76rem}
+.provision-modal-close{background:none;border:none;color:#888;font-size:1.6rem;line-height:1;cursor:pointer;padding:0 4px}
+.provision-modal-close:hover{color:#fff}
+.provision-diagnostic-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:14px}
+.provision-diagnostic-warning{color:#766b57;font-size:.74rem;line-height:1.45;margin:10px 0 0}
+.provision-diagnostic-loading{display:flex;align-items:center;gap:9px;color:#aaa;padding:14px 2px}
+.provision-spinner{width:18px;height:18px;border:2px solid #444;border-top-color:var(--accent);border-radius:50%;animation:spin 1s linear infinite}
+.provision-diagnostic-result{background:#111;border:1px solid #333;border-radius:9px;overflow:hidden}
+.provision-diagnostic-verdict{padding:11px 13px;font-weight:700;font-size:.86rem;border-bottom:1px solid #333}
+.provision-diagnostic-verdict.good{background:#122a1b;color:#83e5a7}
+.provision-diagnostic-verdict.warn{background:#302109;color:#f7c66e}
+.provision-diagnostic-verdict.bad{background:#311414;color:#ff9b9b}
+.provision-diagnostic-table{width:100%;border-collapse:collapse;font-size:.8rem}
+.provision-diagnostic-table th,.provision-diagnostic-table td{padding:8px 11px;border-bottom:1px solid #292929;text-align:left;vertical-align:top}
+.provision-diagnostic-table tr:last-child th,.provision-diagnostic-table tr:last-child td{border-bottom:none}
+.provision-diagnostic-table th{width:42%;color:#777;font-weight:500}
+.provision-diagnostic-table td{color:#ddd;font-family:monospace;word-break:break-word}
+
 /* ── TOGGLE ── */
 .switch{position:relative;display:inline-block;width:40px;height:20px}
 .switch input{opacity:0;width:0;height:0}
@@ -345,6 +412,14 @@ input:checked+.slider:before{transform:translateX(20px)}
   .at-grid{gap:2px}
   .at-cell{font-size:.7rem}
   .at-char-display{font-size:2rem;padding:6px 14px}
+  .provision-card-header{padding:14px 13px}
+  .provision-card-body{padding:0 13px 14px}
+  .provision-card-subtitle{max-width:210px}
+  .provision-card-meta .provision-badge{display:none!important}
+  .provision-unassigned{grid-template-columns:1fr 78px auto}
+  .provision-unassigned > div:first-child{grid-column:1/-1}
+  .provision-unassigned .provision-id-input{width:78px}
+  .provision-module-grid{grid-template-columns:1fr}
 }
 @media(max-width:380px){
   .apps-grid{grid-template-columns:repeat(2,1fr)}

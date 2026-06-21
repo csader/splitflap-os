@@ -79,6 +79,12 @@ let selectedCharIndex = 0;
 let playlist = [];
 let editingIndex = null;
 let currentActiveApp = null;
+let universalProvisioning = {
+  initialized: false,
+  manualOpen: null,
+  status: null,
+  diagnosticModule: null,
+};
 
 let lastFocusedInput = null;
 let lastCursorPos = 0;
@@ -245,6 +251,10 @@ async function toggleSimMode() {
     body: JSON.stringify({enabled: simMode})
   });
   showToast(simMode ? 'Simulation mode — hardware output disabled' : 'Live mode — sending to hardware');
+  if(universalProvisioning.initialized){
+    const status = await refreshUniversalProvisioning();
+    if(!simMode && status?.connected) scanUniversalModules(true);
+  }
 }
 
 function initLiveGrids(rows, cols) {
@@ -409,7 +419,10 @@ function openMenuPage(name){
   document.getElementById('bottomTabs').style.display='none';
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById('page-'+name).classList.add('active');
-  if(name==='calibration') loadSettingsData();
+  if(name==='calibration'){
+    loadSettingsData();
+    initUniversalProvisioning();
+  }
   if(name==='settings') loadSettingsData();
   if(name==='library') loadAppLibrary();
   if(name==='schedules') loadSchedules();
@@ -2137,6 +2150,10 @@ function applySerialPort(){
         const ctSel = document.getElementById('connectionType');
         if(ctSel){ ctSel.value = 'serial'; onConnectionTypeChange('serial'); }
         showToast(data.sim_mode ? 'Port saved but could not open — simulation mode' : 'Serial port connected');
+        universalProvisioning.manualOpen = null;
+        refreshUniversalProvisioning().then(s=>{
+          if(s && s.connected && s.live) scanUniversalModules(true);
+        });
       } else {
         status.textContent = data.message||'Error';
         status.style.color = '#f44';
@@ -2198,6 +2215,10 @@ function applyGatewayConnection(){
         showToast(data.message || 'Gateway settings saved');
         // Clear the password field; it's persisted server-side now.
         document.getElementById('gatewayPassword').value = '';
+        universalProvisioning.manualOpen = null;
+        refreshUniversalProvisioning().then(s=>{
+          if(s && s.connected && s.live) scanUniversalModules(true);
+        });
       } else {
         status.textContent = data.message || 'Error';
         status.style.color = '#f44';
@@ -2207,6 +2228,394 @@ function applyGatewayConnection(){
       status.textContent = 'Request failed';
       status.style.color = '#f44';
     });
+}
+
+// --- Universal Firmware provisioning ---
+function escapeProvision(value){
+  return String(value ?? '').replace(/[&<>"']/g, ch=>({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  })[ch]);
+}
+
+async function universalRequest(url, options={}){
+  const response = await fetch(url, options);
+  let data = {};
+  try { data = await response.json(); } catch(e) {}
+  if(!response.ok){
+    throw new Error(data.message || `Request failed (${response.status})`);
+  }
+  return {response, data};
+}
+
+function setProvisionCardOpen(open, manual=false){
+  const card = document.getElementById('provisionCard');
+  const header = document.getElementById('provisionCardHeader');
+  if(!card || !header) return;
+  card.classList.toggle('collapsed', !open);
+  header.setAttribute('aria-expanded', open ? 'true' : 'false');
+  if(manual) universalProvisioning.manualOpen = !!open;
+}
+
+function toggleProvisionCard(){
+  const card = document.getElementById('provisionCard');
+  if(card) setProvisionCardOpen(card.classList.contains('collapsed'), true);
+}
+
+async function initUniversalProvisioning(){
+  if(!universalProvisioning.initialized){
+    universalProvisioning.initialized = true;
+    setInterval(()=>{
+      const page = document.getElementById('page-calibration');
+      if(page && page.classList.contains('active')) refreshUniversalProvisioning();
+    }, 2500);
+  }
+  const status = await refreshUniversalProvisioning();
+  if(status && status.connected && status.live && !status.last_scan_at){
+    scanUniversalModules(true);
+  }
+}
+
+async function refreshUniversalProvisioning(){
+  try {
+    const {data} = await universalRequest('/universal/status');
+    universalProvisioning.status = data;
+    renderUniversalProvisioning(data);
+    return data;
+  } catch(e) {
+    const notice = document.getElementById('provisionConnectionNotice');
+    if(notice){
+      notice.className = 'provision-notice visible error';
+      notice.textContent = `Provisioning status unavailable: ${e.message}`;
+    }
+    return null;
+  }
+}
+
+function renderUniversalProvisioning(data){
+  const card = document.getElementById('provisionCard');
+  if(!card) return;
+
+  const modules = data.modules || [];
+  const unprovisioned = data.unprovisioned || [];
+  const active = modules.length > 0 || unprovisioned.length > 0;
+  card.classList.toggle('has-unprovisioned', unprovisioned.length > 0);
+  if(universalProvisioning.manualOpen === null) setProvisionCardOpen(active, false);
+
+  const subtitle = document.getElementById('provisionCardSubtitle');
+  if(!data.connected) subtitle.textContent = 'No serial hardware connected';
+  else if(!data.live) subtitle.textContent = 'Switch to LIVE mode to scan and provision';
+  else if(unprovisioned.length) subtitle.textContent = `${unprovisioned.length} module${unprovisioned.length===1?'':'s'} waiting for an ID`;
+  else if(modules.length) subtitle.textContent = `${modules.length} Universal Firmware module${modules.length===1?'':'s'} detected`;
+  else if(data.scan_in_progress) subtitle.textContent = 'Scanning the configured module range…';
+  else subtitle.textContent = 'Universal Firmware module setup';
+
+  const universalBadge = document.getElementById('provisionUniversalBadge');
+  universalBadge.style.display = modules.length ? 'inline-flex' : 'none';
+  universalBadge.textContent = `${modules.length} universal`;
+  const unassignedBadge = document.getElementById('provisionUnassignedBadge');
+  unassignedBadge.style.display = unprovisioned.length ? 'inline-flex' : 'none';
+  unassignedBadge.textContent = `${unprovisioned.length} unassigned`;
+
+  const notice = document.getElementById('provisionConnectionNotice');
+  if(!data.connected){
+    notice.className = 'provision-notice visible error';
+    notice.textContent = 'Connect the RS-485 serial adapter in Settings before provisioning modules.';
+  } else if(!data.live){
+    notice.className = 'provision-notice visible warn';
+    notice.textContent = 'Provisioning is read-only while Splitflap OS is in simulation mode. Switch the top-bar toggle to LIVE.';
+  } else {
+    notice.className = 'provision-notice';
+    notice.textContent = '';
+  }
+
+  const scanBtn = document.getElementById('provisionScanBtn');
+  if(scanBtn){
+    scanBtn.disabled = !data.connected || !data.live || data.scan_in_progress;
+    scanBtn.innerHTML = data.scan_in_progress
+      ? '<span class="provision-spinner" style="width:13px;height:13px"></span> Scanning'
+      : '<i data-lucide="scan-search" style="width:14px;height:14px"></i> Scan';
+  }
+
+  renderUnprovisionedModules(unprovisioned, modules, data.suggested_id);
+  renderUniversalModules(modules);
+  if(typeof lucide!=='undefined') lucide.createIcons();
+}
+
+function renderUnprovisionedModules(items, modules, firstSuggestedId){
+  const list = document.getElementById('unprovisionedModules');
+  if(!list) return;
+  if(!items.length){
+    list.innerHTML = '<div class="provision-empty">No recent advertisements. Newly flashed modules may take up to 15 seconds to appear.</div>';
+    return;
+  }
+
+  const used = new Set((modules || []).map(module=>Number(module.id)));
+  let nextId = Number.isInteger(firstSuggestedId) ? firstSuggestedId : 0;
+  list.innerHTML = items.map(item=>{
+    while(nextId <= 254 && used.has(nextId)) nextId++;
+    const suggested = nextId <= 254 ? nextId : '';
+    if(suggested !== ''){ used.add(suggested); nextId++; }
+    const serial = escapeProvision(item.serial);
+    return `<div class="provision-unassigned">
+      <div>
+        <div class="provision-serial">${serial}</div>
+        <div style="color:#786a50;font-size:.68rem;margin-top:2px">advertised ${item.age_seconds || 0}s ago</div>
+      </div>
+      <button class="btn btn-secondary btn-sm" onclick="identifyUniversalModule('${serial}')" title="Home this module so you can locate it">
+        <i data-lucide="locate-fixed" style="width:14px;height:14px"></i> Identify
+      </button>
+      <input class="provision-id-input" id="provision-id-${serial}" type="number" min="0" max="254"
+             value="${suggested}" aria-label="New module ID for ${serial}">
+      <button class="btn btn-success btn-sm" onclick="assignUniversalModule('${serial}')">Assign ID</button>
+    </div>`;
+  }).join('');
+}
+
+function renderUniversalModules(modules){
+  const grid = document.getElementById('universalModules');
+  if(!grid) return;
+  if(!modules.length){
+    grid.innerHTML = '<div class="provision-empty">No Universal Firmware modules detected yet. Scan to query the configured display range.</div>';
+    return;
+  }
+  grid.innerHTML = modules.map(module=>{
+    const id = Number(module.id);
+    const firmware = escapeProvision(module.firmware || '');
+    const firmwareLabel = firmware ? `v${firmware.replace(/^v/i,'')}` : 'detecting';
+    const serial = escapeProvision(module.serial || 'serial pending');
+    const diagnosticButton = Number(module.firmware_number || 0) >= 26
+      ? `<button class="btn btn-secondary btn-sm" onclick="openUniversalDiagnostics(${id})" title="Run Universal Firmware health tests">
+           <i data-lucide="stethoscope" style="width:13px;height:13px"></i> Diagnose
+         </button>`
+      : '';
+    return `<article class="provision-module${module.online===false?' offline':''}">
+      <div class="provision-module-top">
+        <div class="provision-module-id">Module <strong>${id.toString().padStart(2,'0')}</strong></div>
+        <span class="provision-fw">${firmwareLabel}</span>
+      </div>
+      <div class="provision-module-sn">${serial}</div>
+      <div class="provision-module-actions">
+        <button class="btn btn-secondary btn-sm" onclick="homeUniversalModule(${id})">
+          <i data-lucide="home" style="width:13px;height:13px"></i> Home
+        </button>
+        ${diagnosticButton}
+        <button class="btn-del" onclick="deprovisionUniversalModule(${id})" title="Erase this module's ID">
+          <i data-lucide="unlink" style="width:13px;height:13px"></i> De-provision
+        </button>
+      </div>
+    </article>`;
+  }).join('');
+}
+
+async function scanUniversalModules(silent=false){
+  const btn = document.getElementById('provisionScanBtn');
+  if(btn) btn.disabled = true;
+  try {
+    await universalRequest('/universal/scan', {method:'POST'});
+    if(!silent) showToast('Scanning for Universal Firmware modules');
+    setTimeout(refreshUniversalProvisioning, 400);
+  } catch(e) {
+    if(!silent) showToast(e.message, 'error');
+  } finally {
+    setTimeout(refreshUniversalProvisioning, 900);
+  }
+}
+
+async function identifyUniversalModule(serial){
+  try {
+    await universalRequest('/universal/home', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({serial})
+    });
+    showToast('Identify sent — watch for the module that homes');
+  } catch(e) { showToast(e.message, 'error'); }
+}
+
+async function assignUniversalModule(serial){
+  const input = document.getElementById(`provision-id-${serial}`);
+  const id = input ? Number(input.value) : NaN;
+  if(!Number.isInteger(id) || id < 0 || id > 254){
+    showToast('Choose a module ID from 0 to 254', 'warn');
+    if(input) input.focus();
+    return;
+  }
+  if(!confirm(`Assign module ID ${id} to serial ${serial}?`)) return;
+  if(input) input.disabled = true;
+  try {
+    const {data} = await universalRequest('/universal/provision', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({serial, id})
+    });
+    showToast(
+      data.acknowledged ? `Module acknowledged ID ${id}` : data.message,
+      data.acknowledged ? 'success' : 'warn'
+    );
+    await refreshUniversalProvisioning();
+  } catch(e) {
+    showToast(e.message, 'error');
+  } finally {
+    if(input) input.disabled = false;
+  }
+}
+
+async function homeUniversalModule(id){
+  try {
+    await universalRequest('/universal/home', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({id})
+    });
+    showToast(`Homing module ${String(id).padStart(2,'0')}`);
+  } catch(e) { showToast(e.message, 'error'); }
+}
+
+async function deprovisionUniversalModule(id){
+  if(!confirm(`De-provision module ${id}? Its calibration stays intact, but its bus ID will be erased.`)) return;
+  try {
+    await universalRequest('/universal/deprovision', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({id})
+    });
+    showToast(`Module ${id} is returning to provisioning mode`, 'warn');
+    await refreshUniversalProvisioning();
+  } catch(e) { showToast(e.message, 'error'); }
+}
+
+async function deprovisionAllUniversalModules(){
+  const confirmation = prompt('This erases EVERY module ID on the bus. Type DEPROVISION ALL to continue.');
+  if(confirmation !== 'DEPROVISION ALL') return;
+  try {
+    await universalRequest('/universal/deprovision', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({all:true})
+    });
+    showToast('All modules are returning to provisioning mode', 'warn');
+    await refreshUniversalProvisioning();
+  } catch(e) { showToast(e.message, 'error'); }
+}
+
+function openUniversalDiagnostics(id){
+  const module = (universalProvisioning.status?.modules || []).find(item=>Number(item.id)===Number(id));
+  if(!module) return;
+  universalProvisioning.diagnosticModule = module;
+  document.getElementById('universalDiagnosticsTitle').textContent = `Module ${String(id).padStart(2,'0')} Diagnostics`;
+  document.getElementById('universalDiagnosticsSubtitle').textContent =
+    `${module.serial || 'serial unknown'} · firmware v${String(module.firmware || '?').replace(/^v/i,'')}`;
+  document.getElementById('universalDiagnosticsModal').style.display = 'flex';
+  if(typeof lucide!=='undefined') lucide.createIcons();
+  runUniversalDiagnostic('snapshot');
+}
+
+function closeUniversalDiagnostics(){
+  document.getElementById('universalDiagnosticsModal').style.display = 'none';
+  universalProvisioning.diagnosticModule = null;
+}
+
+function universalDiagnosticRows(rows){
+  return `<table class="provision-diagnostic-table">${rows.map(row=>
+    `<tr><th>${escapeProvision(row[0])}</th><td>${escapeProvision(row[1])}</td></tr>`
+  ).join('')}</table>`;
+}
+
+function universalResetCauseText(value){
+  const causes = [];
+  if(value & 0x01) causes.push('power-on');
+  if(value & 0x02) causes.push('brown-out');
+  if(value & 0x04) causes.push('external');
+  if(value & 0x08) causes.push('watchdog');
+  if(value & 0x10) causes.push('software');
+  return causes.length ? causes.join(', ') : 'none reported';
+}
+
+function renderUniversalDiagnostic(result){
+  const body = document.getElementById('universalDiagnosticsBody');
+  if(result.type === 'snapshot'){
+    const resetWarning = !!(result.reset_cause & 0x0a);
+    const voltageWarning = result.vcc_mv > 0 &&
+      (result.vcc_mv >= 4000 ? result.vcc_mv < 4500 : result.vcc_mv < 3000);
+    const bad = !result.eeprom_ok;
+    const warn = resetWarning || voltageWarning;
+    const verdict = bad ? 'EEPROM verification failed'
+      : warn ? 'Health snapshot has warnings'
+      : 'Health snapshot looks normal';
+    const currentIndex = result.current_index === -1 ? 'unknown — home required'
+      : result.current_index === -2 ? 'released' : result.current_index;
+    body.innerHTML = `<div class="provision-diagnostic-result">
+      <div class="provision-diagnostic-verdict ${bad?'bad':warn?'warn':'good'}">${verdict}</div>
+      ${universalDiagnosticRows([
+        ['Last reset', `${universalResetCauseText(result.reset_cause)} (0x${Number(result.reset_cause).toString(16).padStart(2,'0')})`],
+        ['Boot count', `${result.boot_count} (wraps at 255)`],
+        ['Supply voltage', result.vcc_mv ? `${(result.vcc_mv/1000).toFixed(2)} V${voltageWarning?' — low':''}` : 'not available'],
+        ['EEPROM verify', result.eeprom_ok ? 'passed' : 'FAILED'],
+        ['Current flap', currentIndex],
+      ])}
+    </div>`;
+  } else if(result.type === 'hall'){
+    const messages = {
+      0:'One clean home region detected.',
+      1:'Sensor stayed active for the full revolution.',
+      2:'Sensor never detected the home magnet.',
+      3:'Multiple active regions were detected.',
+      4:'Sensor polarity appears inverted.',
+    };
+    const edgeWarning = result.code === 0 &&
+      (result.rising_edges !== 1 || (result.falling_edges !== null && result.falling_edges !== 1));
+    const good = result.code === 0 && !edgeWarning;
+    body.innerHTML = `<div class="provision-diagnostic-result">
+      <div class="provision-diagnostic-verdict ${good?'good':result.code===3||result.code===4||edgeWarning?'warn':'bad'}">
+        ${escapeProvision(messages[result.code] || `Unknown Hall result code ${result.code}`)}
+      </div>
+      ${universalDiagnosticRows([
+        ['Rising edges', result.rising_edges],
+        ['Falling edges', result.falling_edges === null ? 'not reported by this firmware' : result.falling_edges],
+        ['Active samples', result.active_samples],
+      ])}
+    </div>`;
+  } else if(result.type === 'mechanical'){
+    const messages = {
+      0:'Motor motion is consistent.',
+      1:'Revolution counts are inconsistent — check drag, power, and the driver.',
+      2:'No complete motion was detected — check the Hall result, motor wiring, and jams.',
+    };
+    const severity = result.code === 0 ? 'good' : result.code === 1 ? 'warn' : 'bad';
+    body.innerHTML = `<div class="provision-diagnostic-result">
+      <div class="provision-diagnostic-verdict ${severity}">
+        ${escapeProvision(messages[result.code] || `Unknown mechanical result code ${result.code}`)}
+      </div>
+      ${universalDiagnosticRows([
+        ['Steps / revolution', result.minimum || result.maximum ? `${result.minimum} … ${result.maximum}` : 'not measured'],
+        ['Spread', `${(result.spread_tenths_percent/10).toFixed(1)}%`],
+        ['Motion gate', `${result.gate_active} active / ${result.gate_span} steps`],
+        ['Average magnet width', result.average_magnet_width ?? 'not reported by this firmware'],
+        ['Per-revolution counts', (result.revolutions || []).length ? result.revolutions.join(', ') : 'not reported by this firmware'],
+      ])}
+    </div>`;
+  }
+}
+
+async function runUniversalDiagnostic(kind){
+  const module = universalProvisioning.diagnosticModule;
+  if(!module) return;
+  if((kind === 'hall' || kind === 'mechanical') &&
+     !confirm(`${kind === 'hall' ? 'The Hall test' : 'The mechanical test'} will spin module ${module.id}. Continue?`)) return;
+
+  const body = document.getElementById('universalDiagnosticsBody');
+  const label = kind === 'snapshot' ? 'Reading health snapshot…'
+    : kind === 'hall' ? 'Testing the Hall sensor — the reel will move…'
+    : 'Testing motor consistency across five revolutions…';
+  body.innerHTML = `<div class="provision-diagnostic-loading"><span class="provision-spinner"></span>${label}</div>`;
+  const buttons = document.querySelectorAll('#universalDiagnosticsModal .provision-diagnostic-actions button');
+  buttons.forEach(button=>button.disabled=true);
+  try {
+    const {data} = await universalRequest('/universal/diagnose', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({id:module.id, kind, revolutions:5})
+    });
+    renderUniversalDiagnostic(data.result);
+  } catch(e) {
+    body.innerHTML = `<div class="provision-notice visible error">${escapeProvision(e.message)}</div>`;
+  } finally {
+    buttons.forEach(button=>button.disabled=false);
+  }
 }
 
 function selectModule(id){

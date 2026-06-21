@@ -184,6 +184,66 @@
   <!-- ══════════ CALIBRATION PAGE ══════════ -->
   <div id="page-calibration" class="page">
     <button class="hamburger-back" onclick="closeMenuPage()"><i data-lucide="arrow-left" style="width:14px;height:14px"></i> Back</button>
+    <div class="config-section provision-card collapsed" id="provisionCard">
+      <button class="provision-card-header" id="provisionCardHeader" type="button"
+              onclick="toggleProvisionCard()" aria-expanded="false" aria-controls="provisionCardBody">
+        <span class="provision-card-title">
+          <span class="provision-card-icon"><i data-lucide="cpu" style="width:18px;height:18px"></i></span>
+          <span>
+            <span class="provision-card-name">Provision</span>
+            <span class="provision-card-subtitle" id="provisionCardSubtitle">Universal Firmware module setup</span>
+          </span>
+        </span>
+        <span class="provision-card-meta">
+          <span class="provision-badge" id="provisionUniversalBadge" style="display:none"></span>
+          <span class="provision-badge attention" id="provisionUnassignedBadge" style="display:none"></span>
+          <i data-lucide="chevron-down" class="provision-chevron" style="width:18px;height:18px"></i>
+        </span>
+      </button>
+
+      <div class="provision-card-body" id="provisionCardBody">
+        <p class="provision-intro">
+          Discover modules running Universal Firmware, identify new modules by moving them,
+          assign bus IDs, and check module health without leaving calibration.
+        </p>
+
+        <div id="provisionConnectionNotice" class="provision-notice"></div>
+
+        <section class="provision-section">
+          <div class="provision-section-heading">
+            <div>
+              <h4>Unprovisioned Modules</h4>
+              <p>New modules advertise every 10–15 seconds. Identify the physical module, then assign its ID.</p>
+            </div>
+          </div>
+          <div id="unprovisionedModules" class="provision-list">
+            <div class="provision-empty">Listening for advertisements…</div>
+          </div>
+        </section>
+
+        <section class="provision-section">
+          <div class="provision-section-heading">
+            <div>
+              <h4>Universal Modules</h4>
+              <p>Provisioned modules discovered in the configured display grid.</p>
+            </div>
+            <button class="btn btn-secondary btn-sm" id="provisionScanBtn" onclick="scanUniversalModules()">
+              <i data-lucide="scan-search" style="width:14px;height:14px"></i> Scan
+            </button>
+          </div>
+          <div id="universalModules" class="provision-module-grid">
+            <div class="provision-empty">No Universal Firmware modules detected yet.</div>
+          </div>
+        </section>
+
+        <details class="provision-danger">
+          <summary>Advanced: de-provision all modules</summary>
+          <p>This erases every module ID on the bus. Calibration data is preserved, but every module must be assigned again.</p>
+          <button class="btn-del" onclick="deprovisionAllUniversalModules()">De-provision All Modules</button>
+        </details>
+      </div>
+    </div>
+
     <div class="config-section" style="border-left:5px solid var(--accent)">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
         <h3 style="margin:0">Hardware Inspector</h3>
@@ -431,6 +491,36 @@
       <button class="btn-del" style="padding:12px;border-radius:6px;font-size:1rem" onclick="modalAction('erase')">Revert to Expected</button>
       <button class="btn" style="background:none;color:#888;border:1px solid #555" onclick="closeModal()">Cancel</button>
     </div>
+  </div>
+</div>
+
+<!-- UNIVERSAL FIRMWARE DIAGNOSTICS MODAL -->
+<div class="modal-overlay" id="universalDiagnosticsModal">
+  <div class="modal-content provision-diagnostics-modal">
+    <div class="provision-modal-header">
+      <div>
+        <h3 id="universalDiagnosticsTitle">Module Diagnostics</h3>
+        <div id="universalDiagnosticsSubtitle"></div>
+      </div>
+      <button class="provision-modal-close" onclick="closeUniversalDiagnostics()" aria-label="Close">×</button>
+    </div>
+    <div id="universalDiagnosticsBody">
+      <div class="provision-empty">Choose a diagnostic test.</div>
+    </div>
+    <div class="provision-diagnostic-actions">
+      <button class="btn btn-secondary btn-sm" onclick="runUniversalDiagnostic('snapshot')">
+        <i data-lucide="activity" style="width:14px;height:14px"></i> Health Snapshot
+      </button>
+      <button class="btn btn-secondary btn-sm" onclick="runUniversalDiagnostic('hall')">
+        <i data-lucide="magnet" style="width:14px;height:14px"></i> Hall Test
+      </button>
+      <button class="btn btn-warning btn-sm" onclick="runUniversalDiagnostic('mechanical')">
+        <i data-lucide="rotate-cw" style="width:14px;height:14px"></i> Mechanical Test
+      </button>
+    </div>
+    <p class="provision-diagnostic-warning">
+      Hall and mechanical tests move the reel. The mechanical test runs at least five revolutions and can take about 30 seconds.
+    </p>
   </div>
 </div>
 

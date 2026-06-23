@@ -2685,12 +2685,6 @@ async function atApplyAhead(){
   showToast(`Applied −${step} to ${modules.length} modules`);
   at.selected.clear();
 
-  // Re-send all to this char to verify
-  await fetch('/auto_tune', {
-    method:'POST', headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({action:'goto_char', char_index: at.charIndex})
-  });
-
   // Refresh positions
   const res = await fetch('/auto_tune', {
     method:'POST', headers:{'Content-Type':'application/json'},
@@ -2723,12 +2717,6 @@ async function atApplyBehind(){
 
   showToast(`Applied +${step} to ${modules.length} modules`);
   at.selected.clear();
-
-  // Re-send to verify
-  await fetch('/auto_tune', {
-    method:'POST', headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({action:'goto_char', char_index: at.charIndex})
-  });
 
   // Refresh positions
   const res = await fetch('/auto_tune', {
@@ -2881,11 +2869,6 @@ async function tmNudge(multiplier){
 
   tm.adjustedChars.add(tm.charIdx);
   showToast(`Applied ${delta>0?'+':''}${delta} to ${modules.length} modules`);
-
-  await fetch('/auto_tune', {
-    method:'POST', headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({action:'goto_char', char_index: tm.charIdx})
-  });
 
   const res = await fetch('/auto_tune', {
     method:'POST', headers:{'Content-Type':'application/json'},

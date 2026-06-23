@@ -14,6 +14,7 @@ import urllib.request
 import shutil
 from datetime import datetime
 from flask import Flask, render_template, request, jsonify
+from tuning import build_tuning_adjust_commands
 
 try:
     import paho.mqtt.client as mqtt
@@ -2142,10 +2143,26 @@ def auto_tune_route():
                 settings['tuned_chars'][mod_str] = {}
             settings['tuned_chars'][mod_str][str(char_idx)] = new_val
 
-            # Write to firmware EEPROM
-            send_raw(f"m{mod_id:02d}w{char_idx}:{new_val}")
+            # Save the tuned position, then move there immediately so the user
+            # can see the compensation. The preview uses firmware `g`, the
+            # absolute motor-step GOTO command also used by Custom Tune's Test
+            # Position flow; re-sending the same flap index could be ignored
+            # because firmware still considers that character index active.
+            save_command, preview_command = build_tuning_adjust_commands(
+                mod_id,
+                char_idx,
+                new_val,
+                cal,
+            )
+            send_raw(save_command)
+            send_raw(preview_command)
 
-            adjusted.append({'module': mod_id, 'old': base, 'new': new_val})
+            adjusted.append({
+                'module': mod_id,
+                'old': base,
+                'new': new_val,
+                'previewed': True,
+            })
 
         save_settings(settings)
         return jsonify(status="ok", adjusted=adjusted)

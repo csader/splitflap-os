@@ -467,7 +467,7 @@
       <div style="margin:14px 0">
         <label class="field-label">Step Adjustment Size</label>
         <input type="number" id="atStepSize" value="25" min="1" max="100" class="at-step-input" style="width:100%">
-        <div style="color:#666;font-size:.75rem;margin-top:4px">Default 25 steps (~40% of one character spacing). Increase for larger errors.</div>
+        <div style="color:#666;font-size:.75rem;margin-top:4px">Default 25 steps (~40% of one character spacing). Applying a correction moves selected modules immediately; a negative correction may require one full forward revolution.</div>
       </div>
       <div style="margin:14px 0">
         <label class="field-label">Start from character index</label>
@@ -542,7 +542,7 @@
       <div style="margin:14px 0">
         <label class="field-label">Step Size</label>
         <input type="number" id="tmStepSize" value="3" min="1" max="100" class="at-step-input" style="width:100%">
-        <div style="color:#666;font-size:.75rem;margin-top:4px">Steps per nudge click. Smaller = more precise.</div>
+        <div style="color:#666;font-size:.75rem;margin-top:4px">Steps per nudge click. Selected modules move immediately so you can see each correction; negative nudges may make one full forward revolution.</div>
       </div>
       <div style="display:flex;gap:8px;margin-top:16px">
         <button class="btn btn-success" style="flex:1" onclick="tmBegin()">Home All &amp; Begin</button>

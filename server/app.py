@@ -175,7 +175,6 @@ universal_firmware = UniversalFirmwareManager(
     serial_lock=serial_lock,
     get_sim_mode=lambda: sim_mode,
 )
-universal_firmware.start()
 
 
 # ============================================================
@@ -812,17 +811,24 @@ def _universal_error_response(exc, status=400):
     return jsonify(status="error", message=str(exc)), status
 
 
+def _ensure_universal_firmware_started():
+    universal_firmware.ensure_started()
+    return universal_firmware
+
+
 @app.route('/universal/status')
 def universal_status():
     """Return Universal Firmware modules and recent unprovisioned adverts."""
-    return jsonify(universal_firmware.status(get_module_count()))
+    manager = _ensure_universal_firmware_started()
+    return jsonify(manager.status(get_module_count()))
 
 
 @app.route('/universal/scan', methods=['POST'])
 def universal_scan():
     """Discover provisioned Universal Firmware modules in the configured grid."""
+    manager = _ensure_universal_firmware_started()
     try:
-        universal_firmware.scan(get_module_count() - 1)
+        manager.scan(get_module_count() - 1)
         return jsonify(status="scanning")
     except UniversalFirmwareError as exc:
         return _universal_error_response(exc)
@@ -831,12 +837,13 @@ def universal_scan():
 @app.route('/universal/home', methods=['POST'])
 def universal_home():
     """Home a provisioned module by ID or an unprovisioned module by serial."""
+    manager = _ensure_universal_firmware_started()
     data = request.get_json(silent=True) or {}
     try:
         if data.get('serial'):
-            universal_firmware.home_by_serial(data['serial'])
+            manager.home_by_serial(data['serial'])
         elif data.get('id') is not None:
-            universal_firmware.home_module(data['id'])
+            manager.home_module(data['id'])
         else:
             return jsonify(status="error", message="serial or id is required"), 400
         return jsonify(status="sent")
@@ -847,9 +854,10 @@ def universal_home():
 @app.route('/universal/provision', methods=['POST'])
 def universal_provision():
     """Assign an ID by chip serial and wait for the firmware acknowledgement."""
+    manager = _ensure_universal_firmware_started()
     data = request.get_json(silent=True) or {}
     try:
-        acknowledged = universal_firmware.provision(
+        acknowledged = manager.provision(
             data.get('serial'),
             data.get('id'),
         )
@@ -870,12 +878,13 @@ def universal_provision():
 @app.route('/universal/deprovision', methods=['POST'])
 def universal_deprovision():
     """Reset one module's ID, or every module when ``all`` is explicitly true."""
+    manager = _ensure_universal_firmware_started()
     data = request.get_json(silent=True) or {}
     try:
         if data.get('all') is True:
-            universal_firmware.deprovision_all()
+            manager.deprovision_all()
             return jsonify(status="sent", message="All modules are returning to provisioning mode.")
-        universal_firmware.deprovision(data.get('id'))
+        manager.deprovision(data.get('id'))
         return jsonify(status="sent", message="Module is returning to provisioning mode.")
     except UniversalFirmwareError as exc:
         return _universal_error_response(exc)
@@ -884,9 +893,10 @@ def universal_deprovision():
 @app.route('/universal/diagnose', methods=['POST'])
 def universal_diagnose():
     """Run a Universal Firmware Q, T, or M diagnostic transaction."""
+    manager = _ensure_universal_firmware_started()
     data = request.get_json(silent=True) or {}
     try:
-        result = universal_firmware.run_diagnostic(
+        result = manager.run_diagnostic(
             data.get('id'),
             kind=data.get('kind', 'snapshot'),
             revolutions=data.get('revolutions', 5),

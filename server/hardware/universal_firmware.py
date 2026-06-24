@@ -1,9 +1,13 @@
 """Universal Split-Flap Firmware discovery, provisioning, and diagnostics.
 
-The manager passively observes the shared serial bus without replacing the
-application's existing synchronous calibration transactions. Every serial read
-is protected by the same lock used by the rest of Splitflap OS, so a long
-calibration or EEPROM read keeps exclusive ownership of its response.
+Splitflap OS has one shared RS-485 receive buffer. Any operation that expects a
+reply must own the serial lock for its full write/read transaction; otherwise an
+idle observer can consume bytes intended for that operation. This manager
+follows the same rule as the existing calibration code:
+
+* the passive reader only observes unsolicited traffic while the bus is idle;
+* Universal Firmware commands that expect replies write and read under the
+  shared serial lock, then feed those bytes through the same parser.
 """
 
 from collections import deque
@@ -140,6 +144,7 @@ class UniversalFirmwareManager:
         self._get_sim_mode = get_sim_mode or (lambda: False)
         self._state_lock = threading.RLock()
         self._condition = threading.Condition(self._state_lock)
+        self._rx_lock = threading.Lock()
         self._modules = {}
         self._unprovisioned = {}
         self._events = deque(maxlen=self.EVENT_HISTORY_SIZE)
@@ -148,12 +153,14 @@ class UniversalFirmwareManager:
         self._serial_identity = None
         self._scan_deadline = 0.0
         self._last_scan_at = 0.0
+        self._last_cleanup_at = 0.0
         self._stop_event = threading.Event()
         self._reader_thread = None
 
     def start(self):
         if self._reader_thread and self._reader_thread.is_alive():
             return
+        self._stop_event.clear()
         self._reader_thread = threading.Thread(
             target=self._reader_loop,
             name="universal-firmware-reader",
@@ -161,21 +168,29 @@ class UniversalFirmwareManager:
         )
         self._reader_thread.start()
 
+    def ensure_started(self):
+        """Start passive observation on demand."""
+        self.start()
+
     def stop(self):
         self._stop_event.set()
+        if self._reader_thread and self._reader_thread.is_alive():
+            self._reader_thread.join(timeout=1.0)
 
     def reset(self):
         """Clear bus-specific state, for example after changing serial ports."""
-        with self._condition:
-            self._modules.clear()
-            self._unprovisioned.clear()
-            self._events.clear()
-            self._event_sequence = 0
+        with self._rx_lock:
             self._rx_buffer = b""
-            self._serial_identity = None
-            self._scan_deadline = 0.0
-            self._last_scan_at = 0.0
-            self._condition.notify_all()
+            with self._condition:
+                self._modules.clear()
+                self._unprovisioned.clear()
+                self._events.clear()
+                self._event_sequence = 0
+                self._serial_identity = None
+                self._scan_deadline = 0.0
+                self._last_scan_at = 0.0
+                self._last_cleanup_at = 0.0
+                self._condition.notify_all()
 
     def _reader_loop(self):
         while not self._stop_event.is_set():
@@ -191,7 +206,8 @@ class UniversalFirmwareManager:
             identity = id(serial_port)
             if identity != self._serial_identity:
                 self._serial_identity = identity
-                self._rx_buffer = b""
+                with self._rx_lock:
+                    self._rx_buffer = b""
 
             acquired = False
             try:
@@ -211,21 +227,55 @@ class UniversalFirmwareManager:
             if chunk:
                 self.feed_bytes(chunk)
             else:
+                self._cleanup_if_due()
                 time.sleep(0.01)
 
     def feed_bytes(self, chunk):
         """Feed raw serial bytes into the line parser (also useful in tests)."""
         if not chunk:
             return
-        self._rx_buffer += bytes(chunk)
-        if len(self._rx_buffer) > 8192 and b"\n" not in self._rx_buffer:
-            self._rx_buffer = b""
-            return
-        while b"\n" in self._rx_buffer:
-            raw_line, self._rx_buffer = self._rx_buffer.split(b"\n", 1)
+        with self._rx_lock:
+            self._rx_buffer += bytes(chunk)
+            if len(self._rx_buffer) > 8192 and b"\n" not in self._rx_buffer:
+                self._rx_buffer = b""
+                return
+            while b"\n" in self._rx_buffer:
+                raw_line, self._rx_buffer = self._rx_buffer.split(b"\n", 1)
+                line = raw_line.decode("ascii", errors="ignore").strip()
+                if line:
+                    self.handle_line(line)
+
+    @staticmethod
+    def _consume_lines(buffer, chunk):
+        """Return ``(remaining_buffer, decoded_lines)`` for a serial chunk."""
+        buffer += bytes(chunk or b"")
+        if len(buffer) > 8192 and b"\n" not in buffer:
+            return b"", []
+
+        lines = []
+        while b"\n" in buffer:
+            raw_line, buffer = buffer.split(b"\n", 1)
             line = raw_line.decode("ascii", errors="ignore").strip()
             if line:
-                self.handle_line(line)
+                lines.append(line)
+        return buffer, lines
+
+    def _prune_expired_unprovisioned_locked(self, now):
+        expired = [
+            serial_number
+            for serial_number, item in self._unprovisioned.items()
+            if now - item["last_seen"] > self.ADVERTISEMENT_TTL_SECONDS
+        ]
+        for serial_number in expired:
+            self._unprovisioned.pop(serial_number, None)
+
+    def _cleanup_if_due(self):
+        now = time.time()
+        with self._condition:
+            if now - self._last_cleanup_at < 5.0:
+                return
+            self._last_cleanup_at = now
+            self._prune_expired_unprovisioned_locked(now)
 
     def handle_line(self, line):
         """Record one decoded bus line and update module discovery state."""
@@ -235,6 +285,7 @@ class UniversalFirmwareManager:
 
         now = time.time()
         with self._condition:
+            self._prune_expired_unprovisioned_locked(now)
             event = dict(event)
             self._event_sequence += 1
             event["sequence"] = self._event_sequence
@@ -309,7 +360,7 @@ class UniversalFirmwareManager:
             and getattr(serial_port, "is_open", True) is not False
         )
 
-    def _write(self, command):
+    def _require_live_serial(self):
         if self._get_sim_mode():
             raise UniversalFirmwareError(
                 "Switch the display to LIVE mode before using provisioning."
@@ -317,6 +368,24 @@ class UniversalFirmwareManager:
         serial_port = self._get_serial()
         if serial_port is None or getattr(serial_port, "is_open", True) is False:
             raise UniversalFirmwareError("No serial hardware is connected.")
+        return serial_port
+
+    @staticmethod
+    def _frame(command):
+        return command if command.endswith("\n") else command + "\n"
+
+    @staticmethod
+    def _read_waiting(serial_port):
+        waiting = int(getattr(serial_port, "in_waiting", 0) or 0)
+        return serial_port.read(waiting) if waiting > 0 else b""
+
+    def _write_unlocked(self, serial_port, command):
+        frame = self._frame(command)
+        serial_port.write(frame.encode("ascii"))
+        serial_port.flush()
+
+    def _write(self, command):
+        self._require_live_serial()
         frame = command if command.endswith("\n") else command + "\n"
         try:
             with self._serial_lock:
@@ -330,33 +399,60 @@ class UniversalFirmwareManager:
         except Exception as exc:
             raise UniversalFirmwareError("Serial write failed: {}".format(exc))
 
-    def _sequence(self):
-        with self._condition:
-            return self._event_sequence
+    def _transaction(self, command, timeout, predicate=None, drain_before=True):
+        """Write a command and collect its responses while owning the bus.
 
-    def _wait_for(self, after_sequence, predicate, timeout):
-        deadline = time.monotonic() + timeout
-        with self._condition:
-            while True:
-                for event in self._events:
-                    if event["sequence"] > after_sequence and predicate(event):
-                        return dict(event)
-                remaining = deadline - time.monotonic()
-                if remaining <= 0:
-                    return None
-                self._condition.wait(timeout=remaining)
+        ``predicate`` is optional. When provided, the transaction returns the
+        first parsed event that matches it. Without a predicate, the transaction
+        reads until ``timeout`` expires and returns ``None`` after feeding all
+        complete response lines through ``handle_line``.
+        """
+        self._require_live_serial()
+        deadline = time.monotonic() + max(0.0, float(timeout or 0.0))
+        local_buffer = b""
+
+        try:
+            with self._serial_lock:
+                serial_port = self._require_live_serial()
+                if drain_before and hasattr(serial_port, "reset_input_buffer"):
+                    try:
+                        serial_port.reset_input_buffer()
+                    except Exception:
+                        pass
+
+                self._write_unlocked(serial_port, command)
+
+                while True:
+                    if self._stop_event.is_set():
+                        return None
+                    chunk = self._read_waiting(serial_port)
+                    if chunk:
+                        matched_event = None
+                        local_buffer, lines = self._consume_lines(local_buffer, chunk)
+                        for line in lines:
+                            event = self.handle_line(line)
+                            if (
+                                matched_event is None
+                                and event is not None
+                                and predicate
+                                and predicate(event)
+                            ):
+                                matched_event = dict(event)
+                        if matched_event is not None:
+                            return matched_event
+
+                    remaining = deadline - time.monotonic()
+                    if remaining <= 0:
+                        return None
+                    time.sleep(min(0.01, remaining))
+        except UniversalFirmwareError:
+            raise
+        except Exception as exc:
+            raise UniversalFirmwareError("Serial transaction failed: {}".format(exc))
 
     def status(self, module_limit=45):
         now = time.time()
         with self._condition:
-            expired = [
-                serial_number
-                for serial_number, item in self._unprovisioned.items()
-                if now - item["last_seen"] > self.ADVERTISEMENT_TTL_SECONDS
-            ]
-            for serial_number in expired:
-                self._unprovisioned.pop(serial_number, None)
-
             modules = []
             for module_id in sorted(self._modules):
                 module = dict(self._modules[module_id])
@@ -366,6 +462,8 @@ class UniversalFirmwareManager:
             unprovisioned = []
             for serial_number in sorted(self._unprovisioned):
                 item = dict(self._unprovisioned[serial_number])
+                if now - item["last_seen"] > self.ADVERTISEMENT_TTL_SECONDS:
+                    continue
                 item["age_seconds"] = max(0, int(now - item["last_seen"]))
                 unprovisioned.append(item)
 
@@ -390,12 +488,29 @@ class UniversalFirmwareManager:
 
     def scan(self, maximum_id):
         maximum_id = max(0, min(int(maximum_id), 254))
-        self._write("m*v0-{}".format(maximum_id))
+        self._require_live_serial()
+        timeout = 0.75 + ((maximum_id + 1) * 0.1)
         with self._condition:
             self._last_scan_at = time.time()
-            self._scan_deadline = (
-                time.monotonic() + 0.75 + ((maximum_id + 1) * 0.1)
-            )
+            self._scan_deadline = time.monotonic() + timeout
+
+        thread = threading.Thread(
+            target=self._scan_worker,
+            args=(maximum_id, timeout),
+            name="universal-firmware-scan",
+            daemon=True,
+        )
+        thread.start()
+
+    def _scan_worker(self, maximum_id, timeout):
+        try:
+            self._transaction("m*v0-{}".format(maximum_id), timeout=timeout)
+        except UniversalFirmwareError as exc:
+            logging.warning("Universal Firmware scan failed: %s", exc)
+        finally:
+            with self._condition:
+                self._scan_deadline = 0.0
+                self._condition.notify_all()
 
     @staticmethod
     def validate_serial(serial_number):
@@ -435,22 +550,28 @@ class UniversalFirmwareManager:
                         module_id, existing.get("serial", "another module")
                     )
                 )
-            sequence = self._event_sequence
 
-        self._write("mXI{}:{}".format(serial_number, module_id))
-        acknowledgement = self._wait_for(
-            sequence,
-            lambda event: (
+        acknowledgement = self._transaction(
+            "mXI{}:{}".format(serial_number, module_id),
+            timeout=timeout,
+            predicate=lambda event: (
                 event["type"] == "ack"
                 and event["serial"] == serial_number
                 and event["id"] == module_id
             ),
-            timeout,
         )
         if acknowledgement:
             # Query after assignment so the inventory gains its firmware version.
             time.sleep(0.05)
-            self._write("m{}v".format(module_id))
+            self._transaction(
+                "m{}v".format(module_id),
+                timeout=1.0,
+                predicate=lambda event: (
+                    event["type"] == "version"
+                    and event.get("reported_id") == module_id
+                    and event.get("universal")
+                ),
+            )
         return acknowledgement is not None
 
     def deprovision(self, module_id):
@@ -478,7 +599,6 @@ class UniversalFirmwareManager:
                     "Module {} needs Universal Firmware v26 or newer for diagnostics."
                     .format(module_id)
                 )
-            sequence = self._event_sequence
 
         if kind == "snapshot":
             command = "m{}Q".format(module_id)
@@ -499,11 +619,13 @@ class UniversalFirmwareManager:
             )
             timeout = 20.0 + (revolutions * 7.0)
 
-        self._write(command)
-        result = self._wait_for(
-            sequence,
-            lambda event: event["type"] == kind and event.get("id") == module_id,
-            timeout,
+        result = self._transaction(
+            command,
+            timeout=timeout,
+            predicate=lambda event: (
+                event["type"] == kind
+                and event.get("id") == module_id
+            ),
         )
         if result is None:
             raise UniversalFirmwareError(

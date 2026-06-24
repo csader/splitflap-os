@@ -80,7 +80,7 @@ let playlist = [];
 let editingIndex = null;
 let currentActiveApp = null;
 let universalProvisioning = {
-  initialized: false,
+  pollIntervalId: null,
   manualOpen: null,
   status: null,
   diagnosticModule: null,
@@ -251,7 +251,7 @@ async function toggleSimMode() {
     body: JSON.stringify({enabled: simMode})
   });
   showToast(simMode ? 'Simulation mode — hardware output disabled' : 'Live mode — sending to hardware');
-  if(universalProvisioning.initialized){
+  if(universalProvisioning.pollIntervalId !== null){
     const status = await refreshUniversalProvisioning();
     if(!simMode && status?.connected) scanUniversalModules(true);
   }
@@ -387,6 +387,7 @@ setInterval(()=>{
 //  TAB SWITCHING
 // ============================================================
 function switchTab(name){
+  if(name !== 'calibration') stopUniversalProvisioningPolling();
   document.querySelectorAll('.bottom-tab').forEach(b=>b.classList.remove('active'));
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById('tab-'+name).classList.add('active');
@@ -414,6 +415,7 @@ function openMenuPage(name){
   // Close hamburger if open (don't toggle — callers outside the drawer would open it)
   const drawer = document.getElementById('hamburgerDrawer');
   if(drawer && drawer.classList.contains('open')) toggleHamburger();
+  if(name !== 'calibration') stopUniversalProvisioningPolling();
   const active = document.querySelector('.bottom-tab.active');
   if(active) _prevTab = active.id.replace('tab-','');
   document.getElementById('bottomTabs').style.display='none';
@@ -431,12 +433,14 @@ function openMenuPage(name){
 }
 
 function closeMenuPage(){
+  stopUniversalProvisioningPolling();
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById('page-'+_prevTab).classList.add('active');
   document.getElementById('bottomTabs').style.display='flex';
 }
 
 function openAppLibrary(){
+  stopUniversalProvisioningPolling();
   const active = document.querySelector('.bottom-tab.active');
   if(active) _prevTab = active.id.replace('tab-','');
   document.getElementById('bottomTabs').style.display='none';
@@ -2261,14 +2265,22 @@ function toggleProvisionCard(){
   if(card) setProvisionCardOpen(card.classList.contains('collapsed'), true);
 }
 
+function startUniversalProvisioningPolling(){
+  if(universalProvisioning.pollIntervalId !== null) return;
+  universalProvisioning.pollIntervalId = setInterval(()=>{
+    const page = document.getElementById('page-calibration');
+    if(page && page.classList.contains('active')) refreshUniversalProvisioning();
+  }, 2500);
+}
+
+function stopUniversalProvisioningPolling(){
+  if(universalProvisioning.pollIntervalId === null) return;
+  clearInterval(universalProvisioning.pollIntervalId);
+  universalProvisioning.pollIntervalId = null;
+}
+
 async function initUniversalProvisioning(){
-  if(!universalProvisioning.initialized){
-    universalProvisioning.initialized = true;
-    setInterval(()=>{
-      const page = document.getElementById('page-calibration');
-      if(page && page.classList.contains('active')) refreshUniversalProvisioning();
-    }, 2500);
-  }
+  startUniversalProvisioningPolling();
   const status = await refreshUniversalProvisioning();
   if(status && status.connected && status.live && !status.last_scan_at){
     scanUniversalModules(true);

@@ -47,31 +47,44 @@ def _read_config_file():
             pass
     return {}
 
-def _get_serial_port():
-    """Resolve serial port: env var > settings.json > default."""
+def _get_serial_port(data=None):
+    """Resolve serial port: env var > settings.json > default.
+
+    Pass an already-loaded settings dict as ``data`` to avoid re-reading
+    settings.json (see _open_connection).
+    """
     env_port = os.environ.get("SPLITFLAP_SERIAL_PORT")
     if env_port:
         return env_port
-    data = _read_config_file()
+    if data is None:
+        data = _read_config_file()
     if data.get("serial_port"):
         return data["serial_port"]
     return SERIAL_PORT_DEFAULT
 
-def _get_connection_type():
+def _get_connection_type(data=None):
     """Resolve the active connection type: env var > settings.json > 'serial'.
 
     Returns either 'serial' (local USB/serial port) or 'gateway' (MQTT
-    SplitFlap Gateway).
+    SplitFlap Gateway). Pass an already-loaded settings dict as ``data`` to
+    avoid re-reading settings.json.
     """
     env_type = os.environ.get("SPLITFLAP_CONNECTION_TYPE")
     if env_type:
         return env_type.strip().lower()
-    ct = _read_config_file().get("connection_type", "serial")
+    if data is None:
+        data = _read_config_file()
+    ct = data.get("connection_type", "serial")
     return (ct or "serial").strip().lower()
 
-def _get_gateway_config():
-    """Pull the gateway MQTT settings from env/settings.json."""
-    data = _read_config_file()
+def _get_gateway_config(data=None):
+    """Pull the gateway MQTT settings from env/settings.json.
+
+    Pass an already-loaded settings dict as ``data`` to avoid re-reading
+    settings.json.
+    """
+    if data is None:
+        data = _read_config_file()
     return {
         "broker":   os.environ.get("SPLITFLAP_GATEWAY_BROKER",   data.get("gateway_broker", "")),
         "port":     int(os.environ.get("SPLITFLAP_GATEWAY_PORT", data.get("gateway_port", 1883)) or 1883),
@@ -137,9 +150,12 @@ def _open_connection():
     pyserial-compatible surface in both modes, so all downstream code is
     agnostic to which one is active.
     """
-    if _get_connection_type() == "gateway":
-        return _open_gateway()
-    return _open_serial()
+    # Read settings.json once and thread it through the resolvers below so
+    # startup doesn't re-open the file for each setting it needs.
+    data = _read_config_file()
+    if _get_connection_type(data) == "gateway":
+        return _open_gateway(_get_gateway_config(data))
+    return _open_serial(_get_serial_port(data))
 
 ser, SERIAL_PORT = _open_connection()
 
@@ -704,6 +720,13 @@ def connection_config():
 
     data = request.json or {}
     conn_type = (data.get('type') or 'serial').strip().lower()
+
+    if conn_type not in ('serial', 'gateway'):
+        return jsonify(
+            status="error",
+            message=f"Unknown connection type '{conn_type}' "
+                    "(expected 'serial' or 'gateway')",
+        ), 400
 
     if conn_type == 'gateway':
         broker = (data.get('broker') or '').strip()

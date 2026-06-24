@@ -40,6 +40,7 @@ splitflap-os footprint.
 
 import json
 import logging
+import os
 import threading
 import time
 
@@ -88,7 +89,10 @@ class GatewayTransport:
         self._connected = threading.Event()
         self._closed = False
 
-        client_id = f"splitflap-os-{int(time.time())}"
+        # Include the PID so a crash-loop restart within the same second (common
+        # on a Pi) doesn't collide with the previous session's client ID, which
+        # would cause the broker to kick one of the two connections.
+        client_id = f"splitflap-os-{os.getpid()}-{int(time.time())}"
         self._client = mqtt.Client(
             mqtt.CallbackAPIVersion.VERSION2, client_id=client_id
         )
@@ -189,8 +193,24 @@ class GatewayTransport:
         """
         if isinstance(data, str):
             data = data.encode()
+        if not self._connected.is_set():
+            # The broker is down / mid-reconnect. paho will silently queue (or
+            # drop) the publish, so the frame may never reach the display and
+            # the caller gets no signal. Surface the loss -- it matters most
+            # during calibration / EEPROM writes, where a dropped frame leaves
+            # the module in an inconsistent state.
+            logging.warning(
+                "Gateway(MQTT) not connected; command may not reach display: %r",
+                data,
+            )
         # paho accepts bytes payloads directly.
-        self._client.publish(self.send_topic, payload=data, qos=0)
+        info = self._client.publish(self.send_topic, payload=data, qos=0)
+        rc = getattr(info, "rc", 0)
+        if rc != 0:
+            logging.warning(
+                "Gateway(MQTT) publish failed (rc=%s); command not sent: %r",
+                rc, data,
+            )
         return len(data)
 
     def flush(self):

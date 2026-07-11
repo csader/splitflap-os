@@ -1,14 +1,27 @@
-def fetch(settings, format_lines, get_rows, get_cols):
+def fetch(settings, format_lines, get_rows, get_cols, i18n=None):
     from datetime import datetime
     import pytz
-    zones = [s.strip() for s in settings.get('world_clock_zones', 'US/Eastern,US/Pacific,Europe/London').split(',')]
+    cols = get_cols()
+    zones = [s.strip() for s in settings.get('world_clock_zones', 'US/Eastern,US/Pacific,Europe/London').split(',') if s.strip()]
     lines = []
     for z in zones[:get_rows()]:
-        tz = pytz.timezone(z)
+        try:
+            tz = pytz.timezone(z)
+        except pytz.UnknownTimeZoneError:
+            continue
         now = datetime.now(tz)
+        # Compact time leaves room for the city; a long city is trimmed so the time
+        # is never cut off. AM/PM is an English convention — everyone else is 24h.
+        if i18n is not None:
+            t = i18n.time(now, ampm_space=False)
+        else:
+            t = now.strftime('%I:%M%p').lstrip('0')
         city = z.split('/')[-1].replace('_', ' ').upper()
-        lines.append(f'{city} {now.strftime("%I:%M %p")}')
-    lines += [''] * (get_rows() - len(lines))
+        avail = max(1, cols - len(t) - 1)
+        lines.append(f'{city[:avail]} {t}')
+    if not lines:
+        lines = ['NO VALID', 'TIMEZONES']
+    lines += [''] * max(0, get_rows() - len(lines))
     return [format_lines(*lines)]
 
 

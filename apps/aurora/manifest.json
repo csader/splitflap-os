@@ -1,0 +1,25 @@
+{
+  "id": "aurora",
+  "name": "Aurora Watch",
+  "icon": "🌌",
+  "description": "Geomagnetic activity (Kp index)",
+  "type": "functional",
+  "i18n": true,
+  "refresh_interval": 900,
+  "loop_delay": 6,
+  "category": "data",
+  "min_rows": 1,
+  "min_cols": 12,
+  "settings": [
+    {
+      "key": "loop_delay",
+      "label": "Delay Between Pages (seconds)",
+      "type": "number",
+      "default": "6",
+      "min": "2",
+      "max": "30",
+      "step": "1",
+      "stepper": true
+    }
+  ]
+}

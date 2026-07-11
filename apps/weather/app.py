@@ -172,7 +172,9 @@ def _format_temp(value, temp_unit):
     return f"{int(round(converted))}{temp_unit.upper()}"
 
 
-def _compact_color(color):
+def _compact_color(color, mono=False):
+    if mono:
+        return ''
     return {
         'GREEN': '🟩',
         'YELLOW': '🟨',
@@ -183,9 +185,11 @@ def _compact_color(color):
     }.get(color, color)
 
 
-def _decorate_status(label, color, cols):
-    swatch = _compact_color(color)
+def _decorate_status(label, color, cols, mono=False):
     text = str(label or '').strip()
+    if mono:                       # colors disabled: show the label only
+        return text[:cols]
+    swatch = _compact_color(color)
     if not text:
         return swatch
 
@@ -204,9 +208,19 @@ def _decorate_status(label, color, cols):
     return swatch
 
 
-def fetch(settings, format_lines, get_rows, get_cols):
+def fetch(settings, format_lines, get_rows, get_cols, i18n=None):
     import time
     import requests
+
+    # Global Language (when the companion injects i18n). Open-Meteo maps codes to
+    # English text we translate ourselves; the keyed providers can return native
+    # condition text if we ask, so we pass the language through to them.
+    # Base language for the providers' `lang` param — they want 'en'/'fr', not a
+    # regional 'en-gb' (the English variants all return English weather text anyway).
+    lang = (i18n.lang.split('-')[0] if i18n is not None else 'en')
+
+    def t(s):
+        return i18n.t(s, "weather") if i18n is not None else s
 
     # --- Polling state (persists across calls on this plugin instance) ---
     state = getattr(fetch, '_state', None)
@@ -224,43 +238,51 @@ def fetch(settings, format_lines, get_rows, get_cols):
     temp_unit = str(settings.get('temperature_unit', 'f')).lower()
     if temp_unit not in ('f', 'c', 'k'):
         temp_unit = 'f'
+    no_color = settings.get('disable_colors', 'no') == 'yes'
     show_aqi = settings.get('show_aqi', 'yes') == 'yes'
     show_uv = settings.get('show_uv', 'yes') == 'yes' and weather_provider in ('openmeteo', 'weatherapi')
     show_pollen = settings.get('show_pollen', 'yes') == 'yes' and weather_provider in ('openmeteo', 'weatherapi')
     polling_seconds = max(30.0, min(86400.0, float(settings.get('polling_rate', 300) or 300)))
     openmeteo_air = None
 
-    # Resolve location: per-app override > global lat/lon > geocode zip_code
+    # Resolve location: per-app override > global lat/lon > geocode zip_code.
+    # Any bad input / geocode failure falls back to Boston instead of crashing.
     app_location = settings.get('location', '').strip()
     loc_lat = settings.get('location_lat', '')
     loc_lon = settings.get('location_lon', '')
     loc_name = settings.get('location_name', '')
-    if app_location and ',' in app_location:
-        if '|' in app_location:
-            coords, _city = app_location.split('|', 1)
-            _city = _city.strip().upper()
+    _lat, _lon, _city = 42.3496, -71.0783, 'BOSTON'
+    try:
+        if app_location and ',' in app_location:
+            if '|' in app_location:
+                coords, _city = app_location.split('|', 1)
+                _city = _city.strip().upper()
+            else:
+                coords = app_location
+                _city = 'LOCATION'
+            parts = coords.split(',', 1)
+            _lat, _lon = float(parts[0]), float(parts[1])
+        elif loc_lat and loc_lon:
+            _lat, _lon = float(loc_lat), float(loc_lon)
+            _city = loc_name.split(',')[0].strip().upper() if loc_name else 'LOCATION'
         else:
-            coords = app_location
-            _city = 'LOCATION'
-        parts = coords.split(',', 1)
-        _lat, _lon = float(parts[0]), float(parts[1])
-    elif loc_lat and loc_lon:
-        _lat, _lon = float(loc_lat), float(loc_lon)
-        _city = loc_name.split(',')[0].strip().upper() if loc_name else 'LOCATION'
-    else:
-        geo = requests.get(
-            f'https://nominatim.openstreetmap.org/search?q={zip_code}&format=json&limit=1',
-            timeout=5, headers={'User-Agent': 'SplitFlapOS/1.0'}
-        ).json()
-        if geo:
-            _lat, _lon = float(geo[0]['lat']), float(geo[0]['lon'])
-            _city = geo[0].get('display_name', zip_code).split(',')[0].strip().upper()
-        else:
-            _lat, _lon, _city = 42.3496, -71.0783, 'BOSTON'
+            import re
+            _geo_params = {'q': zip_code, 'format': 'json', 'limit': 1}
+            if re.fullmatch(r'\d{5}', str(zip_code).strip()):   # US ZIP — 02118 also exists abroad
+                _geo_params['countrycodes'] = 'us'
+            geo = requests.get(
+                'https://nominatim.openstreetmap.org/search', params=_geo_params,
+                timeout=5, headers={'User-Agent': 'SplitFlapGatewayCompanion/1.0'}
+            ).json()
+            if geo:
+                _lat, _lon = float(geo[0]['lat']), float(geo[0]['lon'])
+                _city = geo[0].get('display_name', zip_code).split(',')[0].strip().upper()
+    except (ValueError, KeyError, IndexError, TypeError, requests.RequestException):
+        _lat, _lon, _city = 42.3496, -71.0783, 'BOSTON'
 
     settings_sig = (
         api_key, _lat, _lon, weather_provider, temp_unit,
-        show_aqi, show_uv, show_pollen, polling_seconds,
+        show_aqi, show_uv, show_pollen, polling_seconds, lang,
     )
     now_ts = time.time()
     sig_changed = settings_sig != state['last_sig']
@@ -288,7 +310,7 @@ def fetch(settings, format_lines, get_rows, get_cols):
     def _fetch_openweather_weather():
         payload = requests.get(
             'https://api.openweathermap.org/data/2.5/weather',
-            params={'lat': _lat, 'lon': _lon, 'appid': api_key, 'units': 'imperial'},
+            params={'lat': _lat, 'lon': _lon, 'appid': api_key, 'units': 'imperial', 'lang': lang},
             timeout=10
         ).json()
         return {
@@ -326,7 +348,7 @@ def fetch(settings, format_lines, get_rows, get_cols):
             'feels_like': int(round(current.get('apparent_temperature', current.get('temperature_2m', 0)))),
             'hi': int(round(hi_values[0] if hi_values else 0)),
             'lo': int(round(lo_values[0] if lo_values else 0)),
-            'desc': OPENMETEO_WEATHER_CODES.get(current.get('weather_code'), 'CURRENT CONDITIONS'),
+            'desc': t(OPENMETEO_WEATHER_CODES.get(current.get('weather_code'), 'CURRENT CONDITIONS')),
             'lat': _lat,
             'lon': _lon,
             'uv': current.get('uv_index'),
@@ -341,6 +363,7 @@ def fetch(settings, format_lines, get_rows, get_cols):
                 'days': 1,
                 'aqi': 'yes',
                 'pollen': 'yes',
+                'lang': lang,
             },
             timeout=10
         ).json()
@@ -355,7 +378,7 @@ def fetch(settings, format_lines, get_rows, get_cols):
             'feels_like': int(round(current.get('feelslike_f', current.get('temp_f', 0)))),
             'hi': int(round(day.get('maxtemp_f', current.get('temp_f', 0)))),
             'lo': int(round(day.get('mintemp_f', current.get('temp_f', 0)))),
-            'desc': str((current.get('condition') or {}).get('text', 'CURRENT CONDITIONS')).upper(),
+            'desc': str((current.get('condition') or {}).get('text', t('CURRENT CONDITIONS'))).upper(),
             'lat': location.get('lat'),
             'lon': location.get('lon'),
             'uv': current.get('uv'),
@@ -369,7 +392,7 @@ def fetch(settings, format_lines, get_rows, get_cols):
 
         now_r = requests.get(
             'https://devapi.qweather.com/v7/weather/now',
-            params={'location': location, 'lang': 'en', 'unit': 'i'},
+            params={'location': location, 'lang': lang, 'unit': 'i'},
             headers=headers,
             timeout=10
         ).json()
@@ -377,7 +400,7 @@ def fetch(settings, format_lines, get_rows, get_cols):
 
         daily_r = requests.get(
             'https://devapi.qweather.com/v7/weather/3d',
-            params={'location': location, 'lang': 'en', 'unit': 'i'},
+            params={'location': location, 'lang': lang, 'unit': 'i'},
             headers=headers,
             timeout=10
         ).json()
@@ -389,7 +412,7 @@ def fetch(settings, format_lines, get_rows, get_cols):
             'feels_like': _to_int(now.get('feelsLike'), _to_int(now.get('temp'))),
             'hi': _to_int(first_day.get('tempMax'), _to_int(now.get('temp'))),
             'lo': _to_int(first_day.get('tempMin'), _to_int(now.get('temp'))),
-            'desc': str(now.get('text', 'CURRENT CONDITIONS')).upper(),
+            'desc': str(now.get('text', t('CURRENT CONDITIONS'))).upper(),
             'lat': _lat,
             'lon': _lon,
         }
@@ -442,14 +465,14 @@ def fetch(settings, format_lines, get_rows, get_cols):
 
         cols = get_cols()
         narrow = cols <= 12
-        feels_word = 'FLS' if narrow else 'FEELS'
-        pollen_word = 'POL' if narrow else 'POLLEN'
-        overall_word = 'OVR' if narrow else 'OVERALL'
-        provider_word = 'PRV' if narrow else 'PROV'
-        sun_exposure_text = 'SUN UV' if narrow else 'SUN EXPOSURE'
-        grass_word = 'GRS' if narrow else 'GRASS'
-        tree_word = 'TRE' if narrow else 'TREE'
-        weed_word = 'WED' if narrow else 'WEED'
+        feels_word = t('FLS') if narrow else t('FEELS')
+        pollen_word = t('POL') if narrow else t('POLLEN')
+        overall_word = t('OVR') if narrow else t('OVERALL')
+        provider_word = t('PRV') if narrow else t('PROV')
+        sun_exposure_text = t('SUN UV') if narrow else t('SUN EXPOSURE')
+        grass_word = t('GRS') if narrow else t('GRASS')
+        tree_word = t('TRE') if narrow else t('TREE')
+        weed_word = t('WED') if narrow else t('WEED')
 
         city = weather['city']
         temp = _format_temp(weather.get('temp'), temp_unit)
@@ -460,6 +483,8 @@ def fetch(settings, format_lines, get_rows, get_cols):
         lat = weather['lat']
         lon = weather['lon']
 
+        # Only one location is supported, so we don't repeat it on every page —
+        # the current conditions fit on a single consolidated page.
         rows = get_rows()
         if rows == 1:
             pages = [format_lines(f'{temp} {desc}')]
@@ -469,15 +494,10 @@ def fetch(settings, format_lines, get_rows, get_cols):
                 format_lines(f'{hi} {lo}', desc),
             ]
         elif rows == 3:
-            pages = [
-                format_lines(city, f'{temp} {feels}', desc),
-                format_lines(city, f'{hi} {lo}', desc),
-            ]
+            pages = [format_lines(f'{temp} {feels}', f'{hi} {lo}', desc)]
         else:
-            pages = [
-                format_lines(city, f'{temp} {feels}', desc, f'{hi} {lo}'),
-                format_lines(city, f'{hi} {lo}', desc, f'{provider_word} {weather_provider.upper()}'),
-            ]
+            pages = [format_lines(f'{temp} {feels}', f'{hi} {lo}', desc,
+                                  f'{provider_word} {weather_provider.upper()}')]
 
         if show_aqi:
             try:
@@ -507,15 +527,15 @@ def fetch(settings, format_lines, get_rows, get_cols):
                 if aqi_num is None or aqi_num <= 0:
                     raise ValueError('AQI unavailable')
 
-                aqi_display = _decorate_status(aqi_label, aqi_color, cols)
+                aqi_display = _decorate_status(t(aqi_label), aqi_color, cols, no_color)
                 if rows == 1:
                     pages.append(format_lines(f'AQI {aqi_display}'))
                 elif rows == 2:
                     pages.append(format_lines(f'AQI {aqi_num}', aqi_display))
                 elif rows == 3:
-                    pages.append(format_lines(city, f'AQI {aqi_num}', aqi_display))
+                    pages.append(format_lines(t('AIR QUALITY'), f'AQI {aqi_num}', aqi_display))
                 else:
-                    pages.append(format_lines(city, f'AQI {aqi_num}', aqi_display, f'{provider_word} {weather_provider.upper()}'))
+                    pages.append(format_lines(t('AIR QUALITY'), f'AQI {aqi_num}', aqi_display, f'{provider_word} {weather_provider.upper()}'))
             except Exception:
                 pass
 
@@ -529,15 +549,15 @@ def fetch(settings, format_lines, get_rows, get_cols):
                     uv_num = int(round(float(uv_value)))
                     uv_label = _uv_level(float(uv_value))
                     uv_color = _uv_color(float(uv_value))
-                    uv_display = _decorate_status(uv_label, uv_color, cols)
+                    uv_display = _decorate_status(t(uv_label), uv_color, cols, no_color)
                     if rows == 1:
                         pages.append(format_lines(f'UV {uv_display}'))
                     elif rows == 2:
                         pages.append(format_lines(f'UV {uv_num}', uv_display))
                     elif rows == 3:
-                        pages.append(format_lines(city, f'UV {uv_num}', uv_display))
+                        pages.append(format_lines(sun_exposure_text, f'UV {uv_num}', uv_display))
                     else:
-                        pages.append(format_lines(city, f'UV {uv_num}', uv_display, sun_exposure_text))
+                        pages.append(format_lines(sun_exposure_text, f'UV {uv_num}', uv_display, ''))
             except Exception:
                 pass
 
@@ -566,22 +586,22 @@ def fetch(settings, format_lines, get_rows, get_cols):
                     raise ValueError('Pollen unavailable')
 
                 overall = max(vals) if vals else None
-                overall_label = _pollen_level(overall)
+                overall_label = t(_pollen_level(overall))
                 overall_color = _pollen_color(overall)
-                grass_label = _pollen_level(grass)
-                tree_label = _pollen_level(birch)
-                weed_label = _pollen_level(weed or ragweed)
-                overall_display = _decorate_status(overall_label, overall_color, cols)
+                grass_label = t(_pollen_level(grass))
+                tree_label = t(_pollen_level(birch))
+                weed_label = t(_pollen_level(weed or ragweed))
+                overall_display = _decorate_status(overall_label, overall_color, cols, no_color)
                 component_displays = []
                 if grass is not None:
-                    grass_display = f'{grass_word} {grass_label} {_compact_color(_pollen_color(grass))}'
+                    grass_display = f'{grass_word} {grass_label} {_compact_color(_pollen_color(grass), no_color)}'.rstrip()
                     component_displays.append(grass_display)
                 if birch is not None:
-                    tree_display = f'{tree_word} {tree_label} {_compact_color(_pollen_color(birch))}'
+                    tree_display = f'{tree_word} {tree_label} {_compact_color(_pollen_color(birch), no_color)}'.rstrip()
                     component_displays.append(tree_display)
                 weed_value = weed or ragweed
                 if weed_value is not None:
-                    weed_display = f'{weed_word} {weed_label} {_compact_color(_pollen_color(weed_value))}'
+                    weed_display = f'{weed_word} {weed_label} {_compact_color(_pollen_color(weed_value), no_color)}'.rstrip()
                     component_displays.append(weed_display)
 
                 if rows == 1:
@@ -591,12 +611,12 @@ def fetch(settings, format_lines, get_rows, get_cols):
                     if component_displays:
                         pages.append(format_lines(*component_displays))
                 elif rows == 3:
-                    pages.append(format_lines(city, pollen_word, overall_display))
+                    pages.append(format_lines(pollen_word, overall_display))
                     if component_displays:
                         pages.append(format_lines(*component_displays))
                 else:
-                    pages.append(format_lines(city, pollen_word, overall_display, f'{provider_word} {weather_provider.upper()}'))
-                    detail_lines = [city] + component_displays
+                    pages.append(format_lines(pollen_word, overall_display, f'{provider_word} {weather_provider.upper()}'))
+                    detail_lines = list(component_displays)
                     if rows >= 5:
                         detail_lines.append(f'{overall_word} {overall_display}')
                     pages.append(format_lines(*detail_lines))

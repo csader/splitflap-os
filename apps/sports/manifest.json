@@ -1,5 +1,6 @@
 {
   "id": "sports",
+  "i18n": true,
   "name": "Sports",
   "icon": "🏒",
   "description": "Scores & Schedules",

@@ -1,0 +1,34 @@
+{
+  "id": "earthquakes",
+  "name": "Earthquakes",
+  "icon": "🌎",
+  "description": "Recent significant earthquakes (USGS)",
+  "type": "functional",
+  "refresh_interval": 600,
+  "loop_delay": 6,
+  "category": "news",
+  "min_rows": 2,
+  "min_cols": 12,
+  "settings": [
+    {
+      "key": "min_magnitude",
+      "label": "Minimum magnitude",
+      "type": "number",
+      "default": "4.5",
+      "min": "1",
+      "max": "8",
+      "step": "0.5",
+      "stepper": true
+    },
+    {
+      "key": "loop_delay",
+      "label": "Delay Between Pages (seconds)",
+      "type": "number",
+      "default": "6",
+      "min": "2",
+      "max": "30",
+      "step": "1",
+      "stepper": true
+    }
+  ]
+}

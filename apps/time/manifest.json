@@ -1,5 +1,6 @@
 {
   "id": "time",
+  "i18n": true,
   "name": "Time",
   "icon": "⏱️",
   "description": "Live clock",

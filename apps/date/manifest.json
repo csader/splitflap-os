@@ -1,5 +1,6 @@
 {
   "id": "date",
+  "i18n": true,
   "name": "Date",
   "icon": "📅",
   "description": "Full date view",

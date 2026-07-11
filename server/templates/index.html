@@ -328,6 +328,20 @@
         </div>
         <div class="span2"><label class="field-label">Location</label><div id="globalLocationPicker"></div></div>
         <div class="span2"><label class="field-label">Timezone</label><div id="globalTzPicker"></div></div>
+        <div class="span2" style="padding-top:6px;border-top:1px solid #333">
+          <div style="display:flex;align-items:center;gap:10px">
+            <label class="switch"><input type="checkbox" id="i18nEnabled" onchange="onI18nToggle()"><span class="slider"></span></label>
+            <span style="font-size:.9rem;color:#ccc">Enable internationalization (non-English languages)</span>
+          </div>
+          <p style="color:#c9a227;font-size:.75rem;margin:6px 0 0">⚠ Only turn this on if your modules run the Universal Firmware — a version with configurable character maps — and you've loaded a character map that includes the accented characters (é, ñ, ö, å, …) these languages use. Standard A–Z / 0–9 modules can't display those, so translated text would appear as blank or wrong flaps. Leave it off to keep everything in English; the display and app list stay exactly as they are today.</p>
+        </div>
+        <div class="span2">
+          <label class="field-label">Language</label>
+          <select id="globalLanguage" onchange="setSettingsDirty(true)" class="line-input" style="font-size:.95rem;margin:0" disabled>
+            {% for opt in language_options %}<option value="{{ opt.value }}">{{ opt.label }}</option>{% endfor %}
+          </select>
+          <p style="color:#666;font-size:.75rem;margin:4px 0 0">Display language for apps that support it (look for the 🌐 badge): translates their words and sets date order, number format and 12h/24h. Any app can override this in its own settings. Only Western-European (Windows-1252) languages are listed — the modules can't show others.</p>
+        </div>
       </div>
       <div style="margin-top:14px;padding-top:12px;border-top:1px solid #333">
         <h4 style="margin:0 0 8px;font-size:.9rem;color:#aaa">Transition Style</h4>

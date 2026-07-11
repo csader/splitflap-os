@@ -1,6 +1,13 @@
-def fetch(settings, format_lines, get_rows, get_cols):
+def fetch(settings, format_lines, get_rows, get_cols, i18n=None):
     from datetime import datetime
     import pytz
+
+    def t(s):
+        return i18n.t(s, "time") if i18n is not None else s
+
+    def u(k):                       # localized Y/D/H/M/S suffix
+        return i18n.unit(k) if i18n is not None else k
+
     tz = pytz.timezone(settings.get('timezone', 'US/Eastern'))
     now = datetime.now(tz)
     event = settings.get('event_name', 'THE START').upper()
@@ -9,20 +16,20 @@ def fetch(settings, format_lines, get_rows, get_cols):
         start = datetime.strptime(date_str, '%Y-%m-%d')
         start = tz.localize(start)
     except Exception:
-        return [format_lines(event, 'INVALID DATE', '')]
+        return [format_lines(event, t('INVALID DATE'), '')]
     diff = now - start
     if diff.total_seconds() < 0:
-        return [format_lines(event, 'NOT YET', 'STARTED')]
+        return [format_lines(event, t('NOT YET'), t('STARTED'))]
     days = diff.days
     hrs, rem = divmod(diff.seconds, 3600)
     mins, secs = divmod(rem, 60)
     years = days // 365
     remaining_days = days % 365
     if years > 0:
-        elapsed = f'{years}Y {remaining_days}D {hrs}H'
+        elapsed = f'{years}{u("Y")} {remaining_days}{u("D")} {hrs}{u("H")}'
     else:
-        elapsed = f'{days}D {hrs}H {mins}M {secs}S'
-    return [format_lines(event, elapsed, 'TIME SINCE')]
+        elapsed = f'{days}{u("D")} {hrs}{u("H")} {mins}{u("M")} {secs}{u("S")}'
+    return [format_lines(event, elapsed, t('TIME SINCE'))]
 
 
 def trigger(settings, conditions):

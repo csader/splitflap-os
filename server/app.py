@@ -11,11 +11,15 @@ import pytz
 import unicodedata
 import yfinance as yf
 import importlib.util
+import inspect
 import urllib.request
 import shutil
 from datetime import datetime
 from flask import Flask, render_template, request, jsonify
 from tuning import build_tuning_adjust_commands
+import i18n
+import location
+import weather
 from hardware.universal_firmware import (
     UniversalFirmwareError,
     UniversalFirmwareManager,
@@ -207,6 +211,9 @@ def load_settings():
         "location_lon":  "",
         "location_name": "",
         "timezone":      sys_tz,
+        "i18n_enabled":  False,
+        "language":      "en-US",
+        "weather_provider": "openmeteo",
         "weather_api_key": "",
         "mbta_stop":     "",
         "mbta_route":    "",
@@ -1369,6 +1376,69 @@ def _load_functional_module(app_id, app_dir):
         logging.error(f"Plugin {app_id}: error importing app.py: {e}")
 
 
+def _fetch_accepts(fn, name):
+    """True if an app's fetch() declares a parameter called ``name`` (how an app
+    opts into an injected helper like ``i18n`` / ``get_weather`` / ``get_location``),
+    or accepts arbitrary keywords. Classic 4-arg apps accept neither and are called
+    unchanged, so this whole mechanism is fully backward compatible."""
+    try:
+        params = inspect.signature(fn).parameters
+    except (TypeError, ValueError):
+        return False
+    return name in params or any(p.kind == p.VAR_KEYWORD for p in params.values())
+
+
+def _i18n_enabled():
+    """Master switch for internationalization. Off by default: the display stays
+    English-only and looks exactly as it did before i18n existed. Should only be
+    turned on for modules whose firmware/character map can render accented glyphs."""
+    return bool(settings.get("i18n_enabled", False))
+
+
+def _resolve_app_language(app_id):
+    """The Language an app should render in: a per-app override
+    (``plugin_<id>_language``) when set, otherwise the global Language. A blank or
+    unset override means "follow the global Language"."""
+    override = settings.get(f"plugin_{app_id}_language")
+    return override or settings.get("language", "en-US")
+
+
+def _apply_location_override(plugin_settings, value):
+    """Fold a per-app Location override (a ``/location_search`` chip value, format
+    ``"lat,lon|name"``) into the ``location_*`` keys the location/weather helpers
+    read, so a per-app override is honored without touching the global location.
+    A blank/unset value leaves the global location in place."""
+    if not value:
+        return
+    try:
+        coords, _, name = str(value).partition("|")
+        lat, _, lon = coords.partition(",")
+        lat, lon = lat.strip(), lon.strip()
+        if lat and lon:
+            plugin_settings["location_lat"] = lat
+            plugin_settings["location_lon"] = lon
+            plugin_settings["location_name"] = name.strip() or plugin_settings.get("location_name", "")
+    except Exception:
+        pass
+
+
+def _plugin_fetch_kwargs(app_id, fetch_fn, plugin_settings):
+    """Optional keyword args a plugin's fetch() opted into by declaring them. Only
+    the helpers the signature names are built, so nothing is injected into apps that
+    don't ask for it."""
+    kwargs = {}
+    if _fetch_accepts(fetch_fn, "get_weather"):
+        kwargs["get_weather"] = lambda s=None: weather.fetch_current(
+            s if s is not None else plugin_settings)
+    if _fetch_accepts(fetch_fn, "get_location"):
+        kwargs["get_location"] = lambda: location.resolve(plugin_settings)
+    # Only bind a Localizer when i18n is enabled; otherwise the app's i18n=None
+    # fallback runs and it renders exactly as it did before i18n existed (English).
+    if _i18n_enabled() and _fetch_accepts(fetch_fn, "i18n"):
+        kwargs["i18n"] = i18n.Localizer(_resolve_app_language(app_id))
+    return kwargs
+
+
 def get_plugin_pages(app_id):
     manifest = _plugin_registry.get(app_id)
     if not manifest:
@@ -1404,7 +1474,13 @@ def get_plugin_pages(app_id):
                 else:
                     key = f"plugin_{app_id}_{s['key']}"
                     plugin_settings[s["key"]] = settings.get(key, s.get("default", ""))
-            pages = mod.fetch(plugin_settings, format_lines, get_rows, get_cols)
+            # A per-app Location override wins over the global location for this
+            # app's injected get_location / get_weather helpers (blank = follow global).
+            _apply_location_override(plugin_settings, settings.get(f"plugin_{app_id}_location"))
+            # Optional helpers (i18n / get_weather / get_location) are injected only
+            # when fetch() declares the matching parameter; 4-arg apps are unchanged.
+            kwargs = _plugin_fetch_kwargs(app_id, mod.fetch, plugin_settings)
+            pages = mod.fetch(plugin_settings, format_lines, get_rows, get_cols, **kwargs)
             if not isinstance(pages, list):
                 pages = [str(pages)]
             _plugin_caches[app_id] = {"pages": pages, "fetched_at": now}
@@ -1433,6 +1509,8 @@ def get_plugin_app_list():
             "desc": manifest.get("description", "")[:30],
             "plugin": True,
             "plugin_id": app_id,
+            # 🌐 badge: the app adapts to Language AND i18n is globally enabled.
+            "i18n": bool(manifest.get("i18n")) and _i18n_enabled(),
         }
         if "min_rows" in manifest:
             entry["min_rows"] = manifest["min_rows"]
@@ -1441,6 +1519,13 @@ def get_plugin_app_list():
         entries.append(entry)
     entries.sort(key=lambda a: a['name'].lower())
     return entries
+
+
+# The languages an app can be localized into (the global Language select and every
+# per-app Language override read from here). Defined once in server/i18n_data.json —
+# only Windows-1252 (Western/Latin-1) languages, since the modules can't display
+# Greek, Cyrillic, CJK, etc.
+LANGUAGE_OPTIONS = i18n.LANGUAGE_OPTIONS
 
 
 _SETTING_PASSTHROUGH_KEYS = (
@@ -1560,6 +1645,42 @@ def _build_plugin_setting_field(app_id, setting, resolved_keys):
     return field
 
 
+def _app_uses_location(app_id):
+    """True if the app's fetch() opts into the injected ``get_location`` helper."""
+    mod = _plugin_modules.get(app_id)
+    return bool(mod) and _fetch_accepts(mod.fetch, "get_location")
+
+
+def _auto_setting_fields(app_id, manifest, manifest_settings):
+    """Per-app override fields the runtime adds automatically (not in the manifest):
+    a Language override for any i18n app, and a Location override for any app that
+    reads the injected location. Each is stored under its own ``plugin_<id>_*`` key,
+    and a blank value means "follow the global setting"."""
+    declared = {s["key"] for s in manifest_settings}
+    fields = []
+    if manifest.get("i18n") and _i18n_enabled() and "language" not in declared:
+        fields.append({
+            "key": f"plugin_{app_id}_language",
+            "label": "Language",
+            "type": "select",
+            "opts": [{"value": "", "label": "Follow global"}] + LANGUAGE_OPTIONS,
+            "ph": "",
+            "note": "Override the global Language for this app only.",
+        })
+    if _app_uses_location(app_id) and "location" not in declared:
+        fields.append({
+            "key": f"plugin_{app_id}_location",
+            "label": "Location",
+            "type": "search_chips",
+            "searchUrl": "/location_search",
+            "resultKey": "results",
+            "maxItems": 1,
+            "ph": "",
+            "note": "Override the global Location for this app only (place search).",
+        })
+    return fields
+
+
 def get_plugin_settings_config():
     configs = {}
     for app_id, manifest in _plugin_registry.items():
@@ -1569,6 +1690,7 @@ def get_plugin_settings_config():
             _build_plugin_setting_field(app_id, setting, resolved_keys)
             for setting in manifest_settings
         ]
+        fields += _auto_setting_fields(app_id, manifest, manifest_settings)
 
         configs[f"plugin_{app_id}"] = {
             "title": f"{manifest.get('icon', '🧩')} {manifest.get('name', app_id)}",
@@ -2080,7 +2202,7 @@ threading.Thread(target=_trigger_loop, daemon=True).start()
 @app.route('/')
 def index():
     version = _read_version()
-    return render_template('index.html', version=version)
+    return render_template('index.html', version=version, language_options=LANGUAGE_OPTIONS)
 
 @app.route('/current_state')
 def current_state():

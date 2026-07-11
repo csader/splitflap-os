@@ -1,0 +1,402 @@
+[
+  {
+    "id": 1,
+    "fortune": "ALLT HÄNDER AV EN ANLEDNING. OFTAST EN DÅLIG"
+  },
+  {
+    "id": 2,
+    "fortune": "LYCKAN ÄR PÅ VÄG. DEN GÅR LÅNGSAMT"
+  },
+  {
+    "id": 3,
+    "fortune": "UNIVERSUM HAR EN PLAN. EN LITEN"
+  },
+  {
+    "id": 4,
+    "fortune": "DITT ÖDE RINGDE. DET BOKAR OM"
+  },
+  {
+    "id": 5,
+    "fortune": "STJÄRNORNA STOD RÄTT. SEN SÅG DE DIG"
+  },
+  {
+    "id": 6,
+    "fortune": "DITT SKEPP KOMMER IN. DET ÄR EN KANOT"
+  },
+  {
+    "id": 7,
+    "fortune": "LITA PÅ PROCESSEN. DEN TVIVLAR PÅ DIG"
+  },
+  {
+    "id": 8,
+    "fortune": "ETT TECKEN KOMMER. DET SÄGER LÄMNA FÖRETRÄDE"
+  },
+  {
+    "id": 9,
+    "fortune": "DIN STJÄRNA FINNS. I EN ANNAN GALAX"
+  },
+  {
+    "id": 10,
+    "fortune": "KARMA ÄR PÅ RIKTIGT. DET FÖRKLARAR MYCKET"
+  },
+  {
+    "id": 11,
+    "fortune": "DIN FRAMTID ÄR LJUS. TA SOLKRÄM"
+  },
+  {
+    "id": 12,
+    "fortune": "ÖDET VÄNTAR. DET BÖRJADE LÄSA"
+  },
+  {
+    "id": 13,
+    "fortune": "MIRAKEL SKER VARJE DAG. FAST NÅGON ANNANSTANS"
+  },
+  {
+    "id": 14,
+    "fortune": "DITT ÖGONBLICK KOMMER. DET SITTER I KÖN"
+  },
+  {
+    "id": 15,
+    "fortune": "LYCKAN KNACKADE. DU VAR UTE"
+  },
+  {
+    "id": 16,
+    "fortune": "TIDVATTNET VÄNDER. I GLACIÄRFART"
+  },
+  {
+    "id": 17,
+    "fortune": "STORA SAKER KOMMER. SÄNK RIBBAN"
+  },
+  {
+    "id": 18,
+    "fortune": "CHANSERNA FINNS. NI MISSAR ALLTID VARANN"
+  },
+  {
+    "id": 19,
+    "fortune": "UNIVERSUM HÖR DIG. STÄLL DIG I KÖN"
+  },
+  {
+    "id": 20,
+    "fortune": "DINA BÖNER HÖRDES. OCH ARKIVERADES"
+  },
+  {
+    "id": 21,
+    "fortune": "ÖVERFLÖDET FLÖDAR TILL DIG. UPPFÖR STRÖMMEN"
+  },
+  {
+    "id": 22,
+    "fortune": "HJULET SNURRAR. DU ÄR HAMSTERN"
+  },
+  {
+    "id": 23,
+    "fortune": "VARJE MOLN HAR EN KANT. DIN DROPPAR"
+  },
+  {
+    "id": 24,
+    "fortune": "SLUMPEN FRÅGAR EFTER DIG. AV NYFIKENHET"
+  },
+  {
+    "id": 25,
+    "fortune": "FÖRTECKNEN TALAR. MEST SUCKAR DE"
+  },
+  {
+    "id": 26,
+    "fortune": "DITT HOROSKOP ÄR FINT. OCH PÅHITTAT"
+  },
+  {
+    "id": 27,
+    "fortune": "BLIXTEN SLÅR ALDRIG TVÅ GÅNGER. DU GÖR DET"
+  },
+  {
+    "id": 28,
+    "fortune": "ÖDET BELÖNAR TÅLAMOD. FAKTURA KOMMER"
+  },
+  {
+    "id": 29,
+    "fortune": "MÅNEN SÅG DIN NYSTART. ÄNNU EN"
+  },
+  {
+    "id": 30,
+    "fortune": "DIN ÄNGEL VAKAR. DEN FÖR ANTECKNINGAR"
+  },
+  {
+    "id": 31,
+    "fortune": "TRO SÅ FÅR DU. LEVERANS VARIERAR"
+  },
+  {
+    "id": 32,
+    "fortune": "DIN GULDÅLDER KOMMER. FÖRGYLLD DÅ"
+  },
+  {
+    "id": 33,
+    "fortune": "DET SOM ÄR DITT KOMMER. UTAN NÅGON BRÅDSKA"
+  },
+  {
+    "id": 34,
+    "fortune": "UNIVERSUM BLINKADE. ELLER FICK NÅT I ÖGAT"
+  },
+  {
+    "id": 35,
+    "fortune": "DIN TUR VÄNDER. RIKTNING OKÄND"
+  },
+  {
+    "id": 36,
+    "fortune": "FÖRSYNEN SÖRJER. DEN KOLLAR KVITTONA"
+  },
+  {
+    "id": 37,
+    "fortune": "ÖNSKA DIG NÅT. STJÄRNAN SPAMMAR DET"
+  },
+  {
+    "id": 38,
+    "fortune": "ALLT KOMMER I TID. DITT DRÖJER"
+  },
+  {
+    "id": 39,
+    "fortune": "TECKNEN FANNS DÄR. ATT LÄSA ÄR FRIVILLIGT"
+  },
+  {
+    "id": 40,
+    "fortune": "DU ÄR UNIK. PRECIS SOM ALLA ANDRA"
+  },
+  {
+    "id": 41,
+    "fortune": "DET BÄSTA KOMMER SEN. DET HAR INGEN BRÅDSKA"
+  },
+  {
+    "id": 42,
+    "fortune": "DIN AURA LYSER. DEN JOBBAR ÖVERTID"
+  },
+  {
+    "id": 43,
+    "fortune": "LYCKAN LOG. ARTIGT. PÅ AVSTÅND"
+  },
+  {
+    "id": 44,
+    "fortune": "DIN ÄNGEL BAD OM FÖRFLYTTNING"
+  },
+  {
+    "id": 45,
+    "fortune": "ÖDET GER KORTEN. DU TAPPAR DEM"
+  },
+  {
+    "id": 46,
+    "fortune": "ETT OMEN DYKER UPP. DET RYCKER PÅ AXLARNA"
+  },
+  {
+    "id": 47,
+    "fortune": "FRAMGÅNG ÄR NÄRA. OCH SNOOZE KNAPPEN"
+  },
+  {
+    "id": 48,
+    "fortune": "ARBETE LÖNAR SIG. I ERFARENHET"
+  },
+  {
+    "id": 49,
+    "fortune": "DIN POTENTIAL ÄR STOR. OCH OANVÄND"
+  },
+  {
+    "id": 50,
+    "fortune": "SIKTA PÅ MÅNEN. AKTA TAKET"
+  },
+  {
+    "id": 51,
+    "fortune": "TIDIG FÅGEL FICK MASKEN. DU SOV"
+  },
+  {
+    "id": 52,
+    "fortune": "DIN STORA CHANS KOMMER. TAPPA DEN INTE"
+  },
+  {
+    "id": 53,
+    "fortune": "ROM BYGGDES INTE PÅ EN DAG. INTE DU HELLER"
+  },
+  {
+    "id": 54,
+    "fortune": "DINA TALANGER HITTAS. MED EN ORDER"
+  },
+  {
+    "id": 55,
+    "fortune": "VINNARE GER ALDRIG UPP. DU FLYTER"
+  },
+  {
+    "id": 56,
+    "fortune": "DINA IDÉER LIGGER FÖRE. DINA DEADLINES EFTER"
+  },
+  {
+    "id": 57,
+    "fortune": "KVALITET ÄR EN VANA. DIN OCKSÅ"
+  },
+  {
+    "id": 58,
+    "fortune": "DITT ARBETE TALAR FÖR SIG. VÄLDIGT TYST"
+  },
+  {
+    "id": 59,
+    "fortune": "TOPPEN ÄR ENSAM. PROBLEM LÖST"
+  },
+  {
+    "id": 60,
+    "fortune": "EN BEFORDRAN KOMMER. NÅGON ANNANS"
+  },
+  {
+    "id": 61,
+    "fortune": "DITT CV IMPONERAR. PÅ FANTASY FANSEN"
+  },
+  {
+    "id": 62,
+    "fortune": "DITT BÄSTA JOBB KOMMER. DET SPRINGER FORT"
+  },
+  {
+    "id": 63,
+    "fortune": "DET MÖTET KUNDE VARIT ETT MAIL"
+  },
+  {
+    "id": 64,
+    "fortune": "DIN INKORG ÄR INTE FIENDEN. BARA ETT VITTNE"
+  },
+  {
+    "id": 65,
+    "fortune": "DEADLINES SKRÄMMER DIG INTE. DU STRUNTAR"
+  },
+  {
+    "id": 66,
+    "fortune": "DIN FEMÅRSPLAN ÄR FEM ÅR GAMMAL"
+  },
+  {
+    "id": 67,
+    "fortune": "LÅNGSAMT MEN SÄKERT VINNER. DU HAR LÅNGSAMT"
+  },
+  {
+    "id": 68,
+    "fortune": "DIN KALENDER ÄR FULL. AV MARGINALER"
+  },
+  {
+    "id": 69,
+    "fortune": "DITT LAG DRÖMMER OCKSÅ. OM FÖRFLYTTNING"
+  },
+  {
+    "id": 70,
+    "fortune": "CHANSEN SÄNKTE SIG TILL DIN NIVÅ"
+  },
+  {
+    "id": 71,
+    "fortune": "FRAMGÅNG LÄMNAR SPÅR. DU GILLAR GÅTOR"
+  },
+  {
+    "id": 72,
+    "fortune": "DIN KOMFORTZON FÖRTJÄNAR ETT POSTNUMMER"
+  },
+  {
+    "id": 73,
+    "fortune": "KVALITET ELLER KVANTITET. DU NEKAR BÅDA"
+  },
+  {
+    "id": 74,
+    "fortune": "DIN INSTINKT ÄR VASS. OCH OFTA FEL"
+  },
+  {
+    "id": 75,
+    "fortune": "DU JOBBAR BRA UNDER PRESS. DEN TVIVLAR"
+  },
+  {
+    "id": 76,
+    "fortune": "MÄSTERSKAP KRÄVER 10000 TIMMAR. DU HAR 40"
+  },
+  {
+    "id": 77,
+    "fortune": "DIN VÄXT TRODDE PÅ DIG. OCH PÅ VATTEN"
+  },
+  {
+    "id": 78,
+    "fortune": "SKRIVAREN KÄNNER DIN STRESS. DEN KRÅNGLAR"
+  },
+  {
+    "id": 79,
+    "fortune": "DITT ARV ÄR UNDER BYGGE. FORTFARANDE"
+  },
+  {
+    "id": 80,
+    "fortune": "ETT DIPLOM VÄNTAR. DELTAGARDIPLOMET"
+  },
+  {
+    "id": 81,
+    "fortune": "ATT NÄTVERKA ÖPPNAR DÖRRAR. KNACKA OCKSÅ"
+  },
+  {
+    "id": 82,
+    "fortune": "DU FÖREGÅR MED EXEMPEL. HR VILL HA ETT ANNAT"
+  },
+  {
+    "id": 83,
+    "fortune": "DITT SIDOPROJEKT VILAR MED DE ANDRA"
+  },
+  {
+    "id": 84,
+    "fortune": "GENI ÄR EN PROCENT SVETT. DÄR STANNAR DU"
+  },
+  {
+    "id": 85,
+    "fortune": "DITT FRÅNVAROSVAR ÄR DITT MÄSTERVERK"
+  },
+  {
+    "id": 86,
+    "fortune": "ATT MISSLYCKAS ÄR ETT STEG. FIN TRAPPA"
+  },
+  {
+    "id": 87,
+    "fortune": "DU ÄR OERSÄTTLIG. ANNONSEN ÄR REDAN KLAR"
+  },
+  {
+    "id": 88,
+    "fortune": "DITT UTVECKLINGSSAMTAL KOMMER. ÖVA NOGA"
+  },
+  {
+    "id": 89,
+    "fortune": "EFFEKTIVITET ÄR DITT MELLANNAMN. PÅ PAPPER"
+  },
+  {
+    "id": 90,
+    "fortune": "DU LANDAR PÅ FÖTTERNA. LANDNINGEN DRÖJER"
+  },
+  {
+    "id": 91,
+    "fortune": "TOPPEN ÄR NÄRA. BASLÄGRET OCKSÅ"
+  },
+  {
+    "id": 92,
+    "fortune": "DIN AMBITION VAKNADE. INTE DIN VÄCKARKLOCKA"
+  },
+  {
+    "id": 93,
+    "fortune": "VAR DIG SJÄLV. DE ANDRA BLEV OROLIGA"
+  },
+  {
+    "id": 94,
+    "fortune": "DITT MÖTE GICK BRA. DET ÄR SLUT"
+  },
+  {
+    "id": 95,
+    "fortune": "ATT VILA ÄR SUNT. DU ÖVAR MYCKET"
+  },
+  {
+    "id": 96,
+    "fortune": "DIN DIET BÖRJAR PÅ MÅNDAG. MÅNDAGAR FLYR"
+  },
+  {
+    "id": 97,
+    "fortune": "DU FÖRTJÄNAR DETTA. ANDAS DJUPT"
+  },
+  {
+    "id": 98,
+    "fortune": "EN FRÄMLING LER MOT DIG. HÅLL DIG LUGN"
+  },
+  {
+    "id": 99,
+    "fortune": "DU BÄR INTE AGG. DU ARKIVERAR DET"
+  },
+  {
+    "id": 100,
+    "fortune": "DITT TÅLAMOD HAR EN LADDNINGSSTAPEL. FAST"
+  }
+]

@@ -1,31 +1,61 @@
-def fetch(settings, format_lines, get_rows, get_cols):
+def fetch(settings, format_lines, get_rows, get_cols, i18n=None):
     import yfinance as yf
+
+    def t(s):
+        return i18n.t(s, "stocks") if i18n is not None else s
+
     tickers = [s.strip() for s in settings.get('stocks_list', '').split(',') if s.strip()]
     if not tickers:
-        return [format_lines('STOCKS', 'NO TICKERS', 'CONFIGURE')]
-    currency = settings.get('currency_symbol', '$').strip() or '$'
+        return [format_lines('STOCKS', t('NO TICKERS'), t('CONFIGURE'))]
+    no_color = settings.get('disable_colors', 'no') == 'yes'
     rows = get_rows()
+
+    # Each ticker is quoted in its exchange's own currency (AAPL->USD, VOD.L->GBP,
+    # SAP.DE->EUR); show that currency's symbol, not a single hardcoded one.
+    def sym_for(cur):
+        # With i18n the display can render € £ ¥ (Windows-1252); without it the modules
+        # are the basic charset, so use '$' for USD and the ASCII ISO code otherwise.
+        if i18n is not None:
+            return i18n.currency_symbol(cur)
+        return '$' if cur == 'USD' else cur
+
+    # Numbers follow the global Language (1,234.50 vs 1.234,50 vs 1 234,50).
+    def n(v, d=2, grouping=True):
+        if i18n is not None:
+            return i18n.number(v, d, grouping)
+        return f'{v:,.{d}f}' if grouping else f'{v:.{d}f}'
+
+    def pct(v):
+        return f"{'+' if v >= 0 else '-'}{n(abs(v), 1, grouping=False)}%"
+
     pages = []
     for i in range(0, len(tickers), rows):
         chunk = tickers[i:i+rows]
         price_lines, change_lines = [], []
         for sym in chunk:
             try:
-                t = yf.Ticker(sym)
-                info = t.fast_info
+                info = yf.Ticker(sym).fast_info
                 price = info['lastPrice']
                 prev = info['previousClose']
+                try:
+                    cur = (info['currency'] or 'USD')
+                except Exception:
+                    cur = 'USD'
+                if cur in ('GBp', 'GBX'):      # London quotes pence, not pounds
+                    price, prev, cur = price / 100, prev / 100, 'GBP'
                 chg = ((price - prev) / prev) * 100
-                icon = '🟩' if chg >= 0 else '🟥'
-                price_lines.append(f'{sym} {currency}{price:.2f}')
-                change_lines.append(f'{sym} {icon}{chg:+.1f}%')
+                cs = sym_for(cur)
+                sep = '' if cs != cur else ' '   # 3-letter-code fallback reads better spaced
+                icon = '' if no_color else ('🟩' if chg >= 0 else '🟥')
+                price_lines.append(f'{sym} {cs}{sep}{n(price, 2)}')
+                change_lines.append(f'{sym} {icon}{pct(chg)}')
             except Exception:
                 price_lines.append(f'{sym} ERR')
                 change_lines.append(f'{sym} ERR')
         pad = [''] * (rows - len(chunk))
         pages.append(format_lines(*(price_lines + pad)))
         pages.append(format_lines(*(change_lines + pad)))
-    return pages or [format_lines('STOCKS', 'NO DATA', '')]
+    return pages or [format_lines('STOCKS', t('NO DATA'), '')]
 
 
 def trigger(settings, conditions):

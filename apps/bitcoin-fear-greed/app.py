@@ -1,8 +1,12 @@
 """Bitcoin Fear & Greed Index plugin for Split-Flap Display."""
 
-def fetch(settings, format_lines, get_rows, get_cols):
+def fetch(settings, format_lines, get_rows, get_cols, i18n=None):
     import urllib.request
     import json
+
+    def t(s):
+        return i18n.t(s, "sentiment") if i18n is not None else s
+
     try:
         url = "https://api.alternative.me/fng/?limit=1"
         req = urllib.request.Request(url, headers={"User-Agent": "SplitFlap/1.0"})
@@ -10,10 +14,11 @@ def fetch(settings, format_lines, get_rows, get_cols):
             data = json.loads(resp.read().decode())
         entry = data["data"][0]
         value = entry["value"]
-        label = entry["value_classification"].upper()
+        # "Extreme Fear" / "Fear" / "Neutral" / "Greed" / "Extreme Greed" -> localized.
+        label = t(entry["value_classification"].upper())
         return [format_lines("BTC FEAR&GREED", f"INDEX: {value}/100", label)]
     except Exception:
-        return [format_lines("FEAR & GREED", "FETCH ERROR", "")]
+        return [format_lines("BTC FEAR&GREED", t("OFFLINE"), "")]
 
 
 def trigger(settings, conditions):

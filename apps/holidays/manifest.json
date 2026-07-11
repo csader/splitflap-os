@@ -1,0 +1,34 @@
+{
+  "id": "holidays",
+  "i18n": true,
+  "name": "Public Holidays",
+  "icon": "📅",
+  "description": "Upcoming public holidays",
+  "type": "functional",
+  "refresh_interval": 21600,
+  "loop_delay": 6,
+  "category": "data",
+  "min_rows": 2,
+  "min_cols": 12,
+  "settings": [
+    {
+      "key": "country",
+      "label": "Country (2-letter code)",
+      "type": "text",
+      "default": "",
+      "size": "sm",
+      "ph": "blank = follow Location",
+      "note": "ISO country code, e.g. US, GB, DE, FR, CA. Blank follows your Location (then Language)."
+    },
+    {
+      "key": "loop_delay",
+      "label": "Delay Between Pages (seconds)",
+      "type": "number",
+      "default": "6",
+      "min": "2",
+      "max": "30",
+      "step": "1",
+      "stepper": true
+    }
+  ]
+}

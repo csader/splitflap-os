@@ -1,5 +1,6 @@
 {
   "id": "crypto",
+  "i18n": true,
   "name": "Crypto",
   "icon": "₿",
   "description": "Coin prices",

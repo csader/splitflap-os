@@ -151,7 +151,12 @@ class GatewayTransport:
             return
         # Re-append the newline the gateway stripped so downstream parsers that
         # look for '\n' terminators behave exactly as with raw serial.
-        data = frame.encode("utf-8", errors="ignore") + b"\n"
+        # Encode with latin-1 (not utf-8): the bus is single-byte cp1252, so a
+        # frame may carry raw high bytes (e.g. a module's A-command char map with
+        # 0xE9/0x80). latin-1 maps every code point 0x00-0xFF back to that exact
+        # byte, so downstream .decode('cp1252') sees the original bytes. utf-8
+        # here would drop lone high bytes (errors="ignore") and corrupt the map.
+        data = frame.encode("latin-1", errors="ignore") + b"\n"
         with self._rx_lock:
             self._rx_buf.extend(data)
 
@@ -162,8 +167,13 @@ class GatewayTransport:
         Accepts the gateway's JSON form ``{"command":"..."}`` and also a bare
         plain-text frame, for robustness against future gateway changes.
         """
+        # Decode with latin-1, a transparent byte<->code-point codec: the bus is
+        # single-byte cp1252 and a frame (e.g. an A-command char-map response) can
+        # contain raw high bytes that are invalid standalone utf-8. latin-1 never
+        # raises and preserves every byte, so json.loads still parses the ASCII
+        # structure and the raw bytes survive to the caller (re-encoded latin-1).
         try:
-            text = payload.decode("utf-8", errors="ignore")
+            text = payload.decode("latin-1")
         except Exception:
             return None
         text = text.strip()

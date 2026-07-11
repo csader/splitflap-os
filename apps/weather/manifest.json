@@ -1,5 +1,6 @@
 {
   "id": "weather",
+  "i18n": true,
   "name": "Weather",
   "icon": "🌤️",
   "description": "Current conditions",

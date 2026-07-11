@@ -1,0 +1,402 @@
+[
+  {
+    "id": 1,
+    "fortune": "TUTTO ACCADE PER UN MOTIVO. DI SOLITO BRUTTO"
+  },
+  {
+    "id": 2,
+    "fortune": "LA FORTUNA ARRIVA. CAMMINA MOLTO PIANO"
+  },
+  {
+    "id": 3,
+    "fortune": "IL COSMO HA UN PIANO PER TE. UNO PICCOLO"
+  },
+  {
+    "id": 4,
+    "fortune": "IL TUO DESTINO HA CHIAMATO. RIMANDA"
+  },
+  {
+    "id": 5,
+    "fortune": "LE STELLE SI ALLINEANO. POI TI HANNO VISTO"
+  },
+  {
+    "id": 6,
+    "fortune": "LA TUA NAVE ARRIVA. È UNA CANOA"
+  },
+  {
+    "id": 7,
+    "fortune": "FIDATI DEL PROCESSO. LUI DUBITA DI TE"
+  },
+  {
+    "id": 8,
+    "fortune": "UN SEGNO ARRIVA. DICE DARE PRECEDENZA"
+  },
+  {
+    "id": 9,
+    "fortune": "LA TUA STELLA ESISTE. IN UNA GALASSIA LONTANA"
+  },
+  {
+    "id": 10,
+    "fortune": "IL KARMA È REALE. QUESTO SPIEGA MOLTO"
+  },
+  {
+    "id": 11,
+    "fortune": "IL TUO FUTURO È LUMINOSO. METTI LA CREMA"
+  },
+  {
+    "id": 12,
+    "fortune": "IL DESTINO ATTENDE. SI È MESSO A LEGGERE"
+  },
+  {
+    "id": 13,
+    "fortune": "I MIRACOLI ACCADONO OGNI GIORNO. ALTROVE"
+  },
+  {
+    "id": 14,
+    "fortune": "IL TUO MOMENTO ARRIVA. È NEL TRAFFICO"
+  },
+  {
+    "id": 15,
+    "fortune": "LA FORTUNA HA BUSSATO. ERI USCITO"
+  },
+  {
+    "id": 16,
+    "fortune": "LA MAREA CAMBIA. A VELOCITÀ DI GHIACCIAIO"
+  },
+  {
+    "id": 17,
+    "fortune": "ARRIVANO GRANDI COSE. ABBASSA LE ATTESE"
+  },
+  {
+    "id": 18,
+    "fortune": "LE OCCASIONI CI SONO. VI PERDETE SEMPRE"
+  },
+  {
+    "id": 19,
+    "fortune": "IL COSMO TI SENTE. METTITI IN CODA"
+  },
+  {
+    "id": 20,
+    "fortune": "LE TUE PREGHIERE SONO SENTITE. E ARCHIVIATE"
+  },
+  {
+    "id": 21,
+    "fortune": "IL BENE SCORRE VERSO DI TE. CONTROCORRENTE"
+  },
+  {
+    "id": 22,
+    "fortune": "LA RUOTA GIRA. TU SEI IL CRICETO"
+  },
+  {
+    "id": 23,
+    "fortune": "OGNI NUVOLA HA UN LATO BUONO. IL TUO GOCCIOLA"
+  },
+  {
+    "id": 24,
+    "fortune": "IL CASO CHIEDE DI TE. PER CURIOSITÀ"
+  },
+  {
+    "id": 25,
+    "fortune": "I PRESAGI PARLANO. PIÙ CHE ALTRO SOSPIRANO"
+  },
+  {
+    "id": 26,
+    "fortune": "IL TUO OROSCOPO È BUONO. E FINTO"
+  },
+  {
+    "id": 27,
+    "fortune": "IL FULMINE NON CADE DUE VOLTE. TU SÌ"
+  },
+  {
+    "id": 28,
+    "fortune": "IL DESTINO PREMIA LA PAZIENZA. FATTURA DOPO"
+  },
+  {
+    "id": 29,
+    "fortune": "LA LUNA HA VISTO IL TUO NUOVO INIZIO. ANCORA"
+  },
+  {
+    "id": 30,
+    "fortune": "IL TUO ANGELO VEGLIA. PRENDE APPUNTI"
+  },
+  {
+    "id": 31,
+    "fortune": "CREDI E RICEVERAI. CONSEGNA VARIABILE"
+  },
+  {
+    "id": 32,
+    "fortune": "LA TUA ERA DORATA ARRIVA. PLACCATA ORO"
+  },
+  {
+    "id": 33,
+    "fortune": "CIÒ CHE È TUO ARRIVA. SENZA FRETTA"
+  },
+  {
+    "id": 34,
+    "fortune": "IL COSMO TI FA UN CENNO. O È UN TIC"
+  },
+  {
+    "id": 35,
+    "fortune": "LA TUA SORTE CAMBIERÀ. DIREZIONE IGNOTA"
+  },
+  {
+    "id": 36,
+    "fortune": "LA PROVVIDENZA PROVVEDE. CONTA GLI SCONTRINI"
+  },
+  {
+    "id": 37,
+    "fortune": "ESPRIMI UN DESIDERIO. LA STELLA LO METTE SPAM"
+  },
+  {
+    "id": 38,
+    "fortune": "TUTTO ARRIVA A CHI ASPETTA. IL TUO TARDA"
+  },
+  {
+    "id": 39,
+    "fortune": "I SEGNI CI SONO. LEGGERE È FACOLTATIVO"
+  },
+  {
+    "id": 40,
+    "fortune": "SEI UNICO. COME TUTTI GLI ALTRI"
+  },
+  {
+    "id": 41,
+    "fortune": "IL MEGLIO DEVE VENIRE. NON HA FRETTA"
+  },
+  {
+    "id": 42,
+    "fortune": "LA TUA AURA BRILLA. FA GLI STRAORDINARI"
+  },
+  {
+    "id": 43,
+    "fortune": "LA FORTUNA TI HA SORRISO. CORTESE. DA LONTANO"
+  },
+  {
+    "id": 44,
+    "fortune": "IL TUO ANGELO HA CHIESTO IL TRASFERIMENTO"
+  },
+  {
+    "id": 45,
+    "fortune": "IL DESTINO DÀ LE CARTE. TU LE PERDI"
+  },
+  {
+    "id": 46,
+    "fortune": "UN PRESAGIO APPARE. ALZA LE SPALLE"
+  },
+  {
+    "id": 47,
+    "fortune": "IL SUCCESSO È VICINO. E ANCHE IL TASTO RINVIA"
+  },
+  {
+    "id": 48,
+    "fortune": "IL LAVORO PAGA SEMPRE. IN ESPERIENZA"
+  },
+  {
+    "id": 49,
+    "fortune": "IL TUO POTENZIALE È ENORME. E INTATTO"
+  },
+  {
+    "id": 50,
+    "fortune": "PUNTA ALLA LUNA. ATTENTO AL SOFFITTO"
+  },
+  {
+    "id": 51,
+    "fortune": "CHI DORME NON PIGLIA PESCI. TU DORMIVI"
+  },
+  {
+    "id": 52,
+    "fortune": "LA TUA GRANDE OCCASIONE ARRIVA. NON ROMPERLA"
+  },
+  {
+    "id": 53,
+    "fortune": "ROMA NON FU FATTA IN UN GIORNO. NEANCHE TU"
+  },
+  {
+    "id": 54,
+    "fortune": "I TUOI TALENTI SI TROVERANNO. CON UN MANDATO"
+  },
+  {
+    "id": 55,
+    "fortune": "CHI VINCE NON MOLLA. TU GALLEGGI"
+  },
+  {
+    "id": 56,
+    "fortune": "LE TUE IDEE SONO AVANTI. LE SCADENZE INDIETRO"
+  },
+  {
+    "id": 57,
+    "fortune": "LA QUALITÀ È UN VIZIO. HAI IL TUO"
+  },
+  {
+    "id": 58,
+    "fortune": "IL TUO LAVORO PARLA DA SÉ. SOTTOVOCE"
+  },
+  {
+    "id": 59,
+    "fortune": "LA CIMA È SOLITARIA. PROBLEMA RISOLTO"
+  },
+  {
+    "id": 60,
+    "fortune": "UNA PROMOZIONE ARRIVA. QUELLA DI UN COLLEGA"
+  },
+  {
+    "id": 61,
+    "fortune": "IL TUO CV IMPRESSIONA. GLI AMANTI DEL FANTASY"
+  },
+  {
+    "id": 62,
+    "fortune": "IL TUO LAVORO MIGLIORE ARRIVA. CORRE VELOCE"
+  },
+  {
+    "id": 63,
+    "fortune": "QUELLA RIUNIONE POTEVA ESSERE UN MAIL"
+  },
+  {
+    "id": 64,
+    "fortune": "LA TUA CASELLA NON È NEMICA. SOLO TESTIMONE"
+  },
+  {
+    "id": 65,
+    "fortune": "LE SCADENZE NON TI SPAVENTANO. LE IGNORI"
+  },
+  {
+    "id": 66,
+    "fortune": "IL TUO PIANO A CINQUE ANNI HA CINQUE ANNI"
+  },
+  {
+    "id": 67,
+    "fortune": "LENTO MA SICURO VINCE. PADRONEGGI IL LENTO"
+  },
+  {
+    "id": 68,
+    "fortune": "LA TUA AGENDA È PIENA. DI MARGINI"
+  },
+  {
+    "id": 69,
+    "fortune": "ANCHE LA TUA SQUADRA SOGNA. IL TRASFERIMENTO"
+  },
+  {
+    "id": 70,
+    "fortune": "LA GRANDE OCCASIONE È SCESA DA TE"
+  },
+  {
+    "id": 71,
+    "fortune": "IL SUCCESSO LASCIA INDIZI. TU AMI IL MISTERO"
+  },
+  {
+    "id": 72,
+    "fortune": "LA TUA COMFORT ZONE MERITA UN CAP"
+  },
+  {
+    "id": 73,
+    "fortune": "QUALITÀ O QUANTITÀ. LE RIFIUTI ENTRAMBE"
+  },
+  {
+    "id": 74,
+    "fortune": "IL TUO ISTINTO È ACUTO. E SPESSO SBAGLIA"
+  },
+  {
+    "id": 75,
+    "fortune": "LAVORI BENE SOTTO PRESSIONE. LEI DISSENTE"
+  },
+  {
+    "id": 76,
+    "fortune": "LA MAESTRIA CHIEDE 10000 ORE. TU NE HAI 40"
+  },
+  {
+    "id": 77,
+    "fortune": "LA TUA PIANTA CREDEVA IN TE. E POI SETE"
+  },
+  {
+    "id": 78,
+    "fortune": "LA STAMPANTE SENTE LA FRETTA. QUINDI SI FERMA"
+  },
+  {
+    "id": 79,
+    "fortune": "LA TUA EREDITÀ È IN CANTIERE. ANCORA"
+  },
+  {
+    "id": 80,
+    "fortune": "UN DIPLOMA TI ASPETTA. QUELLO DI PRESENZA"
+  },
+  {
+    "id": 81,
+    "fortune": "FARE RETE APRE PORTE. ANCHE BUSSARE"
+  },
+  {
+    "id": 82,
+    "fortune": "SEI UN ESEMPIO. NE VOGLIONO UN ALTRO"
+  },
+  {
+    "id": 83,
+    "fortune": "IL TUO PROGETTO RIPOSA CON GLI ALTRI"
+  },
+  {
+    "id": 84,
+    "fortune": "IL GENIO È UN PER CENTO SUDORE. TU MOLLI LÌ"
+  },
+  {
+    "id": 85,
+    "fortune": "IL TUO MESSAGGIO DI ASSENZA È UN CAPOLAVORO"
+  },
+  {
+    "id": 86,
+    "fortune": "FALLIRE È UN GRADINO. BELLA SCALINATA"
+  },
+  {
+    "id": 87,
+    "fortune": "SEI INSOSTITUIBILE. IL BANDO È PRONTO"
+  },
+  {
+    "id": 88,
+    "fortune": "IL TUO COLLOQUIO ANNUALE ARRIVA. PROVA BENE"
+  },
+  {
+    "id": 89,
+    "fortune": "EFFICIENZA È IL TUO SECONDO NOME. SULLA CARTA"
+  },
+  {
+    "id": 90,
+    "fortune": "CADI IN PIEDI. LA CADUTA È RINVIATA"
+  },
+  {
+    "id": 91,
+    "fortune": "LA VETTA È VICINA. ANCHE IL CAMPO BASE"
+  },
+  {
+    "id": 92,
+    "fortune": "LA TUA AMBIZIONE SI È SVEGLIATA. NON TU"
+  },
+  {
+    "id": 93,
+    "fortune": "SII TE STESSO. GLI ALTRI SI SONO PREOCCUPATI"
+  },
+  {
+    "id": 94,
+    "fortune": "LA TUA RIUNIONE È ANDATA BENE. È FINITA"
+  },
+  {
+    "id": 95,
+    "fortune": "RIPOSARE FA BENE. LO PRATICHI MOLTO"
+  },
+  {
+    "id": 96,
+    "fortune": "LA TUA DIETA INIZIA LUNEDÌ. I LUNEDÌ FUGGONO"
+  },
+  {
+    "id": 97,
+    "fortune": "TE LO MERITI. FAI UN BEL RESPIRO"
+  },
+  {
+    "id": 98,
+    "fortune": "UNO SCONOSCIUTO TI SORRIDE. STAI CALMO"
+  },
+  {
+    "id": 99,
+    "fortune": "NON SERBI RANCORE. LO ARCHIVI CON DATA"
+  },
+  {
+    "id": 100,
+    "fortune": "LA PAZIENZA È UNA VIRTÙ. NE HAI SCELTE ALTRE"
+  }
+]

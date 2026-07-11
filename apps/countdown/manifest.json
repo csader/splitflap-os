@@ -1,5 +1,6 @@
 {
   "id": "countdown",
+  "i18n": true,
   "name": "Countdown",
   "icon": "⏳",
   "description": "Timer to event",

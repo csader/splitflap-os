@@ -1,5 +1,6 @@
 {
   "id": "word-clock",
+  "i18n": true,
   "name": "Word Clock",
   "icon": "🔤",
   "description": "Time as written phrase",

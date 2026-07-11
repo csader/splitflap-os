@@ -1,5 +1,6 @@
 {
   "id": "stocks",
+  "i18n": true,
   "name": "Stocks",
   "icon": "📈",
   "description": "Live prices",

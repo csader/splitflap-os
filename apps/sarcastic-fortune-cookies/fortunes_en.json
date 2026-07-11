@@ -1,0 +1,4002 @@
+[
+{
+"id":1,
+"fortune":"EVERYTHING HAPPENS. RARELY FOR A REASON"
+},
+{
+"id":2,
+"fortune":"GOOD LUCK IS COMING. IT WALKS SLOWLY"
+},
+{
+"id":3,
+"fortune":"THE UNIVERSE HAS A PLAN. A MODEST ONE"
+},
+{
+"id":4,
+"fortune":"YOUR DESTINY CALLED. IT RESCHEDULED"
+},
+{
+"id":5,
+"fortune":"FATE HAS PLANS FOR YOU. BACKUP PLANS"
+},
+{
+"id":6,
+"fortune":"THE STARS ALIGNED. THEN THEY SAW YOU"
+},
+{
+"id":7,
+"fortune":"LUCK FAVORS THE BOLD. YOU CAN WATCH"
+},
+{
+"id":8,
+"fortune":"YOUR SHIP IS COMING IN. IT IS A CANOE"
+},
+{
+"id":9,
+"fortune":"TRUST THE PROCESS. IT DOES NOT TRUST YOU"
+},
+{
+"id":10,
+"fortune":"A SIGN IS COMING. IT SAYS YIELD"
+},
+{
+"id":11,
+"fortune":"YOUR LUCKY STAR IS IN ANOTHER GALAXY"
+},
+{
+"id":12,
+"fortune":"KARMA IS REAL. THAT EXPLAINS A LOT"
+},
+{
+"id":13,
+"fortune":"THE FUTURE IS BRIGHT. WEAR SUNSCREEN"
+},
+{
+"id":14,
+"fortune":"DESTINY AWAITS. IT BROUGHT A BOOK"
+},
+{
+"id":15,
+"fortune":"MIRACLES HAPPEN DAILY. ELSEWHERE MOSTLY"
+},
+{
+"id":16,
+"fortune":"YOUR MOMENT IS COMING. IT IS IN TRAFFIC"
+},
+{
+"id":17,
+"fortune":"FORTUNE KNOCKED ONCE. YOU WERE OUT"
+},
+{
+"id":18,
+"fortune":"THE TIDE IS TURNING. GLACIALLY"
+},
+{
+"id":19,
+"fortune":"BIG THINGS ARE COMING. LOWER THE BAR"
+},
+{
+"id":20,
+"fortune":"OPPORTUNITY IS NEAR. YOU TWO KEEP MISSING"
+},
+{
+"id":21,
+"fortune":"THE COSMOS HEARD YOU. YOU ARE IN THE QUEUE"
+},
+{
+"id":22,
+"fortune":"YOUR STARS ARE FINE. YOUR CHOICES ARENT"
+},
+{
+"id":23,
+"fortune":"WISH ON A STAR. THE STAR MARKED IT SPAM"
+},
+{
+"id":24,
+"fortune":"GOOD THINGS TAKE TIME. YOURS TAKE DECADES"
+},
+{
+"id":25,
+"fortune":"A WINDFALL NEARS. DRESS IN LAYERS"
+},
+{
+"id":26,
+"fortune":"THE SIGNS WERE THERE. READING IS OPTIONAL"
+},
+{
+"id":27,
+"fortune":"YOU ARE ONE IN A MILLION. SO ARE THOUSANDS"
+},
+{
+"id":28,
+"fortune":"THE BEST IS YET TO COME. NO RUSH APPARENTLY"
+},
+{
+"id":29,
+"fortune":"YOUR AURA IS RADIANT. IT WORKS OVERTIME"
+},
+{
+"id":30,
+"fortune":"LADY LUCK SMILED. POLITELY. AT A STRANGER"
+},
+{
+"id":31,
+"fortune":"YOUR PRAYERS WERE HEARD. AND FILED"
+},
+{
+"id":32,
+"fortune":"ABUNDANCE FLOWS TO YOU. UPSTREAM SADLY"
+},
+{
+"id":33,
+"fortune":"FORTUNES WHEEL TURNS. YOU ARE THE HAMSTER"
+},
+{
+"id":34,
+"fortune":"EVERY CLOUD HAS A LINING. YOURS IS DAMP"
+},
+{
+"id":35,
+"fortune":"SERENDIPITY IS ASKING AROUND ABOUT YOU"
+},
+{
+"id":36,
+"fortune":"A LUCKY BREAK NEARS. BREAK HAS TWO MEANINGS"
+},
+{
+"id":37,
+"fortune":"THE ORACLE SPOKE. MOSTLY IT SIGHED"
+},
+{
+"id":38,
+"fortune":"YOUR HOROSCOPE LOOKS GREAT. IT IS FICTION"
+},
+{
+"id":39,
+"fortune":"COSMIC JUSTICE EXISTS. SETTLE OUT OF COURT"
+},
+{
+"id":40,
+"fortune":"LIGHTNING WONT STRIKE TWICE. YOU MIGHT"
+},
+{
+"id":41,
+"fortune":"FATE REWARDS PATIENCE. INVOICE PENDING"
+},
+{
+"id":42,
+"fortune":"THE MOON SAW YOUR FRESH START. AGAIN"
+},
+{
+"id":43,
+"fortune":"YOUR SPIRIT GUIDE REQUESTED A TRANSFER"
+},
+{
+"id":44,
+"fortune":"ANGELS WATCH OVER YOU. TAKING NOTES"
+},
+{
+"id":45,
+"fortune":"BELIEVE AND RECEIVE. RECEIPTS VARY"
+},
+{
+"id":46,
+"fortune":"YOUR GOLDEN ERA NEARS. GOLD PLATED"
+},
+{
+"id":47,
+"fortune":"WHAT IS MEANT FOR YOU IS NOT HURRYING"
+},
+{
+"id":48,
+"fortune":"THE UNIVERSE WINKED. OR HAD AN EYE ISSUE"
+},
+{
+"id":49,
+"fortune":"YOUR LUCK IS CHANGING. DIRECTION UNCLEAR"
+},
+{
+"id":50,
+"fortune":"PROVIDENCE PROVIDES. IT CHECKS RECEIPTS"
+},
+{
+"id":51,
+"fortune":"SUCCESS IS NEAR. SO IS THE SNOOZE BUTTON"
+},
+{
+"id":52,
+"fortune":"HARD WORK PAYS OFF. IN EXPOSURE"
+},
+{
+"id":53,
+"fortune":"YOUR POTENTIAL IS LIMITLESS. AND UNUSED"
+},
+{
+"id":54,
+"fortune":"DREAM BIG. SET AN ALARM THOUGH"
+},
+{
+"id":55,
+"fortune":"THE EARLY BIRD LEFT WITHOUT YOU"
+},
+{
+"id":56,
+"fortune":"YOUR BIG BREAK NEARS. DO NOT BREAK IT"
+},
+{
+"id":57,
+"fortune":"ROME WASNT BUILT IN A DAY. YOURS ISNT STARTED"
+},
+{
+"id":58,
+"fortune":"YOUR TALENTS WILL BE FOUND. WITH A WARRANT"
+},
+{
+"id":59,
+"fortune":"AIM FOR THE STARS. MIND THE CEILING"
+},
+{
+"id":60,
+"fortune":"WINNERS NEVER QUIT. YOU FOUND COASTING"
+},
+{
+"id":61,
+"fortune":"YOUR IDEAS ARE AHEAD. YOUR DEADLINES BEHIND"
+},
+{
+"id":62,
+"fortune":"EXCELLENCE IS A HABIT. SO IS YOURS"
+},
+{
+"id":63,
+"fortune":"YOUR WORK SPEAKS. IT REQUESTED A LAWYER"
+},
+{
+"id":64,
+"fortune":"THE TOP IS LONELY. YOU SOLVED THAT PROBLEM"
+},
+{
+"id":65,
+"fortune":"A PROMOTION NEARS. SOMEONE ELSES"
+},
+{
+"id":66,
+"fortune":"YOUR RESUME IMPRESSES FICTION FANS"
+},
+{
+"id":67,
+"fortune":"YOUR BEST WORK IS AHEAD. IT IS VERY FAST"
+},
+{
+"id":68,
+"fortune":"THAT MEETING COULD HAVE BEEN AN EMAIL"
+},
+{
+"id":69,
+"fortune":"YOUR INBOX IS NOT YOUR ENEMY. JUST A WITNESS"
+},
+{
+"id":70,
+"fortune":"DEADLINES FEAR NOTHING. YOU WALK PAST THEM"
+},
+{
+"id":71,
+"fortune":"YOUR FIVE YEAR PLAN IS FIVE YEARS OLD"
+},
+{
+"id":72,
+"fortune":"SLOW AND STEADY WINS. YOU NAILED SLOW"
+},
+{
+"id":73,
+"fortune":"YOUR CALENDAR IS FULL. OF BUFFERS"
+},
+{
+"id":74,
+"fortune":"YOUR TEAM DREAMS TOO. OF TRANSFERS"
+},
+{
+"id":75,
+"fortune":"THE OCCASION LOWERED ITSELF TO MEET YOU"
+},
+{
+"id":76,
+"fortune":"SUCCESS LEAVES CLUES. YOU PREFER MYSTERY"
+},
+{
+"id":77,
+"fortune":"YOUR COMFORT ZONE NEEDS ITS OWN ZIP CODE"
+},
+{
+"id":78,
+"fortune":"QUALITY OVER QUANTITY. YOU DECLINED BOTH"
+},
+{
+"id":79,
+"fortune":"YOUR INSTINCTS ARE SHARP. FACTS ON SABBATICAL"
+},
+{
+"id":80,
+"fortune":"YOU WORK WELL UNDER PRESSURE. IT DISAGREES"
+},
+{
+"id":81,
+"fortune":"MASTERY TAKES 10000 HOURS. YOU HAVE 40"
+},
+{
+"id":82,
+"fortune":"YOUR DESK PLANT BELIEVED IN YOU. AND WATER"
+},
+{
+"id":83,
+"fortune":"THE PRINTER KNOWS YOU ARE IN A HURRY"
+},
+{
+"id":84,
+"fortune":"YOUR LEGACY IS UNDER CONSTRUCTION. STILL"
+},
+{
+"id":85,
+"fortune":"AN AWARD AWAITS. PARTICIPATION COUNTS"
+},
+{
+"id":86,
+"fortune":"YOUR CAN DO ATTITUDE MET YOUR DID NOT RECORD"
+},
+{
+"id":87,
+"fortune":"NETWORKING OPENS DOORS. TRY KNOCKING TOO"
+},
+{
+"id":88,
+"fortune":"YOU LEAD BY EXAMPLE. HR WANTS A NEW ONE"
+},
+{
+"id":89,
+"fortune":"YOUR SIDE HUSTLE JOINED THE OTHERS. RESTING"
+},
+{
+"id":90,
+"fortune":"GENIUS IS 1 PERCENT WORK. YOU STOPPED THERE"
+},
+{
+"id":91,
+"fortune":"YOUR OUT OF OFFICE REPLY IS YOUR BEST WORK"
+},
+{
+"id":92,
+"fortune":"FAILURE IS A STEPPING STONE. NICE STAIRCASE"
+},
+{
+"id":93,
+"fortune":"YOU ARE IRREPLACEABLE. THE POSTING IS DRAFTED"
+},
+{
+"id":94,
+"fortune":"YOUR PERFORMANCE REVIEW NEARS. REHEARSE"
+},
+{
+"id":95,
+"fortune":"EFFICIENCY IS YOUR MIDDLE NAME. LEGALLY ONLY"
+},
+{
+"id":96,
+"fortune":"YOU WILL LAND ON YOUR FEET. LANDING DELAYED"
+},
+{
+"id":97,
+"fortune":"THE SUMMIT IS CLOSE. SO IS BASE CAMP"
+},
+{
+"id":98,
+"fortune":"YOUR AMBITION WOKE UP. YOUR ALARM DID NOT"
+},
+{
+"id":99,
+"fortune":"BE YOURSELF. EVERYONE ELSE WAS ALARMED"
+},
+{
+"id":100,
+"fortune":"KNOW THYSELF. A BRIEF INTRO MAY HELP"
+},
+{
+"id":101,
+"fortune":"YOUR GLOW UP IS COMING. NOTIFY THE GRID"
+},
+{
+"id":102,
+"fortune":"NEW YEAR NEW YOU. THE OLD YOU LEFT NOTES"
+},
+{
+"id":103,
+"fortune":"YOU ARE ENOUGH. THE BAR WAS ADJUSTABLE"
+},
+{
+"id":104,
+"fortune":"YOUR INNER PEACE SAW YOUR SCHEDULE. IT LEFT"
+},
+{
+"id":105,
+"fortune":"GROWTH TAKES TIME. YOURS FILED AN EXTENSION"
+},
+{
+"id":106,
+"fortune":"YOU ARE A WORK IN PROGRESS. MOSTLY WORK"
+},
+{
+"id":107,
+"fortune":"SELF AWARENESS IS A GIFT. YOURS SHIPPED"
+},
+{
+"id":108,
+"fortune":"HEALING IS NOT LINEAR. YOURS IS A SCRIBBLE"
+},
+{
+"id":109,
+"fortune":"YOUR BEST SELF IS EMERGING. IT HIT SNOOZE"
+},
+{
+"id":110,
+"fortune":"SELF CARE MATTERS. STREAMING IS NOT A SPA"
+},
+{
+"id":111,
+"fortune":"YOUR BOUNDARIES ARE HEALTHY. AND UNTESTED"
+},
+{
+"id":112,
+"fortune":"GRATITUDE HELPS. TRY IT ON PEOPLE"
+},
+{
+"id":113,
+"fortune":"YOU FORGIVE EASILY. YOURSELF ESPECIALLY"
+},
+{
+"id":114,
+"fortune":"YOUR HABITS DEFINE YOU. OUR CONDOLENCES"
+},
+{
+"id":115,
+"fortune":"SMALL STEPS COUNT. EVEN TO THE FRIDGE"
+},
+{
+"id":116,
+"fortune":"YOUR INTUITION IS POWERFUL. AND WRONG"
+},
+{
+"id":117,
+"fortune":"MINDFULNESS HELPS. YOUR PHONE DISAGREES"
+},
+{
+"id":118,
+"fortune":"YOU LET GO OF THE PAST. IT HAS YOUR ADDRESS"
+},
+{
+"id":119,
+"fortune":"YOUR MORNING ROUTINE IS SACRED. ALL 4 MINUTES"
+},
+{
+"id":120,
+"fortune":"YOU ARE LEARNING TO SAY NO. TO VEGETABLES"
+},
+{
+"id":121,
+"fortune":"YOUR WILLPOWER LIFTS ALMOST A WHOLE COOKIE"
+},
+{
+"id":122,
+"fortune":"YOUR PURPOSE EXISTS. IT STAYS ANONYMOUS"
+},
+{
+"id":123,
+"fortune":"YOU EMBRACE CHANGE. MOSTLY COUCH CHANGE"
+},
+{
+"id":124,
+"fortune":"YOUR JOURNAL IS RAW AND HONEST. BOTH PAGES"
+},
+{
+"id":125,
+"fortune":"YOU LIVE YOUR TRUTH. FACT CHECK PENDING"
+},
+{
+"id":126,
+"fortune":"YOUR INNER CRITIC ONLY SIGHS NOW"
+},
+{
+"id":127,
+"fortune":"YOUR TRANSFORMATION NEEDED LABELED PHOTOS"
+},
+{
+"id":128,
+"fortune":"YOUR GOALS ARE IN SIGHT. NICE BINOCULARS"
+},
+{
+"id":129,
+"fortune":"YOUR NEW HABITS LOOK FAMILIAR. SUSPICIOUSLY"
+},
+{
+"id":130,
+"fortune":"YOUR ENERGY IS MAGNETIC. TO OBLIGATIONS"
+},
+{
+"id":131,
+"fortune":"YOUR WALLS CAME DOWN. THE MOAT EXPANDED"
+},
+{
+"id":132,
+"fortune":"YOU CELEBRATE SMALL WINS. DAILY. SOMEONE MUST"
+},
+{
+"id":133,
+"fortune":"YOUR EVOLUTION PUZZLES DARWIN"
+},
+{
+"id":134,
+"fortune":"YOU PUT YOURSELF FIRST. THE LINE WAS SHORT"
+},
+{
+"id":135,
+"fortune":"YOUR REINVENTION TOUR CONTINUES. SAME SETLIST"
+},
+{
+"id":136,
+"fortune":"YOU ARE PRESENT. PHYSICALLY AT LEAST"
+},
+{
+"id":137,
+"fortune":"YOUR FRESH START STARTS MONDAY. A FUTURE ONE"
+},
+{
+"id":138,
+"fortune":"YOUR VISION BOARD IS STUNNING. AND RETIRED"
+},
+{
+"id":139,
+"fortune":"YOU HONOR YOUR FEELINGS. AT FULL VOLUME"
+},
+{
+"id":140,
+"fortune":"YOUR CALM IS REAL. YOU STOPPED CHECKING EMAIL"
+},
+{
+"id":141,
+"fortune":"YOUR STANDARDS ARE RISING. FROM SEA LEVEL"
+},
+{
+"id":142,
+"fortune":"YOU ARE BLOOMING. LATE SEASON. STILL COUNTS"
+},
+{
+"id":143,
+"fortune":"YOUR DISCIPLINE IS THE STUFF OF LEGEND"
+},
+{
+"id":144,
+"fortune":"YOUR AFFIRMATIONS WORK. ON THE CEILING"
+},
+{
+"id":145,
+"fortune":"TRUE LOVE AWAITS. IT IS RUNNING LATE TOO"
+},
+{
+"id":146,
+"fortune":"YOUR SOULMATE EXISTS. COVERAGE MAY VARY"
+},
+{
+"id":147,
+"fortune":"ROMANCE IS IN THE AIR. SO IS POLLEN"
+},
+{
+"id":148,
+"fortune":"CUPID HAS YOUR ADDRESS. HE DROVE PAST TWICE"
+},
+{
+"id":149,
+"fortune":"YOUR HEART KNOWS THE WAY. YOUR TEXTS DONT"
+},
+{
+"id":150,
+"fortune":"LOVE IS BLIND. YOURS ALSO FORGETS"
+},
+{
+"id":151,
+"fortune":"YOUR EX THINKS OF YOU. AS A LESSON"
+},
+{
+"id":152,
+"fortune":"YOUR FLIRTING IS SUBTLE. UNDETECTABLE EVEN"
+},
+{
+"id":153,
+"fortune":"YOUR TYPE IS CONSISTENT. THAT IS THE PROBLEM"
+},
+{
+"id":154,
+"fortune":"SOMEONE ADMIRES YOU FROM AFAR. STAY THERE"
+},
+{
+"id":155,
+"fortune":"YOUR GREEN FLAGS ARE LOVELY. AND OUTNUMBERED"
+},
+{
+"id":156,
+"fortune":"LOVE CONQUERS ALL. IT REQUESTED BACKUP"
+},
+{
+"id":157,
+"fortune":"HEART ON YOUR SLEEVE. DRY CLEAN BOTH"
+},
+{
+"id":158,
+"fortune":"A TEXT FROM THE PAST NEARS. DO NOT REPLY"
+},
+{
+"id":159,
+"fortune":"YOUR CRUSH KNOWS YOU EXIST. AS A CONCEPT"
+},
+{
+"id":160,
+"fortune":"YOU LOVE DEEPLY. BRIEFLY. BUT DEEPLY"
+},
+{
+"id":161,
+"fortune":"YOUR HEART IS OPEN. SO IS YOUR TAB"
+},
+{
+"id":162,
+"fortune":"SPARKS WILL FLY. CHECK THE SMOKE ALARM"
+},
+{
+"id":163,
+"fortune":"YOU ARE READY FOR COMMITMENT. TO A COUCH"
+},
+{
+"id":164,
+"fortune":"YOUR MEET CUTE NEARS. A MEET ADEQUATE"
+},
+{
+"id":165,
+"fortune":"YOUR HEART HEALED. IT ADDED SECURITY"
+},
+{
+"id":166,
+"fortune":"LOVE IS PATIENT. IT HAD PRACTICE WITH YOU"
+},
+{
+"id":167,
+"fortune":"YOUR REBOUND GAME BEATS THE ORIGINAL"
+},
+{
+"id":168,
+"fortune":"YOUR HONEYMOON PHASE LASTED 11 DAYS"
+},
+{
+"id":169,
+"fortune":"YOUR PET IS YOUR BEST RELATIONSHIP. IT AGREES"
+},
+{
+"id":170,
+"fortune":"YOUR VOWS WILL MAKE PEOPLE CRY. THE GRAMMAR"
+},
+{
+"id":171,
+"fortune":"YOU ARE A CATCH. CATCH AND RELEASE EXISTS"
+},
+{
+"id":172,
+"fortune":"ABSENCE MAKES HEARTS FONDER. KEEP TESTING"
+},
+{
+"id":173,
+"fortune":"YOUR PERFECT MATCH EXISTS. THE APP GAVE UP"
+},
+{
+"id":174,
+"fortune":"YOUR RED FLAGS ARE MAROON NOW. PROGRESS"
+},
+{
+"id":175,
+"fortune":"LOVE AT FIRST SIGHT IS REAL. GET GLASSES"
+},
+{
+"id":176,
+"fortune":"YOUR HEART WANTS THINGS. SEE A SPECIALIST"
+},
+{
+"id":177,
+"fortune":"SOMEONE THINKS YOU ARE PERFECT. FROM AFAR"
+},
+{
+"id":178,
+"fortune":"YOU BELIEVE IN SECOND CHANCES. AND FIFTHS"
+},
+{
+"id":179,
+"fortune":"YOUR BREAKUP PLAYLIST GETS HEAVY USE"
+},
+{
+"id":180,
+"fortune":"YOU ARE WORTH THE WAIT. THE WAIT CONTINUES"
+},
+{
+"id":181,
+"fortune":"ROMANCE IS NOT DEAD. YOURS IS RESTING"
+},
+{
+"id":182,
+"fortune":"YOUR IN LAWS WILL ADORE YOU. EVENTUALLY"
+},
+{
+"id":183,
+"fortune":"YOUR DATING BIO IS HONEST. SELECTIVELY"
+},
+{
+"id":184,
+"fortune":"YOUR HUGS ARE GREAT. AND RARE. LIKE ECLIPSES"
+},
+{
+"id":185,
+"fortune":"SOMEONE DREAMS OF YOUR COOKING. IN FEAR"
+},
+{
+"id":186,
+"fortune":"YOUR CHARM OPENS DOORS. PUSH DONT PULL"
+},
+{
+"id":187,
+"fortune":"YOUR STANDARDS MET YOUR CHOICES. AWKWARD"
+},
+{
+"id":188,
+"fortune":"YOU WILL BE SWEPT AWAY. STRETCH FIRST"
+},
+{
+"id":189,
+"fortune":"INTIMACY MEANS BEING SEEN. YOU NEGOTIATED"
+},
+{
+"id":190,
+"fortune":"YOUR LOVE STORY WILL BE TOLD. AS A WARNING"
+},
+{
+"id":191,
+"fortune":"THE SPARK IS STILL THERE. SEND A SEARCH PARTY"
+},
+{
+"id":192,
+"fortune":"YOUR ANNIVERSARY NEARS. THIS IS THE REMINDER"
+},
+{
+"id":193,
+"fortune":"LOVE YOURSELF FIRST. YOU MASTERED THAT PART"
+},
+{
+"id":194,
+"fortune":"YOUR HEART SKIPPED A BEAT. SEE A DOCTOR"
+},
+{
+"id":195,
+"fortune":"YOU BRING OUT THE BEST. AS PEOPLE LEAVE"
+},
+{
+"id":196,
+"fortune":"YOU NEVER SETTLE. HENCE THE FOLDING CHAIRS"
+},
+{
+"id":197,
+"fortune":"YOUR FUTURE PARTNER IS TRAINING. UNKNOWINGLY"
+},
+{
+"id":198,
+"fortune":"YOU GET GREAT ADVICE. FOLLOWING IT IS NEW"
+},
+{
+"id":199,
+"fortune":"YOUR HEART IS A FORTRESS. GIFT SHOP OPEN"
+},
+{
+"id":200,
+"fortune":"YOUR FRIENDS VALUE YOUR HONESTY. FROM AFAR"
+},
+{
+"id":201,
+"fortune":"A FRIEND WILL CALL SOON. THEY NEED A TRUCK"
+},
+{
+"id":202,
+"fortune":"YOU ARE THE GLUE. GLUE IS RARELY THANKED"
+},
+{
+"id":203,
+"fortune":"THE GROUP CHAT ENJOYS YOUR SILENCE"
+},
+{
+"id":204,
+"fortune":"TRUE FRIENDS ARE RARE. YOURS ARE HIDING"
+},
+{
+"id":205,
+"fortune":"YOUR LOYALTY IS UNMATCHED. YOUR TIMING ISNT"
+},
+{
+"id":206,
+"fortune":"A GATHERING BRINGS JOY. LEAVING BRINGS MORE"
+},
+{
+"id":207,
+"fortune":"YOU ARE THE FUN ONE. SELF REPORTED"
+},
+{
+"id":208,
+"fortune":"AN OLD FRIEND RESURFACES. THEY ARE MOVING"
+},
+{
+"id":209,
+"fortune":"YOUR ADVICE IS APPRECIATED. NOT REQUESTED"
+},
+{
+"id":210,
+"fortune":"YOU LIGHT UP ROOMS. SOME WANT DIMMERS"
+},
+{
+"id":211,
+"fortune":"YOUR BIRTHDAY WILL BE REMEMBERED. LATE"
+},
+{
+"id":212,
+"fortune":"YOUR STORIES IMPROVE YEARLY. ACCURACY DROPS"
+},
+{
+"id":213,
+"fortune":"PEOPLE GRAVITATE TO YOU. GRAVITY PULLS DOWN"
+},
+{
+"id":214,
+"fortune":"YOU ALWAYS KNOW WHAT TO SAY. TIMING EXTRA"
+},
+{
+"id":215,
+"fortune":"FRIENDS COME AND GO. YOURS EXCEL AT GO"
+},
+{
+"id":216,
+"fortune":"YOUR SOCIAL CALENDAR IS FULL. OF MAYBES"
+},
+{
+"id":217,
+"fortune":"YOU ARE A PEOPLE PERSON. UNVERIFIED"
+},
+{
+"id":218,
+"fortune":"YOUR INSIDE JOKES ARE NOW SOLO ACTS"
+},
+{
+"id":219,
+"fortune":"YOUR HOSTING IMPROVES. THE FIRE DEPT AGREES"
+},
+{
+"id":220,
+"fortune":"YOU BRING PEOPLE TOGETHER. TO DISCUSS YOU"
+},
+{
+"id":221,
+"fortune":"YOUR GENEROSITY HAS OFFICE HOURS"
+},
+{
+"id":222,
+"fortune":"YOU NEVER FORGET A FACE. NAMES OPTED OUT"
+},
+{
+"id":223,
+"fortune":"YOUR PEP TALKS REQUIRE FOLLOW UP CARE"
+},
+{
+"id":224,
+"fortune":"YOU SHOW UP WHEN IT MATTERS. TO YOU"
+},
+{
+"id":225,
+"fortune":"YOUR GOING AWAY PARTIES DRAW CROWDS"
+},
+{
+"id":226,
+"fortune":"PEOPLE CONFIDE IN YOU. AND THEN IN OTHERS"
+},
+{
+"id":227,
+"fortune":"YOUR HONESTY IS REFRESHING. LIKE ICE WATER"
+},
+{
+"id":228,
+"fortune":"YOU NEVER HOLD GRUDGES. YOU ARCHIVE THEM"
+},
+{
+"id":229,
+"fortune":"YOUR MEMES ARRIVE AT DAWN. UNREQUESTED"
+},
+{
+"id":230,
+"fortune":"YOU ARE A SHOULDER TO CRY ON. BY APPOINTMENT"
+},
+{
+"id":231,
+"fortune":"YOUR CANCELED DINNER PARTIES ARE LEGEND"
+},
+{
+"id":232,
+"fortune":"YOU KEEP EVERYONE GROUNDED. LIKE FOG"
+},
+{
+"id":233,
+"fortune":"YOUR ENTHUSIASM IS INFECTIOUS. MASKS EXIST"
+},
+{
+"id":234,
+"fortune":"A FRIEND WANTS YOUR HONEST OPINION. A TRAP"
+},
+{
+"id":235,
+"fortune":"YOU SPLIT BILLS FAIRLY. YOUR MATH DIFFERS"
+},
+{
+"id":236,
+"fortune":"YOUR PRESENCE IS A GIFT. REGIFTING HAPPENS"
+},
+{
+"id":237,
+"fortune":"YOUR COMPETITIVENESS RETIRED THE GAMES"
+},
+{
+"id":238,
+"fortune":"YOUR SURPRISE PARTIES SURPRISE NO ONE"
+},
+{
+"id":239,
+"fortune":"PEOPLE FEEL COMFORTABLE AROUND YOU. TO LEAVE"
+},
+{
+"id":240,
+"fortune":"YOU SAY WHAT EVERYONE THINKS. AT FUNERALS"
+},
+{
+"id":241,
+"fortune":"YOUR HOLIDAY LETTER HAS A READERSHIP"
+},
+{
+"id":242,
+"fortune":"YOUR APOLOGIES ARE HEARTFELT. AND FREQUENT"
+},
+{
+"id":243,
+"fortune":"YOU ARE THE KEEPER OF GROUP HISTORY. REVISED"
+},
+{
+"id":244,
+"fortune":"YOU NEVER MISS A CHANCE TO HELP. OR SAY SO"
+},
+{
+"id":245,
+"fortune":"YOUR DIRECTNESS IS CHARMING. AGREED WORD"
+},
+{
+"id":246,
+"fortune":"YOU ARE FASHIONABLY LATE. MINUS THE FASHION"
+},
+{
+"id":247,
+"fortune":"PEOPLE SEEK YOUR APPROVAL. TO END THE CHAT"
+},
+{
+"id":248,
+"fortune":"YOU NEVER GOSSIP. YOU BRIEF THE ABSENT"
+},
+{
+"id":249,
+"fortune":"YOUR INVITES SAY CASUAL. YOUR TEXTS DONT"
+},
+{
+"id":250,
+"fortune":"AN OLD FRIEND REMEMBERS YOU. FROM AFAR"
+},
+{
+"id":251,
+"fortune":"YOU NEVER LOSE ARGUMENTS. YOU RELOCATE THEM"
+},
+{
+"id":252,
+"fortune":"YOUR SUPPORT IS UNCONDITIONAL. SEE TERMS"
+},
+{
+"id":253,
+"fortune":"WEALTH IS COMING. IT HAS YOUR OLD ADDRESS"
+},
+{
+"id":254,
+"fortune":"MONEY FLOWS TO YOU. THROUGH YOU. GONE"
+},
+{
+"id":255,
+"fortune":"YOUR BUDGET IS ART. ABSTRACT ART"
+},
+{
+"id":256,
+"fortune":"SAVE FOR A RAINY DAY. MONSOONS FORECAST"
+},
+{
+"id":257,
+"fortune":"YOUR CREDIT SCORE IS A THRILLER"
+},
+{
+"id":258,
+"fortune":"YOUR SAVINGS GROW. CHARACTER MOSTLY"
+},
+{
+"id":259,
+"fortune":"MONEY TALKS. YOURS SAYS GOODBYE"
+},
+{
+"id":260,
+"fortune":"YOUR RETIREMENT PLAN IS A LOTTERY TICKET"
+},
+{
+"id":261,
+"fortune":"YOU HAVE EXPENSIVE TASTE. AND A BUDGET"
+},
+{
+"id":262,
+"fortune":"COMPOUND INTEREST IS MAGIC. YOU CHOSE DEBT"
+},
+{
+"id":263,
+"fortune":"YOUR EMERGENCY FUND COVERS SMALL EMERGENCIES"
+},
+{
+"id":264,
+"fortune":"A RAISE IS DESERVED. AND UNSCHEDULED"
+},
+{
+"id":265,
+"fortune":"YOUR CART IS A VISION BOARD WITH CHECKOUT"
+},
+{
+"id":266,
+"fortune":"YOUR GENEROSITY IS FAMOUS. AMONG VENDORS"
+},
+{
+"id":267,
+"fortune":"THE BEST THINGS ARE FREE. YOURS SHIP"
+},
+{
+"id":268,
+"fortune":"YOUR SUBSCRIPTIONS OUTNUMBER YOUR FRIENDS"
+},
+{
+"id":269,
+"fortune":"BUY LOW SELL HIGH. YOU INVENTED THE REVERSE"
+},
+{
+"id":270,
+"fortune":"YOUR BANK TEXTS OUT OF CONCERN NOW"
+},
+{
+"id":271,
+"fortune":"YOUR TAX REFUND HAS OTHER PLANS"
+},
+{
+"id":272,
+"fortune":"YOUR SPLURGES ARE STRATEGIC. ALLEGEDLY"
+},
+{
+"id":273,
+"fortune":"YOU WILL FIND MONEY IN A COAT. IT WAS YOURS"
+},
+{
+"id":274,
+"fortune":"YOUR PORTFOLIO IS DIVERSIFIED. IN REGRETS"
+},
+{
+"id":275,
+"fortune":"PAYDAY BRINGS JOY. ABOUT 18 HOURS OF IT"
+},
+{
+"id":276,
+"fortune":"YOUR LATE FEES HAVE LATE FEES NOW"
+},
+{
+"id":277,
+"fortune":"A PENNY SAVED IS A START. A SMALL ONE"
+},
+{
+"id":278,
+"fortune":"RICH IN SPIRIT. THE REGISTER DISAGREES"
+},
+{
+"id":279,
+"fortune":"YOUR RECEIPTS TELL A STORY. A LONG ONE"
+},
+{
+"id":280,
+"fortune":"YOUR DOWN PAYMENT BECAME SUSHI. TWICE"
+},
+{
+"id":281,
+"fortune":"YOUR BUDGET SHEET IS HISTORICAL FICTION"
+},
+{
+"id":282,
+"fortune":"YOUR FREE TRIALS NEVER DIE. THEY BILL"
+},
+{
+"id":283,
+"fortune":"CASH IS KING. YOUR KINGDOM RUNS ON CREDIT"
+},
+{
+"id":284,
+"fortune":"YOUR SPENDING FREEZE LASTED 40 MINUTES"
+},
+{
+"id":285,
+"fortune":"YOUR BILLS ARRIVE ON TIME. UNLIKE YOU"
+},
+{
+"id":286,
+"fortune":"YOUR MONEY WORKS HARD. FOR OTHER PEOPLE"
+},
+{
+"id":287,
+"fortune":"YOUR COUPONS EXPIRED. ALL OF THEM. TODAY"
+},
+{
+"id":288,
+"fortune":"YOUR FINANCIAL PLAN HAS PHASES. DENIAL FIRST"
+},
+{
+"id":289,
+"fortune":"YOUR DISCOUNTS FUND YOUR IMPULSE BUYS"
+},
+{
+"id":290,
+"fortune":"YOUR CRYPTO PHASE WAS EDUCATIONAL. AND COSTLY"
+},
+{
+"id":291,
+"fortune":"THE LOTTERY IS A HOPE TAX. YOU DONATE WEEKLY"
+},
+{
+"id":292,
+"fortune":"YOUR SAVINGS GOAL HASNT MOVED SINCE SPRING"
+},
+{
+"id":293,
+"fortune":"WEALTH WHISPERS. YOURS BLOCKED THE NUMBER"
+},
+{
+"id":294,
+"fortune":"YOU TRACK EVERY EXPENSE. THEN MAKE MORE"
+},
+{
+"id":295,
+"fortune":"YOUR PIGGY BANK HAS TRUST ISSUES. EARNED"
+},
+{
+"id":296,
+"fortune":"YOUR REFUND ARRIVED. ALREADY SPENT. TWICE"
+},
+{
+"id":297,
+"fortune":"MONEY CANT BUY HAPPINESS. YOURS QUIT TRYING"
+},
+{
+"id":298,
+"fortune":"YOUR INVOICES AGE LIKE FINE WINE. UNPAID"
+},
+{
+"id":299,
+"fortune":"YOUR NET WORTH AND SELF WORTH BOTH DIPPED"
+},
+{
+"id":300,
+"fortune":"PATIENCE IS A VIRTUE. YOU CHOSE OTHERS"
+},
+{
+"id":301,
+"fortune":"SILENCE IS GOLDEN. YOURS WOULD FUND A NATION"
+},
+{
+"id":302,
+"fortune":"THINK BEFORE YOU SPEAK. A PILOT PROGRAM"
+},
+{
+"id":303,
+"fortune":"STILL WATERS RUN DEEP. YOURS RUN ANKLE HIGH"
+},
+{
+"id":304,
+"fortune":"KNOWLEDGE IS POWER. YOURS IS ON STANDBY"
+},
+{
+"id":305,
+"fortune":"AN OPEN MIND IS A TREASURE. NICE BREEZE"
+},
+{
+"id":306,
+"fortune":"LISTEN TWICE SPEAK ONCE. INVERT YOUR RATIO"
+},
+{
+"id":307,
+"fortune":"THE TRUTH WILL SET YOU FREE. YOURS SAT DOWN"
+},
+{
+"id":308,
+"fortune":"LOOK BEFORE YOU LEAP. OR AFTER. YOUR WAY"
+},
+{
+"id":309,
+"fortune":"A FOOL AND HIS MONEY HAD A NICE CEREMONY"
+},
+{
+"id":310,
+"fortune":"ACTIONS SPEAK LOUDER. YOURS WHISPER"
+},
+{
+"id":311,
+"fortune":"MEASURE TWICE CUT ONCE. YOU CUT FIRST"
+},
+{
+"id":312,
+"fortune":"THE PEN IS MIGHTY. YOUR EMAILS ARE WEAPONS"
+},
+{
+"id":313,
+"fortune":"BETTER LATE THAN NEVER. YOU TEST THIS DAILY"
+},
+{
+"id":314,
+"fortune":"HONESTY IS THE BEST POLICY. READ THE RIDERS"
+},
+{
+"id":315,
+"fortune":"DONT COUNT YOUR CHICKENS. YOURS UNIONIZED"
+},
+{
+"id":316,
+"fortune":"GRASS IS GREENER WHERE WATERED. BUY A HOSE"
+},
+{
+"id":317,
+"fortune":"EVERY SAINT HAS A PAST. YOURS HAS A FILE"
+},
+{
+"id":318,
+"fortune":"PRACTICE WHAT YOU PREACH. OR PREACH LESS"
+},
+{
+"id":319,
+"fortune":"TWO WRONGS DONT MAKE A RIGHT. STOP AT NINE"
+},
+{
+"id":320,
+"fortune":"ALL THAT GLITTERS ISNT GOLD. CHECK RECEIPTS"
+},
+{
+"id":321,
+"fortune":"A ROLLING STONE GATHERS NO MOSS. NICE MOSS"
+},
+{
+"id":322,
+"fortune":"DONT PUT ALL EGGS IN ONE BASKET. FIND BASKET"
+},
+{
+"id":323,
+"fortune":"EMPTY VESSELS ARE LOUD. GREAT ACOUSTICS"
+},
+{
+"id":324,
+"fortune":"HE WHO LAUGHS LAST THOUGHT SLOWEST. HI"
+},
+{
+"id":325,
+"fortune":"A BIRD IN HAND IS WORTH TWO. YOURS FLEW"
+},
+{
+"id":326,
+"fortune":"IF IT AINT BROKE DONT FIX IT. TOO LATE"
+},
+{
+"id":327,
+"fortune":"YOU CAN LEAD A HORSE TO WATER. IT DECLINED"
+},
+{
+"id":328,
+"fortune":"PRIDE GOES BEFORE A FALL. NICE BALANCE"
+},
+{
+"id":329,
+"fortune":"TIME HEALS ALL WOUNDS. YOURS PICK AT IT"
+},
+{
+"id":330,
+"fortune":"OLD HABITS DIE HARD. YOURS BOUGHT INSURANCE"
+},
+{
+"id":331,
+"fortune":"WHERE THERE IS SMOKE THERE IS YOU"
+},
+{
+"id":332,
+"fortune":"THE BEST DEFENSE IS DISTANCE. THEY LEARNED"
+},
+{
+"id":333,
+"fortune":"FAMILIARITY BREEDS CONTEMPT. THRIVING HERE"
+},
+{
+"id":334,
+"fortune":"THE DEVIL IS IN THE DETAILS. YOURS ARE EMPTY"
+},
+{
+"id":335,
+"fortune":"ONE MANS TRASH IS YOUR GARAGE"
+},
+{
+"id":336,
+"fortune":"A WATCHED POT NEVER BOILS. YOURS BOILED OVER"
+},
+{
+"id":337,
+"fortune":"IGNORANCE IS BLISS. YOU SEEM SERENE"
+},
+{
+"id":338,
+"fortune":"BEAUTY IS IN THE EYE. GET THE EYE CHECKED"
+},
+{
+"id":339,
+"fortune":"IT TAKES A VILLAGE. YOURS REQUESTED BACKUP"
+},
+{
+"id":340,
+"fortune":"GREAT MINDS THINK ALIKE. YOURS WENT SOLO"
+},
+{
+"id":341,
+"fortune":"THE PROOF IS IN THE PUDDING. NO COMMENT"
+},
+{
+"id":342,
+"fortune":"EVERY DOG HAS ITS DAY. YOURS WAS A TUESDAY"
+},
+{
+"id":343,
+"fortune":"NOTHING VENTURED NOTHING GAINED. PERFECT TIE"
+},
+{
+"id":344,
+"fortune":"TOO MANY COOKS SPOIL BROTH. YOU SOLOED IT"
+},
+{
+"id":345,
+"fortune":"YOU REAP WHAT YOU SOW. INTERESTING HARVEST"
+},
+{
+"id":346,
+"fortune":"ASK AND RECEIVE. YOUR ASKING MADE A LINE"
+},
+{
+"id":347,
+"fortune":"WALK A MILE IN THEIR SHOES. RETURN THEM"
+},
+{
+"id":348,
+"fortune":"HASTE MAKES WASTE. YOU KEPT ONLY WASTE"
+},
+{
+"id":349,
+"fortune":"ALL GOOD THINGS END. YOURS END EARLY"
+},
+{
+"id":350,
+"fortune":"WORDS ARE CHEAP. YOURS ARE FREE"
+},
+{
+"id":351,
+"fortune":"TIME WAITS FOR NO ONE. IT MADE AN EXCEPTION"
+},
+{
+"id":352,
+"fortune":"DONT BITE THE FEEDING HAND. IT WEARS GLOVES"
+},
+{
+"id":353,
+"fortune":"COMPARISON STEALS JOY. YOURS HIRED IT"
+},
+{
+"id":354,
+"fortune":"HALF A LOAF BEATS NONE. YOU OFFER CRUMBS"
+},
+{
+"id":355,
+"fortune":"A SMOOTH SEA NEVER MADE A SAILOR. STAY DOCKED"
+},
+{
+"id":356,
+"fortune":"THE TRUTH NEEDS NO REHEARSAL. YOURS DOES"
+},
+{
+"id":357,
+"fortune":"EVERYTHING IN MODERATION. EVEN THAT. STOP"
+},
+{
+"id":358,
+"fortune":"WHAT GOES AROUND COMES AROUND. TRACK IT"
+},
+{
+"id":359,
+"fortune":"NEVER ARGUE WITH A FOOL. ONLOOKERS STRUGGLE"
+},
+{
+"id":360,
+"fortune":"WISDOM WHISPERS. YOURS IS ON MUTE"
+},
+{
+"id":361,
+"fortune":"A THOUSAND MILE JOURNEY STARTS. YOU STRETCH"
+},
+{
+"id":362,
+"fortune":"CROSS BRIDGES WHEN YOU REACH THEM. NOT BURN"
+},
+{
+"id":363,
+"fortune":"THE MIGHTY OAK WAS A NUT. HERITAGE PRESERVED"
+},
+{
+"id":364,
+"fortune":"FOOL ME ONCE. YOUR CARD HAS NINE STAMPS"
+},
+{
+"id":365,
+"fortune":"ADVENTURE AWAITS. IT OPENED A BUSINESS"
+},
+{
+"id":366,
+"fortune":"YOU WILL TRAVEL FAR. THE SHUTTLE COUNTS"
+},
+{
+"id":367,
+"fortune":"YOUR PASSPORT PHOTO IS THE REAL YOU"
+},
+{
+"id":368,
+"fortune":"YOUR BUCKET LIST NEEDS A BUCKET"
+},
+{
+"id":369,
+"fortune":"YOU WILL SEE THE WORLD. VIA DOCUMENTARY"
+},
+{
+"id":370,
+"fortune":"YOUR VACATION DAYS AGE LIKE FINE GUILT"
+},
+{
+"id":371,
+"fortune":"AN EXOTIC PLACE CALLED. YOU SCREENED IT"
+},
+{
+"id":372,
+"fortune":"YOUR ROAD TRIP PLAYLIST OUTLIVED THE TRIP"
+},
+{
+"id":373,
+"fortune":"YOU PACK LIGHT. EMOTIONALLY YOU DONT"
+},
+{
+"id":374,
+"fortune":"YOUR SOUVENIRS TELL STORIES. ABOUT PRICING"
+},
+{
+"id":375,
+"fortune":"YOU WILL GET LOST ABROAD. A HOME SKILL"
+},
+{
+"id":376,
+"fortune":"YOUR TRAVEL PICS STAR YOUR THUMB"
+},
+{
+"id":377,
+"fortune":"A SPONTANEOUS TRIP NEARS. WITH SPREADSHEETS"
+},
+{
+"id":378,
+"fortune":"YOU ARE A WORLD CITIZEN. REFERENCES PENDING"
+},
+{
+"id":379,
+"fortune":"YOUR BEACH BODY IS READY. THE BEACH ADAPTED"
+},
+{
+"id":380,
+"fortune":"THE MOUNTAINS ARE CALLING. YOU MUTED THEM"
+},
+{
+"id":381,
+"fortune":"YOUR STAYCATION GAME IS UNRIVALED"
+},
+{
+"id":382,
+"fortune":"YOU NAVIGATE LIKE A LOCAL. A LOST ONE"
+},
+{
+"id":383,
+"fortune":"YOUR ITINERARY IS MOSTLY BUFFER TIME"
+},
+{
+"id":384,
+"fortune":"YOUR HIKING BOOTS SUMMITED THE CLOSET"
+},
+{
+"id":385,
+"fortune":"JET LAG RESPECTS NO ONE. YOU CAME PRE TIRED"
+},
+{
+"id":386,
+"fortune":"YOUR TRAVEL JOURNAL HAS ONE ENTRY. EXCITED"
+},
+{
+"id":387,
+"fortune":"YOU COLLECT EXPERIENCES. THE CARD DISAGREES"
+},
+{
+"id":388,
+"fortune":"YOUR SENSE OF DIRECTION IS A FAMILY LEGEND"
+},
+{
+"id":389,
+"fortune":"A GETAWAY NEARS. THE LAUNDRY WILL WAIT"
+},
+{
+"id":390,
+"fortune":"YOU WILL RETURN CHANGED. MOSTLY YOUR SLEEP"
+},
+{
+"id":391,
+"fortune":"YOUR AIRPORT TIMING IS A PERSONALITY TEST"
+},
+{
+"id":392,
+"fortune":"YOUR WINDOW SEAT PICS FEATURE THE WING"
+},
+{
+"id":393,
+"fortune":"YOUR CARRY ON HAS ITS OWN GRAVITY NOW"
+},
+{
+"id":394,
+"fortune":"YOUR CAMPING SKILLS AMUSE THE RACCOONS"
+},
+{
+"id":395,
+"fortune":"TIME ZONES CONFUSE YOUR SLEEP. IT COPES"
+},
+{
+"id":396,
+"fortune":"YOUR HOTEL REVIEWS ARE FEARED. BY TOWELS"
+},
+{
+"id":397,
+"fortune":"YOU BEFRIEND STRANGERS ABROAD. ALSO LOST ONES"
+},
+{
+"id":398,
+"fortune":"YOUR CRUISE PACE MATCHES YOUR BUFFET PACE"
+},
+{
+"id":399,
+"fortune":"FORTUNE FAVORS TRAVELERS. YOURS LIKES COUCHES"
+},
+{
+"id":400,
+"fortune":"YOUR PHONE BATTERY OUTLASTS YOUR DRIVE"
+},
+{
+"id":401,
+"fortune":"YOU WILL READ THE TERMS SOMEDAY. NO"
+},
+{
+"id":402,
+"fortune":"YOUR SCREEN TIME REPORT SOFTENS THE NEWS"
+},
+{
+"id":403,
+"fortune":"YOUR LAUNDRY CHAIR EARNED TENURE"
+},
+{
+"id":404,
+"fortune":"YOUR ALARM HAS FIVE BACKUPS. ALL IGNORED"
+},
+{
+"id":405,
+"fortune":"YOUR FRIDGE HOSTS A SCIENCE EXPERIMENT"
+},
+{
+"id":406,
+"fortune":"THE CHECK ENGINE LIGHT IS A MOOD LIGHT NOW"
+},
+{
+"id":407,
+"fortune":"YOUR HOUSEPLANTS ACCEPTED THEIR FATE"
+},
+{
+"id":408,
+"fortune":"YOUR JUNK DRAWER OPENED A SECOND LOCATION"
+},
+{
+"id":409,
+"fortune":"YOUR GYM BAG IS PACKED. THAT COUNTS"
+},
+{
+"id":410,
+"fortune":"YOUR VOICEMAIL IS FULL. PEOPLE MOVED ON"
+},
+{
+"id":411,
+"fortune":"YOUR BROWSER TABS ARE AN ECOSYSTEM NOW"
+},
+{
+"id":412,
+"fortune":"YOUR UMBRELLA WAITS. YOU WILL FORGET IT"
+},
+{
+"id":413,
+"fortune":"YOUR LEFTOVERS HAD DREAMS. THEY COMPOST"
+},
+{
+"id":414,
+"fortune":"YOUR TO DO LIST HAS A TO DO LIST"
+},
+{
+"id":415,
+"fortune":"YOUR CLOSET DRESSES THREE VERSIONS OF YOU"
+},
+{
+"id":416,
+"fortune":"YOUR MORNING RUN IS LAMINATED. NOT RUN"
+},
+{
+"id":417,
+"fortune":"YOUR WIFI ROUTER SITS ON A SHRINE. CORRECT"
+},
+{
+"id":418,
+"fortune":"YOUR INBOX ZERO ATTEMPT IS HISTORY NOW"
+},
+{
+"id":419,
+"fortune":"YOUR SOCK DRAWER RUNS WITNESS PROTECTION"
+},
+{
+"id":420,
+"fortune":"YOUR GROCERY LIST STAYS HOME. IT KNOWS"
+},
+{
+"id":421,
+"fortune":"YOUR WATCHLIST OUTLIVED THREE HOBBIES"
+},
+{
+"id":422,
+"fortune":"YOUR DESK IS ERGONOMIC. YOUR COUCH ISNT"
+},
+{
+"id":423,
+"fortune":"THE PRINTER SENSES FEAR. AND UPDATES"
+},
+{
+"id":424,
+"fortune":"YOUR BEDTIME IS A MOTION YOU VOTE DOWN"
+},
+{
+"id":425,
+"fortune":"YOUR HEADPHONES TANGLE ALONE. SCIENCE WEEPS"
+},
+{
+"id":426,
+"fortune":"YOUR SPICE RACK IS SORTED THROUGH C"
+},
+{
+"id":427,
+"fortune":"YOUR BACKSEAT IS A LOST AND FOUND"
+},
+{
+"id":428,
+"fortune":"YOUR CART ABANDONMENT RATE MADE THE NEWS"
+},
+{
+"id":429,
+"fortune":"THE GOOD CABLE IS WHEREVER YOU ARENT"
+},
+{
+"id":430,
+"fortune":"YOUR STANDING DESK MOSTLY SITS. LIKE YOU"
+},
+{
+"id":431,
+"fortune":"YOUR MEAL PREP MADE ONE MEAL. SIX BOXES"
+},
+{
+"id":432,
+"fortune":"THE DELIVERY DRIVER WAVES AT YOU NOW"
+},
+{
+"id":433,
+"fortune":"YOUR AIR FRYER REPLACED THE OVEN. AND YOU"
+},
+{
+"id":434,
+"fortune":"YOUR BOOKMARKS ARE A HALL OF INTENTIONS"
+},
+{
+"id":435,
+"fortune":"YOUR SNOOZE BUTTON SHOWS GEOLOGIC WEAR"
+},
+{
+"id":436,
+"fortune":"YOUR REUSABLE BAGS WAIT IN THE CAR. LOYAL"
+},
+{
+"id":437,
+"fortune":"YOUR UPDATES HAVE SENIORITY NOW"
+},
+{
+"id":438,
+"fortune":"THE ICE TRAY RETURNS EMPTY. A TRADITION"
+},
+{
+"id":439,
+"fortune":"YOUR GARAGE STORES EVERYTHING BUT THE CAR"
+},
+{
+"id":440,
+"fortune":"YOUR STEP COUNTER FRAMED ITS BEST DAY"
+},
+{
+"id":441,
+"fortune":"YOUR FAVORITE MUG HAS PROTECTED STATUS"
+},
+{
+"id":442,
+"fortune":"YOUR WEATHER APP GAVE UP ON YOUR OUTFITS"
+},
+{
+"id":443,
+"fortune":"YOUR SCALE PRACTICES RADICAL HONESTY"
+},
+{
+"id":444,
+"fortune":"YOUR REMOTES COMMUTE FROM THE CUSHIONS"
+},
+{
+"id":445,
+"fortune":"THE HALLWAY CLOSET HOLDS YOUR TRUTH. BARELY"
+},
+{
+"id":446,
+"fortune":"YOU OWN EVERY BATTERY SIZE BUT THE ONE NEEDED"
+},
+{
+"id":447,
+"fortune":"YOUR VACUUM AVOIDS CORNERS. LIKE YOU"
+},
+{
+"id":448,
+"fortune":"YOUR SHOWER THOUGHTS STAY IN THE SHOWER"
+},
+{
+"id":449,
+"fortune":"YOUR COFFEE MAKER KNOWS YOUR MONDAY FACE"
+},
+{
+"id":450,
+"fortune":"YOUR FREEZER FLOOR PREDATES FRIENDSHIPS"
+},
+{
+"id":451,
+"fortune":"YOUR PHONE STORAGE IS ALL SCREENSHOTS"
+},
+{
+"id":452,
+"fortune":"YOUR BIKE TIRES EXHALE SLOWLY. LIKE A SIGH"
+},
+{
+"id":453,
+"fortune":"YOUR RETURNS PILE HAS A DEPARTURE LOUNGE"
+},
+{
+"id":454,
+"fortune":"YOUR CANDLES ARE DECOR. MATCHES AGREE"
+},
+{
+"id":455,
+"fortune":"YOUR DINING TABLE RETIRED FROM DINING"
+},
+{
+"id":456,
+"fortune":"YOUR PREDICTIVE TEXT SUGGESTS SORRY FIRST"
+},
+{
+"id":457,
+"fortune":"YOUR FITNESS APP USES SHORTER SENTENCES NOW"
+},
+{
+"id":458,
+"fortune":"YOUR COAT POCKET IS A TIME CAPSULE"
+},
+{
+"id":459,
+"fortune":"THE ADD 30 SECONDS BUTTON RUNS YOUR KITCHEN"
+},
+{
+"id":460,
+"fortune":"THE GOOD SCISSORS ARE MISSING. ONE SUSPECT"
+},
+{
+"id":461,
+"fortune":"YOUR DOWNLOADS FOLDER IS A LANDFILL"
+},
+{
+"id":462,
+"fortune":"YOUR PLANTS RUN ON GUILT BASED WATERING"
+},
+{
+"id":463,
+"fortune":"THE DRYER TAKES ONE SOCK AS TRIBUTE"
+},
+{
+"id":464,
+"fortune":"YOUR COASTERS WATCH FROM THE SIDELINES"
+},
+{
+"id":465,
+"fortune":"YOUR NOTES APP IS A GENIUS LANDFILL"
+},
+{
+"id":466,
+"fortune":"RAIN WILL WASH YOUR CAR. YOUR PLAN EXACTLY"
+},
+{
+"id":467,
+"fortune":"YOUR BOARD GAMES AGE IN SHRINK WRAP"
+},
+{
+"id":468,
+"fortune":"YOUR YOGA MAT UNROLLED TWICE. FOR NAPS"
+},
+{
+"id":469,
+"fortune":"YOUR EXTENSION CORDS BREED IN THE DARK"
+},
+{
+"id":470,
+"fortune":"YOUR SMART SPEAKER HAS HEARD THINGS"
+},
+{
+"id":471,
+"fortune":"YOUR LIDS AND CONTAINERS NEVER MATCH. EVER"
+},
+{
+"id":472,
+"fortune":"YOUR WALKING SHOES TOUR THE TRUNK"
+},
+{
+"id":473,
+"fortune":"YOUR IMPORTANT FOLDER IS A HOSPICE"
+},
+{
+"id":474,
+"fortune":"YOUR WREATH IS PERENNIAL NOW. FESTIVE"
+},
+{
+"id":475,
+"fortune":"THAT ONE DRAWER STOPPED EXPLAINING ITSELF"
+},
+{
+"id":476,
+"fortune":"YOUR SCREEN AT 2AM REVEALS EVERYTHING"
+},
+{
+"id":477,
+"fortune":"YOUR FIRE EXTINGUISHER RUNS ON CONFIDENCE"
+},
+{
+"id":478,
+"fortune":"YOUR WATER GOAL WAS MET ONCE. PLAQUE PENDING"
+},
+{
+"id":479,
+"fortune":"AGING SUITS YOU. THE ALTERNATIVE DIDNT"
+},
+{
+"id":480,
+"fortune":"YOUR AGE IS JUST A NUMBER. AN ASCENDING ONE"
+},
+{
+"id":481,
+"fortune":"YOUR KNEES FORECAST WEATHER NOW. A SKILL"
+},
+{
+"id":482,
+"fortune":"YOUR BACK WENT OUT MORE THAN YOU DID"
+},
+{
+"id":483,
+"fortune":"WISDOM COMES WITH GRAY HAIR. YOURS CAME EARLY"
+},
+{
+"id":484,
+"fortune":"YOU AGE LIKE WINE. STORED HORIZONTALLY"
+},
+{
+"id":485,
+"fortune":"YOUR BIRTHDAY CANDLES ARE A FIRE HAZARD"
+},
+{
+"id":486,
+"fortune":"YOUR READING GLASSES NEED READING GLASSES"
+},
+{
+"id":487,
+"fortune":"YOUR PLAYLIST IS CALLED OLDIES NOW. BY KIDS"
+},
+{
+"id":488,
+"fortune":"YOU GROAN WHEN SITTING. A VERBAL RECEIPT"
+},
+{
+"id":489,
+"fortune":"YOUR METABOLISM RETIRED WITHOUT NOTICE"
+},
+{
+"id":490,
+"fortune":"YOU FEEL 25. YOUR HANGOVERS DISAGREE"
+},
+{
+"id":491,
+"fortune":"AN APPLE A DAY. PIE IS A LOOPHOLE. SURE"
+},
+{
+"id":492,
+"fortune":"YOUR POSTURE IMPROVES TWICE DAILY. BRIEFLY"
+},
+{
+"id":493,
+"fortune":"YOU WILL SLEEP 8 HOURS. ACROSS 3 NIGHTS"
+},
+{
+"id":494,
+"fortune":"YOUR VITAMINS EXPIRE UNTAKEN. RENEWABLE"
+},
+{
+"id":495,
+"fortune":"YOUR DIET STARTS MONDAY. MONDAYS UNIONIZED"
+},
+{
+"id":496,
+"fortune":"YOUR DENTIST KNOWS YOU FLOSSED TODAY ONLY"
+},
+{
+"id":497,
+"fortune":"YOUR RESTING HEART RATE IS GREAT. FITTING"
+},
+{
+"id":498,
+"fortune":"YOU WILL LIVE TO 100. OUT OF SPITE"
+},
+{
+"id":499,
+"fortune":"YOUR HIDDEN TALENTS REMAIN WELL HIDDEN"
+},
+{
+"id":500,
+"fortune":"YOUR CREATIVITY HAS NO BOUNDS. OR OUTPUT"
+},
+{
+"id":501,
+"fortune":"YOU HAVE A GIFT. NO RECEIPT INCLUDED"
+},
+{
+"id":502,
+"fortune":"YOUR NOVEL WILL BE FINISHED. BY SOMEONE"
+},
+{
+"id":503,
+"fortune":"YOU WERE BORN TO CREATE. EXCUSES COUNT"
+},
+{
+"id":504,
+"fortune":"YOUR MASTERPIECE IS INSIDE YOU. COZY THERE"
+},
+{
+"id":505,
+"fortune":"YOUR SINGING BRINGS TEARS. BIOLOGY IS ODD"
+},
+{
+"id":506,
+"fortune":"THE MUSE VISITS YOU. SHE CALLS AHEAD NOW"
+},
+{
+"id":507,
+"fortune":"YOUR PHOTOS CAPTURE RAW CONFUSION"
+},
+{
+"id":508,
+"fortune":"YOU THINK OUTSIDE THE BOX. THE BOX WORRIES"
+},
+{
+"id":509,
+"fortune":"YOUR POETRY MOVES PEOPLE. TO THE EXITS"
+},
+{
+"id":510,
+"fortune":"YOUR IMAGINATION IS VAST. EXECUTION ISNT"
+},
+{
+"id":511,
+"fortune":"YOU SEE THE WORLD DIFFERENTLY. GET CHECKED"
+},
+{
+"id":512,
+"fortune":"YOUR PODCAST IDEA JOINS THE OTHER SIX"
+},
+{
+"id":513,
+"fortune":"CREATIVITY FLOWS PAST YOU. WAVING"
+},
+{
+"id":514,
+"fortune":"YOUR DOODLES BELONG SOMEWHERE. A DRAWER"
+},
+{
+"id":515,
+"fortune":"YOUR COOKING IS PERFORMANCE ART. WITH ALARMS"
+},
+{
+"id":516,
+"fortune":"YOUR SCREENPLAY HAS POTENTIAL ENERGY ONLY"
+},
+{
+"id":517,
+"fortune":"THE WORLD IS YOUR CANVAS. STILL PRIMED"
+},
+{
+"id":518,
+"fortune":"YOUR DIY PROJECTS ARE AN UNFINISHED TRILOGY"
+},
+{
+"id":519,
+"fortune":"YOUR MUSIC TASTE IS GREAT. NEIGHBORS DISSENT"
+},
+{
+"id":520,
+"fortune":"YOUR DANCE MOVES DEFY CONVENTION. AND PHYSICS"
+},
+{
+"id":521,
+"fortune":"YOU TELL GREAT STORIES. ENDINGS PENDING"
+},
+{
+"id":522,
+"fortune":"PHARMACISTS FRAME YOUR HANDWRITING"
+},
+{
+"id":523,
+"fortune":"YOUR IDEAS ARRIVE AT 2AM. GONE BY 8"
+},
+{
+"id":524,
+"fortune":"YOUR SKETCHBOOK HOLDS GREAT PROMISES"
+},
+{
+"id":525,
+"fortune":"YOU COULD WRITE A BOOK. A STRONG PAMPHLET"
+},
+{
+"id":526,
+"fortune":"YOUR POTTERY PHASE MADE MEMORABLE PIECES"
+},
+{
+"id":527,
+"fortune":"YOUR INNER ARTIST WANTS COFFEE FIRST"
+},
+{
+"id":528,
+"fortune":"YOUR COLOR CHOICES ARE COURAGEOUS"
+},
+{
+"id":529,
+"fortune":"YOUR GUITAR KNOWS THREE CHORDS WELL"
+},
+{
+"id":530,
+"fortune":"YOUR CREATIVE PROCESS IS UNDOCUMENTED"
+},
+{
+"id":531,
+"fortune":"YOUR SCARVES BECAME EXPERIENCES. KNIT ON"
+},
+{
+"id":532,
+"fortune":"YOU PAINT WITH EMOTION. THE FLOOR AGREES"
+},
+{
+"id":533,
+"fortune":"YOUR BONSAI IS A REGULAR TREE NOW. PATIENCE"
+},
+{
+"id":534,
+"fortune":"YOUR WRITING VOICE IS STRONG. IN TEXTS"
+},
+{
+"id":535,
+"fortune":"YOUR GARDEN GROWS. THE WEEDS THRIVE MOST"
+},
+{
+"id":536,
+"fortune":"YOUR CALLIGRAPHY PHASE WAS ONE WEEKEND"
+},
+{
+"id":537,
+"fortune":"YOUR WOODWORK IS HONEST. SPLINTERS DONT LIE"
+},
+{
+"id":538,
+"fortune":"YOUR FAN FICTION HAS FANS. BOTH OF THEM"
+},
+{
+"id":539,
+"fortune":"YOUR ORIGAMI FILLS THE RECYCLING BIN"
+},
+{
+"id":540,
+"fortune":"YOUR CREATIVE BLOCK IS LOAD BEARING NOW"
+},
+{
+"id":541,
+"fortune":"YOUR SOURDOUGH STARTER OUTLIVED THE HOBBY"
+},
+{
+"id":542,
+"fortune":"YOUR WATERCOLORS CAPTURE SOMETHING. UNCLEAR"
+},
+{
+"id":543,
+"fortune":"YOU EXCEL AT BEGINNINGS. MIDDLES DECLINED"
+},
+{
+"id":544,
+"fortune":"YOUR UKULELE EMBRACED ITS ROLE AS DECOR"
+},
+{
+"id":545,
+"fortune":"YOU ARE YOUR OWN WORST CRITIC. UNDISPUTED"
+},
+{
+"id":546,
+"fortune":"YOUR ART SPEAKS FOR ITSELF. QUIETLY"
+},
+{
+"id":547,
+"fortune":"YOUR STUDIO IS A CLOSET AGAIN. FUNCTIONAL"
+},
+{
+"id":548,
+"fortune":"YOUR FIRST DRAFTS NEVER MEET SECOND ONES"
+},
+{
+"id":549,
+"fortune":"YOUR CANDLE PHASE LEFT EVIDENCE. WAXY"
+},
+{
+"id":550,
+"fortune":"YOUR OPEN MIC DEBUT REMAINS IMMINENT"
+},
+{
+"id":551,
+"fortune":"YOUR PLAYLIST TRANSITIONS ARE ART. SHUFFLED"
+},
+{
+"id":552,
+"fortune":"YOUR COSTUMES SHOW COMMITMENT. TO CONCEPTS"
+},
+{
+"id":553,
+"fortune":"YOUR MACRAME OWL HAS SEEN YOUR PROJECTS"
+},
+{
+"id":554,
+"fortune":"YOUR VOICE MEMOS ARE MOSTLY GROCERIES"
+},
+{
+"id":555,
+"fortune":"YOU WILL BE DISCOVERED. ON YOUR COUCH"
+},
+{
+"id":556,
+"fortune":"YOUR MOOD BOARD IS ALL MOOD. NO BOARD"
+},
+{
+"id":557,
+"fortune":"YOUR FREESTYLE RAPS SHOULD STAY FREE"
+},
+{
+"id":558,
+"fortune":"YOUR MUSEUM VISITS END AT THE CAFE"
+},
+{
+"id":559,
+"fortune":"YOUR COVERS BEAT THE ORIGINALS. UNNOTIFIED"
+},
+{
+"id":560,
+"fortune":"YOUR TYPEWRITER LOOKS GREAT. STILL"
+},
+{
+"id":561,
+"fortune":"YOUR ABSTRACT PHASE CONFUSED EVEN YOU"
+},
+{
+"id":562,
+"fortune":"YOUR COMIC HAS A FOLLOWER. HI MOM"
+},
+{
+"id":563,
+"fortune":"YOUR SONG RHYMES ORANGE WITH DOOR HINGE"
+},
+{
+"id":564,
+"fortune":"YOUR CRAFT CORNER ANNEXED THE GUEST ROOM"
+},
+{
+"id":565,
+"fortune":"YOUR GENIUS IS MISUNDERSTOOD. AND UNSEEN"
+},
+{
+"id":566,
+"fortune":"YOUR MAGNUM OPUS IS BASICALLY ESPRESSO NOW"
+},
+{
+"id":567,
+"fortune":"YOUR INSPIRATION FOLDER HAS SUBFOLDERS"
+},
+{
+"id":568,
+"fortune":"THE FORTUNE YOU SEEK IS IN ANOTHER COOKIE"
+},
+{
+"id":569,
+"fortune":"THIS COOKIE CONTAINS NO FORTUNE. JUST CARBS"
+},
+{
+"id":570,
+"fortune":"IT IS DARK INSIDE THIS COOKIE. AND QUIET"
+},
+{
+"id":571,
+"fortune":"THIS FORTUNE LEFT INTENTIONALLY BLANK"
+},
+{
+"id":572,
+"fortune":"CONFUCIUS SAYS NOTHING ABOUT YOU. WISELY"
+},
+{
+"id":573,
+"fortune":"THIS FORTUNE WAS RECALLED. SAME TO YOU"
+},
+{
+"id":574,
+"fortune":"YOU WILL READ THIS ALOUD. UNPROMPTED"
+},
+{
+"id":575,
+"fortune":"THE COOKIE KNEW YOU WOULD TAKE THE LAST ONE"
+},
+{
+"id":576,
+"fortune":"SOME GET WISDOM. YOU CHOSE DESSERT"
+},
+{
+"id":577,
+"fortune":"THIS IS A COOKIE. NOT A LIFE COACH"
+},
+{
+"id":578,
+"fortune":"YOUR LUCKY NUMBERS HAVE OPTED OUT"
+},
+{
+"id":579,
+"fortune":"THE COOKIE ADMIRES YOUR OPTIMISM"
+},
+{
+"id":580,
+"fortune":"YOU SHOOK THE COOKIE FIRST. IT FELT THAT"
+},
+{
+"id":581,
+"fortune":"ASK AGAIN LATER. OR DONT. YOUR CALL"
+},
+{
+"id":582,
+"fortune":"THIS COOKIE WAS BAKED WITH LOW EXPECTATIONS"
+},
+{
+"id":583,
+"fortune":"THE FORTUNE WRITER IS ON BREAK. JUDGING"
+},
+{
+"id":584,
+"fortune":"NO WISDOM TODAY. INVENTORY ISSUES"
+},
+{
+"id":585,
+"fortune":"YOUR FORTUNE IS PENDING APPROVAL"
+},
+{
+"id":586,
+"fortune":"THIS MESSAGE WILL SELF DISAPPOINT"
+},
+{
+"id":587,
+"fortune":"THE COOKIE CRUMBLES. SO DO PLANS"
+},
+{
+"id":588,
+"fortune":"YOU EXPECTED MORE FROM A COOKIE. NOTED"
+},
+{
+"id":589,
+"fortune":"FORTUNE NOT FOUND. TRY ANOTHER DINNER"
+},
+{
+"id":590,
+"fortune":"THIS COOKIE HAS SEEN YOUR ORDER HISTORY"
+},
+{
+"id":591,
+"fortune":"THE LAST COOKIE ALWAYS TELLS THE TRUTH"
+},
+{
+"id":592,
+"fortune":"YOUR FORTUNE RAN OUT OF CHARACTERS. LUCKY"
+},
+{
+"id":593,
+"fortune":"A WISE MAN ONCE SAID NOTHING. TRY IT"
+},
+{
+"id":594,
+"fortune":"THE COOKIE BELIEVED IN YOU. PAST TENSE"
+},
+{
+"id":595,
+"fortune":"THIS FORTUNE IS ACCURATE. DETAILS REDACTED"
+},
+{
+"id":596,
+"fortune":"YOU HOLD THE KEY TO HAPPINESS. NOW FIND IT"
+},
+{
+"id":597,
+"fortune":"YOUR FORTUNE IS BEING WRITTEN. SLOWLY"
+},
+{
+"id":598,
+"fortune":"YOUR COFFEE ORDER IS A PARAGRAPH NOW"
+},
+{
+"id":599,
+"fortune":"COFFEE FIRST. PERSONALITY SECOND. FAIR"
+},
+{
+"id":600,
+"fortune":"YOUR FOURTH COFFEE IS WATCHING YOU"
+},
+{
+"id":601,
+"fortune":"DECAF EXISTS. YOU PRETEND IT DOESNT"
+},
+{
+"id":602,
+"fortune":"YOUR MUG COLLECTION OUTGREW THE CABINET"
+},
+{
+"id":603,
+"fortune":"YOUR ESPRESSO MACHINE JUDGES YOUR PODS"
+},
+{
+"id":604,
+"fortune":"YOU CALL IT BRUNCH. IT WAS BREAKFAST. LATE"
+},
+{
+"id":605,
+"fortune":"YOUR SALAD PHASE ENDED AT THE DRESSING"
+},
+{
+"id":606,
+"fortune":"YOU MEAL PLAN BEAUTIFULLY. THEN ORDER OUT"
+},
+{
+"id":607,
+"fortune":"YOUR SPICE TOLERANCE IS A PERSONALITY. SADLY"
+},
+{
+"id":608,
+"fortune":"YOUR SIGNATURE DISH HAS ONE FAN. YOU"
+},
+{
+"id":609,
+"fortune":"THE OVEN TIMER IS A SUGGESTION TO YOU"
+},
+{
+"id":610,
+"fortune":"YOUR SMOOTHIES HIDE VEGETABLES. FROM YOU"
+},
+{
+"id":611,
+"fortune":"YOU COOK WITH LOVE. AND TOO MUCH SALT"
+},
+{
+"id":612,
+"fortune":"YOUR RECIPE SUBSTITUTIONS ARE BRAVE"
+},
+{
+"id":613,
+"fortune":"GARLIC MEASURED WITH YOUR HEART. AGAIN"
+},
+{
+"id":614,
+"fortune":"YOUR TOAST GAME IS STRONG. LITERALLY BURNT"
+},
+{
+"id":615,
+"fortune":"YOU EAT DESSERT FIRST. LIFE IS SHORT. SURE"
+},
+{
+"id":616,
+"fortune":"YOUR SNACK DRAWER HAS A WAITING LIST"
+},
+{
+"id":617,
+"fortune":"THE FOOD DELIVERY APP KNOWS YOU BY NAME"
+},
+{
+"id":618,
+"fortune":"YOUR KITCHEN GADGETS FORM A MUSEUM"
+},
+{
+"id":619,
+"fortune":"YOUR TAKEOUT CONTAINERS ARE HEIRLOOMS NOW"
+},
+{
+"id":620,
+"fortune":"YOU SAY YOU COULD EAT ANYTHING. THEN DONT"
+},
+{
+"id":621,
+"fortune":"YOUR PIZZA TOPPINGS HAVE CRITICS"
+},
+{
+"id":622,
+"fortune":"YOUR DOG LOVES YOU UNCONDITIONALLY. TRAINED"
+},
+{
+"id":623,
+"fortune":"YOUR CAT TOLERATES YOU. A HIGH HONOR"
+},
+{
+"id":624,
+"fortune":"YOUR PET EATS BETTER THAN YOU DO"
+},
+{
+"id":625,
+"fortune":"YOUR DOG HAS MORE FRIENDS THAN YOU"
+},
+{
+"id":626,
+"fortune":"THE CAT KNOCKED IT OVER ON PURPOSE. RESPECT"
+},
+{
+"id":627,
+"fortune":"YOUR FISH KNOWS YOUR SCHEDULE. IT WORRIES"
+},
+{
+"id":628,
+"fortune":"YOUR PETS INSTAGRAM OUTPERFORMS YOURS"
+},
+{
+"id":629,
+"fortune":"THE DOG ATE YOUR MOTIVATION. NOT HOMEWORK"
+},
+{
+"id":630,
+"fortune":"YOUR CAT REVIEWS YOUR LIFE CHOICES NIGHTLY"
+},
+{
+"id":631,
+"fortune":"YOUR BIRD REPEATS YOUR WORST PHRASES"
+},
+{
+"id":632,
+"fortune":"YOUR PET THERAPIST IS A GOOD LISTENER. FREE"
+},
+{
+"id":633,
+"fortune":"RAIN IS COMING. YOUR CAR WASH REJOICES"
+},
+{
+"id":634,
+"fortune":"YOUR WINTER COAT DEBATE STARTS IN OCTOBER"
+},
+{
+"id":635,
+"fortune":"YOU CHECK THE WEATHER. THEN DRESS WRONG"
+},
+{
+"id":636,
+"fortune":"SPRING IS COMING. SO ARE YOUR ALLERGIES"
+},
+{
+"id":637,
+"fortune":"YOUR SUNSCREEN EXPIRES UNUSED. YEARLY"
+},
+{
+"id":638,
+"fortune":"SNOW IS MAGICAL. UNTIL YOU OWN A SHOVEL"
+},
+{
+"id":639,
+"fortune":"YOUR UMBRELLA COLLECTION LIVES ELSEWHERE"
+},
+{
+"id":640,
+"fortune":"SMALL TALK ABOUT WEATHER SUITS YOU NOW"
+},
+{
+"id":641,
+"fortune":"THE FORECAST CHANGED. YOUR PLANS DIDNT EXIST"
+},
+{
+"id":642,
+"fortune":"YOUR PATIO FURNITURE FEARS EVERY SEASON"
+},
+{
+"id":643,
+"fortune":"AUTUMN LEAVES FALL. LIKE YOUR RESOLUTIONS"
+},
+{
+"id":644,
+"fortune":"YOUR PASSWORD IS YOUR PETS NAME. WE KNOW"
+},
+{
+"id":645,
+"fortune":"YOU HAVE 47 UNREAD UPDATES. THEY WAIT"
+},
+{
+"id":646,
+"fortune":"YOUR CLOUD STORAGE IS FULL. OF DUPLICATES"
+},
+{
+"id":647,
+"fortune":"AUTOCORRECT KNOWS WHAT YOU MEANT. IT DECLINED"
+},
+{
+"id":648,
+"fortune":"YOUR ROUTER NEEDS A RESTART. LIKE YOU"
+},
+{
+"id":649,
+"fortune":"YOUR SEARCH HISTORY TELLS A SAGA"
+},
+{
+"id":650,
+"fortune":"YOU CLOSED ONE TAB TODAY. PROGRESS"
+},
+{
+"id":651,
+"fortune":"YOUR SPAM FOLDER MISSES YOU"
+},
+{
+"id":652,
+"fortune":"THE ALGORITHM KNOWS YOU TOO WELL. IT WORRIES"
+},
+{
+"id":653,
+"fortune":"YOUR SMARTWATCH SUGGESTS BREATHING. POINTED"
+},
+{
+"id":654,
+"fortune":"YOUR TYPING SPEED PEAKS DURING ARGUMENTS"
+},
+{
+"id":655,
+"fortune":"YOU MUTED THE GROUP. THE GROUP KNOWS"
+},
+{
+"id":656,
+"fortune":"YOUR CAPS LOCK GETS REGULAR EXERCISE"
+},
+{
+"id":657,
+"fortune":"YOUR EMOJI USE HAS BEEN DISCUSSED"
+},
+{
+"id":658,
+"fortune":"YOUR WIFI NAME IS YOUR BEST JOKE"
+},
+{
+"id":659,
+"fortune":"YOU RESTART THINGS AS A LIFESTYLE"
+},
+{
+"id":660,
+"fortune":"YOUR GYM MEMBERSHIP IS A DONATION NOW"
+},
+{
+"id":661,
+"fortune":"YOUR MARATHON PLAN IS SAVED. AND SAFE"
+},
+{
+"id":662,
+"fortune":"LEG DAY RESPECTS YOUR ABSENCE"
+},
+{
+"id":663,
+"fortune":"YOUR PROTEIN POWDER AGES GRACEFULLY"
+},
+{
+"id":664,
+"fortune":"YOU STRETCH ONCE A YEAR. AMBITIOUSLY"
+},
+{
+"id":665,
+"fortune":"YOUR SPORTS TEAM LOSES. YOU TAKE CREDIT"
+},
+{
+"id":666,
+"fortune":"YOUR FANTASY TEAM IS FANTASY INDEED"
+},
+{
+"id":667,
+"fortune":"YOU RUN LATE. IT COUNTS AS CARDIO"
+},
+{
+"id":668,
+"fortune":"YOUR HOME GYM STORES THE LAUNDRY NOW"
+},
+{
+"id":669,
+"fortune":"YOUR PERSONAL BEST WAS A GROUP EFFORT"
+},
+{
+"id":670,
+"fortune":"YOUR WARM UP IS THE WHOLE WORKOUT"
+},
+{
+"id":671,
+"fortune":"YOUR REST DAYS HAVE REST DAYS"
+},
+{
+"id":672,
+"fortune":"SLEEP IS FOR THE STRONG. YOU SCROLL"
+},
+{
+"id":673,
+"fortune":"YOUR NAP SCHEDULE IS YOUR REAL CALENDAR"
+},
+{
+"id":674,
+"fortune":"YOU COUNT SHEEP. THEY COUNT YOUR EXCUSES"
+},
+{
+"id":675,
+"fortune":"YOUR PILLOW KNOWS ALL YOUR SECRETS"
+},
+{
+"id":676,
+"fortune":"ONE MORE EPISODE WAS FOUR EPISODES"
+},
+{
+"id":677,
+"fortune":"YOUR DREAMS ARE VIVID. YOUR MORNINGS ARENT"
+},
+{
+"id":678,
+"fortune":"YOU SET SIX ALARMS. YOU FEAR NONE"
+},
+{
+"id":679,
+"fortune":"BEDTIME PROCRASTINATION IS STILL A CHOICE"
+},
+{
+"id":680,
+"fortune":"YOUR WEEKEND SLEEP DEBT COLLECTS INTEREST"
+},
+{
+"id":681,
+"fortune":"YOUR FAMILY LOVES YOU. THEY VOTED. CLOSE ONE"
+},
+{
+"id":682,
+"fortune":"YOUR MOTHER WAS RIGHT. ABOUT EVERYTHING"
+},
+{
+"id":683,
+"fortune":"FAMILY DINNERS TEST YOUR DIPLOMACY"
+},
+{
+"id":684,
+"fortune":"YOUR SIBLING REMEMBERS EVERYTHING. FOREVER"
+},
+{
+"id":685,
+"fortune":"YOUR RELATIVES ASK ABOUT YOUR PLANS. BRACE"
+},
+{
+"id":686,
+"fortune":"YOU ARE THE FAVORITE CHILD. UNCONFIRMED"
+},
+{
+"id":687,
+"fortune":"YOUR FAMILY GROUP CHAT NEVER SLEEPS"
+},
+{
+"id":688,
+"fortune":"GRANDMA FEEDS YOU. RESISTANCE IS FUTILE"
+},
+{
+"id":689,
+"fortune":"YOUR DAD JOKES SKIPPED NO GENERATIONS"
+},
+{
+"id":690,
+"fortune":"THANKSGIVING SEATING IS POLITICAL. YOURS IS"
+},
+{
+"id":691,
+"fortune":"YOUR NEIGHBOR WAVES. THE FENCE WAS HIS IDEA"
+},
+{
+"id":692,
+"fortune":"THE HOA NOTICED YOUR LAWN. AGAIN"
+},
+{
+"id":693,
+"fortune":"YOUR NEIGHBORS KNOW YOUR SCHEDULE. AND MORE"
+},
+{
+"id":694,
+"fortune":"BORROWED TOOLS BECOME GIFTS EVENTUALLY"
+},
+{
+"id":695,
+"fortune":"YOUR DOORBELL CAMERA SAW YOUR BEST SPRINT"
+},
+{
+"id":696,
+"fortune":"YOUR COMMUTE BUILDS CHARACTER. DAILY"
+},
+{
+"id":697,
+"fortune":"TRAFFIC IS NOT PERSONAL. YOURS FEELS PERSONAL"
+},
+{
+"id":698,
+"fortune":"YOUR PARKING JOB SPARKED CONVERSATIONS"
+},
+{
+"id":699,
+"fortune":"YOUR GPS SAYS RECALCULATING. WITH FEELING"
+},
+{
+"id":700,
+"fortune":"YOU DRIVE LIKE YOU LIVE. SIGNALS OPTIONAL"
+},
+{
+"id":701,
+"fortune":"YOUR GAS TANK RUNS ON FAITH. AND FUMES"
+},
+{
+"id":702,
+"fortune":"THE LEFT LANE IS FOR PASSING. JUST SAYING"
+},
+{
+"id":703,
+"fortune":"YOUR CAR PLAYLIST PEAKED IN 2016"
+},
+{
+"id":704,
+"fortune":"YOUR HORN GETS MORE USE THAN YOUR BLINKER"
+},
+{
+"id":705,
+"fortune":"ROAD RAGE IS BENEATH YOU. USUALLY"
+},
+{
+"id":706,
+"fortune":"YOUR PARALLEL PARKING DRAWS AUDIENCES"
+},
+{
+"id":707,
+"fortune":"TIME FLIES. YOURS FILED A FLIGHT PLAN"
+},
+{
+"id":708,
+"fortune":"PROCRASTINATION IS AN ART. YOU TEACH IT"
+},
+{
+"id":709,
+"fortune":"YOU WILL DO IT TOMORROW. TOMORROW KNOWS"
+},
+{
+"id":710,
+"fortune":"DEADLINES APPROACH. YOU ADMIRE THE VIEW"
+},
+{
+"id":711,
+"fortune":"YOUR FIVE MINUTES IS EVERYONE ELSES HOUR"
+},
+{
+"id":712,
+"fortune":"LATER IS YOUR FAVORITE TIME ZONE"
+},
+{
+"id":713,
+"fortune":"YOU FINISH THINGS. EVENTUALLY IS A WORD"
+},
+{
+"id":714,
+"fortune":"YOUR SOMEDAY LIST NEEDS ITS OWN SHELF"
+},
+{
+"id":715,
+"fortune":"TIME MANAGEMENT IS A SKILL. NOTED"
+},
+{
+"id":716,
+"fortune":"YOU ARE EARLY ONCE A YEAR. IT CONFUSES ALL"
+},
+{
+"id":717,
+"fortune":"THE PRESENT IS A GIFT. YOU CHOSE STORE CREDIT"
+},
+{
+"id":718,
+"fortune":"YOUR PUNCTUALITY IS LEGEND. THE BAD KIND"
+},
+{
+"id":719,
+"fortune":"YOU READ THIS INSTEAD OF WORKING. NOTED"
+},
+{
+"id":720,
+"fortune":"YOUR ATTENTION SPAN IS. OH LOOK A BIRD"
+},
+{
+"id":721,
+"fortune":"JUST ONE MORE MINUTE. THE FAMOUS LAST WORDS"
+},
+{
+"id":722,
+"fortune":"YOUR EMAILS START WITH SORRY FOR THE DELAY"
+},
+{
+"id":723,
+"fortune":"YOU REPLY TO TEXTS IN GEOLOGIC TIME"
+},
+{
+"id":724,
+"fortune":"YOUR READ RECEIPTS INCRIMINATE YOU"
+},
+{
+"id":725,
+"fortune":"YOU LEFT THEM ON READ. THEY NOTICED"
+},
+{
+"id":726,
+"fortune":"YOUR TYPING BUBBLE APPEARED. THEN LEFT"
+},
+{
+"id":727,
+"fortune":"YOU SAID LETS CIRCLE BACK. YOU WONT"
+},
+{
+"id":728,
+"fortune":"PER YOUR LAST EMAIL. YOU KNOW WHAT YOU DID"
+},
+{
+"id":729,
+"fortune":"YOUR VOICE NOTES ARE PODCASTS NOW"
+},
+{
+"id":730,
+"fortune":"YOU WAVED AT SOMEONE WAVING ELSEWHERE. AGAIN"
+},
+{
+"id":731,
+"fortune":"YOUR SMALL TALK HAS A SCRIPT. REHEARSE"
+},
+{
+"id":732,
+"fortune":"YOU SAID WE SHOULD HANG OUT SOON. CLASSIC"
+},
+{
+"id":733,
+"fortune":"YOUR PHONE IS ON SILENT. FOR YEARS NOW"
+},
+{
+"id":734,
+"fortune":"YOU SCREENSHOT INSTEAD OF RESPONDING"
+},
+{
+"id":735,
+"fortune":"YOUR OPINION WAS NOTED. AND RECYCLED"
+},
+{
+"id":736,
+"fortune":"YOU INTERRUPT WITH ENTHUSIASM. OFTEN"
+},
+{
+"id":737,
+"fortune":"RETAIL THERAPY IS STILL THERAPY. INVOICED"
+},
+{
+"id":738,
+"fortune":"YOUR PACKAGE ARRIVES TODAY. YOU ORDERED MORE"
+},
+{
+"id":739,
+"fortune":"YOU CAME FOR ONE ITEM. YOU LEFT WITH NINE"
+},
+{
+"id":740,
+"fortune":"YOUR WISHLIST IS A NOVEL NOW"
+},
+{
+"id":741,
+"fortune":"FREE SHIPPING COSTS YOU PLENTY"
+},
+{
+"id":742,
+"fortune":"YOUR RETURNS WINDOW CLOSED. LIKE ALWAYS"
+},
+{
+"id":743,
+"fortune":"YOU COMPARE PRICES. AFTER BUYING"
+},
+{
+"id":744,
+"fortune":"THE SALE ENDED. YOUR REGRET BEGINS"
+},
+{
+"id":745,
+"fortune":"YOUR LOYALTY CARD OUTRANKS YOUR GYM CARD"
+},
+{
+"id":746,
+"fortune":"YOU BUY ORGANIZERS TO ORGANIZE ORGANIZERS"
+},
+{
+"id":747,
+"fortune":"YOUR HOME PROJECT IS 90 PERCENT DONE. FOREVER"
+},
+{
+"id":748,
+"fortune":"THE PAINT SAMPLES OUTLIVED THE PROJECT"
+},
+{
+"id":749,
+"fortune":"YOUR TOOLBOX HAS EVERYTHING BUT ANSWERS"
+},
+{
+"id":750,
+"fortune":"YOU MEASURED ONCE. IT SHOWS"
+},
+{
+"id":751,
+"fortune":"THE INSTRUCTIONS WERE OPTIONAL. APPARENTLY"
+},
+{
+"id":752,
+"fortune":"YOUR SHELF LEANS. YOU CALL IT CHARACTER"
+},
+{
+"id":753,
+"fortune":"DUCT TAPE IS NOT A PHILOSOPHY. YOURS IS"
+},
+{
+"id":754,
+"fortune":"YOUR SMART BULBS OUTSMART YOU NIGHTLY"
+},
+{
+"id":755,
+"fortune":"THE LEAK WAITED FOR THE LONG WEEKEND"
+},
+{
+"id":756,
+"fortune":"YOUR GAMING BACKLOG IS A SECOND CAREER"
+},
+{
+"id":757,
+"fortune":"ONE MORE LEVEL WAS THREE HOURS AGO"
+},
+{
+"id":758,
+"fortune":"YOUR CHARACTER HAS BETTER GEAR THAN YOU"
+},
+{
+"id":759,
+"fortune":"YOU PAUSED AN ONLINE GAME. BOLD MOVE"
+},
+{
+"id":760,
+"fortune":"YOUR HIGH SCORE IS SOMEONE ELSES WARMUP"
+},
+{
+"id":761,
+"fortune":"YOU RAGE QUIT GRACEFULLY. ALMOST"
+},
+{
+"id":762,
+"fortune":"YOUR BOOKSHELF JUDGES YOUR SCREEN TIME"
+},
+{
+"id":763,
+"fortune":"YOU BUY BOOKS FASTER THAN YOU READ THEM"
+},
+{
+"id":764,
+"fortune":"YOUR BOOKMARK HASNT MOVED SINCE MARCH"
+},
+{
+"id":765,
+"fortune":"YOU JOINED A BOOK CLUB FOR THE SNACKS"
+},
+{
+"id":766,
+"fortune":"THE AUDIOBOOK COUNTS. NOBODY ASKED"
+},
+{
+"id":767,
+"fortune":"YOUR TO BE READ PILE IS FURNITURE NOW"
+},
+{
+"id":768,
+"fortune":"YOU QUOTE BOOKS YOU HAVENT FINISHED"
+},
+{
+"id":769,
+"fortune":"YOUR KARAOKE SONG CLEARED THE ROOM. TWICE"
+},
+{
+"id":770,
+"fortune":"YOU SING IN THE CAR. THE CAR ENDURES"
+},
+{
+"id":771,
+"fortune":"YOUR SHOWER CONCERTS HAVE NO REFUNDS"
+},
+{
+"id":772,
+"fortune":"YOUR AIR GUITAR NEEDS TUNING SOMEHOW"
+},
+{
+"id":773,
+"fortune":"YOUR PLANT NAMES OUTNUMBER YOUR PLANTS"
+},
+{
+"id":774,
+"fortune":"YOU TALK TO YOUR PLANTS. THEY HEARD THAT"
+},
+{
+"id":775,
+"fortune":"YOUR SUCCULENT DIED. IMPRESSIVELY RARE"
+},
+{
+"id":776,
+"fortune":"THE FERN SAW EVERYTHING. IT STAYS QUIET"
+},
+{
+"id":777,
+"fortune":"YOUR GREEN THUMB IS MORE OF A BEIGE"
+},
+{
+"id":778,
+"fortune":"LUCK IS A LADDER. YOU BROUGHT A STOOL"
+},
+{
+"id":779,
+"fortune":"FORTUNE ARRIVES UNANNOUNCED. SO DO YOU"
+},
+{
+"id":780,
+"fortune":"YOUR CHARISMA WORKS OFFLINE ONLY"
+},
+{
+"id":781,
+"fortune":"YOU ARE A LIMITED EDITION. VERY LIMITED"
+},
+{
+"id":782,
+"fortune":"YOUR VIBE ATTRACTS YOUR TRIBE. EXPLAINS IT"
+},
+{
+"id":783,
+"fortune":"NORMAL IS A SETTING. YOURS IS CUSTOM"
+},
+{
+"id":784,
+"fortune":"NOT LAZY. JUST IN ENERGY SAVER MODE"
+},
+{
+"id":785,
+"fortune":"YOUR SARCASM IS A SECOND LANGUAGE. FLUENT"
+},
+{
+"id":786,
+"fortune":"YOU ARE TECHNICALLY CORRECT. THE WORST KIND"
+},
+{
+"id":787,
+"fortune":"YOUR EXCUSES SHOW REAL CRAFTSMANSHIP"
+},
+{
+"id":788,
+"fortune":"YOU PEAKED. THE TIMING WAS UNFORTUNATE"
+},
+{
+"id":789,
+"fortune":"YOUR COMFORT SHOW IS ON ITS NINTH RERUN"
+},
+{
+"id":790,
+"fortune":"YOU ARE DOING YOUR BEST. THE BEST VARIES"
+},
+{
+"id":791,
+"fortune":"YOUR POTENTIAL CALLED. IT LEFT NO MESSAGE"
+},
+{
+"id":792,
+"fortune":"YOU ARE SPECIAL. LIKE EVERYONE ELSE"
+},
+{
+"id":793,
+"fortune":"YOUR ENERGY TODAY IS DECORATIVE"
+},
+{
+"id":794,
+"fortune":"YOU ARE THE MAIN CHARACTER. OF A SIDE QUEST"
+},
+{
+"id":795,
+"fortune":"YOUR PLOT ARMOR HAS EXPIRED. WALK CAREFULLY"
+},
+{
+"id":796,
+"fortune":"YOUR REDEMPTION ARC IS IN PREPRODUCTION"
+},
+{
+"id":797,
+"fortune":"A COMPLIMENT NEARS. ACCEPT IT AWKWARDLY"
+},
+{
+"id":798,
+"fortune":"YOUR RESTING FACE HAS A REPUTATION"
+},
+{
+"id":799,
+"fortune":"YOU AGREED TO DISAGREE. YOU LOST"
+},
+{
+"id":800,
+"fortune":"YOUR EYE ROLL IS AUDIBLE SOMEHOW"
+},
+{
+"id":801,
+"fortune":"YOUR SIGH SPOKE PARAGRAPHS JUST NOW"
+},
+{
+"id":802,
+"fortune":"YOU SAID FINE. NOTHING WAS FINE"
+},
+{
+"id":803,
+"fortune":"YOUR THUMBS UP ENDED THREE FRIENDSHIPS"
+},
+{
+"id":804,
+"fortune":"NO WORRIES YOU SAID. WORRYING INTENSELY"
+},
+{
+"id":805,
+"fortune":"YOUR SHRUG IS DOING HEAVY LIFTING TODAY"
+},
+{
+"id":806,
+"fortune":"YOU SMILED THROUGH THAT. BARELY. WE SAW"
+},
+{
+"id":807,
+"fortune":"YOUR PATIENCE HAS A LOADING BAR. STUCK"
+},
+{
+"id":808,
+"fortune":"YOU FORGAVE THEM. THE SPREADSHEET REMAINS"
+},
+{
+"id":809,
+"fortune":"YOUR HINTS NEED SUBTITLES. STILL"
+},
+{
+"id":810,
+"fortune":"YOU ALMOST SAID IT. THE ALMOST WAS LOUD"
+},
+{
+"id":811,
+"fortune":"YOUR SILENCE HAS AN AGENDA. AS USUAL"
+},
+{
+"id":812,
+"fortune":"YOU LET IT GO. INTO YOUR PERMANENT RECORD"
+},
+{
+"id":813,
+"fortune":"YOUR CALM IS SUSPICIOUS. EVERYONE AGREES"
+},
+{
+"id":814,
+"fortune":"YOU TOOK THE HIGH ROAD. WITH COMMENTARY"
+},
+{
+"id":815,
+"fortune":"YOUR FEEDBACK SANDWICH IS ALL BREAD"
+},
+{
+"id":816,
+"fortune":"YOU HEARD THEM OUT. THEN PROCEEDED ANYWAY"
+},
+{
+"id":817,
+"fortune":"GOOD MORNING. THE BAR IS ALREADY MET"
+},
+{
+"id":818,
+"fortune":"YOUR OPTIMISM IS ADORABLE TODAY"
+},
+{
+"id":819,
+"fortune":"TODAY IS YOUR DAY. SHARE IT NICELY"
+},
+{
+"id":820,
+"fortune":"YOU WOKE UP LIKE THIS. CONDOLENCES"
+},
+{
+"id":821,
+"fortune":"THE MIRROR SAW YOU FIRST. IT COPES"
+},
+{
+"id":822,
+"fortune":"YOUR BEDHEAD HAS ARCHITECTURE NOW"
+},
+{
+"id":823,
+"fortune":"MONDAY SAW YOU COMING. IT PREPARED"
+},
+{
+"id":824,
+"fortune":"YOUR WEEKEND ENDED. IT SENDS REGARDS"
+},
+{
+"id":825,
+"fortune":"FRIDAY LOVES YOU. THE FEELING IS MUTUAL"
+},
+{
+"id":826,
+"fortune":"YOUR LUNCH BREAK DESERVES A MEDAL. SO LONG"
+},
+{
+"id":827,
+"fortune":"HUMP DAY IS A STATE OF MIND. YOURS DAILY"
+},
+{
+"id":828,
+"fortune":"YOUR OUTFIT SAYS EFFORT. THE CLOCK SAYS RUSH"
+},
+{
+"id":829,
+"fortune":"YOUR HAIR HAS PLANS OF ITS OWN TODAY"
+},
+{
+"id":830,
+"fortune":"YOU MATCHED YOUR SOCKS. A CEREMONY IS DUE"
+},
+{
+"id":831,
+"fortune":"YOUR SUNGLASSES HIDE NOTHING. NICE TRY"
+},
+{
+"id":832,
+"fortune":"DRESS FOR THE JOB YOU WANT. A NAP TESTER"
+},
+{
+"id":833,
+"fortune":"YOUR IRONING BOARD RETIRED YEARS AGO"
+},
+{
+"id":834,
+"fortune":"WRINKLES ARE A TEXTURE. YOU DECIDED"
+},
+{
+"id":835,
+"fortune":"YOUR FASHION CYCLE IS LAUNDRY BASED"
+},
+{
+"id":836,
+"fortune":"YOUR SHOES MATCH. THE OCCASION DOESNT"
+},
+{
+"id":837,
+"fortune":"YOU WILL WIN AN ARGUMENT. IN THE SHOWER"
+},
+{
+"id":838,
+"fortune":"YOUR COMEBACK ARRIVED. THREE DAYS LATE"
+},
+{
+"id":839,
+"fortune":"YOUR WIT IS QUICK. YOUR TIMING ISNT"
+},
+{
+"id":840,
+"fortune":"YOU HAD THE PERFECT REPLY. AT MIDNIGHT"
+},
+{
+"id":841,
+"fortune":"YOUR INNER MONOLOGUE NEEDS AN EDITOR"
+},
+{
+"id":842,
+"fortune":"YOUR HOT TAKES ARE ROOM TEMPERATURE"
+},
+{
+"id":843,
+"fortune":"YOUR OPINIONS ARRIVE PRE HEATED"
+},
+{
+"id":844,
+"fortune":"YOUR DEBATE STYLE IS VOLUME BASED"
+},
+{
+"id":845,
+"fortune":"YOU FACT CHECK OTHERS. NEVER YOURSELF"
+},
+{
+"id":846,
+"fortune":"YOUR TRIVIA KNOWLEDGE PEAKS AT PARTIES ONLY"
+},
+{
+"id":847,
+"fortune":"A DECISION AWAITS. FLIP A COIN. IGNORE IT"
+},
+{
+"id":848,
+"fortune":"YOUR PRO CON LIST HAS ONE COLUMN"
+},
+{
+"id":849,
+"fortune":"YOU ASKED EVERYONE. THEN DID YOUR THING"
+},
+{
+"id":850,
+"fortune":"YOUR GUT FEELING NEEDS A SECOND OPINION"
+},
+{
+"id":851,
+"fortune":"YOU SLEPT ON IT. THE PROBLEM STAYED AWAKE"
+},
+{
+"id":852,
+"fortune":"YOUR PLAN B IS PLAN A WITH REGRET"
+},
+{
+"id":853,
+"fortune":"YOU CHOSE CHAOS. AGAIN. CONSISTENTLY"
+},
+{
+"id":854,
+"fortune":"YOUR BACKUP PLAN NEEDS A BACKUP PLAN"
+},
+{
+"id":855,
+"fortune":"COMMITMENT SCARES YOU. SO DOES THE MENU"
+},
+{
+"id":856,
+"fortune":"YOU ORDERED THE SAME THING. ADVENTUROUS"
+},
+{
+"id":857,
+"fortune":"CHANGE IS COMING. YOU WILL RESIST IT"
+},
+{
+"id":858,
+"fortune":"A SURPRISE AWAITS. YOU HATE SURPRISES"
+},
+{
+"id":859,
+"fortune":"GOOD NEWS COMES IN THREES. YOURS CARPOOLS"
+},
+{
+"id":860,
+"fortune":"YOUR HOROSCOPE QUIT. IT CITED BURNOUT"
+},
+{
+"id":861,
+"fortune":"MERCURY IS IN RETROGRADE. CONVENIENT EXCUSE"
+},
+{
+"id":862,
+"fortune":"YOUR TAROT READER NEEDED A BREAK AFTER YOU"
+},
+{
+"id":863,
+"fortune":"THE MAGIC 8 BALL SAID ASK SOMEONE ELSE"
+},
+{
+"id":864,
+"fortune":"YOUR PALM READER REQUESTED GLOVES"
+},
+{
+"id":865,
+"fortune":"THE CRYSTAL BALL FOGGED UP. ON PURPOSE"
+},
+{
+"id":866,
+"fortune":"YOUR TEA LEAVES SPELLED LUCK. SARCASTICALLY"
+},
+{
+"id":867,
+"fortune":"YOUR VISION QUEST FOUND THE COUCH"
+},
+{
+"id":868,
+"fortune":"THE UNIVERSE IS TESTING YOU. OPEN BOOK. STILL"
+},
+{
+"id":869,
+"fortune":"YOUR MANIFESTATIONS NEED A COSIGNER"
+},
+{
+"id":870,
+"fortune":"YOUR CHAKRAS ARE ALIGNED. WITH THE FRIDGE"
+},
+{
+"id":871,
+"fortune":"YOUR ZEN GARDEN NEEDS WEEDING. IRONIC"
+},
+{
+"id":872,
+"fortune":"YOUR MANTRA IS FIVE MORE MINUTES"
+},
+{
+"id":873,
+"fortune":"YOUR THIRD EYE NEEDS GLASSES TOO"
+},
+{
+"id":874,
+"fortune":"YOUR ENERGY CLEANSE MISSED A SPOT"
+},
+{
+"id":875,
+"fortune":"YOUR SAGE SMOKE SET OFF THE ALARM. FITTING"
+},
+{
+"id":876,
+"fortune":"INNER PEACE IS CLOSE. TRY THE OTHER DOOR"
+},
+{
+"id":877,
+"fortune":"A STRANGER WILL SMILE AT YOU. STAY CALM"
+},
+{
+"id":878,
+"fortune":"SOMEONE THOUGHT OF YOU TODAY. BRIEFLY"
+},
+{
+"id":879,
+"fortune":"YOU CROSSED SOMEONES MIND. IT KEPT WALKING"
+},
+{
+"id":880,
+"fortune":"AN ADMIRER WATCHES. IT IS YOUR CAT"
+},
+{
+"id":881,
+"fortune":"YOU WERE MENTIONED TODAY. CONTEXT UNKNOWN"
+},
+{
+"id":882,
+"fortune":"YOUR NAME CAME UP. THE ROOM WENT QUIET"
+},
+{
+"id":883,
+"fortune":"SOMEONE MISSES YOU. THEY LOST YOUR NUMBER"
+},
+{
+"id":884,
+"fortune":"YOU ARE UNFORGETTABLE. MANY HAVE TRIED"
+},
+{
+"id":885,
+"fortune":"YOUR ABSENCE WAS NOTICED. AND ENJOYED"
+},
+{
+"id":886,
+"fortune":"PEOPLE TALK ABOUT YOU. KEEP IT THAT WAY"
+},
+{
+"id":887,
+"fortune":"YOUR REPUTATION ARRIVED FIRST. APOLOGIZE"
+},
+{
+"id":888,
+"fortune":"YOU MADE AN IMPRESSION. DENTS COUNT"
+},
+{
+"id":889,
+"fortune":"SOMEONE QUOTED YOU TODAY. INCORRECTLY"
+},
+{
+"id":890,
+"fortune":"YOU INSPIRED SOMEONE. TO DO THE OPPOSITE"
+},
+{
+"id":891,
+"fortune":"YOUR LEGACY IS SAFE. NOBODY CHECKED"
+},
+{
+"id":892,
+"fortune":"HISTORY WILL REMEMBER YOU. AS A FOOTNOTE"
+},
+{
+"id":893,
+"fortune":"YOUR BIOGRAPHY NEEDS A GHOSTWRITER. AND PLOT"
+},
+{
+"id":894,
+"fortune":"YOUR AUTOGRAPH IS WORTHLESS. FOR NOW"
+},
+{
+"id":895,
+"fortune":"FAME AWAITS. LOCAL FAME. VERY LOCAL"
+},
+{
+"id":896,
+"fortune":"YOUR FIFTEEN MINUTES ARE BUFFERING"
+},
+{
+"id":897,
+"fortune":"YOU WILL FIND YOUR KEYS. WHERE YOU LEFT THEM"
+},
+{
+"id":898,
+"fortune":"YOUR PHONE IS IN YOUR OTHER HAND. AGAIN"
+},
+{
+"id":899,
+"fortune":"YOU WALKED INTO A ROOM. THE REASON LEFT"
+},
+{
+"id":900,
+"fortune":"YOUR MEMORY IS FINE. IT JUST CURATES"
+},
+{
+"id":901,
+"fortune":"YOU FORGOT WHY YOU OPENED THE FRIDGE. SNACK"
+},
+{
+"id":902,
+"fortune":"YOUR MENTAL NOTES NEED A FILING SYSTEM"
+},
+{
+"id":903,
+"fortune":"YOU REMEMBERED THE TUNE. NOT THE TASK"
+},
+{
+"id":904,
+"fortune":"YOUR SHOPPING MEMORY EXPIRES AT THE STORE"
+},
+{
+"id":905,
+"fortune":"YOU KNOW THAT FACE. THE NAME ESCAPED. RUN"
+},
+{
+"id":906,
+"fortune":"YOUR BRAIN HAS TABS OPEN TOO. ALL FROZEN"
+},
+{
+"id":907,
+"fortune":"A GREAT IDEA CAME AND WENT. UNRECORDED"
+},
+{
+"id":908,
+"fortune":"YOU LOCKED THE DOOR. PROBABLY. GO CHECK"
+},
+{
+"id":909,
+"fortune":"YOUR TRAIN OF THOUGHT DEPARTED WITHOUT YOU"
+},
+{
+"id":910,
+"fortune":"YOU RETRACED YOUR STEPS. THEY LED TO SNACKS"
+},
+{
+"id":911,
+"fortune":"YOUR PASSWORD RESET NEEDS A PASSWORD RESET"
+},
+{
+"id":912,
+"fortune":"LIFE IS SHORT. YOUR MEETINGS ARENT"
+},
+{
+"id":913,
+"fortune":"LIFE GAVE YOU LEMONS. YOU FILED A COMPLAINT"
+},
+{
+"id":914,
+"fortune":"LIFE IS A JOURNEY. YOURS NEEDS A MAP"
+},
+{
+"id":915,
+"fortune":"LIFE IS WHAT HAPPENS WHILE YOU SCROLL"
+},
+{
+"id":916,
+"fortune":"LIFE HAS NO REMOTE. GET UP AND CHANGE IT"
+},
+{
+"id":917,
+"fortune":"LIFE IS NOT A RACE. YOU PARKED ANYWAY"
+},
+{
+"id":918,
+"fortune":"LIFE IS A GIFT. KEEP THE RECEIPT"
+},
+{
+"id":919,
+"fortune":"LIFE IS UNSCRIPTED. YOURS NEEDS A WRITER"
+},
+{
+"id":920,
+"fortune":"LIFE REWARDS ACTION. YOURS SENT A MEMO"
+},
+{
+"id":921,
+"fortune":"LIFE IS A CLASSROOM. YOU SIT IN BACK"
+},
+{
+"id":922,
+"fortune":"YOUR STORY HAS PLOT HOLES. EMBRACE THEM"
+},
+{
+"id":923,
+"fortune":"YOUR CHAPTER TWO NEEDS CHAPTER ONE DONE"
+},
+{
+"id":924,
+"fortune":"YOUR SEQUEL DEPENDS ON THIS PART. NO PRESSURE"
+},
+{
+"id":925,
+"fortune":"YOUR NARRATOR SOUNDS TIRED LATELY"
+},
+{
+"id":926,
+"fortune":"YOUR CLIFFHANGER IS JUST INDECISION"
+},
+{
+"id":927,
+"fortune":"TOMORROW IS A NEW DAY. SAME YOU THOUGH"
+},
+{
+"id":928,
+"fortune":"YESTERDAY CALLED. IT WANTS NOTHING BACK"
+},
+{
+"id":929,
+"fortune":"TODAY WILL BE PRODUCTIVE. STARTING LATER"
+},
+{
+"id":930,
+"fortune":"THIS WEEK HAS POTENTIAL. HAD. HAS. UNCLEAR"
+},
+{
+"id":931,
+"fortune":"NEXT MONTH YOU WILL START. NEXT MONTH AGREES"
+},
+{
+"id":932,
+"fortune":"THE YEAR IS HALF OVER. YOUR GOALS ARE INTACT"
+},
+{
+"id":933,
+"fortune":"SOON IS NOT A DATE. YOU TREAT IT AS ONE"
+},
+{
+"id":934,
+"fortune":"EVENTUALLY IS YOUR FAVORITE DEADLINE"
+},
+{
+"id":935,
+"fortune":"THE RIGHT TIME NEVER COMES. CONVENIENT"
+},
+{
+"id":936,
+"fortune":"YOUR WINDOW OF OPPORTUNITY HAS BLINDS"
+},
+{
+"id":937,
+"fortune":"PATIENCE COMES TO THOSE WHO WAIT. IRONIC"
+},
+{
+"id":938,
+"fortune":"YOUR TURN IS COMING. THE LINE MOVED ON"
+},
+{
+"id":939,
+"fortune":"YOU WAITED FOR A SIGN. THIS IS NOT IT"
+},
+{
+"id":940,
+"fortune":"HOLD THAT THOUGHT. FOREVER IF POSSIBLE"
+},
+{
+"id":941,
+"fortune":"YOUR PAUSE BUTTON IS YOUR FAVORITE"
+},
+{
+"id":942,
+"fortune":"YOU PUT A PIN IN IT. THE PIN CUSHION IS FULL"
+},
+{
+"id":943,
+"fortune":"IT IS ON YOUR RADAR. YOUR RADAR IS OFF"
+},
+{
+"id":944,
+"fortune":"YOU WILL GET TO IT. IT STOPPED WAITING"
+},
+{
+"id":945,
+"fortune":"THE BALL IS IN YOUR COURT. GATHERING DUST"
+},
+{
+"id":946,
+"fortune":"YOUR FOLLOW UP NEEDS A FOLLOW UP"
+},
+{
+"id":947,
+"fortune":"CONSIDER THIS YOUR REMINDER. THE FOURTH"
+},
+{
+"id":948,
+"fortune":"YOUR INTENTIONS ARE GOOD. AND STATIONARY"
+},
+{
+"id":949,
+"fortune":"EFFORT WAS MADE. A ROUNDING ERROR OF IT"
+},
+{
+"id":950,
+"fortune":"YOU GAVE 100 PERCENT. OF YOUR MINIMUM"
+},
+{
+"id":951,
+"fortune":"YOUR BEST GUESS BEAT YOUR RESEARCH. AGAIN"
+},
+{
+"id":952,
+"fortune":"CLOSE ENOUGH IS YOUR SIGNATURE MOVE"
+},
+{
+"id":953,
+"fortune":"GOOD ENOUGH SHIPPED. PERFECTION SULKS"
+},
+{
+"id":954,
+"fortune":"YOUR SHORTCUTS TOOK THE LONG WAY"
+},
+{
+"id":955,
+"fortune":"YOU IMPROVISED. THE RESULTS IMPROVISED BACK"
+},
+{
+"id":956,
+"fortune":"YOUR WINGING IT HAS FREQUENT FLYER MILES"
+},
+{
+"id":957,
+"fortune":"DETAILS MATTER. YOURS WENT ON STRIKE"
+},
+{
+"id":958,
+"fortune":"YOUR ROUGH DRAFT WENT TO PRODUCTION"
+},
+{
+"id":959,
+"fortune":"YOU SKIMMED IT. IT SHOWED. IT ALWAYS SHOWS"
+},
+{
+"id":960,
+"fortune":"YOUR PROOFREADING MISSED THIS SENTENCE TOO"
+},
+{
+"id":961,
+"fortune":"ALMOST DONE IS YOUR PERMANENT ADDRESS"
+},
+{
+"id":962,
+"fortune":"YOUR CHECKLIST HAS SURVIVORS"
+},
+{
+"id":963,
+"fortune":"DONE IS BETTER THAN PERFECT. TRY EITHER"
+},
+{
+"id":964,
+"fortune":"YOUR STANDARDS SLIPPED. THEY LEFT A NOTE"
+},
+{
+"id":965,
+"fortune":"MEDIOCRITY TAKES EFFORT TOO. WELL DONE"
+},
+{
+"id":966,
+"fortune":"YOU EXCEEDED EXPECTATIONS. THEY WERE LOW"
+},
+{
+"id":967,
+"fortune":"YOUR BARE MINIMUM HAS A LOYAL FOLLOWING"
+},
+{
+"id":968,
+"fortune":"YOU RAISED THE BAR. FROM THE FLOOR"
+},
+{
+"id":969,
+"fortune":"CONSISTENCY IS KEY. YOURS IS CONSISTENT"
+},
+{
+"id":970,
+"fortune":"YOUR AVERAGE IS ABOVE AVERAGE. AT AVERAGING"
+},
+{
+"id":971,
+"fortune":"PROGRESS WAS MADE. LATERALLY. BUT MADE"
+},
+{
+"id":972,
+"fortune":"YOUR TRAJECTORY IS STABLE. FLAT. STABLE"
+},
+{
+"id":973,
+"fortune":"ONWARD AND UPWARD. OR SIDEWAYS. ONWARD"
+},
+{
+"id":974,
+"fortune":"YOU PIVOTED. THE DIRECTION WAS RANDOM"
+},
+{
+"id":975,
+"fortune":"YOUR MOMENTUM TOOK A PERSONAL DAY"
+},
+{
+"id":976,
+"fortune":"FULL SPEED AHEAD. YOUR SPEED. SO GENTLE"
+},
+{
+"id":977,
+"fortune":"YOU HIT THE GROUND WALKING. BRISKLY EVEN"
+},
+{
+"id":978,
+"fortune":"YOUR SPRINT BECAME A STROLL. SCENIC ONE"
+},
+{
+"id":979,
+"fortune":"BABY STEPS COUNT. YOURS ARE NEWBORN"
+},
+{
+"id":980,
+"fortune":"YOU ARE ON A ROLL. A SLOW GENTLE ROLL"
+},
+{
+"id":981,
+"fortune":"YOUR STREAK CONTINUES. WHICHEVER ONE"
+},
+{
+"id":982,
+"fortune":"MOMENTUM IS BUILDING. SOMEWHERE ELSE"
+},
+{
+"id":983,
+"fortune":"THE FINISH LINE MOVED. SO DID YOU. BACKWARD"
+},
+{
+"id":984,
+"fortune":"YOUR MARATHON IS A SERIES OF SNACK BREAKS"
+},
+{
+"id":985,
+"fortune":"YOU CROSSED A LINE TODAY. NOT THE FINISH ONE"
+},
+{
+"id":986,
+"fortune":"VICTORY IS NEAR. DEFINE VICTORY LOOSELY"
+},
+{
+"id":987,
+"fortune":"YOU WON THE ARGUMENT. THE ROOM WAS EMPTY"
+},
+{
+"id":988,
+"fortune":"CHAMPIONS TRAIN DAILY. YOU WATCHED THEM"
+},
+{
+"id":989,
+"fortune":"YOUR TROPHY SHELF HOLDS PARTICIPATION"
+},
+{
+"id":990,
+"fortune":"SECOND PLACE IS FIRST LOSER. YOU GOT FIFTH"
+},
+{
+"id":991,
+"fortune":"YOUR COMEBACK SEASON IS ALWAYS NEXT SEASON"
+},
+{
+"id":992,
+"fortune":"THE UNDERDOG STORY NEEDS AN ATTEMPT FIRST"
+},
+{
+"id":993,
+"fortune":"YOUR RIVALS STOPPED CHECKING ON YOU"
+},
+{
+"id":994,
+"fortune":"GLORY AWAITS. IT DOUBLE BOOKED THOUGH"
+},
+{
+"id":995,
+"fortune":"YOU MADE THE HIGHLIGHT REEL. AS A BLOOPER"
+},
+{
+"id":996,
+"fortune":"HISTORY FAVORS THE BOLD. YOU FAVOR NAPS"
+},
+{
+"id":997,
+"fortune":"YOUR SPLIT FLAP DISPLAY DESERVED BETTER TEXT"
+},
+{
+"id":998,
+"fortune":"THIS MESSAGE USED 45 CHARACTERS WISELY. ISH"
+},
+{
+"id":999,
+"fortune":"YOU BUILT A DISPLAY FOR THIS. WORTH IT"
+},
+{
+"id":1000,
+"fortune":"EACH FLAP TURNED FOR THIS WISDOM. SAVOR IT"
+}
+]

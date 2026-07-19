@@ -51,6 +51,20 @@ If no WiFi is available, the Pi creates a hotspot:
 
 Configure WiFi from Settings > WiFi / Network in the UI.
 
+### Other platforms (macOS, non-Debian Linux)
+
+The installer also runs on macOS and non-Debian Linux for local development or a
+non-Pi host — it detects the platform and only does what it can:
+
+- **macOS** — run it **without** sudo: `bash setup/install.sh`. It installs just the
+  Python dependencies into a venv and skips all system packages, networking, and
+  services. Install `python3`/`pip`/`venv` yourself first (e.g. `brew install python`),
+  then start the server manually: `cd server && sudo venv/bin/python app.py` (it binds
+  port 80). Networking is always skipped on macOS.
+- **Non-Debian Linux** — the `apt` step is skipped with a note to install the
+  prerequisites (python3, pip, venv, libopenblas — plus NetworkManager for the hotspot)
+  with your own package manager; if systemd is present, the services are still installed.
+
 ## Updating
 
 ```bash

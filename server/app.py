@@ -1283,8 +1283,12 @@ def send_to_display(text, order=None, raw=False, step_delay_ms=15):
 def format_lines(*lines, cols=None):
     cols = cols or get_cols()
     rows = get_rows()
-    padded = list(lines) + [''] * (rows - len(lines))
-    return ''.join(l.center(cols)[:cols] for l in padded[:rows])
+    lines = list(lines)[:rows]
+    blank = rows - len(lines)
+    top_pad = blank // 2
+    bottom_pad = blank - top_pad
+    padded = [''] * top_pad + lines + [''] * bottom_pad
+    return ''.join(l.center(cols)[:cols] for l in padded)
 
 
 # ============================================================

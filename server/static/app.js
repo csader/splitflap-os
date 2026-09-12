@@ -2963,7 +2963,13 @@ const at = {
   phase: 'ahead',     // 'ahead' | 'behind' | 'verify'
   selected: new Set(),
   positions: {},       // module positions from server
+  checkpointNum: 0,    // increments each time the wizard lands on a new checkpoint character
+  streaks: {},         // module id -> { dir, history:[per-checkpoint totals], checkpointTotal, lastCheckpoint, offered }
 };
+
+// A module that needs the same-direction correction at this many checkpoints
+// in a row is probably suffering from a bad home offset, not per-letter drift.
+const REPEAT_OFFENDER_THRESHOLD = 3;
 
 const COLOR_DISP_AT = {'r':'🟥','o':'🟧','y':'🟨','g':'🟩','b':'🟦','p':'🟪','w':'⬜',' ':'⬛'};
 
@@ -2991,6 +2997,8 @@ async function atBegin(){
   const startIdx = parseInt(document.getElementById('atStartIdx').value) || 1;
   const stepSize = parseInt(document.getElementById('atStepSize').value) || 25;
   at.charIndex = Math.max(1, Math.min(getFlapCount(selectedModule)-1, startIdx));
+  at.checkpointNum = 0;
+  at.streaks = {};
 
   // Show homing screen
   document.getElementById('atStart').style.display='none';
@@ -3025,6 +3033,7 @@ async function atBegin(){
 
 async function atGoToChar(idx){
   at.charIndex = idx;
+  at.checkpointNum++;
   at.phase = 'ahead';
   at.selected.clear();
 
@@ -3143,6 +3152,7 @@ async function atApplyAhead(){
 
   showToast(`Applied −${step} to ${modules.length} modules`);
   at.selected.clear();
+  const offenders = atTrackAdjustment(modules, -step);
 
   // Refresh positions
   const res = await fetch('/auto_tune', {
@@ -3154,6 +3164,8 @@ async function atApplyAhead(){
 
   at.phase = 'verify';
   atRenderPhase();
+
+  if(offenders.length) await atOfferHomeAdjustment(offenders);
 }
 
 async function atApplyBehind(){
@@ -3176,6 +3188,7 @@ async function atApplyBehind(){
 
   showToast(`Applied +${step} to ${modules.length} modules`);
   at.selected.clear();
+  const offenders = atTrackAdjustment(modules, +step);
 
   // Refresh positions
   const res = await fetch('/auto_tune', {
@@ -3186,6 +3199,91 @@ async function atApplyBehind(){
   at.positions = data.positions || {};
 
   at.phase = 'verify';
+  atRenderPhase();
+
+  if(offenders.length) await atOfferHomeAdjustment(offenders);
+}
+
+// Tracks per-module correction direction across checkpoints. A module whose
+// corrections keep landing in the same direction, checkpoint after checkpoint,
+// isn't drifting letter-by-letter — its home offset is off by roughly that
+// same amount every time. Returns the module ids that just crossed the
+// repeat-offender threshold and haven't been offered a fix yet.
+function atTrackAdjustment(modules, delta){
+  const dir = delta > 0 ? 1 : -1;
+  const offenders = [];
+  for(const mod of modules){
+    let s = at.streaks[mod];
+    const consecutive = s && s.dir === dir && (at.checkpointNum - s.lastCheckpoint) <= 1;
+    if(consecutive){
+      if(s.lastCheckpoint === at.checkpointNum){
+        s.checkpointTotal += delta;          // same checkpoint, still settling
+      } else {
+        s.history.push(s.checkpointTotal);   // new checkpoint, same direction as last
+        s.checkpointTotal = delta;
+      }
+      s.lastCheckpoint = at.checkpointNum;
+    } else {
+      s = at.streaks[mod] = {
+        dir, history: [], checkpointTotal: delta,
+        lastCheckpoint: at.checkpointNum, offered: false,
+      };
+    }
+    const checkpointsSeen = s.history.length + 1;
+    if(!s.offered && checkpointsSeen >= REPEAT_OFFENDER_THRESHOLD){
+      offenders.push(mod);
+    }
+  }
+  return offenders;
+}
+
+async function atOfferHomeAdjustment(moduleIds){
+  for(const mod of moduleIds){
+    const s = at.streaks[mod];
+    if(!s || s.offered) continue;
+    s.offered = true;
+
+    const totals = [...s.history, s.checkpointTotal];
+    const avgDelta = Math.round(totals.reduce((a,b)=>a+b, 0) / totals.length);
+    const modLabel = mod.toString().padStart(2,'0');
+
+    const ok = confirm(
+      `Module ${modLabel} has needed a ${avgDelta>0?'+':''}${avgDelta}-step correction at ` +
+      `${totals.length} checkpoints in a row. That pattern usually means its home offset ` +
+      `is off, not that individual letters need tuning.\n\n` +
+      `Stop fine-tuning this module and instead adjust its home offset by ` +
+      `${avgDelta>0?'+':''}${avgDelta} steps, clearing its per-letter corrections so they ` +
+      `don't double up with the new offset?`
+    );
+    if(ok){
+      await atApplyHomeOffsetFix(mod, avgDelta);
+    }
+  }
+}
+
+async function atApplyHomeOffsetFix(mod, delta){
+  const res = await fetch('/settings', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({id: mod, action:'adjust', delta})
+  });
+  const d = await res.json();
+  if(globalSettings) globalSettings.offsets[mod.toString()] = d.new_offset;
+
+  await fetch('/custom_tune', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({id: mod, action:'erase'})
+  });
+
+  delete at.streaks[mod];
+  showToast(`Module ${mod.toString().padStart(2,'0')}: home offset adjusted by ${delta>0?'+':''}${delta}, fine-tune corrections cleared`);
+
+  // Refresh this checkpoint so the grid reflects the module's new baseline
+  const posRes = await fetch('/auto_tune', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({action:'get_positions', char_index: at.charIndex})
+  });
+  const data = await posRes.json();
+  at.positions = data.positions || {};
   atRenderPhase();
 }
 

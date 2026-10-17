@@ -1052,6 +1052,7 @@ function buildAppCard(a, isPlugin) {
     ${hasCfg && compatible ? `<button class="app-gear" style="right:${gearRight}px" title="Settings" onclick="event.stopPropagation();openAppSettings('${cfgKey}')"><i data-lucide="settings" style="width:14px;height:14px"></i></button>` : ''}
     ${removable ? `<button class="app-gear" title="Remove" onclick="event.stopPropagation();removeApp('${a.plugin_id||a.key.replace('plugin_','')}')"><i data-lucide="x" style="width:14px;height:14px"></i></button>` : ''}
     ${hasTrigger && compatible ? `<button class="app-gear" style="left:8px;right:auto" title="Add Trigger" onclick="event.stopPropagation();openAddTrigger('${a.plugin_id||a.key.replace('plugin_','')}')"><i data-lucide="bell" style="width:14px;height:14px"></i></button>` : ''}
+    ${a.i18n ? `<span class="app-i18n-badge" title="Adapts to the global Language setting" style="position:absolute;bottom:6px;left:8px;font-size:.8rem;opacity:.7;line-height:1">🌐</span>` : ''}
     <span class="app-icon">${icon}</span>
     <span class="app-name">${a.name}</span>
     <span class="app-desc">${compatible ? a.desc : incompatibleReason}</span>`;
@@ -2072,6 +2073,11 @@ function loadSettingsData(){
     // Currency symbol
     const currencyEl = document.getElementById('currencySymbol');
     if(currencyEl) currencyEl.value = data.currency_symbol || '$';
+    // Internationalization master toggle + display language
+    const i18nEl = document.getElementById('i18nEnabled');
+    if(i18nEl) i18nEl.checked = !!data.i18n_enabled;
+    const langEl = document.getElementById('globalLanguage');
+    if(langEl){ langEl.value = data.language || 'en-US'; langEl.disabled = !(i18nEl && i18nEl.checked); }
     // Character map
     const charMapEl = document.getElementById('charMapInput');
     if(charMapEl) charMapEl.value = data.char_map || CHAR_MAP;
@@ -2856,6 +2862,13 @@ document.addEventListener('DOMContentLoaded', ()=>{
   });
 });
 
+function onI18nToggle(){
+  const on = document.getElementById('i18nEnabled').checked;
+  const langEl = document.getElementById('globalLanguage');
+  if(langEl) langEl.disabled = !on;
+  setSettingsDirty(true);
+}
+
 function saveGlobal(){
   const rows = parseInt(document.getElementById('simRows').value) || 3;
   const cols = parseInt(document.getElementById('simCols').value) || 15;
@@ -2875,6 +2888,8 @@ function saveGlobal(){
     sim_rows:rows, sim_cols:cols,
     global_loop_delay: globalDelay,
     timezone: tz,
+    i18n_enabled: document.getElementById('i18nEnabled')?.checked || false,
+    language: document.getElementById('globalLanguage')?.value || 'en-US',
     location_lat: locLat,
     location_lon: locLon,
     location_name: locName,

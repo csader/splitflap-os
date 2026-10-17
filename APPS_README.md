@@ -204,6 +204,100 @@ Use these keys to synchronize related fields:
 }
 ```
 
+## Optional: Localization & Shared Helpers
+
+`fetch()` can opt into runtime-injected helpers by **declaring extra parameters**.
+The runtime inspects your signature and only passes a helper if you name it, so the
+classic four-argument `fetch(settings, format_lines, get_rows, get_cols)` keeps
+working unchanged — every helper below is purely opt-in and backward compatible.
+
+### Localization (`i18n`)
+
+If your app shows words (day/month names, status labels), add an `i18n=None`
+parameter. The runtime binds it to the global **Language** setting; on a host
+without it (or with `babel` not installed) `i18n` is `None` and you fall back to
+English.
+
+```python
+def fetch(settings, format_lines, get_rows, get_cols, i18n=None):
+    from datetime import datetime
+    now = datetime.now()
+    weekday = i18n.weekday(now) if i18n else now.strftime("%A").upper()
+    label   = i18n.t("SUNRISE") if i18n else "SUNRISE"
+    return [format_lines(weekday, label)]
+```
+
+- `i18n.weekday(dt, short=False)` / `i18n.month(dt, short=False)` — CLDR-correct,
+  UPPERCASE day/month names for every language.
+- `i18n.date(dt, short=False, year=False)` — day + month (and optional year) in the
+  locale's **own order and wording**: `JULY 9` in English but `9 JUILLET` (fr),
+  `9. JULI` (de). Don't hand-assemble `month + " " + day` — order is language-specific.
+- `i18n.time(dt, seconds=False)` — wall-clock time: `3:48 PM` in English, `15:48`
+  elsewhere. `i18n.is_24h` exposes the same decision if you branch yourself.
+- `i18n.unit("D")` — localized compact duration suffix for `D`/`H`/`M`/`S`, so `175D`
+  becomes `175J` in French (jour), `175T` in German (Tag).
+- `i18n.number(value, decimals=2, grouping=True)` — a number with the locale's own
+  separators: `1,234.50` (en) vs `1.234,50` (de) vs `1 234,50` (fr). Use it for any
+  price/rate/percent — never hardcode `f"{v:,.2f}"`.
+- `i18n.base_currency()` / `i18n.country()` — the currency / country a language-region
+  implies (a sensible default; prefer `get_location` below for geography).
+- `i18n.t("ENGLISH LABEL")` — a translated UI word; with no translation it returns the
+  English key, so nothing ever breaks. All data lives in `server/i18n_data.json` (the
+  language list, translations, and per-language default currency/country). Add keys or
+  languages there rather than in your app, keep them short (modules are narrow), and
+  give each key a generic `context` note so translators know what the word means. A
+  regional variant like `pt-BR` automatically inherits every `pt` translation.
+
+Once your app adapts to the language, add `"i18n": true` to its `manifest.json`. When
+internationalization is enabled the Apps grid shows a 🌐 badge on those cards, and the
+app automatically gets a per-app **Language** override in its settings (blank = follow
+the global Language). Only Western-European (Windows-1252) languages are offered — the
+modules can't display Greek, Cyrillic, CJK, etc.
+
+Internationalization is **off by default**: unless the user turns on *Enable
+internationalization* in Settings, `i18n` is not injected and your app runs its
+English `i18n=None` fallback — so always keep that fallback correct. The toggle exists
+because accented glyphs only render on modules whose firmware/character map supports
+them.
+
+### Shared current weather (`get_weather`)
+
+If your app shows the weather, don't hardcode a provider — add a `get_weather=None`
+parameter and call it:
+
+```python
+def fetch(settings, format_lines, get_rows, get_cols, get_weather=None):
+    if get_weather is None:            # host without the helper
+        return [format_lines("NO WEATHER")]
+    w = get_weather()                  # uses the *global* provider + key + location
+    if not w["ok"]:
+        return [format_lines("WEATHER", "UNAVAILABLE")]
+    return [format_lines(w["city"], f'{w["temp_f"]}F {w["desc"]}')]
+```
+
+`get_weather()` returns a dict: `ok`, `city`, `temp_f`, `feels_like_f`, `hi_f`,
+`lo_f`, `desc`, `humidity`, `wind_mph`, `cloud_cover`, `provider`, `lat`, `lon`
+(temps in °F; `ok` is `False` with an `error` key on failure). The default provider
+is keyless Open-Meteo, so weather works with **no API key**.
+
+### Location → country / currency (`get_location`)
+
+Anything tied to *geography* — which currency, which country's holidays — should key
+off the configured **Location**, not the language. Declare a `get_location`
+parameter for the shared resolver:
+
+```python
+def fetch(settings, format_lines, get_rows, get_cols, get_location=None):
+    loc = get_location() if get_location else {}
+    country     = loc.get("country")      # ISO 3166-1 alpha-2, e.g. "CA"
+    subdivision = loc.get("subdivision")  # ISO 3166-2, e.g. "CA-QC"; may be None
+    currency    = loc.get("currency")     # ISO 4217, e.g. "CAD" (None if unknown)
+```
+
+It reverse-geocodes the global Location once (cached) and is keyless. Declaring
+`get_location` also gives the app an automatic per-app **Location** override in its
+settings. Helpers compose: `def fetch(..., get_weather=None, get_location=None, i18n=None)`.
+
 ## Final Checklist
 
 - Confirm your app directory contains `manifest.json` and `app.py`.

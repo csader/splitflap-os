@@ -1,6 +1,12 @@
-def fetch(settings, format_lines, get_rows, get_cols):
+def fetch(settings, format_lines, get_rows, get_cols, i18n=None):
     from datetime import datetime
     import pytz
+
+    def t(s):
+        return i18n.t(s, "time") if i18n is not None else s
+
+    def u(k):                       # localized D/H/M/S suffix (French J for jour, etc.)
+        return i18n.unit(k) if i18n is not None else k
 
     def get_allowed_chars():
         default_chars = " ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$&()-+=;:%'.,/?*"
@@ -36,11 +42,12 @@ def fetch(settings, format_lines, get_rows, get_cols):
         mins, secs = divmod(rem, 60)
 
         # Keep the most useful leading units that still fit on the sign.
+        day_u = u('D')
         sections = [
-            f'{days}D',
-            f'{hrs}H',
-            f'{mins}M',
-            f'{secs}S',
+            f'{days}{day_u}',
+            f'{hrs}{u("H")}',
+            f'{mins}{u("M")}',
+            f'{secs}{u("S")}',
         ]
 
         text = ''
@@ -55,33 +62,23 @@ def fetch(settings, format_lines, get_rows, get_cols):
             return text
         # At the narrowest widths, preserve the day suffix so the value still has context.
         if cols <= 1:
-            return 'D'[:cols]
-        return f"{str(days)[:cols - 1]}D"
+            return day_u[:cols]
+        return f"{str(days)[:cols - len(day_u)]}{day_u}"
+
+    def _pick(cols, *words):
+        for w in words:
+            if w and cols >= len(w):
+                return w
+        return (words[-1] or '')[:cols]
 
     def build_arrived_text(cols):
-        if cols >= len('ARRIVED!'):
-            return 'ARRIVED!'
-        if cols >= len('HERE!'):
-            return 'HERE!'
-        if cols >= len('NOW!'):
-            return 'NOW!'
-        return 'GO'[:cols]
+        return _pick(cols, t('ARRIVED') + '!', t('HERE') + '!', t('NOW') + '!', 'GO')
 
     def build_celebration_text(cols):
-        if cols >= len('CELEBRATE!'):
-            return 'CELEBRATE!'
-        if cols >= len('PARTY!'):
-            return 'PARTY!'
-        if cols >= len('YAY!'):
-            return 'YAY!'
-        return ''
+        return _pick(cols, t('CELEBRATE') + '!', t('PARTY') + '!', '')
 
     def build_remaining_text(cols):
-        if cols >= len('REMAINING'):
-            return 'REMAINING'
-        if cols >= len('LEFT'):
-            return 'LEFT'
-        return ''
+        return _pick(cols, t('REMAINING'), t('LEFT'), '')
 
     def build_slot_pages(event, target, now, rows, cols):
         diff = target - now

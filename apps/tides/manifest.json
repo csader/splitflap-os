@@ -1,0 +1,32 @@
+{
+  "id": "tides",
+  "name": "Tides",
+  "icon": "🌊",
+  "description": "Today's high & low tides (NOAA)",
+  "type": "functional",
+  "i18n": true,
+  "refresh_interval": 3600,
+  "loop_delay": 6,
+  "category": "data",
+  "min_rows": 1,
+  "min_cols": 12,
+  "settings": [
+    {
+      "key": "tide_station",
+      "label": "NOAA tide station ID",
+      "type": "text",
+      "default": "8443970",
+      "note": "Find yours at tidesandcurrents.noaa.gov (default is Boston, MA)."
+    },
+    {
+      "key": "loop_delay",
+      "label": "Delay Between Pages (seconds)",
+      "type": "number",
+      "default": "6",
+      "min": "2",
+      "max": "30",
+      "step": "1",
+      "stepper": true
+    }
+  ]
+}

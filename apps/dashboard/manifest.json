@@ -1,5 +1,6 @@
 {
   "id": "dashboard",
+  "i18n": true,
   "name": "Dashboard",
   "icon": "🏠",
   "description": "Time + weather",

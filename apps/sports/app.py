@@ -20,7 +20,19 @@ LEAGUES = {
     'ufc':    {'path': 'mma/ufc',                            'name': 'UFC'},
 }
 
-def fetch(settings, format_lines, get_rows, get_cols):
+# The active Localizer for the current fetch (set below). Sports has helper functions,
+# so a module-level localizer avoids threading it through every signature; the plugin
+# runtime serializes fetches per app, so it's set once per render.
+_LOC = None
+
+
+def _t(s):
+    return _LOC.t(s, "sports") if _LOC is not None else s
+
+
+def fetch(settings, format_lines, get_rows, get_cols, i18n=None):
+    global _LOC
+    _LOC = i18n
     import requests, logging
 
     game_filter = settings.get('sports_filter', 'all')
@@ -42,9 +54,11 @@ def fetch(settings, format_lines, get_rows, get_cols):
 
     if not all_games:
         if any(settings.get(f'sports_{key}', '').strip() for key in LEAGUES):
-            filter_labels = {'all': 'ALL', 'live': 'LIVE', 'live+upcoming': 'LIVE/UPCOMING', 'live+final': 'LIVE/FINAL'}
-            return [format_lines("SPORTS", "NO GAMES", filter_labels.get(game_filter, 'FOUND'))]
-        return [format_lines("SPORTS", "NO TEAMS", "CONFIGURED")]
+            filter_labels = {'all': _t('ALL'), 'live': _t('LIVE'),
+                             'live+upcoming': f"{_t('LIVE')}/{_t('UPCOMING')}",
+                             'live+final': f"{_t('LIVE')}/{_t('FINAL')}"}
+            return [format_lines("SPORTS", _t("NO GAMES"), filter_labels.get(game_filter, _t('FOUND')))]
+        return [format_lines("SPORTS", _t("NO TEAMS"), _t("CONFIGURED"))]
 
     rows = get_rows()
     cols = get_cols()
@@ -161,8 +175,8 @@ def _fetch_last_game(info, team_abbr, format_lines, get_cols, requests, game_fil
             a_score = as_.get('displayValue', str(as_)) if isinstance(as_, dict) else str(as_)
             h_score = hs_.get('displayValue', str(hs_)) if isinstance(hs_, dict) else str(hs_)
             score_line = f"{aa} {a_score}  {ha} {h_score}"
-            page = format_lines(info['name'], score_line, "FINAL")
-            return {'page': page, 'score_line': score_line, 'status': 'FINAL', 'state': 'post'}
+            page = format_lines(info['name'], score_line, _t("FINAL"))
+            return {'page': page, 'score_line': score_line, 'status': _t("FINAL"), 'state': 'post'}
         return None
     except Exception as e:
         logging.error(f"Schedule fetch error for {team_abbr}: {e}")
@@ -201,7 +215,7 @@ def _parse_events(events, info, team_filter, show_all, format_lines, get_cols, g
             score_line = f"{aa} VS {ha}"
         else:
             score_line = f"{aa} {away.get('score','0')}  {ha} {home.get('score','0')}"
-        status = "FINAL" if state == 'post' else detail.upper()[:15]
+        status = _t("FINAL") if state == 'post' else detail.upper()[:15]
         page = format_lines(info['name'], score_line, status)
         game = {'page': page, 'score_line': score_line, 'status': status, 'state': state}
         (live if state == 'in' else upcoming if state == 'pre' else final).append(game)
@@ -209,10 +223,10 @@ def _parse_events(events, info, team_filter, show_all, format_lines, get_cols, g
 
 def _golf(events, info, format_lines):
     if not events:
-        return [format_lines("PGA TOUR", "NO EVENT", "THIS WEEK")]
+        return [format_lines("PGA TOUR", _t("NO EVENT"), _t("THIS WEEK"))]
     comps = events[0].get('competitions', [{}])
     if not comps:
-        return [format_lines("PGA TOUR", "NO DATA", "")]
+        return [format_lines("PGA TOUR", _t("NO DATA"), "")]
     competitors = comps[0].get('competitors', [])
     competitors.sort(key=lambda c: int(c.get('order', 999)))
     pages = []
@@ -225,11 +239,11 @@ def _golf(events, info, format_lines):
             lines.append(f"{c.get('order','?')} {name[:8]} {score}"[:15])
         while len(lines) < 3: lines.append('')
         pages.append(format_lines(*lines))
-    return pages or [format_lines("PGA TOUR", "NO LEADERS", "")]
+    return pages or [format_lines("PGA TOUR", _t("NO LEADERS"), "")]
 
 def _mma(events, info, format_lines):
     if not events:
-        return [format_lines("UFC", "NO EVENT", "SCHEDULED")]
+        return [format_lines("UFC", _t("NO EVENT"), _t("SCHEDULED"))]
     pages = []
     for comp in events[0].get('competitions', [])[:5]:
         competitors = comp.get('competitors', [])
@@ -238,9 +252,9 @@ def _mma(events, info, format_lines):
         n2 = competitors[1].get('athlete', {}).get('shortName', '?').upper()[:7]
         state = comp.get('status', {}).get('type', {}).get('state', 'pre')
         detail = comp.get('status', {}).get('type', {}).get('shortDetail', '')
-        r3 = detail.upper()[:15] if detail else ("LIVE" if state == 'in' else "UPCOMING")
+        r3 = detail.upper()[:15] if detail else (_t("LIVE") if state == 'in' else _t("UPCOMING"))
         pages.append(format_lines("UFC", f"{n1} V {n2}", r3))
-    return pages or [format_lines("UFC", "NO FIGHTS", "SCHEDULED")]
+    return pages or [format_lines("UFC", _t("NO FIGHTS"), _t("SCHEDULED"))]
 
 
 def trigger(settings, conditions):

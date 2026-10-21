@@ -1,0 +1,402 @@
+[
+  {
+    "id": 1,
+    "fortune": "ALLES GEBEURT MET EEN REDEN. MEESTAL SLECHT"
+  },
+  {
+    "id": 2,
+    "fortune": "HET GELUK KOMT ERAAN. HET LOOPT TRAAG"
+  },
+  {
+    "id": 3,
+    "fortune": "HET HEELAL HEEFT EEN PLAN. EEN KLEIN PLAN"
+  },
+  {
+    "id": 4,
+    "fortune": "JE LOTSBESTEMMING BELDE. ZE VERZET HET"
+  },
+  {
+    "id": 5,
+    "fortune": "DE STERREN STONDEN GOED. TOEN ZAGEN ZE JOU"
+  },
+  {
+    "id": 6,
+    "fortune": "JE SCHIP KOMT BINNEN. HET IS EEN KANO"
+  },
+  {
+    "id": 7,
+    "fortune": "VERTROUW HET PROCES. HET TWIJFELT AAN JOU"
+  },
+  {
+    "id": 8,
+    "fortune": "EEN TEKEN KOMT. HET ZEGT VERLEEN VOORRANG"
+  },
+  {
+    "id": 9,
+    "fortune": "JE STER BESTAAT. IN EEN ANDER STELSEL"
+  },
+  {
+    "id": 10,
+    "fortune": "KARMA BESTAAT. DAT VERKLAART VEEL"
+  },
+  {
+    "id": 11,
+    "fortune": "JE TOEKOMST IS STRALEND. NEEM ZONNEBRAND"
+  },
+  {
+    "id": 12,
+    "fortune": "HET LOT WACHT. HET IS GAAN LEZEN"
+  },
+  {
+    "id": 13,
+    "fortune": "WONDEREN GEBEUREN ELKE DAG. ELDERS DAN"
+  },
+  {
+    "id": 14,
+    "fortune": "JE MOMENT KOMT. HET STAAT IN DE FILE"
+  },
+  {
+    "id": 15,
+    "fortune": "HET GELUK KLOPTE AAN. JE WAS WEG"
+  },
+  {
+    "id": 16,
+    "fortune": "HET TIJ KEERT. OP GLETSJERSNELHEID"
+  },
+  {
+    "id": 17,
+    "fortune": "GROTE DINGEN KOMEN. VERLAAG DE LAT"
+  },
+  {
+    "id": 18,
+    "fortune": "DE KANSEN ZIJN ER. JULLIE MISSEN ELKAAR"
+  },
+  {
+    "id": 19,
+    "fortune": "HET HEELAL HOORT JE. GA IN DE RIJ STAAN"
+  },
+  {
+    "id": 20,
+    "fortune": "JE GEBEDEN ZIJN GEHOORD. EN GEARCHIVEERD"
+  },
+  {
+    "id": 21,
+    "fortune": "OVERVLOED STROOMT NAAR JE. STROOMOPWAARTS"
+  },
+  {
+    "id": 22,
+    "fortune": "HET RAD DRAAIT. JIJ BENT DE HAMSTER"
+  },
+  {
+    "id": 23,
+    "fortune": "ELKE WOLK HEEFT EEN RAND. DE JOUWE DRUPT"
+  },
+  {
+    "id": 24,
+    "fortune": "HET TOEVAL VRAAGT NAAR JOU. UIT NIEUWSGIER"
+  },
+  {
+    "id": 25,
+    "fortune": "DE VOORTEKENS SPREKEN. ZE ZUCHTEN VOORAL"
+  },
+  {
+    "id": 26,
+    "fortune": "JE HOROSCOOP IS GUNSTIG. EN VERZONNEN"
+  },
+  {
+    "id": 27,
+    "fortune": "DE BLIKSEM SLAAT NOOIT TWEE KEER. JIJ WEL"
+  },
+  {
+    "id": 28,
+    "fortune": "HET LOT BELOONT GEDULD. FACTUUR VOLGT"
+  },
+  {
+    "id": 29,
+    "fortune": "DE MAAN ZAG JE NIEUWE START. ALWEER EEN"
+  },
+  {
+    "id": 30,
+    "fortune": "JE ENGEL WAAKT. HIJ MAAKT NOTITIES"
+  },
+  {
+    "id": 31,
+    "fortune": "GELOOF EN JE ONTVANGT. LEVERING WISSELT"
+  },
+  {
+    "id": 32,
+    "fortune": "JE GOUDEN TIJDPERK KOMT. VERGULD DAN"
+  },
+  {
+    "id": 33,
+    "fortune": "WAT VOOR JOU IS KOMT. ZONDER ENIGE HAAST"
+  },
+  {
+    "id": 34,
+    "fortune": "HET HEELAL KNIPOOGDE. OF HET HAD EEN TIC"
+  },
+  {
+    "id": 35,
+    "fortune": "JE GELUK GAAT KEREN. RICHTING ONBEKEND"
+  },
+  {
+    "id": 36,
+    "fortune": "DE VOORZIENIGHEID ZORGT. ZE CHECKT DE BONNEN"
+  },
+  {
+    "id": 37,
+    "fortune": "DOE EEN WENS. DE STER ZET HEM OP SPAM"
+  },
+  {
+    "id": 38,
+    "fortune": "ALLES KOMT OP ZIJN TIJD. DE JOUWE TREUZELT"
+  },
+  {
+    "id": 39,
+    "fortune": "DE TEKENS WAREN ER. LEZEN IS OPTIONEEL"
+  },
+  {
+    "id": 40,
+    "fortune": "JE BENT UNIEK. NET ALS IEDEREEN"
+  },
+  {
+    "id": 41,
+    "fortune": "HET BESTE MOET NOG KOMEN. GEEN ENKELE HAAST"
+  },
+  {
+    "id": 42,
+    "fortune": "JE AURA STRAALT. HIJ MAAKT OVERUREN"
+  },
+  {
+    "id": 43,
+    "fortune": "HET GELUK LACHTE. BELEEFD. VAN VERRE"
+  },
+  {
+    "id": 44,
+    "fortune": "JE ENGEL VROEG OM OVERPLAATSING"
+  },
+  {
+    "id": 45,
+    "fortune": "HET LOT DEELT DE KAARTEN. JIJ VERLIEST ZE"
+  },
+  {
+    "id": 46,
+    "fortune": "EEN VOORTEKEN VERSCHIJNT. HET SCHOKSCHOUDERT"
+  },
+  {
+    "id": 47,
+    "fortune": "SUCCES IS NABIJ. NET ALS DE SLUIMERKNOP"
+  },
+  {
+    "id": 48,
+    "fortune": "WERK LOONT ALTIJD. IN ERVARING"
+  },
+  {
+    "id": 49,
+    "fortune": "JE POTENTIEEL IS ENORM. EN ONGEBRUIKT"
+  },
+  {
+    "id": 50,
+    "fortune": "MIK OP DE MAAN. PAS OP HET PLAFOND"
+  },
+  {
+    "id": 51,
+    "fortune": "DE VROEGE VOGEL KREEG DE WORM. JIJ SLIEP"
+  },
+  {
+    "id": 52,
+    "fortune": "JE GROTE KANS KOMT. BREEK HEM NIET"
+  },
+  {
+    "id": 53,
+    "fortune": "ROME WERD NIET IN EEN DAG GEBOUWD. JIJ NIET"
+  },
+  {
+    "id": 54,
+    "fortune": "JE TALENTEN WORDEN GEVONDEN. MET EEN BEVEL"
+  },
+  {
+    "id": 55,
+    "fortune": "WINNAARS STOPPEN NOOIT. JIJ ZWEEFT"
+  },
+  {
+    "id": 56,
+    "fortune": "JE IDEEEN LOPEN VOOR. JE DEADLINES ACHTER"
+  },
+  {
+    "id": 57,
+    "fortune": "KWALITEIT IS EEN GEWOONTE. DE JOUWE OOK"
+  },
+  {
+    "id": 58,
+    "fortune": "JE WERK SPREEKT VOOR ZICH. HEEL ZACHTJES"
+  },
+  {
+    "id": 59,
+    "fortune": "DE TOP IS EENZAAM. PROBLEEM OPGELOST"
+  },
+  {
+    "id": 60,
+    "fortune": "EEN PROMOTIE KOMT. DIE VAN EEN COLLEGA"
+  },
+  {
+    "id": 61,
+    "fortune": "JE CV IMPONEERT. DE LIEFHEBBERS VAN FICTIE"
+  },
+  {
+    "id": 62,
+    "fortune": "JE BESTE WERK KOMT NOG. HET RENT SNEL"
+  },
+  {
+    "id": 63,
+    "fortune": "DIE VERGADERING KON EEN MAIL ZIJN"
+  },
+  {
+    "id": 64,
+    "fortune": "JE INBOX IS GEEN VIJAND. SLECHTS GETUIGE"
+  },
+  {
+    "id": 65,
+    "fortune": "DEADLINES MAKEN JE NIET BANG. JE NEGEERT ZE"
+  },
+  {
+    "id": 66,
+    "fortune": "JE VIJFJARENPLAN IS VIJF JAAR OUD"
+  },
+  {
+    "id": 67,
+    "fortune": "LANGZAAM MAAR ZEKER WINT. JE HEBT LANGZAAM"
+  },
+  {
+    "id": 68,
+    "fortune": "JE AGENDA IS VOL. MET MARGES"
+  },
+  {
+    "id": 69,
+    "fortune": "JE TEAM DROOMT OOK. VAN OVERPLAATSING"
+  },
+  {
+    "id": 70,
+    "fortune": "DE KANS DAALDE TOT JOUW NIVEAU"
+  },
+  {
+    "id": 71,
+    "fortune": "SUCCES LAAT SPOREN NA. JIJ HOUDT VAN RAADSELS"
+  },
+  {
+    "id": 72,
+    "fortune": "JE COMFORTZONE VERDIENT EEN POSTCODE"
+  },
+  {
+    "id": 73,
+    "fortune": "KWALITEIT OF KWANTITEIT. JE WEIGERT BEIDE"
+  },
+  {
+    "id": 74,
+    "fortune": "JE INSTINCT IS SCHERP. EN VAAK FOUT"
+  },
+  {
+    "id": 75,
+    "fortune": "JE WERKT GOED ONDER DRUK. ZE IS HET ONEENS"
+  },
+  {
+    "id": 76,
+    "fortune": "MEESTERSCHAP VRAAGT 10000 UUR. JIJ HEBT 40"
+  },
+  {
+    "id": 77,
+    "fortune": "JE PLANT GELOOFDE IN JOU. EN IN WATER"
+  },
+  {
+    "id": 78,
+    "fortune": "DE PRINTER RUIKT JE HAAST. DAAROM HAPERT HIJ"
+  },
+  {
+    "id": 79,
+    "fortune": "JE ERFENIS IS IN AANBOUW. NOG STEEDS"
+  },
+  {
+    "id": 80,
+    "fortune": "EEN DIPLOMA WACHT. DAT VAN DEELNAME"
+  },
+  {
+    "id": 81,
+    "fortune": "NETWERKEN OPENT DEUREN. KLOPPEN OOK"
+  },
+  {
+    "id": 82,
+    "fortune": "JIJ GEEFT HET VOORBEELD. HR WIL EEN ANDER"
+  },
+  {
+    "id": 83,
+    "fortune": "JE ZIJPROJECT RUST UIT MET DE REST"
+  },
+  {
+    "id": 84,
+    "fortune": "GENIE IS EEN PROCENT ZWEET. DAAR STOP JE"
+  },
+  {
+    "id": 85,
+    "fortune": "JE AFWEZIGHEIDSBERICHT IS JE MEESTERWERK"
+  },
+  {
+    "id": 86,
+    "fortune": "FALEN IS EEN TREDE. MOOIE TRAP"
+  },
+  {
+    "id": 87,
+    "fortune": "JE BENT ONVERVANGBAAR. DE VACATURE IS ER AL"
+  },
+  {
+    "id": 88,
+    "fortune": "JE JAARGESPREK KOMT. OEFEN GOED"
+  },
+  {
+    "id": 89,
+    "fortune": "EFFICIENTIE IS JE TWEEDE NAAM. OP PAPIER"
+  },
+  {
+    "id": 90,
+    "fortune": "JE LANDT OP JE VOETEN. LANDING VERTRAAGD"
+  },
+  {
+    "id": 91,
+    "fortune": "DE TOP IS DICHTBIJ. HET BASISKAMP OOK"
+  },
+  {
+    "id": 92,
+    "fortune": "JE AMBITIE ONTWAAKTE. JE WEKKER NIET"
+  },
+  {
+    "id": 93,
+    "fortune": "WEES JEZELF. DE REST MAAKTE ZICH ZORGEN"
+  },
+  {
+    "id": 94,
+    "fortune": "JE VERGADERING GING GOED. HIJ IS VOORBIJ"
+  },
+  {
+    "id": 95,
+    "fortune": "RUSTEN IS GEZOND. JE OEFENT VEEL"
+  },
+  {
+    "id": 96,
+    "fortune": "JE DIEET BEGINT MAANDAG. MAANDAGEN VLUCHTEN"
+  },
+  {
+    "id": 97,
+    "fortune": "JE VERDIENT DIT. HAAL DIEP ADEM"
+  },
+  {
+    "id": 98,
+    "fortune": "EEN VREEMDE LACHT NAAR JE. BLIJF KALM"
+  },
+  {
+    "id": 99,
+    "fortune": "JE KOESTERT GEEN WROK. JE ARCHIVEERT HEM"
+  },
+  {
+    "id": 100,
+    "fortune": "JE GEDULD HEEFT EEN BALK. VASTGELOPEN"
+  }
+]

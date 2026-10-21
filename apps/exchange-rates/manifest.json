@@ -1,0 +1,41 @@
+{
+  "id": "exchange-rates",
+  "i18n": true,
+  "name": "Exchange Rates",
+  "icon": "💱",
+  "description": "Live currency rates (ECB)",
+  "type": "functional",
+  "refresh_interval": 3600,
+  "loop_delay": 5,
+  "category": "finance",
+  "min_rows": 1,
+  "min_cols": 12,
+  "settings": [
+    {
+      "key": "base",
+      "label": "Base currency (3-letter code)",
+      "type": "text",
+      "default": "",
+      "ph": "blank = follow Location",
+      "note": "Blank uses your Location's currency (then Language).",
+      "size": "sm"
+    },
+    {
+      "key": "targets",
+      "label": "Show these currencies",
+      "type": "text",
+      "default": "EUR,GBP,JPY",
+      "ph": "comma-separated codes"
+    },
+    {
+      "key": "loop_delay",
+      "label": "Delay Between Pages (seconds)",
+      "type": "number",
+      "default": "5",
+      "min": "2",
+      "max": "30",
+      "step": "1",
+      "stepper": true
+    }
+  ]
+}

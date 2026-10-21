@@ -1,0 +1,2628 @@
+{
+  "_comment": "Localization data for i18n.py, loaded at import. 'languages' is the Language selector list. 'strings' groups translations by SEMANTIC context/domain (like gettext msgctxt): strings[domain][NAME] has a generic 'context' note and a language->text map. A domain is a MEANING, not an app — a word with one meaning lives in one domain (e.g. the shared 'time' vocab), and is duplicated only when its meaning differs by context (weather HIGH = a level, tides HIGH = high tide). Apps translate via the relevant domain; the 'common' domain (OFFLINE, ERROR, …) backs every context. A missing (domain, NAME, language) falls back to the English NAME, and a regional variant (pt-BR) inherits its base language (pt). 'duration_units' (D/H/M/S symbols) and 'holidays' stay flat; 'base_currency'/'country' are the default a language implies when no Location is set. Only Windows-1252 (Western/Latin-1) languages. Edit here to fix/add translations.",
+  "languages": [
+    {
+      "value": "en-US",
+      "label": "English (US)"
+    },
+    {
+      "value": "en-GB",
+      "label": "English (UK)"
+    },
+    {
+      "value": "en-AU",
+      "label": "English (Australia)"
+    },
+    {
+      "value": "en-CA",
+      "label": "English (Canada)"
+    },
+    {
+      "value": "fr",
+      "label": "Français (French)"
+    },
+    {
+      "value": "fr-CA",
+      "label": "Français (Canada)"
+    },
+    {
+      "value": "fr-BE",
+      "label": "Français (Belgique)"
+    },
+    {
+      "value": "fr-CH",
+      "label": "Français (Suisse)"
+    },
+    {
+      "value": "de",
+      "label": "Deutsch (German)"
+    },
+    {
+      "value": "de-AT",
+      "label": "Deutsch (Österreich)"
+    },
+    {
+      "value": "de-CH",
+      "label": "Deutsch (Schweiz)"
+    },
+    {
+      "value": "es",
+      "label": "Español (Spanish)"
+    },
+    {
+      "value": "es-MX",
+      "label": "Español (México)"
+    },
+    {
+      "value": "es-AR",
+      "label": "Español (Argentina)"
+    },
+    {
+      "value": "it",
+      "label": "Italiano (Italian)"
+    },
+    {
+      "value": "it-CH",
+      "label": "Italiano (Svizzera)"
+    },
+    {
+      "value": "pt",
+      "label": "Português (Portugal)"
+    },
+    {
+      "value": "pt-BR",
+      "label": "Português (Brasil)"
+    },
+    {
+      "value": "nl",
+      "label": "Nederlands (Dutch)"
+    },
+    {
+      "value": "nl-BE",
+      "label": "Nederlands (België)"
+    },
+    {
+      "value": "da",
+      "label": "Dansk (Danish)"
+    },
+    {
+      "value": "no",
+      "label": "Norsk (Norwegian)"
+    },
+    {
+      "value": "sv",
+      "label": "Svenska (Swedish)"
+    },
+    {
+      "value": "fi",
+      "label": "Suomi (Finnish)"
+    },
+    {
+      "value": "is",
+      "label": "Íslenska (Icelandic)"
+    },
+    {
+      "value": "ga",
+      "label": "Gaeilge (Irish)"
+    },
+    {
+      "value": "ca",
+      "label": "Català (Catalan)"
+    },
+    {
+      "value": "gl",
+      "label": "Galego (Galician)"
+    },
+    {
+      "value": "eu",
+      "label": "Euskara (Basque)"
+    },
+    {
+      "value": "et",
+      "label": "Eesti (Estonian)"
+    },
+    {
+      "value": "af",
+      "label": "Afrikaans"
+    },
+    {
+      "value": "id",
+      "label": "Bahasa Indonesia"
+    },
+    {
+      "value": "ms",
+      "label": "Bahasa Melayu (Malay)"
+    },
+    {
+      "value": "sw",
+      "label": "Kiswahili (Swahili)"
+    }
+  ],
+  "strings": {
+    "common": {
+      "OFFLINE": {
+        "context": "Status: the device/service is offline.",
+        "translations": {
+          "fr": "HORS LIGNE",
+          "de": "OFFLINE",
+          "es": "SIN CONEXION",
+          "it": "OFFLINE",
+          "pt": "OFFLINE",
+          "nl": "OFFLINE",
+          "da": "OFFLINE",
+          "no": "OFFLINE",
+          "sv": "OFFLINE"
+        }
+      },
+      "NO DATA": {
+        "context": "Status: no data was returned.",
+        "translations": {
+          "fr": "PAS DE DONNEES",
+          "de": "KEINE DATEN",
+          "es": "SIN DATOS",
+          "it": "NESSUN DATO",
+          "pt": "SEM DADOS",
+          "nl": "GEEN DATA",
+          "da": "INGEN DATA",
+          "no": "INGEN DATA",
+          "sv": "INGEN DATA"
+        }
+      },
+      "ERROR": {
+        "context": "Status: a generic error occurred.",
+        "translations": {
+          "fr": "ERREUR",
+          "de": "FEHLER",
+          "es": "ERROR",
+          "it": "ERRORE",
+          "pt": "ERRO",
+          "nl": "FOUT",
+          "da": "FEJL",
+          "no": "FEIL",
+          "sv": "FEL"
+        }
+      },
+      "UNKNOWN": {
+        "context": "Value unknown / unavailable.",
+        "translations": {
+          "fr": "INCONNU",
+          "de": "UNBEKANNT",
+          "es": "DESCON.",
+          "it": "SCONOSC.",
+          "pt": "DESCON.",
+          "nl": "ONBEKEND",
+          "da": "UKENDT",
+          "no": "UKJENT",
+          "sv": "OKÄND"
+        }
+      },
+      "INVALID DATE": {
+        "context": "A configured date could not be parsed.",
+        "translations": {
+          "fr": "DATE INVALIDE",
+          "de": "UNGULT. DATUM",
+          "es": "FECHA INVALIDA",
+          "it": "DATA NON VALIDA",
+          "pt": "DATA INVALIDA",
+          "nl": "ONGELDIGE DATUM"
+        }
+      },
+      "API FAIL": {
+        "context": "Status: an upstream API call failed.",
+        "translations": {
+          "fr": "ECHEC API",
+          "de": "API-FEHLER",
+          "es": "FALLO API",
+          "it": "ERRORE API",
+          "pt": "FALHA API",
+          "nl": "API-FOUT",
+          "da": "API-FEJL",
+          "no": "API-FEIL",
+          "sv": "API-FEL"
+        }
+      },
+      "CONFIGURE": {
+        "context": "Prompt to configure the app in Settings.",
+        "translations": {
+          "fr": "CONFIGURER",
+          "de": "EINRICHTEN",
+          "es": "CONFIGURAR",
+          "it": "CONFIGURA",
+          "pt": "CONFIGURAR",
+          "nl": "INSTELLEN",
+          "da": "OPSÆT",
+          "no": "SETT OPP",
+          "sv": "KONFIGURERA"
+        }
+      }
+    },
+    "time": {
+      "DAYS": {
+        "context": "Duration unit word (plural): days.",
+        "translations": {
+          "fr": "JOURS",
+          "de": "TAGE",
+          "es": "DÍAS",
+          "it": "GIORNI",
+          "pt": "DIAS",
+          "nl": "DAGEN",
+          "da": "DAGE",
+          "no": "DAGER",
+          "sv": "DAGAR"
+        }
+      },
+      "HOURS": {
+        "context": "Duration unit word (plural): hours.",
+        "translations": {
+          "fr": "HEURES",
+          "de": "STUNDEN",
+          "es": "HORAS",
+          "it": "ORE",
+          "pt": "HORAS",
+          "nl": "UREN",
+          "da": "TIMER",
+          "no": "TIMER",
+          "sv": "TIMMAR"
+        }
+      },
+      "MINS": {
+        "context": "Time unit: minutes (abbreviated).",
+        "translations": {
+          "fr": "MIN",
+          "de": "MIN",
+          "es": "MIN",
+          "it": "MIN",
+          "pt": "MIN",
+          "nl": "MIN",
+          "da": "MIN",
+          "no": "MIN",
+          "sv": "MIN"
+        }
+      },
+      "LEFT": {
+        "context": "Follows a remaining duration ('3D LEFT').",
+        "translations": {
+          "fr": "RESTE",
+          "de": "UBRIG",
+          "es": "QUEDAN",
+          "it": "MANCA",
+          "pt": "FALTAM",
+          "nl": "OVER",
+          "da": "TILBAGE",
+          "no": "IGJEN",
+          "sv": "KVAR"
+        }
+      },
+      "REMAINING": {
+        "context": "Follows a duration to mean time remaining ('3D REMAINING').",
+        "translations": {
+          "fr": "RESTANT",
+          "de": "VERBLEIB.",
+          "es": "RESTANTE",
+          "it": "RIMANENTE",
+          "pt": "RESTANTE",
+          "nl": "RESTEREND",
+          "da": "TILBAGE",
+          "no": "GJENSTÅR",
+          "sv": "ÅTERSTÅR"
+        }
+      },
+      "ARRIVED": {
+        "context": "Shown when an awaited moment has arrived.",
+        "translations": {
+          "fr": "ARRIVE",
+          "de": "DA",
+          "es": "LLEGO",
+          "it": "ARRIVATO",
+          "pt": "CHEGOU",
+          "nl": "AANGEKOMEN",
+          "da": "ANKOMMET",
+          "no": "ANKOMMET",
+          "sv": "ANLÄNT"
+        }
+      },
+      "HERE": {
+        "context": "Short 'it's here' when an awaited moment arrives.",
+        "translations": {
+          "fr": "ICI",
+          "de": "HIER",
+          "es": "AQUI",
+          "it": "QUI",
+          "pt": "AQUI",
+          "nl": "HIER",
+          "da": "HER",
+          "no": "HER",
+          "sv": "HÄR"
+        }
+      },
+      "CELEBRATE": {
+        "context": "Celebratory word shown when an event arrives.",
+        "translations": {
+          "fr": "FETEZ",
+          "de": "FEIERN",
+          "es": "CELEBRA",
+          "it": "FESTA",
+          "pt": "FESTA",
+          "nl": "VIER",
+          "da": "FEJR",
+          "no": "FEIRE",
+          "sv": "FIRA"
+        }
+      },
+      "PARTY": {
+        "context": "Celebratory word shown when an event arrives.",
+        "translations": {
+          "fr": "FETE",
+          "de": "PARTY",
+          "es": "FIESTA",
+          "it": "FESTA",
+          "pt": "FESTA",
+          "nl": "FEEST",
+          "da": "FEST",
+          "no": "FEST",
+          "sv": "FEST"
+        }
+      },
+      "TODAY": {
+        "context": "The word 'today'.",
+        "translations": {
+          "fr": "AUJOURDHUI",
+          "de": "HEUTE",
+          "es": "HOY",
+          "it": "OGGI",
+          "pt": "HOJE",
+          "nl": "VANDAAG",
+          "da": "I DAG",
+          "no": "I DAG",
+          "sv": "IDAG"
+        }
+      },
+      "NOW": {
+        "context": "The word 'now'.",
+        "translations": {
+          "fr": "MAINTENANT",
+          "de": "JETZT",
+          "es": "AHORA",
+          "it": "ORA",
+          "pt": "AGORA",
+          "nl": "NU",
+          "da": "NU",
+          "no": "NÅ",
+          "sv": "NU"
+        }
+      },
+      "IN": {
+        "context": "Connector before a duration: 'IN 3 DAYS'.",
+        "translations": {
+          "fr": "DANS",
+          "de": "IN",
+          "es": "EN",
+          "it": "TRA",
+          "pt": "EM",
+          "nl": "OVER",
+          "da": "OM",
+          "no": "OM",
+          "sv": "OM"
+        }
+      },
+      "Y": {
+        "context": "Compact duration suffix for years (after a number, e.g. '2A').",
+        "translations": {
+          "fr": "A",
+          "de": "J",
+          "es": "A",
+          "it": "A",
+          "pt": "A",
+          "nl": "J",
+          "da": "Å",
+          "no": "Å",
+          "sv": "Å"
+        }
+      },
+      "D": {
+        "context": "Compact duration suffix for days (e.g. '175D').",
+        "translations": {
+          "fr": "J",
+          "de": "T",
+          "es": "D",
+          "it": "G",
+          "pt": "D",
+          "nl": "D"
+        }
+      },
+      "H": {
+        "context": "Compact duration suffix for hours.",
+        "translations": {
+          "fr": "H",
+          "de": "H",
+          "es": "H",
+          "it": "H",
+          "pt": "H",
+          "nl": "U",
+          "da": "T",
+          "no": "T",
+          "sv": "T"
+        }
+      },
+      "M": {
+        "context": "Compact duration suffix for minutes.",
+        "translations": {
+          "fr": "M",
+          "de": "M",
+          "es": "M",
+          "it": "M",
+          "pt": "M",
+          "nl": "M"
+        }
+      },
+      "S": {
+        "context": "Compact duration suffix for seconds.",
+        "translations": {
+          "fr": "S",
+          "de": "S",
+          "es": "S",
+          "it": "S",
+          "pt": "S",
+          "nl": "S"
+        }
+      },
+      "YEARS": {
+        "context": "Duration unit word (plural): years.",
+        "translations": {
+          "fr": "ANS",
+          "de": "JAHRE",
+          "es": "AÑOS",
+          "it": "ANNI",
+          "pt": "ANOS",
+          "nl": "JAREN",
+          "da": "ÅR",
+          "no": "ÅR",
+          "sv": "ÅR"
+        }
+      },
+      "MONTHS": {
+        "context": "Duration unit word (plural): months.",
+        "translations": {
+          "fr": "MOIS",
+          "de": "MONATE",
+          "es": "MESES",
+          "it": "MESI",
+          "pt": "MESES",
+          "nl": "MAANDEN",
+          "da": "MÅNEDER",
+          "no": "MÅNEDER",
+          "sv": "MÅNADER"
+        }
+      },
+      "WEEKS": {
+        "context": "Duration unit word (plural): weeks.",
+        "translations": {
+          "fr": "SEMAINES",
+          "de": "WOCHEN",
+          "es": "SEMANAS",
+          "it": "SETTIMANE",
+          "pt": "SEMANAS",
+          "nl": "WEKEN",
+          "da": "UGER",
+          "no": "UKER",
+          "sv": "VECKOR"
+        }
+      },
+      "MINUTES": {
+        "context": "Duration unit word (plural): minutes.",
+        "translations": {
+          "fr": "MINUTES",
+          "de": "MINUTEN",
+          "es": "MINUTOS",
+          "it": "MINUTI",
+          "pt": "MINUTOS",
+          "nl": "MINUTEN",
+          "da": "MINUTTER",
+          "no": "MINUTTER",
+          "sv": "MINUTER"
+        }
+      },
+      "SECONDS": {
+        "context": "Duration unit word (plural): seconds.",
+        "translations": {
+          "fr": "SECONDES",
+          "de": "SEKUNDEN",
+          "es": "SEGUNDOS",
+          "it": "SECONDI",
+          "pt": "SEGUNDOS",
+          "nl": "SECONDEN",
+          "da": "SEKUNDER",
+          "no": "SEKUNDER",
+          "sv": "SEKUNDER"
+        }
+      },
+      "TIME SINCE": {
+        "context": "'Time since <event>' label.",
+        "translations": {
+          "fr": "DEPUIS",
+          "de": "SEIT",
+          "es": "DESDE",
+          "it": "DA",
+          "pt": "DESDE",
+          "nl": "SINDS",
+          "da": "SIDEN",
+          "no": "SIDEN",
+          "sv": "SEDAN"
+        }
+      },
+      "NOT YET": {
+        "context": "An awaited event is still in the future.",
+        "translations": {
+          "fr": "PAS ENCORE",
+          "de": "NOCH NICHT",
+          "es": "AUN NO",
+          "it": "NON ANCORA",
+          "pt": "AINDA NAO",
+          "nl": "NOG NIET",
+          "da": "IKKE ENDNU",
+          "no": "IKKE ENNÅ",
+          "sv": "INTE ÄNNU"
+        }
+      },
+      "STARTED": {
+        "context": "An event has started / passed.",
+        "translations": {
+          "fr": "COMMENCE",
+          "de": "GESTARTET",
+          "es": "EMPEZADO",
+          "it": "INIZIATO",
+          "pt": "INICIADO",
+          "nl": "GESTART",
+          "da": "STARTET",
+          "no": "STARTET",
+          "sv": "STARTAT"
+        }
+      }
+    },
+    "sun": {
+      "SUNRISE": {
+        "context": "The time the sun rises.",
+        "translations": {
+          "fr": "LEVER",
+          "de": "AUFGANG",
+          "es": "AMANECER",
+          "it": "ALBA",
+          "pt": "NASCER",
+          "nl": "OPKOMST",
+          "da": "SOLOPGANG",
+          "no": "SOLOPPGANG",
+          "sv": "SOLUPPGÅNG"
+        }
+      },
+      "SUNSET": {
+        "context": "The time the sun sets.",
+        "translations": {
+          "fr": "COUCHER",
+          "de": "UNTERGANG",
+          "es": "OCASO",
+          "it": "TRAMONTO",
+          "pt": "OCASO",
+          "nl": "ONDERGANG",
+          "da": "SOLNEDGANG",
+          "no": "SOLNEDGANG",
+          "sv": "SOLNEDGÅNG"
+        }
+      },
+      "DAYLIGHT": {
+        "context": "Total hours of daylight.",
+        "translations": {
+          "fr": "JOUR",
+          "de": "TAGESLICHT",
+          "es": "LUZ DIA",
+          "it": "LUCE",
+          "pt": "LUZ DIA",
+          "nl": "DAGLICHT",
+          "da": "DAGSLYS",
+          "no": "DAGSLYS",
+          "sv": "DAGSLJUS"
+        }
+      },
+      "UP": {
+        "context": "Very short label for sunrise (sun is up).",
+        "translations": {
+          "fr": "LEV",
+          "de": "AUF",
+          "es": "SAL",
+          "it": "ALBA",
+          "pt": "NASC",
+          "nl": "OP"
+        }
+      },
+      "DN": {
+        "context": "Very short label for sunset (sun is down).",
+        "translations": {
+          "fr": "COU",
+          "de": "UNT",
+          "es": "OCA",
+          "it": "TRAM",
+          "pt": "OCA",
+          "nl": "OND"
+        }
+      }
+    },
+    "moon": {
+      "NEW MOON": {
+        "context": "Lunar phase: new moon.",
+        "translations": {
+          "fr": "NOUVELLE LUNE",
+          "de": "NEUMOND",
+          "es": "LUNA NUEVA",
+          "it": "LUNA NUOVA",
+          "pt": "LUA NOVA",
+          "nl": "NIEUWE MAAN",
+          "da": "NYMÅNE",
+          "no": "NYMÅNE",
+          "sv": "NYMÅNE"
+        }
+      },
+      "FULL MOON": {
+        "context": "Lunar phase: full moon.",
+        "translations": {
+          "fr": "PLEINE LUNE",
+          "de": "VOLLMOND",
+          "es": "LUNA LLENA",
+          "it": "LUNA PIENA",
+          "pt": "LUA CHEIA",
+          "nl": "VOLLE MAAN",
+          "da": "FULDMÅNE",
+          "no": "FULLMÅNE",
+          "sv": "FULLMÅNE"
+        }
+      },
+      "FIRST QUARTER": {
+        "context": "Lunar phase: first quarter (keep short).",
+        "translations": {
+          "fr": "1ER QUARTIER",
+          "de": "1. VIERTEL",
+          "es": "CUARTO CREC.",
+          "it": "PRIMO QUARTO",
+          "pt": "QUARTO CRESC.",
+          "nl": "EERSTE KWART."
+        }
+      },
+      "LAST QUARTER": {
+        "context": "Lunar phase: last quarter (keep short).",
+        "translations": {
+          "fr": "DERN. QUARTIER",
+          "de": "LETZT. VIERTEL",
+          "es": "CUARTO MENG.",
+          "it": "ULTIMO QUARTO",
+          "pt": "QUARTO MING.",
+          "nl": "LAATSTE KWART."
+        }
+      },
+      "WAXING CRESCENT": {
+        "context": "Lunar phase: waxing crescent (growing).",
+        "translations": {
+          "fr": "1ER CROISSANT",
+          "de": "ZUN. SICHEL",
+          "es": "CRECIENTE",
+          "it": "CRESCENTE",
+          "pt": "CRESCENTE",
+          "nl": "WASSEND"
+        }
+      },
+      "WANING CRESCENT": {
+        "context": "Lunar phase: waning crescent (shrinking).",
+        "translations": {
+          "fr": "DERN. CROISSANT",
+          "de": "ABN. SICHEL",
+          "es": "MENGUANTE",
+          "it": "CALANTE",
+          "pt": "MINGUANTE",
+          "nl": "AFNEMEND"
+        }
+      },
+      "WAXING GIBBOUS": {
+        "context": "Lunar phase: waxing gibbous (growing).",
+        "translations": {
+          "fr": "GIBBEUSE CROIS.",
+          "de": "ZUN. MOND",
+          "es": "GIBOSA CREC.",
+          "it": "GIBBOSA CRESC.",
+          "pt": "GIBOSA CRESC.",
+          "nl": "WASSEND"
+        }
+      },
+      "WANING GIBBOUS": {
+        "context": "Lunar phase: waning gibbous (shrinking).",
+        "translations": {
+          "fr": "GIBBEUSE DECR.",
+          "de": "ABN. MOND",
+          "es": "GIBOSA MENG.",
+          "it": "GIBBOSA CAL.",
+          "pt": "GIBOSA MING.",
+          "nl": "AFNEMEND"
+        }
+      },
+      "LIT": {
+        "context": "Precedes the percentage of a surface that is illuminated, e.g. '16% LIT'.",
+        "translations": {
+          "fr": "ECLAIRE",
+          "de": "HELL",
+          "es": "ILUM.",
+          "it": "ILLUM.",
+          "pt": "ILUM.",
+          "nl": "VERL.",
+          "da": "OPLYST",
+          "no": "OPPLYST",
+          "sv": "UPPLYST"
+        }
+      },
+      "FULL IN": {
+        "context": "'FULL IN 3D' = time until something is full (e.g. the moon).",
+        "translations": {
+          "fr": "PLEINE DANS",
+          "de": "VOLL IN",
+          "es": "LLENA EN",
+          "it": "PIENA IN",
+          "pt": "CHEIA EM",
+          "nl": "VOL OVER",
+          "da": "FULD OM",
+          "no": "FULL OM",
+          "sv": "FULL OM"
+        }
+      },
+      "NEW IN": {
+        "context": "'NEW IN 3D' = time until something is new (e.g. the moon).",
+        "translations": {
+          "fr": "NOUV. DANS",
+          "de": "NEU IN",
+          "es": "NUEVA EN",
+          "it": "NUOVA IN",
+          "pt": "NOVA EM",
+          "nl": "NIEUW OVER",
+          "da": "NY OM",
+          "no": "NY OM",
+          "sv": "NY OM"
+        }
+      }
+    },
+    "weather": {
+      "CLEAR": {
+        "context": "Weather condition: clear sky.",
+        "translations": {
+          "fr": "DEGAGE",
+          "de": "KLAR",
+          "es": "DESPEJADO",
+          "it": "SERENO",
+          "pt": "LIMPO",
+          "nl": "HELDER",
+          "da": "KLART",
+          "no": "KLART",
+          "sv": "KLART"
+        }
+      },
+      "MAINLY CLEAR": {
+        "context": "Weather condition: mostly clear sky.",
+        "translations": {
+          "fr": "PLUTOT CLAIR",
+          "de": "MEIST KLAR",
+          "es": "MAYORM. CLARO",
+          "it": "POCO NUVOLOSO",
+          "pt": "QUASE LIMPO",
+          "nl": "VNL. HELDER"
+        }
+      },
+      "PARTLY CLOUDY": {
+        "context": "Weather condition: partly cloudy.",
+        "translations": {
+          "fr": "NUAGEUX",
+          "de": "TEILS WOLKIG",
+          "es": "PARC. NUBLADO",
+          "it": "POCO NUVOLOSO",
+          "pt": "PARC. NUBLADO",
+          "nl": "HALF BEWOLKT",
+          "da": "DELVIS SKYET",
+          "no": "DELVIS SKYET",
+          "sv": "DELVIS MOLNIGT"
+        }
+      },
+      "OVERCAST": {
+        "context": "Weather condition: fully clouded over.",
+        "translations": {
+          "fr": "COUVERT",
+          "de": "BEDECKT",
+          "es": "CUBIERTO",
+          "it": "COPERTO",
+          "pt": "ENCOBERTO",
+          "nl": "BEWOLKT",
+          "da": "OVERSKYET",
+          "no": "OVERSKYET",
+          "sv": "MULET"
+        }
+      },
+      "FOG": {
+        "context": "Weather condition: fog.",
+        "translations": {
+          "fr": "BROUILLARD",
+          "de": "NEBEL",
+          "es": "NIEBLA",
+          "it": "NEBBIA",
+          "pt": "NEVOEIRO",
+          "nl": "MIST",
+          "da": "TÅGE",
+          "no": "TÅKE",
+          "sv": "DIMMA"
+        }
+      },
+      "RIME FOG": {
+        "context": "Weather condition: freezing/rime fog.",
+        "translations": {
+          "fr": "BRUME GIVRANTE",
+          "de": "RAUREIF",
+          "es": "NIEBLA HELADA",
+          "it": "NEBBIA GHIAC.",
+          "pt": "NEVOA GELADA",
+          "nl": "RIJP-MIST"
+        }
+      },
+      "LIGHT DRIZZLE": {
+        "context": "Weather condition: light drizzle.",
+        "translations": {
+          "fr": "BRUINE LEGERE",
+          "de": "LEICHT NIESEL",
+          "es": "LLOVIZNA LEVE",
+          "it": "PIOVIGGINE",
+          "pt": "CHUVISCO FRACO",
+          "nl": "LICHTE MOTREG"
+        }
+      },
+      "DRIZZLE": {
+        "context": "Weather condition: drizzle.",
+        "translations": {
+          "fr": "BRUINE",
+          "de": "NIESELN",
+          "es": "LLOVIZNA",
+          "it": "PIOVIGGINE",
+          "pt": "CHUVISCO",
+          "nl": "MOTREGEN"
+        }
+      },
+      "HEAVY DRIZZLE": {
+        "context": "Weather condition: heavy drizzle.",
+        "translations": {
+          "fr": "BRUINE FORTE",
+          "de": "STARK. NIESEL",
+          "es": "LLOVIZNA FTE",
+          "it": "PIOVIGGINE FT",
+          "pt": "CHUVISCO FORTE",
+          "nl": "ZWARE MOTREG"
+        }
+      },
+      "LIGHT RAIN": {
+        "context": "Weather condition: light rain.",
+        "translations": {
+          "fr": "PLUIE LEGERE",
+          "de": "LEICHT. REGEN",
+          "es": "LLUVIA LEVE",
+          "it": "PIOGGIA LEGG.",
+          "pt": "CHUVA FRACA",
+          "nl": "LICHTE REGEN",
+          "da": "LET REGN",
+          "no": "LETT REGN",
+          "sv": "LÄTT REGN"
+        }
+      },
+      "RAIN": {
+        "context": "Weather condition: rain.",
+        "translations": {
+          "fr": "PLUIE",
+          "de": "REGEN",
+          "es": "LLUVIA",
+          "it": "PIOGGIA",
+          "pt": "CHUVA",
+          "nl": "REGEN",
+          "da": "REGN",
+          "no": "REGN",
+          "sv": "REGN"
+        }
+      },
+      "HEAVY RAIN": {
+        "context": "Weather condition: heavy rain.",
+        "translations": {
+          "fr": "PLUIE FORTE",
+          "de": "STARKREGEN",
+          "es": "LLUVIA FUERTE",
+          "it": "PIOGGIA FORTE",
+          "pt": "CHUVA FORTE",
+          "nl": "ZWARE REGEN",
+          "da": "KRAFTIG REGN",
+          "no": "KRAFTIG REGN",
+          "sv": "KRAFTIGT REGN"
+        }
+      },
+      "LIGHT FREEZING RAIN": {
+        "context": "Weather condition: light freezing rain.",
+        "translations": {
+          "fr": "PLUIE VERGLAC.",
+          "de": "L. GEFR. REGEN",
+          "es": "LLUVIA HELADA",
+          "it": "PIOGGIA GELATA",
+          "pt": "CHUVA GELADA",
+          "nl": "LICHTE IJZEL"
+        }
+      },
+      "FREEZING RAIN": {
+        "context": "Weather condition: freezing rain.",
+        "translations": {
+          "fr": "PLUIE VERGLAC.",
+          "de": "GEFRIER-REGEN",
+          "es": "LLUVIA HELADA",
+          "it": "PIOGGIA GELATA",
+          "pt": "CHUVA GELADA",
+          "nl": "IJZEL"
+        }
+      },
+      "LIGHT SNOW": {
+        "context": "Weather condition: light snow.",
+        "translations": {
+          "fr": "NEIGE LEGERE",
+          "de": "LEICHT SCHNEE",
+          "es": "NIEVE LEVE",
+          "it": "NEVE LEGGERA",
+          "pt": "NEVE FRACA",
+          "nl": "LICHTE SNEEUW",
+          "da": "LET SNE",
+          "no": "LETT SNØ",
+          "sv": "LÄTT SNÖ"
+        }
+      },
+      "SNOW": {
+        "context": "Weather condition: snow.",
+        "translations": {
+          "fr": "NEIGE",
+          "de": "SCHNEE",
+          "es": "NIEVE",
+          "it": "NEVE",
+          "pt": "NEVE",
+          "nl": "SNEEUW",
+          "da": "SNE",
+          "no": "SNØ",
+          "sv": "SNÖ"
+        }
+      },
+      "HEAVY SNOW": {
+        "context": "Weather condition: heavy snow.",
+        "translations": {
+          "fr": "NEIGE FORTE",
+          "de": "STARK. SCHNEE",
+          "es": "NIEVE FUERTE",
+          "it": "NEVE FORTE",
+          "pt": "NEVE FORTE",
+          "nl": "ZWARE SNEEUW",
+          "da": "KRAFTIG SNE",
+          "no": "KRAFTIG SNØ",
+          "sv": "KRAFTIGT SNÖ"
+        }
+      },
+      "SNOW GRAINS": {
+        "context": "Weather condition: snow grains.",
+        "translations": {
+          "fr": "GRAINS NEIGE",
+          "de": "SCHNEEGRIESEL",
+          "es": "GRANIZO NIEVE",
+          "it": "NEVE GRANUL.",
+          "pt": "NEVE GRANULAR",
+          "nl": "KORRELSNEEUW"
+        }
+      },
+      "RAIN SHOWERS": {
+        "context": "Weather condition: rain showers.",
+        "translations": {
+          "fr": "AVERSES",
+          "de": "REGENSCHAUER",
+          "es": "CHUBASCOS",
+          "it": "ROVESCI",
+          "pt": "AGUACEIROS",
+          "nl": "REGENBUIEN"
+        }
+      },
+      "HEAVY SHOWERS": {
+        "context": "Weather condition: heavy rain showers.",
+        "translations": {
+          "fr": "AVERSES FORTES",
+          "de": "STARK. SCHAUER",
+          "es": "CHUBASCOS FTES",
+          "it": "ROVESCI FORTI",
+          "pt": "AGUAC. FORTES",
+          "nl": "ZWARE BUIEN"
+        }
+      },
+      "SNOW SHOWERS": {
+        "context": "Weather condition: snow showers.",
+        "translations": {
+          "fr": "AVERSES NEIGE",
+          "de": "SCHNEESCHAUER",
+          "es": "CHUBASCOS NIEVE",
+          "it": "ROVESCI NEVE",
+          "pt": "AGUAC. NEVE",
+          "nl": "SNEEUWBUIEN"
+        }
+      },
+      "HEAVY SNOW SHOWERS": {
+        "context": "Weather condition: heavy snow showers.",
+        "translations": {
+          "fr": "AVERSES NEIGE",
+          "de": "SCHNEESCHAUER",
+          "es": "CHUBASCOS NIEVE",
+          "it": "ROVESCI NEVE",
+          "pt": "AGUAC. NEVE",
+          "nl": "SNEEUWBUIEN"
+        }
+      },
+      "THUNDERSTORM": {
+        "context": "Weather condition: thunderstorm.",
+        "translations": {
+          "fr": "ORAGE",
+          "de": "GEWITTER",
+          "es": "TORMENTA",
+          "it": "TEMPORALE",
+          "pt": "TROVOADA",
+          "nl": "ONWEER",
+          "da": "TORDENVEJR",
+          "no": "TORDENVÆR",
+          "sv": "ÅSKA"
+        }
+      },
+      "THUNDER HAIL": {
+        "context": "Weather condition: thunderstorm with hail.",
+        "translations": {
+          "fr": "ORAGE GRELE",
+          "de": "GEWITTER HAGEL",
+          "es": "TORM. GRANIZO",
+          "it": "TEMP. GRANDINE",
+          "pt": "TROV. GRANIZO",
+          "nl": "ONWEER HAGEL"
+        }
+      },
+      "SEVERE TSTORM": {
+        "context": "Weather condition: severe thunderstorm (abbreviated).",
+        "translations": {
+          "fr": "ORAGE VIOLENT",
+          "de": "SCHW. GEWITTER",
+          "es": "TORM. FUERTE",
+          "it": "TEMP. VIOLENTO",
+          "pt": "TROV. FORTE",
+          "nl": "ZWAAR ONWEER"
+        }
+      },
+      "CURRENT CONDITIONS": {
+        "context": "Generic label for present weather conditions.",
+        "translations": {
+          "fr": "CONDITIONS",
+          "de": "WETTER",
+          "es": "TIEMPO",
+          "it": "METEO",
+          "pt": "TEMPO",
+          "nl": "WEER",
+          "da": "VEJR",
+          "no": "VÆR",
+          "sv": "VÄDER"
+        }
+      },
+      "FEELS": {
+        "context": "Precedes the 'feels like' temperature.",
+        "translations": {
+          "fr": "RESSENTI",
+          "de": "GEFUHLT",
+          "es": "SENSAC.",
+          "it": "PERCEP.",
+          "pt": "SENSAC.",
+          "nl": "GEVOELD",
+          "da": "FØLES",
+          "no": "FØLES",
+          "sv": "KÄNNS"
+        }
+      },
+      "FLS": {
+        "context": "Very short 'feels like' label.",
+        "translations": {
+          "fr": "RES",
+          "de": "GEF",
+          "es": "SEN",
+          "it": "PER",
+          "pt": "SEN",
+          "nl": "GVL"
+        }
+      },
+      "AIR QUALITY": {
+        "context": "Air-quality label/heading.",
+        "translations": {
+          "fr": "QUALITE AIR",
+          "de": "LUFTQUALITAT",
+          "es": "CALIDAD AIRE",
+          "it": "QUALITA ARIA",
+          "pt": "QUALID. AR",
+          "nl": "LUCHTKWAL.",
+          "da": "LUFTKVALITET",
+          "no": "LUFTKVALITET",
+          "sv": "LUFTKVALITET"
+        }
+      },
+      "SUN EXPOSURE": {
+        "context": "UV / sun-exposure label/heading.",
+        "translations": {
+          "fr": "EXPO SOLEIL",
+          "de": "UV-BELASTUNG",
+          "es": "EXPO SOLAR",
+          "it": "ESPOS. SOLE",
+          "pt": "EXPO SOLAR",
+          "nl": "ZONKRACHT"
+        }
+      },
+      "SUN UV": {
+        "context": "Short 'sun UV' label.",
+        "translations": {
+          "fr": "UV SOLEIL",
+          "de": "SONNE UV",
+          "es": "UV SOLAR",
+          "it": "UV SOLE",
+          "pt": "UV SOLAR",
+          "nl": "ZON UV"
+        }
+      },
+      "POLLEN": {
+        "context": "Pollen label/heading.",
+        "translations": {
+          "fr": "POLLEN",
+          "de": "POLLEN",
+          "es": "POLEN",
+          "it": "POLLINE",
+          "pt": "POLEN",
+          "nl": "POLLEN",
+          "da": "POLLEN",
+          "no": "POLLEN",
+          "sv": "POLLEN"
+        }
+      },
+      "OVERALL": {
+        "context": "The 'overall' level in a breakdown.",
+        "translations": {
+          "fr": "GLOBAL",
+          "de": "GESAMT",
+          "es": "TOTAL",
+          "it": "TOTALE",
+          "pt": "GERAL",
+          "nl": "TOTAAL",
+          "da": "SAMLET",
+          "no": "SAMLET",
+          "sv": "TOTALT"
+        }
+      },
+      "OVR": {
+        "context": "Very short 'overall'.",
+        "translations": {
+          "fr": "GLB",
+          "de": "GES",
+          "es": "TOT",
+          "it": "TOT",
+          "pt": "GER",
+          "nl": "TOT"
+        }
+      },
+      "GRASS": {
+        "context": "Grass (e.g. grass pollen).",
+        "translations": {
+          "fr": "HERBE",
+          "de": "GRAS",
+          "es": "HIERBA",
+          "it": "ERBA",
+          "pt": "RELVA",
+          "nl": "GRAS",
+          "da": "GRÆS",
+          "no": "GRESS",
+          "sv": "GRÄS"
+        }
+      },
+      "GRS": {
+        "context": "Very short 'grass'.",
+        "translations": {
+          "fr": "HRB",
+          "de": "GRA",
+          "es": "HIE",
+          "it": "ERB",
+          "pt": "REL",
+          "nl": "GRS"
+        }
+      },
+      "TREE": {
+        "context": "Tree (e.g. tree pollen).",
+        "translations": {
+          "fr": "ARBRE",
+          "de": "BAUM",
+          "es": "ARBOL",
+          "it": "ALBERO",
+          "pt": "ARVORE",
+          "nl": "BOOM",
+          "da": "TRÆ",
+          "no": "TRE",
+          "sv": "TRÄD"
+        }
+      },
+      "TRE": {
+        "context": "Very short 'tree'.",
+        "translations": {
+          "fr": "ARB",
+          "de": "BAU",
+          "es": "ARB",
+          "it": "ALB",
+          "pt": "ARV",
+          "nl": "BOM"
+        }
+      },
+      "WEED": {
+        "context": "Weed (e.g. weed pollen).",
+        "translations": {
+          "fr": "HERBACEE",
+          "de": "UNKRAUT",
+          "es": "MALEZA",
+          "it": "ERBACCE",
+          "pt": "ERVAS",
+          "nl": "ONKRUID",
+          "da": "UKRUDT",
+          "no": "UGRESS",
+          "sv": "OGRÄS"
+        }
+      },
+      "WED": {
+        "context": "Very short 'weed'.",
+        "translations": {
+          "fr": "HER",
+          "de": "UNK",
+          "es": "MAL",
+          "it": "ERB",
+          "pt": "ERV",
+          "nl": "ONK"
+        }
+      },
+      "PROV": {
+        "context": "'Source/provider' label (which data provider).",
+        "translations": {
+          "fr": "SRCE",
+          "de": "QUELLE",
+          "es": "FUENTE",
+          "it": "FONTE",
+          "pt": "FONTE",
+          "nl": "BRON"
+        }
+      },
+      "PRV": {
+        "context": "Very short 'provider'.",
+        "translations": {
+          "fr": "SRC",
+          "de": "QLE",
+          "es": "FTE",
+          "it": "FNT",
+          "pt": "FNT",
+          "nl": "BRN"
+        }
+      },
+      "GOOD": {
+        "context": "Qualitative level: good.",
+        "translations": {
+          "fr": "BON",
+          "de": "GUT",
+          "es": "BUENA",
+          "it": "BUONA",
+          "pt": "BOA",
+          "nl": "GOED",
+          "da": "GOD",
+          "no": "GOD",
+          "sv": "BRA"
+        }
+      },
+      "FAIR": {
+        "context": "Qualitative level: fair (between good and moderate).",
+        "translations": {
+          "fr": "CORRECT",
+          "de": "MASSIG",
+          "es": "ACEPTABLE",
+          "it": "DISCRETA",
+          "pt": "RAZOAVEL",
+          "nl": "REDELIJK"
+        }
+      },
+      "MODERATE": {
+        "context": "Qualitative level: moderate.",
+        "translations": {
+          "fr": "MODERE",
+          "de": "MASSIG",
+          "es": "MODERADA",
+          "it": "MODERATA",
+          "pt": "MODERADA",
+          "nl": "MATIG",
+          "da": "MODERAT",
+          "no": "MODERAT",
+          "sv": "MÅTTLIG"
+        }
+      },
+      "POOR": {
+        "context": "Qualitative level: poor.",
+        "translations": {
+          "fr": "MAUVAIS",
+          "de": "SCHLECHT",
+          "es": "MALA",
+          "it": "SCARSA",
+          "pt": "FRACA",
+          "nl": "SLECHT",
+          "da": "DÅRLIG",
+          "no": "DÅRLIG",
+          "sv": "DÅLIG"
+        }
+      },
+      "V.POOR": {
+        "context": "Qualitative level: very poor (abbreviated).",
+        "translations": {
+          "fr": "TRES MAUVAIS",
+          "de": "SEHR SCHL.",
+          "es": "MUY MALA",
+          "it": "PESSIMA",
+          "pt": "MUITO FRACA",
+          "nl": "ZEER SLECHT"
+        }
+      },
+      "MOD": {
+        "context": "Qualitative level: moderate (abbreviated).",
+        "translations": {
+          "fr": "MOYEN",
+          "de": "MITTEL",
+          "es": "MODER.",
+          "it": "MEDIO",
+          "pt": "MODER.",
+          "nl": "MATIG"
+        }
+      },
+      "USG": {
+        "context": "Air quality 'unhealthy for sensitive groups' (abbreviated).",
+        "translations": {
+          "fr": "SENSIBLES",
+          "de": "EMPFINDL.",
+          "es": "SENSIBLES",
+          "it": "SENSIBILI",
+          "pt": "SENSIVEIS",
+          "nl": "GEVOELIG"
+        }
+      },
+      "UNHEALTHY": {
+        "context": "Qualitative level: unhealthy.",
+        "translations": {
+          "fr": "MALSAIN",
+          "de": "UNGESUND",
+          "es": "INSALUBRE",
+          "it": "MALSANO",
+          "pt": "INSALUBRE",
+          "nl": "ONGEZOND"
+        }
+      },
+      "V.UNHLTHY": {
+        "context": "Qualitative level: very unhealthy (abbreviated).",
+        "translations": {
+          "fr": "TRES MALSAIN",
+          "de": "SEHR UNGESUND",
+          "es": "MUY INSALUBRE",
+          "it": "MOLTO MALSANO",
+          "pt": "MUITO INSALUB",
+          "nl": "ZEER ONGEZOND"
+        }
+      },
+      "HAZARDOUS": {
+        "context": "Qualitative level: hazardous (worst).",
+        "translations": {
+          "fr": "DANGEREUX",
+          "de": "GEFAHRLICH",
+          "es": "PELIGROSA",
+          "it": "PERICOLOSA",
+          "pt": "PERIGOSA",
+          "nl": "GEVAARLIJK"
+        }
+      },
+      "LOW": {
+        "context": "Qualitative level: low.",
+        "translations": {
+          "fr": "FAIBLE",
+          "de": "NIEDRIG",
+          "es": "BAJO",
+          "it": "BASSO",
+          "pt": "BAIXO",
+          "nl": "LAAG",
+          "da": "LAV",
+          "no": "LAV",
+          "sv": "LÅG"
+        }
+      },
+      "HIGH": {
+        "context": "Qualitative level: high.",
+        "translations": {
+          "fr": "ELEVE",
+          "de": "HOCH",
+          "es": "ALTO",
+          "it": "ALTO",
+          "pt": "ALTO",
+          "nl": "HOOG",
+          "da": "HØJ",
+          "no": "HØY",
+          "sv": "HÖG"
+        }
+      },
+      "V.HIGH": {
+        "context": "Qualitative level: very high (abbreviated).",
+        "translations": {
+          "fr": "TRES ELEVE",
+          "de": "SEHR HOCH",
+          "es": "MUY ALTO",
+          "it": "MOLTO ALTO",
+          "pt": "MUITO ALTO",
+          "nl": "ZEER HOOG"
+        }
+      },
+      "EXTREME": {
+        "context": "Qualitative level: extreme.",
+        "translations": {
+          "fr": "EXTREME",
+          "de": "EXTREM",
+          "es": "EXTREMO",
+          "it": "ESTREMO",
+          "pt": "EXTREMO",
+          "nl": "EXTREEM",
+          "da": "EKSTREM",
+          "no": "EKSTREM",
+          "sv": "EXTREM"
+        }
+      },
+      "NONE": {
+        "context": "Level 'none' / zero.",
+        "translations": {
+          "fr": "AUCUN",
+          "de": "KEIN",
+          "es": "NINGUNO",
+          "it": "NESSUNO",
+          "pt": "NENHUM",
+          "nl": "GEEN",
+          "da": "INGEN",
+          "no": "INGEN",
+          "sv": "INGEN"
+        }
+      }
+    },
+    "metals": {
+      "GOLD": {
+        "context": "Precious metal: gold.",
+        "translations": {
+          "fr": "OR",
+          "de": "GOLD",
+          "es": "ORO",
+          "it": "ORO",
+          "pt": "OURO",
+          "nl": "GOUD",
+          "da": "GULD",
+          "no": "GULL",
+          "sv": "GULD"
+        }
+      },
+      "SILVER": {
+        "context": "Precious metal: silver.",
+        "translations": {
+          "fr": "ARGENT",
+          "de": "SILBER",
+          "es": "PLATA",
+          "it": "ARGENTO",
+          "pt": "PRATA",
+          "nl": "ZILVER",
+          "da": "SØLV",
+          "no": "SØLV",
+          "sv": "SILVER"
+        }
+      },
+      "PLATINUM": {
+        "context": "Precious metal: platinum.",
+        "translations": {
+          "fr": "PLATINE",
+          "de": "PLATIN",
+          "es": "PLATINO",
+          "it": "PLATINO",
+          "pt": "PLATINA",
+          "nl": "PLATINA",
+          "da": "PLATIN",
+          "no": "PLATINA",
+          "sv": "PLATINA"
+        }
+      },
+      "PALLADIUM": {
+        "context": "Precious metal: palladium.",
+        "translations": {
+          "fr": "PALLADIUM",
+          "de": "PALLADIUM",
+          "es": "PALADIO",
+          "it": "PALLADIO",
+          "pt": "PALADIO",
+          "nl": "PALLADIUM",
+          "da": "PALLADIUM",
+          "no": "PALLADIUM",
+          "sv": "PALLADIUM"
+        }
+      },
+      "SPOT PRICE": {
+        "context": "Label for a current spot (market) price.",
+        "translations": {
+          "fr": "COURS",
+          "de": "KURS",
+          "es": "PRECIO",
+          "it": "PREZZO",
+          "pt": "PRECO",
+          "nl": "KOERS",
+          "da": "SPOTPRIS",
+          "no": "SPOTPRIS",
+          "sv": "SPOTPRIS"
+        }
+      }
+    },
+    "tides": {
+      "TIDES": {
+        "context": "Tides heading.",
+        "translations": {
+          "fr": "MAREES",
+          "de": "GEZEITEN",
+          "es": "MAREAS",
+          "it": "MAREE",
+          "pt": "MARES",
+          "nl": "GETIJDEN",
+          "da": "TIDEVAND",
+          "no": "TIDEVANN",
+          "sv": "TIDVATTEN"
+        }
+      },
+      "HIGH TIDE": {
+        "context": "High tide.",
+        "translations": {
+          "fr": "MAREE HAUTE",
+          "de": "FLUT",
+          "es": "PLEAMAR",
+          "it": "ALTA MAREA",
+          "pt": "PREIA-MAR",
+          "nl": "VLOED",
+          "da": "HØJVANDE",
+          "no": "HØYVANN",
+          "sv": "HÖGVATTEN"
+        }
+      },
+      "LOW TIDE": {
+        "context": "Low tide.",
+        "translations": {
+          "fr": "MAREE BASSE",
+          "de": "EBBE",
+          "es": "BAJAMAR",
+          "it": "BASSA MAREA",
+          "pt": "BAIXA-MAR",
+          "nl": "EB",
+          "da": "LAVVANDE",
+          "no": "LAVVANN",
+          "sv": "LÅGVATTEN"
+        }
+      },
+      "CHECK STATION": {
+        "context": "Prompt to pick/verify a measurement station.",
+        "translations": {
+          "fr": "VERIF STATION",
+          "de": "STATION PRUEF",
+          "es": "VER ESTACION",
+          "it": "VERIF STAZIONE",
+          "pt": "VER ESTACAO",
+          "nl": "STATION CHECK"
+        }
+      },
+      "HIGH": {
+        "context": "High tide (short label).",
+        "translations": {
+          "fr": "HAUTE",
+          "de": "HOCH",
+          "es": "ALTA",
+          "it": "ALTA",
+          "pt": "ALTA",
+          "nl": "HOOG",
+          "da": "HØJ",
+          "no": "HØY",
+          "sv": "HÖG"
+        }
+      },
+      "LOW": {
+        "context": "Low tide (short label).",
+        "translations": {
+          "fr": "BASSE",
+          "de": "NIEDRIG",
+          "es": "BAJA",
+          "it": "BASSA",
+          "pt": "BAIXA",
+          "nl": "LAAG",
+          "da": "LAV",
+          "no": "LAV",
+          "sv": "LÅG"
+        }
+      }
+    },
+    "aurora": {
+      "AURORA": {
+        "context": "Aurora (northern/southern lights) heading.",
+        "translations": {
+          "fr": "AURORE",
+          "de": "POLARLICHT",
+          "es": "AURORA",
+          "it": "AURORA",
+          "pt": "AURORA",
+          "nl": "NOORDERLICHT"
+        }
+      },
+      "QUIET": {
+        "context": "Activity level: quiet/calm.",
+        "translations": {
+          "fr": "CALME",
+          "de": "RUHIG",
+          "es": "TRANQUILO",
+          "it": "QUIETE",
+          "pt": "CALMO",
+          "nl": "RUSTIG"
+        }
+      },
+      "UNSETTLED": {
+        "context": "Activity level: unsettled.",
+        "translations": {
+          "fr": "AGITE",
+          "de": "UNRUHIG",
+          "es": "INESTABLE",
+          "it": "INSTABILE",
+          "pt": "INSTAVEL",
+          "nl": "ONRUSTIG"
+        }
+      },
+      "MINOR STORM": {
+        "context": "Storm level: minor.",
+        "translations": {
+          "fr": "ORAGE MINEUR",
+          "de": "KL. STURM",
+          "es": "TORM. MENOR",
+          "it": "TEMP. MINORE",
+          "pt": "TORM. MENOR",
+          "nl": "KL. STORM"
+        }
+      },
+      "STRONG STORM": {
+        "context": "Storm level: strong.",
+        "translations": {
+          "fr": "ORAGE FORT",
+          "de": "STARK. STURM",
+          "es": "TORM. FUERTE",
+          "it": "TEMP. FORTE",
+          "pt": "TORM. FORTE",
+          "nl": "ZWARE STORM"
+        }
+      },
+      "SEVERE STORM": {
+        "context": "Storm level: severe.",
+        "translations": {
+          "fr": "ORAGE SEVERE",
+          "de": "SCHW. STURM",
+          "es": "TORM. SEVERA",
+          "it": "TEMP. SEVERO",
+          "pt": "TORM. SEVERA",
+          "nl": "HEVIGE STORM"
+        }
+      }
+    },
+    "space": {
+      "NEXT LAUNCH": {
+        "context": "'Next launch' label.",
+        "translations": {
+          "fr": "PROCH. LANCEMENT",
+          "de": "NAECHST. START",
+          "es": "PROX. LANZAMIENTO",
+          "it": "PROSS. LANCIO",
+          "pt": "PROX. LANCAMENTO",
+          "nl": "VOLGENDE START"
+        }
+      },
+      "MISSION": {
+        "context": "'Mission' label (e.g. a mission name).",
+        "translations": {
+          "fr": "MISSION",
+          "de": "MISSION",
+          "es": "MISION",
+          "it": "MISSIONE",
+          "pt": "MISSAO",
+          "nl": "MISSIE",
+          "da": "MISSION",
+          "no": "OPPDRAG",
+          "sv": "UPPDRAG"
+        }
+      },
+      "IMMINENT": {
+        "context": "About to happen (very soon).",
+        "translations": {
+          "fr": "IMMINENT",
+          "de": "UNMITTELBAR",
+          "es": "INMINENTE",
+          "it": "IMMINENTE",
+          "pt": "IMINENTE",
+          "nl": "OP KOMST",
+          "da": "SNART",
+          "no": "SNART",
+          "sv": "SNART"
+        }
+      },
+      "SCHEDULED": {
+        "context": "Planned for a set time.",
+        "translations": {
+          "fr": "PREVU",
+          "de": "GEPLANT",
+          "es": "PROGRAMADO",
+          "it": "PREVISTO",
+          "pt": "AGENDADO",
+          "nl": "GEPLAND",
+          "da": "PLANLAGT",
+          "no": "PLANLAGT",
+          "sv": "PLANERAD"
+        }
+      },
+      "NONE": {
+        "context": "No launch scheduled.",
+        "translations": {
+          "fr": "AUCUN",
+          "de": "KEIN",
+          "es": "NINGUNO",
+          "it": "NESSUNO",
+          "pt": "NENHUM",
+          "nl": "GEEN",
+          "da": "INGEN",
+          "no": "INGEN",
+          "sv": "INGEN"
+        }
+      },
+      "IN SPACE": {
+        "context": "Suffix after a count: 'N people in space'.",
+        "translations": {
+          "fr": "DANS L'ESPACE",
+          "de": "IM WELTALL",
+          "es": "EN EL ESPACIO",
+          "it": "NELLO SPAZIO",
+          "pt": "NO ESPAÇO",
+          "nl": "IN DE RUIMTE",
+          "da": "I RUMMET",
+          "no": "I ROMMET",
+          "sv": "I RYMDEN"
+        }
+      }
+    },
+    "sports": {
+      "NEXT GP": {
+        "context": "'Next Grand Prix' (short).",
+        "translations": {
+          "fr": "PROCHAIN GP",
+          "de": "NAECHSTER GP",
+          "es": "PROXIMO GP",
+          "it": "PROSSIMO GP",
+          "pt": "PROXIMO GP",
+          "nl": "VOLGENDE GP"
+        }
+      },
+      "NEXT GRAND PRIX": {
+        "context": "'Next Grand Prix'.",
+        "translations": {
+          "fr": "PROCHAIN GP",
+          "de": "NAECHSTER GP",
+          "es": "PROXIMO GP",
+          "it": "PROSSIMO GP",
+          "pt": "PROXIMO GP",
+          "nl": "VOLGENDE GP"
+        }
+      },
+      "RACE WEEKEND": {
+        "context": "'Race weekend' label.",
+        "translations": {
+          "fr": "WEEKEND COURSE",
+          "de": "RENN-WOCHENENDE",
+          "es": "FIN DE SEMANA",
+          "it": "WEEKEND GARA",
+          "pt": "FIM DE SEMANA",
+          "nl": "RACEWEEKEND"
+        }
+      },
+      "SEASON": {
+        "context": "'Season' label (e.g. a sports season).",
+        "translations": {
+          "fr": "SAISON",
+          "de": "SAISON",
+          "es": "TEMPORADA",
+          "it": "STAGIONE",
+          "pt": "TEMPORADA",
+          "nl": "SEIZOEN",
+          "da": "SÆSON",
+          "no": "SESONG",
+          "sv": "SÄSONG"
+        }
+      },
+      "OVER": {
+        "context": "Something has ended / is over.",
+        "translations": {
+          "fr": "TERMINEE",
+          "de": "VORBEI",
+          "es": "TERMINADA",
+          "it": "FINITA",
+          "pt": "TERMINADA",
+          "nl": "VOORBIJ",
+          "da": "SLUT",
+          "no": "OVER",
+          "sv": "SLUT"
+        }
+      },
+      "CHAMPIONSHIP": {
+        "context": "'Championship' label.",
+        "translations": {
+          "fr": "CHAMPIONNAT",
+          "de": "MEISTERSCHAFT",
+          "es": "CAMPEONATO",
+          "it": "CAMPIONATO",
+          "pt": "CAMPEONATO",
+          "nl": "KAMPIOENSCHAP"
+        }
+      },
+      "LEADER": {
+        "context": "The leader / person in first place.",
+        "translations": {
+          "fr": "LEADER",
+          "de": "FUEHRENDER",
+          "es": "LIDER",
+          "it": "LEADER",
+          "pt": "LIDER",
+          "nl": "LEIDER",
+          "da": "FØRER",
+          "no": "LEDER",
+          "sv": "LEDARE"
+        }
+      },
+      "POINTS": {
+        "context": "'Points' (a score).",
+        "translations": {
+          "fr": "POINTS",
+          "de": "PUNKTE",
+          "es": "PUNTOS",
+          "it": "PUNTI",
+          "pt": "PONTOS",
+          "nl": "PUNTEN",
+          "da": "POINT",
+          "no": "POENG",
+          "sv": "POÄNG"
+        }
+      },
+      "PTS": {
+        "context": "Abbreviation of 'points'.",
+        "translations": {
+          "fr": "PTS",
+          "de": "PKT",
+          "es": "PTS",
+          "it": "PTI",
+          "pt": "PTS",
+          "nl": "PNT"
+        }
+      },
+      "FINAL": {
+        "context": "A finished game (final score).",
+        "translations": {
+          "fr": "TERMINÉ",
+          "de": "BEENDET",
+          "es": "FINAL",
+          "it": "FINALE",
+          "pt": "FINAL",
+          "nl": "AFGELOPEN",
+          "da": "SLUT",
+          "no": "SLUTT",
+          "sv": "SLUT"
+        }
+      },
+      "LIVE": {
+        "context": "A game in progress.",
+        "translations": {
+          "fr": "EN DIRECT",
+          "de": "LIVE",
+          "es": "EN VIVO",
+          "it": "IN DIRETTA",
+          "pt": "AO VIVO",
+          "nl": "LIVE",
+          "da": "LIVE",
+          "no": "DIREKTE",
+          "sv": "DIREKT"
+        }
+      },
+      "UPCOMING": {
+        "context": "A game not yet started.",
+        "translations": {
+          "fr": "À VENIR",
+          "de": "DEMNÄCHST",
+          "es": "PRÓXIMO",
+          "it": "IN ARRIVO",
+          "pt": "EM BREVE",
+          "nl": "BINNENKORT",
+          "da": "KOMMENDE",
+          "no": "KOMMENDE",
+          "sv": "KOMMANDE"
+        }
+      },
+      "SCHEDULED": {
+        "context": "A game/event scheduled for later.",
+        "translations": {
+          "fr": "PRÉVU",
+          "de": "GEPLANT",
+          "es": "PROGRAMADO",
+          "it": "PREVISTO",
+          "pt": "AGENDADO",
+          "nl": "GEPLAND",
+          "da": "PLANLAGT",
+          "no": "PLANLAGT",
+          "sv": "PLANERAD"
+        }
+      },
+      "NO GAMES": {
+        "context": "No games found.",
+        "translations": {
+          "fr": "AUCUN MATCH",
+          "de": "KEINE SPIELE",
+          "es": "SIN PARTIDOS",
+          "it": "NESSUNA PARTITA",
+          "pt": "SEM JOGOS",
+          "nl": "GEEN DUELS",
+          "da": "INGEN KAMPE",
+          "no": "INGEN KAMPER",
+          "sv": "INGA MATCHER"
+        }
+      },
+      "NO TEAMS": {
+        "context": "No teams configured.",
+        "translations": {
+          "fr": "AUCUNE ÉQUIPE",
+          "de": "KEINE TEAMS",
+          "es": "SIN EQUIPOS",
+          "it": "NESSUNA SQUADRA",
+          "pt": "SEM EQUIPES",
+          "nl": "GEEN TEAMS",
+          "da": "INGEN HOLD",
+          "no": "INGEN LAG",
+          "sv": "INGA LAG"
+        }
+      },
+      "NO EVENT": {
+        "context": "No event this week.",
+        "translations": {
+          "fr": "AUCUN EVENT",
+          "de": "KEIN EVENT",
+          "es": "SIN EVENTO",
+          "it": "NESSUN EVENTO",
+          "pt": "SEM EVENTO",
+          "nl": "GEEN EVENT",
+          "da": "INGEN EVENT",
+          "no": "INGEN EVENT",
+          "sv": "INGET EVENT"
+        }
+      },
+      "NO LEADERS": {
+        "context": "No leaderboard available.",
+        "translations": {
+          "fr": "AUCUN LEADER",
+          "de": "KEINE FÜHRENDEN",
+          "es": "SIN LÍDERES",
+          "it": "NESSUN LEADER",
+          "pt": "SEM LÍDERES",
+          "nl": "GEEN LEIDERS",
+          "da": "INGEN LEDERE",
+          "no": "INGEN LEDERE",
+          "sv": "INGA LEDARE"
+        }
+      },
+      "NO FIGHTS": {
+        "context": "No fights scheduled.",
+        "translations": {
+          "fr": "AUCUN COMBAT",
+          "de": "KEINE KÄMPFE",
+          "es": "SIN COMBATES",
+          "it": "NESSUN INCONTRO",
+          "pt": "SEM LUTAS",
+          "nl": "GEEN GEVECHTEN",
+          "da": "INGEN KAMPE",
+          "no": "INGEN KAMPER",
+          "sv": "INGA MATCHER"
+        }
+      },
+      "CONFIGURED": {
+        "context": "'... configured' (paired with NO TEAMS).",
+        "translations": {
+          "fr": "CONFIGURÉE",
+          "de": "EINGERICHTET",
+          "es": "CONFIGURADO",
+          "it": "CONFIGURATO",
+          "pt": "CONFIGURADO",
+          "nl": "INGESTELD",
+          "da": "OPSAT",
+          "no": "SATT OPP",
+          "sv": "KONFIG."
+        }
+      },
+      "FOUND": {
+        "context": "'... found' (paired with NO GAMES).",
+        "translations": {
+          "fr": "TROUVÉ",
+          "de": "GEFUNDEN",
+          "es": "ENCONTRADO",
+          "it": "TROVATO",
+          "pt": "ENCONTRADO",
+          "nl": "GEVONDEN",
+          "da": "FUNDET",
+          "no": "FUNNET",
+          "sv": "HITTAT"
+        }
+      },
+      "THIS WEEK": {
+        "context": "'this week' timeframe.",
+        "translations": {
+          "fr": "CETTE SEMAINE",
+          "de": "DIESE WOCHE",
+          "es": "ESTA SEMANA",
+          "it": "QUESTA SETT.",
+          "pt": "ESTA SEMANA",
+          "nl": "DEZE WEEK",
+          "da": "DENNE UGE",
+          "no": "DENNE UKEN",
+          "sv": "DENNA VECKA"
+        }
+      },
+      "ALL": {
+        "context": "Filter label: all games.",
+        "translations": {
+          "fr": "TOUS",
+          "de": "ALLE",
+          "es": "TODOS",
+          "it": "TUTTI",
+          "pt": "TODOS",
+          "nl": "ALLE",
+          "da": "ALLE",
+          "no": "ALLE",
+          "sv": "ALLA"
+        }
+      },
+      "NOTHING": {
+        "context": "'nothing followed' empty state.",
+        "translations": {
+          "fr": "RIEN",
+          "de": "NICHTS",
+          "es": "NADA",
+          "it": "NIENTE",
+          "pt": "NADA",
+          "nl": "NIETS",
+          "da": "INTET",
+          "no": "INGENTING",
+          "sv": "INGET"
+        }
+      },
+      "FOLLOWED": {
+        "context": "'... followed' (paired with NOTHING).",
+        "translations": {
+          "fr": "SUIVI",
+          "de": "GEFOLGT",
+          "es": "SEGUIDO",
+          "it": "SEGUITO",
+          "pt": "SEGUIDO",
+          "nl": "GEVOLGD",
+          "da": "FULGT",
+          "no": "FULGT",
+          "sv": "FÖLJT"
+        }
+      }
+    },
+    "sentiment": {
+      "FEAR": {
+        "context": "Sentiment/index classification: fear.",
+        "translations": {
+          "fr": "PEUR",
+          "de": "ANGST",
+          "es": "MIEDO",
+          "it": "PAURA",
+          "pt": "MEDO",
+          "nl": "ANGST",
+          "da": "FRYGT",
+          "no": "FRYKT",
+          "sv": "RÄDSLA"
+        }
+      },
+      "GREED": {
+        "context": "Sentiment/index classification: greed.",
+        "translations": {
+          "fr": "AVIDITE",
+          "de": "GIER",
+          "es": "CODICIA",
+          "it": "AVIDITA",
+          "pt": "GANANCIA",
+          "nl": "HEBZUCHT",
+          "da": "GRÅDIGHED",
+          "no": "GRÅDIGHET",
+          "sv": "GIRIGHET"
+        }
+      },
+      "NEUTRAL": {
+        "context": "Sentiment/index classification: neutral.",
+        "translations": {
+          "fr": "NEUTRE",
+          "de": "NEUTRAL",
+          "es": "NEUTRAL",
+          "it": "NEUTRO",
+          "pt": "NEUTRO",
+          "nl": "NEUTRAAL",
+          "da": "NEUTRAL",
+          "no": "NØYTRAL",
+          "sv": "NEUTRAL"
+        }
+      },
+      "EXTREME FEAR": {
+        "context": "Sentiment/index classification: extreme fear.",
+        "translations": {
+          "fr": "PEUR EXTREME",
+          "de": "EXTR. ANGST",
+          "es": "MIEDO EXTREMO",
+          "it": "PAURA ESTREMA",
+          "pt": "MEDO EXTREMO",
+          "nl": "EXTR. ANGST"
+        }
+      },
+      "EXTREME GREED": {
+        "context": "Sentiment/index classification: extreme greed.",
+        "translations": {
+          "fr": "AVIDITE EXTREME",
+          "de": "EXTREME GIER",
+          "es": "CODICIA EXTREMA",
+          "it": "AVIDITA ESTREMA",
+          "pt": "GANANCIA EXTREMA",
+          "nl": "EXTREME HEBZUCHT"
+        }
+      }
+    },
+    "crypto": {
+      "NO COINS": {
+        "context": "No cryptocurrencies configured.",
+        "translations": {
+          "fr": "AUCUNE CRYPTO",
+          "de": "KEINE COINS",
+          "es": "SIN MONEDAS",
+          "it": "NESSUNA CRIPTO",
+          "pt": "SEM MOEDAS",
+          "nl": "GEEN MUNTEN",
+          "da": "INGEN MØNTER",
+          "no": "INGEN MYNTER",
+          "sv": "INGA MYNT"
+        }
+      }
+    },
+    "stocks": {
+      "NO TICKERS": {
+        "context": "No stock tickers configured.",
+        "translations": {
+          "fr": "AUCUN TITRE",
+          "de": "KEINE AKTIEN",
+          "es": "SIN VALORES",
+          "it": "NESSUN TITOLO",
+          "pt": "SEM AÇÕES",
+          "nl": "GEEN AANDELEN",
+          "da": "INGEN AKTIER",
+          "no": "INGEN AKSJER",
+          "sv": "INGA AKTIER"
+        }
+      }
+    },
+    "holidays": {
+      "NEXT HOLIDAY": {
+        "context": "'Next holiday' label.",
+        "translations": {
+          "fr": "PROCHAIN CONGE",
+          "de": "NAECHSTER FEIERTAG",
+          "es": "PROX. FESTIVO",
+          "it": "PROSS. FESTA",
+          "pt": "PROX. FERIADO",
+          "nl": "VOLGENDE FEESTDAG",
+          "da": "NÆSTE HELLIGDAG",
+          "no": "NESTE HELLIGDAG",
+          "sv": "NÄSTA HELGDAG"
+        }
+      }
+    },
+    "content": {
+      "FEATURED": {
+        "context": "'Featured' item label (e.g. a featured article).",
+        "translations": {
+          "fr": "A LA UNE",
+          "de": "ARTIKEL",
+          "es": "DESTACADO",
+          "it": "IN VETRINA",
+          "pt": "DESTAQUE",
+          "nl": "UITGELICHT",
+          "da": "FREMHÆVET",
+          "no": "FREMHEVET",
+          "sv": "UTVALD"
+        }
+      },
+      "MOST READ": {
+        "context": "'Most read' item label.",
+        "translations": {
+          "fr": "TOP LUS",
+          "de": "MEISTGELESEN",
+          "es": "MAS LEIDO",
+          "it": "PIU LETTI",
+          "pt": "MAIS LIDO",
+          "nl": "MEEST GELEZEN",
+          "da": "MEST LÆST",
+          "no": "MEST LEST",
+          "sv": "MEST LÄST"
+        }
+      }
+    },
+    "vocab": {
+      "WORD OF THE DAY": {
+        "context": "'Word of the day' heading.",
+        "translations": {
+          "fr": "MOT DU JOUR",
+          "de": "WORT DES TAGES",
+          "es": "PALABRA DEL DIA",
+          "it": "PAROLA DEL GIORNO",
+          "pt": "PALAVRA DO DIA",
+          "nl": "WOORD VAN DE DAG",
+          "da": "DAGENS ORD",
+          "no": "DAGENS ORD",
+          "sv": "DAGENS ORD"
+        }
+      }
+    }
+  },
+  "holidays": {
+    "new year's day": {
+      "context": "Public-holiday name; shown when the source only provides English ('new year's day').",
+      "translations": {
+        "fr": "Jour de l'An",
+        "de": "Neujahr",
+        "es": "Año Nuevo",
+        "it": "Capodanno",
+        "pt": "Ano Novo",
+        "nl": "Nieuwjaar",
+        "da": "Nytårsdag",
+        "no": "Første nyttårsdag",
+        "sv": "Nyårsdagen"
+      }
+    },
+    "epiphany": {
+      "context": "Public-holiday name; shown when the source only provides English ('epiphany').",
+      "translations": {
+        "fr": "Épiphanie",
+        "de": "Heilige Drei Könige",
+        "es": "Epifanía",
+        "it": "Epifania",
+        "pt": "Dia de Reis",
+        "nl": "Driekoningen",
+        "da": "Helligtrekonger",
+        "no": "Helligtrekongersdag",
+        "sv": "Trettondedag jul"
+      }
+    },
+    "good friday": {
+      "context": "Public-holiday name; shown when the source only provides English ('good friday').",
+      "translations": {
+        "fr": "Vendredi Saint",
+        "de": "Karfreitag",
+        "es": "Viernes Santo",
+        "it": "Venerdì Santo",
+        "pt": "Sexta-feira Santa",
+        "nl": "Goede Vrijdag",
+        "da": "Langfredag",
+        "no": "Langfredag",
+        "sv": "Långfredagen"
+      }
+    },
+    "easter sunday": {
+      "context": "Public-holiday name; shown when the source only provides English ('easter sunday').",
+      "translations": {
+        "fr": "Pâques",
+        "de": "Ostersonntag",
+        "es": "Domingo de Pascua",
+        "it": "Pasqua",
+        "pt": "Páscoa",
+        "nl": "Eerste Paasdag",
+        "da": "Påskedag",
+        "no": "Første påskedag",
+        "sv": "Påskdagen"
+      }
+    },
+    "easter monday": {
+      "context": "Public-holiday name; shown when the source only provides English ('easter monday').",
+      "translations": {
+        "fr": "Lundi de Pâques",
+        "de": "Ostermontag",
+        "es": "Lunes de Pascua",
+        "it": "Lunedì dell'Angelo",
+        "pt": "Segunda de Páscoa",
+        "nl": "Tweede Paasdag",
+        "da": "2. påskedag",
+        "no": "Andre påskedag",
+        "sv": "Annandag påsk"
+      }
+    },
+    "labour day": {
+      "context": "Public-holiday name; shown when the source only provides English ('labour day').",
+      "translations": {
+        "fr": "Fête du Travail",
+        "de": "Tag der Arbeit",
+        "es": "Día del Trabajo",
+        "it": "Festa del Lavoro",
+        "pt": "Dia do Trabalhador",
+        "nl": "Dag van de Arbeid",
+        "da": "1. maj",
+        "no": "Arbeidernes dag",
+        "sv": "Första maj"
+      }
+    },
+    "labor day": {
+      "context": "Public-holiday name; shown when the source only provides English ('labor day').",
+      "translations": {
+        "fr": "Fête du Travail",
+        "de": "Tag der Arbeit",
+        "es": "Día del Trabajo",
+        "it": "Festa del Lavoro",
+        "pt": "Dia do Trabalhador",
+        "nl": "Dag van de Arbeid",
+        "da": "1. maj",
+        "no": "Arbeidernes dag",
+        "sv": "Första maj"
+      }
+    },
+    "ascension day": {
+      "context": "Public-holiday name; shown when the source only provides English ('ascension day').",
+      "translations": {
+        "fr": "Ascension",
+        "de": "Christi Himmelfahrt",
+        "es": "Ascensión",
+        "it": "Ascensione",
+        "pt": "Ascensão",
+        "nl": "Hemelvaart",
+        "da": "Kristi himmelfartsdag",
+        "no": "Kristi himmelfartsdag",
+        "sv": "Kristi himmelsfärdsdag"
+      }
+    },
+    "whit sunday": {
+      "context": "Public-holiday name; shown when the source only provides English ('whit sunday').",
+      "translations": {
+        "fr": "Pentecôte",
+        "de": "Pfingstsonntag",
+        "es": "Pentecostés",
+        "it": "Pentecoste",
+        "pt": "Pentecostes",
+        "nl": "Eerste Pinksterdag",
+        "da": "Pinsedag",
+        "no": "Første pinsedag",
+        "sv": "Pingstdagen"
+      }
+    },
+    "whit monday": {
+      "context": "Public-holiday name; shown when the source only provides English ('whit monday').",
+      "translations": {
+        "fr": "Lundi de Pentecôte",
+        "de": "Pfingstmontag",
+        "es": "Lunes de Pentecostés",
+        "it": "Lunedì di Pentecoste",
+        "pt": "Segunda de Pentecostes",
+        "nl": "Tweede Pinksterdag",
+        "da": "2. pinsedag",
+        "no": "Andre pinsedag",
+        "sv": "Annandag pingst"
+      }
+    },
+    "corpus christi": {
+      "context": "Public-holiday name; shown when the source only provides English ('corpus christi').",
+      "translations": {
+        "fr": "Fête-Dieu",
+        "de": "Fronleichnam",
+        "es": "Corpus Christi",
+        "it": "Corpus Domini",
+        "pt": "Corpo de Deus",
+        "nl": "Sacramentsdag"
+      }
+    },
+    "assumption day": {
+      "context": "Public-holiday name; shown when the source only provides English ('assumption day').",
+      "translations": {
+        "fr": "Assomption",
+        "de": "Mariä Himmelfahrt",
+        "es": "Asunción",
+        "it": "Assunzione",
+        "pt": "Assunção",
+        "nl": "Maria-Tenhemelopneming"
+      }
+    },
+    "all saints' day": {
+      "context": "Public-holiday name; shown when the source only provides English ('all saints' day').",
+      "translations": {
+        "fr": "Toussaint",
+        "de": "Allerheiligen",
+        "es": "Todos los Santos",
+        "it": "Ognissanti",
+        "pt": "Todos os Santos",
+        "nl": "Allerheiligen"
+      }
+    },
+    "christmas day": {
+      "context": "Public-holiday name; shown when the source only provides English ('christmas day').",
+      "translations": {
+        "fr": "Noël",
+        "de": "Weihnachten",
+        "es": "Navidad",
+        "it": "Natale",
+        "pt": "Natal",
+        "nl": "Kerstmis",
+        "da": "Juledag",
+        "no": "Første juledag",
+        "sv": "Juldagen"
+      }
+    },
+    "st. stephen's day": {
+      "context": "Public-holiday name; shown when the source only provides English ('st. stephen's day').",
+      "translations": {
+        "fr": "Saint-Étienne",
+        "de": "Stefanitag",
+        "es": "San Esteban",
+        "it": "Santo Stefano",
+        "pt": "Dia de Santo Estêvão",
+        "nl": "Tweede Kerstdag",
+        "da": "2. juledag",
+        "no": "Andre juledag",
+        "sv": "Annandag jul"
+      }
+    },
+    "boxing day": {
+      "context": "Public-holiday name; shown when the source only provides English ('boxing day').",
+      "translations": {
+        "fr": "Lendemain de Noël",
+        "de": "Zweiter Weihnachtsfeiertag",
+        "es": "San Esteban",
+        "it": "Santo Stefano",
+        "pt": "Boxing Day",
+        "nl": "Tweede Kerstdag",
+        "da": "2. juledag",
+        "no": "Andre juledag",
+        "sv": "Annandag jul"
+      }
+    },
+    "canada day": {
+      "context": "Public-holiday name; shown when the source only provides English ('canada day').",
+      "translations": {
+        "fr": "Fête du Canada"
+      }
+    },
+    "victoria day": {
+      "context": "Public-holiday name; shown when the source only provides English ('victoria day').",
+      "translations": {
+        "fr": "Journée des Patriotes"
+      }
+    },
+    "thanksgiving": {
+      "context": "Public-holiday name; shown when the source only provides English ('thanksgiving').",
+      "translations": {
+        "fr": "Action de grâce"
+      }
+    },
+    "remembrance day": {
+      "context": "Public-holiday name; shown when the source only provides English ('remembrance day').",
+      "translations": {
+        "fr": "Jour du Souvenir"
+      }
+    },
+    "family day": {
+      "context": "Public-holiday name; shown when the source only provides English ('family day').",
+      "translations": {
+        "fr": "Jour de la famille"
+      }
+    },
+    "civic holiday": {
+      "context": "Public-holiday name; shown when the source only provides English ('civic holiday').",
+      "translations": {
+        "fr": "Congé civique"
+      }
+    },
+    "national holiday": {
+      "context": "Public-holiday name; shown when the source only provides English ('national holiday').",
+      "translations": {
+        "fr": "Fête nationale"
+      }
+    },
+    "national day for truth and reconciliation": {
+      "context": "Public-holiday name; shown when the source only provides English ('national day for truth and reconciliation').",
+      "translations": {
+        "fr": "Journée de la vérité et réconciliation"
+      }
+    },
+    "saint-jean-baptiste day": {
+      "context": "Public-holiday name; shown when the source only provides English ('saint-jean-baptiste day').",
+      "translations": {
+        "fr": "Fête nationale du Québec"
+      }
+    }
+  },
+  "base_currency": {
+    "en": "USD",
+    "en-us": "USD",
+    "en-gb": "GBP",
+    "en-au": "AUD",
+    "fr": "EUR",
+    "de": "EUR",
+    "es": "EUR",
+    "it": "EUR",
+    "pt": "EUR",
+    "nl": "EUR",
+    "da": "DKK",
+    "no": "NOK",
+    "sv": "SEK",
+    "fi": "EUR",
+    "is": "ISK",
+    "ga": "EUR",
+    "ca": "EUR",
+    "gl": "EUR",
+    "eu": "EUR",
+    "et": "EUR",
+    "af": "ZAR",
+    "id": "IDR",
+    "ms": "MYR",
+    "sw": "KES",
+    "en-ca": "CAD",
+    "fr-ca": "CAD",
+    "fr-be": "EUR",
+    "fr-ch": "CHF",
+    "de-at": "EUR",
+    "de-ch": "CHF",
+    "es-mx": "MXN",
+    "es-ar": "ARS",
+    "it-ch": "CHF",
+    "pt-br": "BRL",
+    "nl-be": "EUR"
+  },
+  "country": {
+    "en": "US",
+    "en-us": "US",
+    "en-gb": "GB",
+    "en-au": "AU",
+    "fr": "FR",
+    "de": "DE",
+    "es": "ES",
+    "it": "IT",
+    "pt": "PT",
+    "nl": "NL",
+    "da": "DK",
+    "no": "NO",
+    "sv": "SE",
+    "fi": "FI",
+    "is": "IS",
+    "ga": "IE",
+    "ca": "ES",
+    "gl": "ES",
+    "eu": "ES",
+    "et": "EE",
+    "af": "ZA",
+    "id": "ID",
+    "ms": "MY",
+    "sw": "KE",
+    "en-ca": "CA",
+    "fr-ca": "CA",
+    "fr-be": "BE",
+    "fr-ch": "CH",
+    "de-at": "AT",
+    "de-ch": "CH",
+    "es-mx": "MX",
+    "es-ar": "AR",
+    "it-ch": "CH",
+    "pt-br": "BR",
+    "nl-be": "BE"
+  }
+}

@@ -1,5 +1,9 @@
-def fetch(settings, format_lines, get_rows, get_cols):
+def fetch(settings, format_lines, get_rows, get_cols, i18n=None):
     import requests
+
+    def t(s):
+        return i18n.t(s, "space") if i18n is not None else s
+
     try:
         pos = requests.get('http://api.open-notify.org/iss-now.json', timeout=10).json()
         ppl = requests.get('http://api.open-notify.org/astros.json', timeout=10).json()
@@ -11,9 +15,9 @@ def fetch(settings, format_lines, get_rows, get_cols):
             return [format_lines(f'ISS LAT{lat} LON{lon}')]
         if rows == 2:
             return [format_lines('ISS TRACKER', f'LAT{lat} LON{lon}')]
-        return [format_lines('ISS TRACKER', f'LAT {lat} LON {lon}', f'{num} IN SPACE')]
+        return [format_lines('ISS TRACKER', f'LAT {lat} LON {lon}', f'{num} ' + t('IN SPACE'))]
     except Exception:
-        return [format_lines('ISS TRACKER', 'ERROR', 'API FAIL')]
+        return [format_lines('ISS TRACKER', t('ERROR'), t('API FAIL'))]
 
 
 def trigger(settings, conditions):

@@ -225,6 +225,141 @@
       "category": "data",
       "type": "functional",
       "version": "1.0"
+    },
+    {
+      "id": "advice",
+      "name": "Advice",
+      "icon": "🧭",
+      "description": "A random piece of advice",
+      "category": "entertainment",
+      "type": "functional",
+      "version": "1.0"
+    },
+    {
+      "id": "aurora",
+      "name": "Aurora Watch",
+      "icon": "🌌",
+      "description": "Geomagnetic activity (Kp index)",
+      "category": "data",
+      "type": "functional",
+      "version": "1.0"
+    },
+    {
+      "id": "cat-facts",
+      "name": "Cat Facts",
+      "icon": "🐱",
+      "description": "A concise cat fact",
+      "category": "entertainment",
+      "type": "functional",
+      "version": "1.0"
+    },
+    {
+      "id": "earthquakes",
+      "name": "Earthquakes",
+      "icon": "🌎",
+      "description": "Recent significant earthquakes (USGS)",
+      "category": "news",
+      "type": "functional",
+      "version": "1.0"
+    },
+    {
+      "id": "exchange-rates",
+      "name": "Exchange Rates",
+      "icon": "💱",
+      "description": "Live currency rates (ECB)",
+      "category": "finance",
+      "type": "functional",
+      "version": "1.0"
+    },
+    {
+      "id": "formula1",
+      "name": "Formula 1",
+      "icon": "🏎️",
+      "description": "Next Grand Prix & championship leader",
+      "category": "sports",
+      "type": "functional",
+      "version": "1.0"
+    },
+    {
+      "id": "holidays",
+      "name": "Public Holidays",
+      "icon": "📅",
+      "description": "Upcoming public holidays",
+      "category": "data",
+      "type": "functional",
+      "version": "1.0"
+    },
+    {
+      "id": "metals",
+      "name": "Precious Metals",
+      "icon": "🥇",
+      "description": "Gold & silver spot prices",
+      "category": "finance",
+      "type": "functional",
+      "version": "1.0"
+    },
+    {
+      "id": "quote",
+      "name": "Quote",
+      "icon": "💬",
+      "description": "An inspirational quote",
+      "category": "entertainment",
+      "type": "functional",
+      "version": "1.0"
+    },
+    {
+      "id": "rocket-launch",
+      "name": "Rocket Launch",
+      "icon": "🚀",
+      "description": "Next orbital rocket launch",
+      "category": "data",
+      "type": "functional",
+      "version": "1.0"
+    },
+    {
+      "id": "sarcastic-fortune-cookies",
+      "name": "Sarcastic Fortune Cookies",
+      "icon": "🥠",
+      "description": "Cynical fortune-cookie wisdom",
+      "category": "entertainment",
+      "type": "functional",
+      "version": "1.0"
+    },
+    {
+      "id": "sun-times",
+      "name": "Sun Times",
+      "icon": "☀️",
+      "description": "Sunrise, sunset & day length",
+      "category": "data",
+      "type": "functional",
+      "version": "1.0"
+    },
+    {
+      "id": "tides",
+      "name": "Tides",
+      "icon": "🌊",
+      "description": "Today's high & low tides (NOAA)",
+      "category": "data",
+      "type": "functional",
+      "version": "1.0"
+    },
+    {
+      "id": "useless-fact",
+      "name": "Random Fact",
+      "icon": "🤓",
+      "description": "A concise random fact",
+      "category": "entertainment",
+      "type": "functional",
+      "version": "1.0"
+    },
+    {
+      "id": "wiki-today",
+      "name": "Wikipedia Today",
+      "icon": "📚",
+      "description": "Featured article & most-read on Wikipedia",
+      "category": "news",
+      "type": "functional",
+      "version": "1.0"
     }
   ]
 }

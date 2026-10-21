@@ -1,5 +1,6 @@
 {
   "id": "iss",
+  "i18n": true,
   "name": "ISS Tracker",
   "icon": "🛸",
   "description": "Space station",

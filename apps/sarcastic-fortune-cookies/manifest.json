@@ -1,0 +1,28 @@
+{
+  "id": "sarcastic-fortune-cookies",
+  "name": "Sarcastic Fortune Cookies",
+  "icon": "🥠",
+  "description": "Cynical fortune-cookie wisdom",
+  "category": "entertainment",
+  "type": "functional",
+  "i18n": true,
+  "version": "1.0",
+  "refresh_interval": 15,
+  "loop_delay": 15,
+  "min_modules": 45,
+  "settings": [
+    {
+      "key": "frequency",
+      "label": "Change fortune every",
+      "type": "select",
+      "default": "300",
+      "options": [
+        { "value": "60", "label": "1 minute" },
+        { "value": "300", "label": "5 minutes" },
+        { "value": "600", "label": "10 minutes" },
+        { "value": "1200", "label": "20 minutes" },
+        { "value": "1800", "label": "30 minutes" }
+      ]
+    }
+  ]
+}

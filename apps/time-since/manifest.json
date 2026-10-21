@@ -1,5 +1,6 @@
 {
   "id": "time-since",
+  "i18n": true,
   "name": "Time Since",
   "icon": "⏱️",
   "description": "Track elapsed time",

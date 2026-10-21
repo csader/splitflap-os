@@ -1,0 +1,402 @@
+[
+  {
+    "id": 1,
+    "fortune": "TUDO ACONTECE POR UM MOTIVO. QUASE SEMPRE MAU"
+  },
+  {
+    "id": 2,
+    "fortune": "A SORTE VEM A CAMINHO. ANDA DEVAGAR"
+  },
+  {
+    "id": 3,
+    "fortune": "O UNIVERSO TEM UM PLANO. UM PEQUENO"
+  },
+  {
+    "id": 4,
+    "fortune": "O TEU DESTINO LIGOU. VAI REMARCAR"
+  },
+  {
+    "id": 5,
+    "fortune": "AS ESTRELAS ALINHARAM. DEPOIS VIRAM TE"
+  },
+  {
+    "id": 6,
+    "fortune": "O TEU NAVIO CHEGA. É UMA CANOA"
+  },
+  {
+    "id": 7,
+    "fortune": "CONFIA NO PROCESSO. ELE DUVIDA DE TI"
+  },
+  {
+    "id": 8,
+    "fortune": "UM SINAL CHEGA. DIZ DÊ PASSAGEM"
+  },
+  {
+    "id": 9,
+    "fortune": "A TUA ESTRELA EXISTE. NOUTRA GALÁXIA"
+  },
+  {
+    "id": 10,
+    "fortune": "O KARMA É REAL. ISSO EXPLICA MUITO"
+  },
+  {
+    "id": 11,
+    "fortune": "O TEU FUTURO É BRILHANTE. LEVA PROTETOR"
+  },
+  {
+    "id": 12,
+    "fortune": "O DESTINO ESPERA. FOI LER UM LIVRO"
+  },
+  {
+    "id": 13,
+    "fortune": "OS MILAGRES ACONTECEM. NOUTRO LUGAR"
+  },
+  {
+    "id": 14,
+    "fortune": "O TEU MOMENTO CHEGA. ESTÁ NO TRÂNSITO"
+  },
+  {
+    "id": 15,
+    "fortune": "A SORTE BATEU. TU TINHAS SAÍDO"
+  },
+  {
+    "id": 16,
+    "fortune": "A MARÉ VIRA. À VELOCIDADE DE UM GLACIAR"
+  },
+  {
+    "id": 17,
+    "fortune": "GRANDES COISAS VÊM. BAIXA AS EXPETATIVAS"
+  },
+  {
+    "id": 18,
+    "fortune": "AS OPORTUNIDADES ESTÃO AÍ. FALHAM SE SEMPRE"
+  },
+  {
+    "id": 19,
+    "fortune": "O COSMOS OUVE TE. ENTRA NA FILA"
+  },
+  {
+    "id": 20,
+    "fortune": "AS TUAS PRECES FORAM OUVIDAS. E ARQUIVADAS"
+  },
+  {
+    "id": 21,
+    "fortune": "A ABUNDÂNCIA FLUI PARA TI. RIO ACIMA"
+  },
+  {
+    "id": 22,
+    "fortune": "A RODA GIRA. TU ÉS O HAMSTER"
+  },
+  {
+    "id": 23,
+    "fortune": "CADA NUVEM TEM UM LADO BOM. O TEU PINGA"
+  },
+  {
+    "id": 24,
+    "fortune": "O ACASO PERGUNTA POR TI. POR CURIOSIDADE"
+  },
+  {
+    "id": 25,
+    "fortune": "OS PRESSÁGIOS FALAM. MAIS SUSPIRAM"
+  },
+  {
+    "id": 26,
+    "fortune": "O TEU HORÓSCOPO É BOM. E FICTÍCIO"
+  },
+  {
+    "id": 27,
+    "fortune": "O RAIO NÃO CAI DUAS VEZES. TU CAIS"
+  },
+  {
+    "id": 28,
+    "fortune": "O DESTINO PREMEIA A PACIÊNCIA. FATURA DEPOIS"
+  },
+  {
+    "id": 29,
+    "fortune": "A LUA VIU O TEU RECOMEÇO. MAIS UM"
+  },
+  {
+    "id": 30,
+    "fortune": "O TEU ANJO VIGIA. VAI TOMANDO NOTAS"
+  },
+  {
+    "id": 31,
+    "fortune": "CRÊ E RECEBERÁS. A ENTREGA VARIA"
+  },
+  {
+    "id": 32,
+    "fortune": "A TUA ERA DOURADA CHEGA. BANHADA A OURO"
+  },
+  {
+    "id": 33,
+    "fortune": "O QUE É TEU CHEGA. SEM PRESSA NENHUMA"
+  },
+  {
+    "id": 34,
+    "fortune": "O COSMOS PISCOU TE O OLHO. OU FOI UM TIQUE"
+  },
+  {
+    "id": 35,
+    "fortune": "A TUA SORTE VAI MUDAR. RUMO INCERTO"
+  },
+  {
+    "id": 36,
+    "fortune": "A PROVIDÊNCIA PROVÊ. CONFERE OS RECIBOS"
+  },
+  {
+    "id": 37,
+    "fortune": "FAZ UM PEDIDO. A ESTRELA MANDA PARA SPAM"
+  },
+  {
+    "id": 38,
+    "fortune": "TUDO VEM A TEMPO. O TEU DEMORA"
+  },
+  {
+    "id": 39,
+    "fortune": "OS SINAIS ESTAVAM LÁ. LER É OPCIONAL"
+  },
+  {
+    "id": 40,
+    "fortune": "ÉS ÚNICO. COMO TODA A GENTE"
+  },
+  {
+    "id": 41,
+    "fortune": "O MELHOR ESTÁ PARA VIR. NÃO TEM PRESSA"
+  },
+  {
+    "id": 42,
+    "fortune": "A TUA AURA BRILHA. FAZ HORAS EXTRA"
+  },
+  {
+    "id": 43,
+    "fortune": "A SORTE SORRIU TE. CORTÊS. DE LONGE"
+  },
+  {
+    "id": 44,
+    "fortune": "O TEU ANJO PEDIU TRANSFERÊNCIA"
+  },
+  {
+    "id": 45,
+    "fortune": "O DESTINO DÁ AS CARTAS. TU PERDE LAS"
+  },
+  {
+    "id": 46,
+    "fortune": "UM PRESSÁGIO SURGE. ENCOLHE OS OMBROS"
+  },
+  {
+    "id": 47,
+    "fortune": "O SUCESSO ESTÁ PERTO. E O BOTÃO DE ADIAR"
+  },
+  {
+    "id": 48,
+    "fortune": "O TRABALHO COMPENSA SEMPRE. EM EXPERIÊNCIA"
+  },
+  {
+    "id": 49,
+    "fortune": "O TEU POTENCIAL É IMENSO. E POR USAR"
+  },
+  {
+    "id": 50,
+    "fortune": "APONTA À LUA. CUIDADO COM O TETO"
+  },
+  {
+    "id": 51,
+    "fortune": "DEUS AJUDA QUEM CEDO MADRUGA. TU DORMIAS"
+  },
+  {
+    "id": 52,
+    "fortune": "A TUA GRANDE CHANCE CHEGA. NÃO A PARTAS"
+  },
+  {
+    "id": 53,
+    "fortune": "ROMA NÃO SE FEZ NUM DIA. A TUA TAMBÉM NÃO"
+  },
+  {
+    "id": 54,
+    "fortune": "OS TEUS TALENTOS SERÃO ACHADOS. COM MANDADO"
+  },
+  {
+    "id": 55,
+    "fortune": "QUEM VENCE NÃO DESISTE. TU FLUTUAS"
+  },
+  {
+    "id": 56,
+    "fortune": "AS TUAS IDEIAS VÃO À FRENTE. OS PRAZOS ATRÁS"
+  },
+  {
+    "id": 57,
+    "fortune": "A QUALIDADE É UM HÁBITO. O TEU TAMBÉM"
+  },
+  {
+    "id": 58,
+    "fortune": "O TEU TRABALHO FALA POR SI. BAIXINHO"
+  },
+  {
+    "id": 59,
+    "fortune": "O TOPO É SOLITÁRIO. PROBLEMA RESOLVIDO"
+  },
+  {
+    "id": 60,
+    "fortune": "UMA PROMOÇÃO CHEGA. A DE UM COLEGA"
+  },
+  {
+    "id": 61,
+    "fortune": "O TEU CV IMPRESSIONA. OS FÃS DE FICÇÃO"
+  },
+  {
+    "id": 62,
+    "fortune": "O TEU MELHOR TRABALHO VEM. CORRE DEPRESSA"
+  },
+  {
+    "id": 63,
+    "fortune": "AQUELA REUNIÃO PODIA SER UM EMAIL"
+  },
+  {
+    "id": 64,
+    "fortune": "A TUA CAIXA NÃO É INIMIGA. SÓ TESTEMUNHA"
+  },
+  {
+    "id": 65,
+    "fortune": "OS PRAZOS NÃO TE ASSUSTAM. TU IGNORA LOS"
+  },
+  {
+    "id": 66,
+    "fortune": "O TEU PLANO A CINCO ANOS TEM CINCO ANOS"
+  },
+  {
+    "id": 67,
+    "fortune": "DEVAGAR MAS SEGURO GANHA. DOMINAS O DEVAGAR"
+  },
+  {
+    "id": 68,
+    "fortune": "A TUA AGENDA ESTÁ CHEIA. DE MARGENS"
+  },
+  {
+    "id": 69,
+    "fortune": "A TUA EQUIPA TAMBÉM SONHA. COM A SAÍDA"
+  },
+  {
+    "id": 70,
+    "fortune": "A OCASIÃO DESCEU AO TEU NÍVEL"
+  },
+  {
+    "id": 71,
+    "fortune": "O SUCESSO DEIXA PISTAS. TU PREFERES MISTÉRIO"
+  },
+  {
+    "id": 72,
+    "fortune": "A TUA ZONA DE CONFORTO TEM CÓDIGO POSTAL"
+  },
+  {
+    "id": 73,
+    "fortune": "QUALIDADE OU QUANTIDADE. RECUSAS AMBAS"
+  },
+  {
+    "id": 74,
+    "fortune": "O TEU INSTINTO É AFIADO. E COSTUMA FALHAR"
+  },
+  {
+    "id": 75,
+    "fortune": "TRABALHAS BEM SOB PRESSÃO. ELA DISCORDA"
+  },
+  {
+    "id": 76,
+    "fortune": "A MESTRIA PEDE 10000 HORAS. TU TENS 40"
+  },
+  {
+    "id": 77,
+    "fortune": "A TUA PLANTA CREU EM TI. E NA ÁGUA"
+  },
+  {
+    "id": 78,
+    "fortune": "A IMPRESSORA SENTE A PRESSA. POR ISSO FALHA"
+  },
+  {
+    "id": 79,
+    "fortune": "O TEU LEGADO ESTÁ EM OBRAS. AINDA"
+  },
+  {
+    "id": 80,
+    "fortune": "UM DIPLOMA ESPERA TE. O DE PRESENÇA"
+  },
+  {
+    "id": 81,
+    "fortune": "FAZER REDE ABRE PORTAS. BATER TAMBÉM"
+  },
+  {
+    "id": 82,
+    "fortune": "DÁS O EXEMPLO. OS RH QUEREM OUTRO"
+  },
+  {
+    "id": 83,
+    "fortune": "O TEU PROJETO PESSOAL DESCANSA COM OS OUTROS"
+  },
+  {
+    "id": 84,
+    "fortune": "O GÉNIO É UM POR CENTO SUOR. PARAS AÍ"
+  },
+  {
+    "id": 85,
+    "fortune": "A TUA MENSAGEM DE AUSÊNCIA É UMA OBRA PRIMA"
+  },
+  {
+    "id": 86,
+    "fortune": "FALHAR É UM DEGRAU. BELA ESCADARIA"
+  },
+  {
+    "id": 87,
+    "fortune": "ÉS INSUBSTITUÍVEL. O ANÚNCIO JÁ SAIU"
+  },
+  {
+    "id": 88,
+    "fortune": "A TUA AVALIAÇÃO ANUAL CHEGA. ENSAIA BEM"
+  },
+  {
+    "id": 89,
+    "fortune": "EFICIÊNCIA É O TEU NOME DO MEIO. NO PAPEL"
+  },
+  {
+    "id": 90,
+    "fortune": "CAIS DE PÉ. A ATERRAGEM ESTÁ ATRASADA"
+  },
+  {
+    "id": 91,
+    "fortune": "O CUME ESTÁ PERTO. O ACAMPAMENTO TAMBÉM"
+  },
+  {
+    "id": 92,
+    "fortune": "A TUA AMBIÇÃO ACORDOU. O DESPERTADOR NÃO"
+  },
+  {
+    "id": 93,
+    "fortune": "SÊ TU MESMO. OS OUTROS FICARAM PREOCUPADOS"
+  },
+  {
+    "id": 94,
+    "fortune": "A TUA REUNIÃO CORREU BEM. JÁ ACABOU"
+  },
+  {
+    "id": 95,
+    "fortune": "DESCANSAR FAZ BEM. PRATICAS IMENSO"
+  },
+  {
+    "id": 96,
+    "fortune": "A TUA DIETA COMEÇA SEGUNDA. AS SEGUNDAS FOGEM"
+  },
+  {
+    "id": 97,
+    "fortune": "TU MERECES ISTO. RESPIRA FUNDO"
+  },
+  {
+    "id": 98,
+    "fortune": "UM ESTRANHO SORRI PARA TI. MANTÉM A CALMA"
+  },
+  {
+    "id": 99,
+    "fortune": "NÃO GUARDAS RANCOR. TU ARQUIVA LO"
+  },
+  {
+    "id": 100,
+    "fortune": "A TUA PACIÊNCIA TEM UMA BARRA. TRAVADA"
+  }
+]

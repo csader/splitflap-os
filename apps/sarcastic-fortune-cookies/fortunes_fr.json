@@ -1,0 +1,2802 @@
+[
+{
+"id":1,
+"fortune":"TOUT ARRIVE POUR UNE RAISON. SOUVENT MAUVAISE"
+},
+{
+"id":2,
+"fortune":"LA CHANCE ARRIVE. ELLE MARCHE LENTEMENT"
+},
+{
+"id":3,
+"fortune":"LE COSMOS A UN PLAN POUR TOI. UN PETIT"
+},
+{
+"id":4,
+"fortune":"TON DESTIN A APPELÉ. IL REPORTE"
+},
+{
+"id":5,
+"fortune":"LES ASTRES SONT ALIGNÉS. ILS ÉPELLENT BOF"
+},
+{
+"id":6,
+"fortune":"LA FORTUNE SOURIT AUX AUDACIEUX. TOI REGARDE"
+},
+{
+"id":7,
+"fortune":"TON NAVIRE ARRIVE. EN FAIT UN PÉDALO"
+},
+{
+"id":8,
+"fortune":"FAIS CONFIANCE AU PROCESSUS. LUI DOUTE DE TOI"
+},
+{
+"id":9,
+"fortune":"UN SIGNE ARRIVE. IL DIT CÉDEZ LE PASSAGE"
+},
+{
+"id":10,
+"fortune":"TON ÉTOILE EXISTE. DANS UNE AUTRE GALAXIE"
+},
+{
+"id":11,
+"fortune":"LE KARMA EXISTE. ÇA EXPLIQUE TOUT"
+},
+{
+"id":12,
+"fortune":"TON AVENIR EST RADIEUX. PRENDS DE LA CRÈME"
+},
+{
+"id":13,
+"fortune":"LE DESTIN ATTEND. IL A PRIS UN LIVRE"
+},
+{
+"id":14,
+"fortune":"LES MIRACLES ARRIVENT CHAQUE JOUR. AILLEURS"
+},
+{
+"id":15,
+"fortune":"TON MOMENT ARRIVE. IL EST DANS LES BOUCHONS"
+},
+{
+"id":16,
+"fortune":"LA CHANCE A FRAPPÉ. TU ÉTAIS SORTI"
+},
+{
+"id":17,
+"fortune":"LA MARÉE TOURNE. À VITESSE DE GLACIER"
+},
+{
+"id":18,
+"fortune":"DE GRANDES CHOSES ARRIVENT. BAISSE LA BARRE"
+},
+{
+"id":19,
+"fortune":"LES OCCASIONS SONT LÀ. VOUS VOUS RATEZ"
+},
+{
+"id":20,
+"fortune":"LE COSMOS TE RÉPOND. PATIENTE DANS LA FILE"
+},
+{
+"id":21,
+"fortune":"TES PRIÈRES SONT REÇUES. ET CLASSÉES"
+},
+{
+"id":22,
+"fortune":"LA PROSPÉRITÉ COULE VERS TOI. À CONTRESENS"
+},
+{
+"id":23,
+"fortune":"LA ROUE DE FORTUNE TOURNE. TU ES LE HAMSTER"
+},
+{
+"id":24,
+"fortune":"CHAQUE NUAGE A UN BON CÔTÉ. LE TIEN FUIT"
+},
+{
+"id":25,
+"fortune":"LE HASARD DEMANDE DE TES NOUVELLES. POLI"
+},
+{
+"id":26,
+"fortune":"LES PRÉSAGES PARLENT. ILS SOUPIRENT SURTOUT"
+},
+{
+"id":27,
+"fortune":"TON HOROSCOPE EST FLATTEUR. ET FICTIF"
+},
+{
+"id":28,
+"fortune":"LA FOUDRE NE FRAPPE JAMAIS DEUX FOIS. TOI SI"
+},
+{
+"id":29,
+"fortune":"LE DESTIN PAIE LA PATIENCE. FACTURE SUIT"
+},
+{
+"id":30,
+"fortune":"LA LUNE A VU TON NOUVEAU DÉPART. ENCORE UN"
+},
+{
+"id":31,
+"fortune":"TON ANGE GARDIEN OBSERVE. IL PREND DES NOTES"
+},
+{
+"id":32,
+"fortune":"CROIS ET TU RECEVRAS. LIVRAISON VARIABLE"
+},
+{
+"id":33,
+"fortune":"TON ÈRE DORÉE APPROCHE. PLAQUÉ OR DISONS"
+},
+{
+"id":34,
+"fortune":"CE QUI TE REVIENT ARRIVE. SANS SE PRESSER"
+},
+{
+"id":35,
+"fortune":"LE COSMOS CLIGNE VERS TOI. OU IL A UN TIC"
+},
+{
+"id":36,
+"fortune":"TA CHANCE VA TOURNER. SENS INCONNU"
+},
+{
+"id":37,
+"fortune":"LA PROVIDENCE POURVOIT. ELLE GARDE LES REÇUS"
+},
+{
+"id":38,
+"fortune":"FAIS UN VŒU. TON ÉTOILE LE MET EN SPAM"
+},
+{
+"id":39,
+"fortune":"TOUT VIENT À POINT. LE TIEN PREND SON TEMPS"
+},
+{
+"id":40,
+"fortune":"UNE MANNE APPROCHE. COUVRE TOI BIEN"
+},
+{
+"id":41,
+"fortune":"LES SIGNES ÉTAIENT LÀ. LIRE RESTE FACULTATIF"
+},
+{
+"id":42,
+"fortune":"TU ES UNIQUE. COMME TOUT LE MONDE"
+},
+{
+"id":43,
+"fortune":"LE MEILLEUR RESTE À VENIR. IL FLÂNE"
+},
+{
+"id":44,
+"fortune":"TON AURA RAYONNE. ELLE FAIT DES HEURES SUP"
+},
+{
+"id":45,
+"fortune":"LA FORTUNE TE SOURIT. POLIMENT. DE LOIN"
+},
+{
+"id":46,
+"fortune":"TON ANGE A DEMANDÉ SA MUTATION"
+},
+{
+"id":47,
+"fortune":"UN GRAND PROJET PREND DU TEMPS. LE TIEN DORT"
+},
+{
+"id":48,
+"fortune":"LE DESTIN BAT LES CARTES. TU LES PERDS"
+},
+{
+"id":49,
+"fortune":"UN PRÉSAGE APPARAÎT. IL HAUSSE LES ÉPAULES"
+},
+{
+"id":50,
+"fortune":"TON ÉTOILE MONTE. UN JOUR. SANS DOUTE"
+},
+{
+"id":51,
+"fortune":"LA CHANCE SOURIT AUX IDIOTS. BONNE NOUVELLE"
+},
+{
+"id":52,
+"fortune":"DEMAIN TOUT IRA MIEUX. DEMAIN EST EXTENSIBLE"
+},
+{
+"id":53,
+"fortune":"LE SUCCÈS EST PROCHE. LE BOUTON SNOOZE AUSSI"
+},
+{
+"id":54,
+"fortune":"LE TRAVAIL PAIE TOUJOURS. EN EXPÉRIENCE"
+},
+{
+"id":55,
+"fortune":"TON POTENTIEL EST IMMENSE. ET INTACT"
+},
+{
+"id":56,
+"fortune":"VISE LA LUNE. ATTENTION AU PLAFOND"
+},
+{
+"id":57,
+"fortune":"LE LÈVE TÔT A EU LE VER. TU DORMAIS"
+},
+{
+"id":58,
+"fortune":"TA GRANDE CHANCE ARRIVE. NE LA CASSE PAS"
+},
+{
+"id":59,
+"fortune":"ROME PRIT DU TEMPS. LA TIENNE EST EN DEVIS"
+},
+{
+"id":60,
+"fortune":"TES TALENTS SERONT DÉCOUVERTS. AVEC UN MANDAT"
+},
+{
+"id":61,
+"fortune":"LES GAGNANTS PERSISTENT. TOI TU PLANES"
+},
+{
+"id":62,
+"fortune":"TES IDÉES SONT EN AVANCE. TES DÉLAIS NON"
+},
+{
+"id":63,
+"fortune":"LA QUALITÉ EST UNE HABITUDE. LA TIENNE AUSSI"
+},
+{
+"id":64,
+"fortune":"TON TRAVAIL PARLE POUR TOI. TOUT BAS"
+},
+{
+"id":65,
+"fortune":"LE SOMMET EST SOLITAIRE. PROBLÈME RÉGLÉ"
+},
+{
+"id":66,
+"fortune":"UNE PROMOTION APPROCHE. CELLE DU COLLÈGUE"
+},
+{
+"id":67,
+"fortune":"TON CV IMPRESSIONNE. LES AMATEURS DE FICTION"
+},
+{
+"id":68,
+"fortune":"TON MEILLEUR TRAVAIL ARRIVE. IL COURT VITE"
+},
+{
+"id":69,
+"fortune":"CETTE RÉUNION AURAIT PU ÊTRE UN MAIL"
+},
+{
+"id":70,
+"fortune":"TA BOÎTE MAIL EST INNOCENTE. SIMPLE TÉMOIN"
+},
+{
+"id":71,
+"fortune":"LES DÉLAIS NE TE FONT RIEN. TU PASSES DEVANT"
+},
+{
+"id":72,
+"fortune":"TON PLAN SUR CINQ ANS A CINQ ANS"
+},
+{
+"id":73,
+"fortune":"LENT MAIS SÛR GAGNE. TU MAÎTRISES LE LENT"
+},
+{
+"id":74,
+"fortune":"TON AGENDA EST PLEIN. DE MARGES"
+},
+{
+"id":75,
+"fortune":"TON ÉQUIPE RÊVE AUSSI. DE MUTATION"
+},
+{
+"id":76,
+"fortune":"LA GRANDE OCCASION DESCEND À TON NIVEAU"
+},
+{
+"id":77,
+"fortune":"LE SUCCÈS LAISSE DES INDICES. TU LES ÉVITES"
+},
+{
+"id":78,
+"fortune":"TA ZONE DE CONFORT MÉRITE SON CODE POSTAL"
+},
+{
+"id":79,
+"fortune":"QUALITÉ OU QUANTITÉ. TU DÉCLINES LES DEUX"
+},
+{
+"id":80,
+"fortune":"TON INSTINCT EST VIF. ET SOUVENT FAUX"
+},
+{
+"id":81,
+"fortune":"TU BOSSES BIEN SOUS PRESSION. QUI LA DIT"
+},
+{
+"id":82,
+"fortune":"LA MAÎTRISE DEMANDE 10000 HEURES. TU EN AS 40"
+},
+{
+"id":83,
+"fortune":"TA PLANTE CROYAIT EN TOI. ET EN ARROSAGE"
+},
+{
+"id":84,
+"fortune":"TON IMPRIMANTE SENT TON URGENCE. ELLE PLANTE"
+},
+{
+"id":85,
+"fortune":"TON HÉRITAGE EST EN CHANTIER. TOUJOURS"
+},
+{
+"id":86,
+"fortune":"UN DIPLÔME TATTEND. CELUI DE PARTICIPATION"
+},
+{
+"id":87,
+"fortune":"UN DIPLÔME ARRIVE. CELUI DE PARTICIPATION"
+},
+{
+"id":88,
+"fortune":"TU DONNES LE TON. LES RH EN VEULENT UN AUTRE"
+},
+{
+"id":89,
+"fortune":"TON PROJET PERSO SE REPOSE AVEC LES AUTRES"
+},
+{
+"id":90,
+"fortune":"LE GÉNIE EST 1 POUR CENT DE SUEUR. TU STOPPES"
+},
+{
+"id":91,
+"fortune":"TA RÉPONSE AUTOMATIQUE EST TON MEILLEUR TEXTE"
+},
+{
+"id":92,
+"fortune":"RATER EST UNE MARCHE. BEL ESCALIER DÉJÀ"
+},
+{
+"id":93,
+"fortune":"TU ES IRREMPLAÇABLE. TON ANNONCE EST PRÊTE"
+},
+{
+"id":94,
+"fortune":"TON ENTRETIEN ANNUEL APPROCHE. RÉPÈTE BIEN"
+},
+{
+"id":95,
+"fortune":"EFFICACITÉ. TON DEUXIÈME PRÉNOM. SUR PAPIER"
+},
+{
+"id":96,
+"fortune":"TU RETOMBES SUR TES PIEDS. VOL RETARDÉ"
+},
+{
+"id":97,
+"fortune":"LE SOMMET EST PROCHE. LE CAMP DE BASE AUSSI"
+},
+{
+"id":98,
+"fortune":"TON AMBITION SE RÉVEILLE. PAS TON RÉVEIL"
+},
+{
+"id":99,
+"fortune":"SOIS TOI MÊME. LES AUTRES ONT EU PEUR"
+},
+{
+"id":100,
+"fortune":"TA RÉUNION FUT UN SUCCÈS. ELLE EST FINIE"
+},
+{
+"id":101,
+"fortune":"CONNAIS TOI TOI MÊME. FAITES CONNAISSANCE"
+},
+{
+"id":102,
+"fortune":"TA MÉTAMORPHOSE ARRIVE. PRÉVIENS LE RÉSEAU"
+},
+{
+"id":103,
+"fortune":"NOUVEL AN NOUVEAU TOI. LE VIEUX PREND NOTE"
+},
+{
+"id":104,
+"fortune":"TU SUFFIS. LA BARRE ÉTAIT RÉGLABLE"
+},
+{
+"id":105,
+"fortune":"TA PAIX INTÉRIEURE A VU TON AGENDA. ELLE FUIT"
+},
+{
+"id":106,
+"fortune":"GRANDIR PREND DU TEMPS. LE TIEN VEUT UN DÉLAI"
+},
+{
+"id":107,
+"fortune":"TU ES UNE ŒUVRE EN COURS. SURTOUT EN COURS"
+},
+{
+"id":108,
+"fortune":"SE CONNAÎTRE EST UN CADEAU. EN TRANSIT"
+},
+{
+"id":109,
+"fortune":"GUÉRIR EST RAREMENT LINÉAIRE. TU GRIBOUILLES"
+},
+{
+"id":110,
+"fortune":"TON MEILLEUR TOI ÉMERGE. IL APPUIE SUR SNOOZE"
+},
+{
+"id":111,
+"fortune":"PRENDRE SOIN DE SOI COMPTE. LES SÉRIES NON"
+},
+{
+"id":112,
+"fortune":"TES LIMITES SONT SAINES. ET JAMAIS TESTÉES"
+},
+{
+"id":113,
+"fortune":"LA GRATITUDE CHANGE TOUT. ESSAIE SUR LES GENS"
+},
+{
+"id":114,
+"fortune":"TU PARDONNES VITE. À TOI MÊME SURTOUT"
+},
+{
+"id":115,
+"fortune":"TES HABITUDES TE DÉFINISSENT. CONDOLÉANCES"
+},
+{
+"id":116,
+"fortune":"CHAQUE PAS COMPTE. MÊME VERS LE FRIGO"
+},
+{
+"id":117,
+"fortune":"TON INTUITION EST FORTE. ET SOUVENT À CÔTÉ"
+},
+{
+"id":118,
+"fortune":"LA MÉDITATION AIDE. TON TÉLÉPHONE PROTESTE"
+},
+{
+"id":119,
+"fortune":"TU AS TOURNÉ LA PAGE. ELLE A TON ADRESSE"
+},
+{
+"id":120,
+"fortune":"TA ROUTINE MATINALE EST SACRÉE. 4 MINUTES"
+},
+{
+"id":121,
+"fortune":"TU APPRENDS À DIRE NON. AUX LÉGUMES SURTOUT"
+},
+{
+"id":122,
+"fortune":"TA VOLONTÉ SOULÈVE PRESQUE UN BISCUIT ENTIER"
+},
+{
+"id":123,
+"fortune":"TA MISSION DE VIE EXISTE. ELLE RESTE ANONYME"
+},
+{
+"id":124,
+"fortune":"TU ACCUEILLES LE CHANGEMENT. DEPUIS LE CANAPÉ"
+},
+{
+"id":125,
+"fortune":"TON JOURNAL INTIME EST BRUT. LES DEUX PAGES"
+},
+{
+"id":126,
+"fortune":"TU VIS TA VÉRITÉ. VÉRIFICATION EN COURS"
+},
+{
+"id":127,
+"fortune":"TON CRITIQUE INTÉRIEUR NE FAIT QUE SOUPIRER"
+},
+{
+"id":128,
+"fortune":"TES OBJECTIFS SONT EN VUE. BELLES JUMELLES"
+},
+{
+"id":129,
+"fortune":"TES NOUVELLES HABITUDES SEMBLENT FAMILIÈRES"
+},
+{
+"id":130,
+"fortune":"TON ÉNERGIE ATTIRE. SURTOUT LES CORVÉES"
+},
+{
+"id":131,
+"fortune":"TES MURS SONT TOMBÉS. LE FOSSÉ A GRANDI"
+},
+{
+"id":132,
+"fortune":"TU FÊTES LES PETITES VICTOIRES. CHAQUE JOUR"
+},
+{
+"id":133,
+"fortune":"TON ÉVOLUTION DÉCONCERTE MÊME DARWIN"
+},
+{
+"id":134,
+"fortune":"TU PASSES ENFIN EN PREMIER. FILE COURTE"
+},
+{
+"id":135,
+"fortune":"TA RÉINVENTION TOURNE. MÊME PROGRAMME"
+},
+{
+"id":136,
+"fortune":"TU ES PRÉSENT. PHYSIQUEMENT DU MOINS"
+},
+{
+"id":137,
+"fortune":"TON NOUVEAU DÉPART COMMENCE LUNDI. UN AUTRE"
+},
+{
+"id":138,
+"fortune":"TON TABLEAU DE VISION EST BEAU. ET RETRAITÉ"
+},
+{
+"id":139,
+"fortune":"TU HONORES TES ÉMOTIONS. À PLEIN VOLUME"
+},
+{
+"id":140,
+"fortune":"TON CALME EST RÉEL. TU IGNORES TES MAILS"
+},
+{
+"id":141,
+"fortune":"TES STANDARDS MONTENT. DEPUIS LA CAVE"
+},
+{
+"id":142,
+"fortune":"TU FLEURIS. HORS SAISON. MAIS TU FLEURIS"
+},
+{
+"id":143,
+"fortune":"TA DISCIPLINE EST LÉGENDAIRE. DONC FICTIVE"
+},
+{
+"id":144,
+"fortune":"TES AFFIRMATIONS MARCHENT. SUR LE PLAFOND"
+},
+{
+"id":145,
+"fortune":"TON ENFANT INTÉRIEUR VEUT SURTOUT UNE GLACE"
+},
+{
+"id":146,
+"fortune":"LE GRAND AMOUR ARRIVE. IL EST AUSSI EN RETARD"
+},
+{
+"id":147,
+"fortune":"TON ÂME SŒUR EXISTE. RÉSEAU FAIBLE PAR ICI"
+},
+{
+"id":148,
+"fortune":"LA ROMANCE EST DANS LES RUES. LE POLLEN AUSSI"
+},
+{
+"id":149,
+"fortune":"CUPIDON A TON ADRESSE. IL EST PASSÉ DEVANT"
+},
+{
+"id":150,
+"fortune":"TON CŒUR CONNAÎT LE CHEMIN. TES TEXTOS NON"
+},
+{
+"id":151,
+"fortune":"LE COUP DE FOUDRE EXISTE. PORTE DES LUNETTES"
+},
+{
+"id":152,
+"fortune":"TON EX PENSE À TOI. COMME LEÇON DE VIE"
+},
+{
+"id":153,
+"fortune":"TA DRAGUE EST SUBTILE. INDÉTECTABLE MÊME"
+},
+{
+"id":154,
+"fortune":"TES CHOIX AMOUREUX SONT CONSTANTS. HÉLAS"
+},
+{
+"id":155,
+"fortune":"ON TE CONTEMPLE DE LOIN. GARDE LA DISTANCE"
+},
+{
+"id":156,
+"fortune":"TES SIGNAUX VERTS SONT EN MINORITÉ"
+},
+{
+"id":157,
+"fortune":"LE VRAI AMOUR TRIOMPHE. IL DEMANDE DU RENFORT"
+},
+{
+"id":158,
+"fortune":"LE CŒUR SUR LA MAIN. LAVE LES DEUX"
+},
+{
+"id":159,
+"fortune":"UN MESSAGE DU PASSÉ ARRIVE. NE RÉPONDS PAS"
+},
+{
+"id":160,
+"fortune":"TON CRUSH SAIT QUE TU EXISTES. EN THÉORIE"
+},
+{
+"id":161,
+"fortune":"TU AIMES PROFONDÉMENT. BRIÈVEMENT. MAIS FORT"
+},
+{
+"id":162,
+"fortune":"TON CŒUR EST OUVERT. TON ARDOISE AUSSI"
+},
+{
+"id":163,
+"fortune":"DES ÉTINCELLES ARRIVENT. TESTE LE DÉTECTEUR"
+},
+{
+"id":164,
+"fortune":"TU ES PRÊT À TE POSER. SUR LE CANAPÉ"
+},
+{
+"id":165,
+"fortune":"TON CŒUR EST GUÉRI. AVEC ALARME EN PRIME"
+},
+{
+"id":166,
+"fortune":"LE VRAI AMOUR EST PATIENT. GRÂCE À TOI"
+},
+{
+"id":167,
+"fortune":"TA LUNE DE MIEL A DURÉ ONZE JOURS"
+},
+{
+"id":168,
+"fortune":"TON ANIMAL EST TA MEILLEURE RELATION"
+},
+{
+"id":169,
+"fortune":"TES VŒUX FERONT PLEURER. LA GRAMMAIRE SURTOUT"
+},
+{
+"id":170,
+"fortune":"TU ES UN BON PARTI. PÊCHE AVEC REMISE À LEAU"
+},
+{
+"id":171,
+"fortune":"TU ES UNE BELLE PRISE. VITE RELÂCHÉE"
+},
+{
+"id":172,
+"fortune":"TES SIGNAUX ROUGES SONT BORDEAUX. PROGRÈS"
+},
+{
+"id":173,
+"fortune":"UNE PERSONNE TE TROUVE PARFAIT. DE LOIN"
+},
+{
+"id":174,
+"fortune":"SECONDES CHANCES POUR TOUS. SIXIÈMES AUSSI"
+},
+{
+"id":175,
+"fortune":"TA PLAYLIST DE RUPTURE TOURNE SOUVENT"
+},
+{
+"id":176,
+"fortune":"TU MÉRITES UNE LONGUE ATTENTE. ELLE CONTINUE"
+},
+{
+"id":177,
+"fortune":"LA ROMANCE VIT ENCORE. LA TIENNE SE REPOSE"
+},
+{
+"id":178,
+"fortune":"TA BELLE FAMILLE VA CÉDER. AVEC LE TEMPS"
+},
+{
+"id":179,
+"fortune":"TON PROFIL EST HONNÊTE. PAR ENDROITS"
+},
+{
+"id":180,
+"fortune":"TES CÂLINS SONT RARES. COMME LES ÉCLIPSES"
+},
+{
+"id":181,
+"fortune":"ON RÊVE DE TA CUISINE. EN SUEUR"
+},
+{
+"id":182,
+"fortune":"TON CHARME OUVRE DES PORTES. POUSSE PLUTÔT"
+},
+{
+"id":183,
+"fortune":"TES CRITÈRES ONT VU TES CHOIX. MALAISE"
+},
+{
+"id":184,
+"fortune":"TU SERAS BALAYÉ PAR LA PASSION. ÉCHAUFFE TOI"
+},
+{
+"id":185,
+"fortune":"AIMER VEUT DIRE ÊTRE VU. TU NÉGOCIES ENCORE"
+},
+{
+"id":186,
+"fortune":"VOTRE HISTOIRE SERA RACONTÉE. EN PRÉVENTION"
+},
+{
+"id":187,
+"fortune":"LA FLAMME BRÛLE ENCORE. BATTUE RECOMMANDÉE"
+},
+{
+"id":188,
+"fortune":"VOTRE ANNIVERSAIRE APPROCHE. VOICI LE RAPPEL"
+},
+{
+"id":189,
+"fortune":"AIME TOI TOI MÊME. ÇA TU SAIS DÉJÀ FAIRE"
+},
+{
+"id":190,
+"fortune":"TON CŒUR A RATÉ UN BATTEMENT. VOIS UN MÉDECIN"
+},
+{
+"id":191,
+"fortune":"TU RÉVÈLES LE MEILLEUR DES GENS. AU DÉPART"
+},
+{
+"id":192,
+"fortune":"TU REFUSES DE TE CONTENTER. VOILÀ LES CHAISES"
+},
+{
+"id":193,
+"fortune":"TON FUTUR PARTENAIRE MUSCLE SA PATIENCE"
+},
+{
+"id":194,
+"fortune":"TON CŒUR EST UNE FORTERESSE. BOUTIQUE OUVERTE"
+},
+{
+"id":195,
+"fortune":"TES BESOINS DE TENDRESSE ONT DES HORAIRES"
+},
+{
+"id":196,
+"fortune":"ON PENSE À TOI SANS TON NUMÉRO"
+},
+{
+"id":197,
+"fortune":"TU FLIRTES PAR REGARDS. PERSONNE NE LES VOIT"
+},
+{
+"id":198,
+"fortune":"TES MOTS DOUX SONT DEVENUS DES VOCAUX"
+},
+{
+"id":199,
+"fortune":"TES AMIS AIMENT TA FRANCHISE. DE LOIN"
+},
+{
+"id":200,
+"fortune":"UN AMI VA APPELER. IL DÉMÉNAGE BIENTÔT"
+},
+{
+"id":201,
+"fortune":"TU ES LA COLLE DU GROUPE. ON REMERCIE PEU"
+},
+{
+"id":202,
+"fortune":"LE GROUPE SAVOURE TON SILENCE"
+},
+{
+"id":203,
+"fortune":"LES VRAIS AMIS SONT RARES. LES TIENS AUSSI"
+},
+{
+"id":204,
+"fortune":"GRANDE LOYAUTÉ. PETITE PONCTUALITÉ"
+},
+{
+"id":205,
+"fortune":"UNE FÊTE APPORTE DE LA JOIE. PARTIR AUSSI"
+},
+{
+"id":206,
+"fortune":"TU ES LE MARRANT DU GROUPE. SELON TOI"
+},
+{
+"id":207,
+"fortune":"UN VIEIL AMI REVIENT. IL A BESOIN DE BRAS"
+},
+{
+"id":208,
+"fortune":"TES CONSEILS SONT APPRÉCIÉS. JAMAIS COMMANDÉS"
+},
+{
+"id":209,
+"fortune":"TU ILLUMINES LA PIÈCE. ON VEUT UN VARIATEUR"
+},
+{
+"id":210,
+"fortune":"TON ANNIVERSAIRE SERA FÊTÉ. UN JOUR APRÈS"
+},
+{
+"id":211,
+"fortune":"TES ANECDOTES EMBELLISSENT. LES FAITS NON"
+},
+{
+"id":212,
+"fortune":"LES GENS GRAVITENT VERS TOI. PUIS FILENT"
+},
+{
+"id":213,
+"fortune":"TU SAIS TOUJOURS QUOI DIRE. RAREMENT QUAND"
+},
+{
+"id":214,
+"fortune":"LES AMIS VONT ET VIENNENT. LES TIENS VONT"
+},
+{
+"id":215,
+"fortune":"TON AGENDA EST PLEIN. DE PEUT ÊTRE"
+},
+{
+"id":216,
+"fortune":"TES BLAGUES INTERNES SONT DEVENUES DES SOLOS"
+},
+{
+"id":217,
+"fortune":"TES SOIRÉES SONT LÉGENDAIRES. LES ANNULÉES"
+},
+{
+"id":218,
+"fortune":"TU RÉUNIS LES GENS. COMME SUJET DE DISCUSSION"
+},
+{
+"id":219,
+"fortune":"TA GÉNÉROSITÉ A DES HEURES DE BUREAU"
+},
+{
+"id":220,
+"fortune":"TU RETIENS CHAQUE VISAGE. AUCUN PRÉNOM"
+},
+{
+"id":221,
+"fortune":"TES ENCOURAGEMENTS DEMANDENT UN SUIVI MÉDICAL"
+},
+{
+"id":222,
+"fortune":"TU ES LÀ QUAND ÇA COMPTE. POUR TOI"
+},
+{
+"id":223,
+"fortune":"TES POTS DE DÉPART FONT SALLE COMBLE"
+},
+{
+"id":224,
+"fortune":"ON TE CONFIE UN SECRET. PUIS TU LE PARTAGES"
+},
+{
+"id":225,
+"fortune":"TA FRANCHISE RAFRAÎCHIT. COMME UN SEAU GLACÉ"
+},
+{
+"id":226,
+"fortune":"TU NE GARDES PAS RANCUNE. TU CLASSES TOUT"
+},
+{
+"id":227,
+"fortune":"TES MEMES ARRIVENT DÈS 6 HEURES. SANS DEMANDE"
+},
+{
+"id":228,
+"fortune":"TON ÉPAULE EST DISPONIBLE. SUR RENDEZ VOUS"
+},
+{
+"id":229,
+"fortune":"TU GARDES LES GENS AU SOL. COMME LA BRUME"
+},
+{
+"id":230,
+"fortune":"TON ENTRAIN SE PROPAGE. MASQUE CONSEILLÉ"
+},
+{
+"id":231,
+"fortune":"UN AMI VEUT TON AVIS SINCÈRE. PIÈGE ÉVIDENT"
+},
+{
+"id":232,
+"fortune":"TU PARTAGES LA NOTE EN PARTS ÉGALES. PRESQUE"
+},
+{
+"id":233,
+"fortune":"TA PRÉSENCE EST UN CADEAU. ÉCHANGE POSSIBLE"
+},
+{
+"id":234,
+"fortune":"TON ESPRIT DE COMPÉTITION A TUÉ LES JEUX"
+},
+{
+"id":235,
+"fortune":"TES FÊTES SURPRISES NE SURPRENNENT PERSONNE"
+},
+{
+"id":236,
+"fortune":"ON SE SENT BIEN AVEC TOI. EN PARTANT"
+},
+{
+"id":237,
+"fortune":"TU DIS CE QUE CHACUN PENSE. AUX FUNÉRAILLES"
+},
+{
+"id":238,
+"fortune":"TA LETTRE ANNUELLE A SON LECTORAT"
+},
+{
+"id":239,
+"fortune":"TES EXCUSES SONT SINCÈRES. ET FRÉQUENTES"
+},
+{
+"id":240,
+"fortune":"TU TIENS LA MÉMOIRE DU GROUPE. RÉVISÉE"
+},
+{
+"id":241,
+"fortune":"TU AIDES SANS BRUIT. PUIS TU LE RACONTES"
+},
+{
+"id":242,
+"fortune":"TA FRANCHISE EST CHARMANTE. MOT DU COMITÉ"
+},
+{
+"id":243,
+"fortune":"TU ES EN RETARD AVEC STYLE. ENFIN EN RETARD"
+},
+{
+"id":244,
+"fortune":"ON CHERCHE TON APPROBATION. POUR PARTIR"
+},
+{
+"id":245,
+"fortune":"TU NE MÉDIS JAMAIS. TU INFORMES LES ABSENTS"
+},
+{
+"id":246,
+"fortune":"LA CARTE DIT DÉCONTRACTÉ. TES RELANCES NON"
+},
+{
+"id":247,
+"fortune":"UN AMI DE JEUNESSE PENSE À TOI. DE LOIN"
+},
+{
+"id":248,
+"fortune":"TU NE PERDS JAMAIS UN DÉBAT. TU LE DÉPLACES"
+},
+{
+"id":249,
+"fortune":"TON SOUTIEN EST SANS CONDITION. VOIR ANNEXE"
+},
+{
+"id":250,
+"fortune":"LA RICHESSE ARRIVE. À TON ANCIENNE ADRESSE"
+},
+{
+"id":251,
+"fortune":"LES FONDS COULENT VERS TOI. À TRAVERS TOI"
+},
+{
+"id":252,
+"fortune":"TON BUDGET EST UNE ŒUVRE. ABSTRAITE"
+},
+{
+"id":253,
+"fortune":"ÉPARGNE POUR LA PLUIE. MOUSSON EN VUE"
+},
+{
+"id":254,
+"fortune":"TON DOSSIER BANCAIRE EST UN THRILLER"
+},
+{
+"id":255,
+"fortune":"TES ÉCONOMIES GRANDISSENT. EN CARACTÈRE"
+},
+{
+"id":256,
+"fortune":"TON ARGENT PARLE. IL DIT ADIEU"
+},
+{
+"id":257,
+"fortune":"TA RETRAITE REPOSE SUR UN TICKET DE LOTO"
+},
+{
+"id":258,
+"fortune":"TES GOÛTS SONT CHERS. TON COMPTE EST MODESTE"
+},
+{
+"id":259,
+"fortune":"INTÉRÊTS COMPOSÉS. TU AS CHOISI LES DETTES"
+},
+{
+"id":260,
+"fortune":"TON FONDS DE SECOURS COUVRE UN PETIT SOUCI"
+},
+{
+"id":261,
+"fortune":"UNE AUGMENTATION EST MÉRITÉE. ET NON DATÉE"
+},
+{
+"id":262,
+"fortune":"TON PANIER EST UN RÊVE AVEC UNE CAISSE"
+},
+{
+"id":263,
+"fortune":"TA GÉNÉROSITÉ EST CONNUE. DES COMMERÇANTS"
+},
+{
+"id":264,
+"fortune":"LE MEILLEUR EST GRATUIT. LE TIEN A DES FRAIS"
+},
+{
+"id":265,
+"fortune":"TES ABONNEMENTS DÉPASSENT TES AMIS. EN NOMBRE"
+},
+{
+"id":266,
+"fortune":"ACHETER BAS VENDRE HAUT. TU FAIS LE CONTRAIRE"
+},
+{
+"id":267,
+"fortune":"TA BANQUE TE CONTACTE PAR INQUIÉTUDE"
+},
+{
+"id":268,
+"fortune":"TON REMBOURSEMENT FISCAL A DES PROJETS"
+},
+{
+"id":269,
+"fortune":"TES ACHATS SONT STRATÉGIQUES. PARAÎT IL"
+},
+{
+"id":270,
+"fortune":"UN BILLET DORT DANS UN MANTEAU. LE TIEN"
+},
+{
+"id":271,
+"fortune":"TON PORTEFEUILLE EST DIVERSIFIÉ. EN REGRETS"
+},
+{
+"id":272,
+"fortune":"LE JOUR DE PAIE APPORTE 18 HEURES DE JOIE"
+},
+{
+"id":273,
+"fortune":"TES FRAIS DE RETARD ONT DES FRAIS DE RETARD"
+},
+{
+"id":274,
+"fortune":"LES PETITS RUISSEAUX SÈCHENT. LES TIENS VITE"
+},
+{
+"id":275,
+"fortune":"RICHE DE CŒUR. LA CAISSE VOIT AUTREMENT"
+},
+{
+"id":276,
+"fortune":"TES TICKETS DE CAISSE RACONTENT UNE SAGA"
+},
+{
+"id":277,
+"fortune":"TON APPORT EST DEVENU DES SUSHIS. DEUX FOIS"
+},
+{
+"id":278,
+"fortune":"TON BUDGET PRÉVISIONNEL EST DE LA FICTION"
+},
+{
+"id":279,
+"fortune":"TES ESSAIS GRATUITS VIVENT ET PRÉLÈVENT"
+},
+{
+"id":280,
+"fortune":"LE CASH EST ROI. TON ROYAUME VIT À CRÉDIT"
+},
+{
+"id":281,
+"fortune":"TON GEL DES DÉPENSES A TENU 40 MINUTES"
+},
+{
+"id":282,
+"fortune":"TES FACTURES SONT PONCTUELLES. PAS TOI"
+},
+{
+"id":283,
+"fortune":"TON ARGENT TRAVAILLE DUR. POUR LES AUTRES"
+},
+{
+"id":284,
+"fortune":"TES BONS DE RÉDUCTION ONT EXPIRÉ. TOUS"
+},
+{
+"id":285,
+"fortune":"TON PLAN FINANCIER A DES PHASES. DÉNI SURTOUT"
+},
+{
+"id":286,
+"fortune":"TES REMISES FINANCENT TES ACHATS IMPULSIFS"
+},
+{
+"id":287,
+"fortune":"TA PHASE CRYPTO FUT INSTRUCTIVE. ET COÛTEUSE"
+},
+{
+"id":288,
+"fortune":"LE LOTO TAXE LES RÊVEURS. GÉNÉREUX VA"
+},
+{
+"id":289,
+"fortune":"TON OBJECTIF ÉPARGNE DORT DEPUIS MARS"
+},
+{
+"id":290,
+"fortune":"LA RICHESSE CHUCHOTE. LA TIENNE A RACCROCHÉ"
+},
+{
+"id":291,
+"fortune":"TU NOTES CHAQUE DÉPENSE. PUIS TU RECOMMENCES"
+},
+{
+"id":292,
+"fortune":"TA TIRELIRE A DES PROBLÈMES DE CONFIANCE"
+},
+{
+"id":293,
+"fortune":"TON VIREMENT EST ARRIVÉ. IL EST DÉJÀ REPARTI"
+},
+{
+"id":294,
+"fortune":"LE BONHEUR EST SANS PRIX. TON SOLDE CONFIRME"
+},
+{
+"id":295,
+"fortune":"TES FACTURES VIEILLISSENT COMME UN GRAND CRU"
+},
+{
+"id":296,
+"fortune":"TON SOLDE ET TON MORAL ONT PLONGÉ ENSEMBLE"
+},
+{
+"id":297,
+"fortune":"TU RANGES TES BOÎTES DANS DES BOÎTES"
+},
+{
+"id":298,
+"fortune":"LA LIVRAISON GRATUITE TE COÛTE UNE FORTUNE"
+},
+{
+"id":299,
+"fortune":"LA PATIENCE EST UNE VERTU. PAS TON GENRE"
+},
+{
+"id":300,
+"fortune":"LE SILENCE EST PRÉCIEUX. LE TIEN EST RARE"
+},
+{
+"id":301,
+"fortune":"TOURNE TA LANGUE SEPT FOIS. PROJET PILOTE"
+},
+{
+"id":302,
+"fortune":"EAU CALME EAU PROFONDE. LA TIENNE FAIT 10 CM"
+},
+{
+"id":303,
+"fortune":"LE SAVOIR EST UNE ARME. LA TIENNE EN VEILLE"
+},
+{
+"id":304,
+"fortune":"UN ESPRIT OUVERT EST UN TRÉSOR. BEAU COURANT"
+},
+{
+"id":305,
+"fortune":"ÉCOUTE DEUX FOIS PARLE UNE FOIS. INVERSE TOUT"
+},
+{
+"id":306,
+"fortune":"LA VÉRITÉ REND LIBRE. LA TIENNE RESTE ASSISE"
+},
+{
+"id":307,
+"fortune":"REGARDE AVANT DE SAUTER. OU APRÈS. À TA GUISE"
+},
+{
+"id":308,
+"fortune":"LES ACTES PARLENT FORT. LES TIENS CHUCHOTENT"
+},
+{
+"id":309,
+"fortune":"MESURE DEUX FOIS COUPE UNE FOIS. TU COUPES"
+},
+{
+"id":310,
+"fortune":"MIEUX VAUT TARD QUE JAMAIS. TU TESTES FORT"
+},
+{
+"id":311,
+"fortune":"QUI VOLE UN ŒUF VOLE UN BŒUF. TU COMPTES TOUT"
+},
+{
+"id":312,
+"fortune":"PIERRE QUI ROULE. LA TIENNE A PRIS LA MOUSSE"
+},
+{
+"id":313,
+"fortune":"TONNEAU VIDE FAIT DU BRUIT. BELLE ACOUSTIQUE"
+},
+{
+"id":314,
+"fortune":"QUI RIRA LE DERNIER PENSAIT LENTEMENT. SALUT"
+},
+{
+"id":315,
+"fortune":"UN TIENS VAUT MIEUX. LE TIEN A FILÉ"
+},
+{
+"id":316,
+"fortune":"NE RÉPARE QUE LE CASSÉ. TROP TARD DÉSORMAIS"
+},
+{
+"id":317,
+"fortune":"TU MÈNES LES CHEVAUX AU PUITS. ILS REFUSENT"
+},
+{
+"id":318,
+"fortune":"LA FIERTÉ PRÉCÈDE LA CHUTE. BEL ÉQUILIBRE"
+},
+{
+"id":319,
+"fortune":"LE TEMPS GUÉRIT TOUT. TU GRATTES LA PLAIE"
+},
+{
+"id":320,
+"fortune":"LES VIEILLES HABITUDES RÉSISTENT. SURTOUT ICI"
+},
+{
+"id":321,
+"fortune":"OÙ IL Y A DE LA FUMÉE. IL Y A TOI"
+},
+{
+"id":322,
+"fortune":"LA MEILLEURE DÉFENSE. LA DISTANCE. ILS SAVENT"
+},
+{
+"id":323,
+"fortune":"LE DIABLE AIME LES DÉTAILS. LES TIENS DORMENT"
+},
+{
+"id":324,
+"fortune":"LE REBUT DES UNS REMPLIT TON GARAGE"
+},
+{
+"id":325,
+"fortune":"MARMITE SURVEILLÉE NE BOUT PAS. LA TIENNE SI"
+},
+{
+"id":326,
+"fortune":"QUI NE SAIT RIEN DORT BIEN. TU SEMBLES REPOSÉ"
+},
+{
+"id":327,
+"fortune":"LA BEAUTÉ EST DANS LE REGARD. CONSULTE VITE"
+},
+{
+"id":328,
+"fortune":"IL FAUT UN VILLAGE. LE TIEN VEUT DU RENFORT"
+},
+{
+"id":329,
+"fortune":"LES GRANDS ESPRITS SE CROISENT. LE TIEN FUIT"
+},
+{
+"id":330,
+"fortune":"CHAQUE CHIEN A SON JOUR. LE TIEN FUT EN 2019"
+},
+{
+"id":331,
+"fortune":"QUI NE TENTE RIEN. TOI EN RÉSUMÉ"
+},
+{
+"id":332,
+"fortune":"TROP DE CHEFS GÂTENT LA SOUPE. TOI SEUL AUSSI"
+},
+{
+"id":333,
+"fortune":"ON RÉCOLTE CE QUI FUT SEMÉ. RÉCOLTE CURIEUSE"
+},
+{
+"id":334,
+"fortune":"DEMANDE ET TU RECEVRAS. IL Y A UNE FILE"
+},
+{
+"id":335,
+"fortune":"PRENDS LES CHAUSSURES DES AUTRES. PUIS RENDS"
+},
+{
+"id":336,
+"fortune":"RIEN NE SERT DE COURIR. TU NE COURS JAMAIS"
+},
+{
+"id":337,
+"fortune":"TOUT A UNE FIN. LES TIENNES ARRIVENT TÔT"
+},
+{
+"id":338,
+"fortune":"LES PAROLES SENVOLENT. LES TIENNES AUSSI"
+},
+{
+"id":339,
+"fortune":"LE TEMPS PERDU NE REVIENT PAS. TU LE STOCKES"
+},
+{
+"id":340,
+"fortune":"LA MAIN QUI TE NOURRIT PORTE DES GANTS"
+},
+{
+"id":341,
+"fortune":"COMPARER VOLE LA JOIE. CHEZ TOI À PLEIN TEMPS"
+},
+{
+"id":342,
+"fortune":"MIEUX VAUT MOITIÉ QUE RIEN. TOI. DES MIETTES"
+},
+{
+"id":343,
+"fortune":"MER CALME NE FORME PAS DE MARIN. RESTE À QUAI"
+},
+{
+"id":344,
+"fortune":"LA VÉRITÉ VIT SANS RÉPÉTITION. SAUF LA TIENNE"
+},
+{
+"id":345,
+"fortune":"TOUT AVEC MODÉRATION. MÊME ÇA. ARRÊTE"
+},
+{
+"id":346,
+"fortune":"CE QUI PART REVIENT. SUIVI DE COLIS ACTIVÉ"
+},
+{
+"id":347,
+"fortune":"NE DISCUTE PAS AVEC UN SOT. ON VOUS CONFOND"
+},
+{
+"id":348,
+"fortune":"LA SAGESSE CHUCHOTE. LA TIENNE EST EN MUET"
+},
+{
+"id":349,
+"fortune":"UN LONG VOYAGE COMMENCE PAR UN PAS. ÉTIRE TOI"
+},
+{
+"id":350,
+"fortune":"TRAVERSE LES PONTS. SANS LES BRÛLER. INFO"
+},
+{
+"id":351,
+"fortune":"LE GRAND CHÊNE FUT UNE NOIX. BELLE TRADITION"
+},
+{
+"id":352,
+"fortune":"CHAT ÉCHAUDÉ CRAINT. TOI TU REPLONGES"
+},
+{
+"id":353,
+"fortune":"LES MENSONGES ONT DE COURTES JAMBES. RAPIDES"
+},
+{
+"id":354,
+"fortune":"CHACUN FORGE SA CHANCE. TA FORGE EST ÉTEINTE"
+},
+{
+"id":355,
+"fortune":"LA POMME TOMBE PRÈS DU POMMIER. LUI SE TAIT"
+},
+{
+"id":356,
+"fortune":"PETIT À PETIT LES NIDS SE FONT. LES TIENS NON"
+},
+{
+"id":357,
+"fortune":"LA NUIT PORTE CONSEIL. LA TIENNE DES SÉRIES"
+},
+{
+"id":358,
+"fortune":"LE GRAND VOYAGE ATTEND. IL A MONTÉ SA BOÎTE"
+},
+{
+"id":359,
+"fortune":"TU VOYAGERAS LOIN. LA NAVETTE COMPTE"
+},
+{
+"id":360,
+"fortune":"TA PHOTO DE PASSEPORT MONTRE LE VRAI TOI"
+},
+{
+"id":361,
+"fortune":"TA LISTE DE RÊVES A BESOIN DE RÊVES"
+},
+{
+"id":362,
+"fortune":"TU VERRAS LE MONDE. EN DOCUMENTAIRE"
+},
+{
+"id":363,
+"fortune":"TES CONGÉS MÛRISSENT COMME UN BON REGRET"
+},
+{
+"id":364,
+"fortune":"UNE DESTINATION DE RÊVE APPELLE. TU FILTRES"
+},
+{
+"id":365,
+"fortune":"TA PLAYLIST DE ROUTE A SURVÉCU AU VOYAGE"
+},
+{
+"id":366,
+"fortune":"TU VOYAGES LÉGER. SAUF ÉMOTIONNELLEMENT"
+},
+{
+"id":367,
+"fortune":"TES SOUVENIRS PARLENT SURTOUT DES PRIX"
+},
+{
+"id":368,
+"fortune":"TU TE PERDS PARTOUT. TALENT PORTABLE"
+},
+{
+"id":369,
+"fortune":"TES PHOTOS DE VOYAGE STARIFIENT TON POUCE"
+},
+{
+"id":370,
+"fortune":"UN VOYAGE SPONTANÉ APPROCHE. AVEC TABLEUR"
+},
+{
+"id":371,
+"fortune":"TU ES CITOYEN DU MONDE. RÉFÉRENCES À VENIR"
+},
+{
+"id":372,
+"fortune":"TON CORPS EST PRÊT. LA PLAGE FERA AVEC"
+},
+{
+"id":373,
+"fortune":"LA MONTAGNE APPELLE. TU AS COUPÉ LA SONNERIE"
+},
+{
+"id":374,
+"fortune":"TES VACANCES AU BALCON RESTENT IMBATTABLES"
+},
+{
+"id":375,
+"fortune":"TU NAVIGUES COMME UN GUIDE. UN GUIDE PERDU"
+},
+{
+"id":376,
+"fortune":"TON ITINÉRAIRE EST SURTOUT DES MARGES"
+},
+{
+"id":377,
+"fortune":"TES CHAUSSURES DE RANDO ONT GRAVI LE PLACARD"
+},
+{
+"id":378,
+"fortune":"LE DÉCALAGE ÉPARGNE PERSONNE. TU PARS FATIGUÉ"
+},
+{
+"id":379,
+"fortune":"TON CARNET DE VOYAGE A UNE ENTRÉE. CONTENT"
+},
+{
+"id":380,
+"fortune":"TU COLLECTIONNES LES MOMENTS. PAS LA CARTE"
+},
+{
+"id":381,
+"fortune":"TON SENS DES DIRECTIONS EST UNE LÉGENDE"
+},
+{
+"id":382,
+"fortune":"UNE ESCAPADE APPROCHE. LE LINGE ATTENDRA"
+},
+{
+"id":383,
+"fortune":"TU REVIENS TRANSFORMÉ. SURTOUT FATIGUÉ"
+},
+{
+"id":384,
+"fortune":"TON HORAIRE AU TERMINAL DIT TOUT DE TOI"
+},
+{
+"id":385,
+"fortune":"TES PHOTOS DE HUBLOT. UNE SÉRIE SUR LES AILES"
+},
+{
+"id":386,
+"fortune":"TON BAGAGE À MAIN A SA PROPRE GRAVITÉ"
+},
+{
+"id":387,
+"fortune":"TES TALENTS DE CAMPEUR AMUSENT LES RATONS"
+},
+{
+"id":388,
+"fortune":"LA PLUIE VA LAVER TA VOITURE. TON PLAN EXACT"
+},
+{
+"id":389,
+"fortune":"TON DÉBAT SUR LA VESTE COMMENCE EN OCTOBRE"
+},
+{
+"id":390,
+"fortune":"TU CONSULTES LA MÉTÉO. PUIS TU IGNORES TOUT"
+},
+{
+"id":391,
+"fortune":"LE PRINTEMPS ARRIVE. TES ALLERGIES AUSSI"
+},
+{
+"id":392,
+"fortune":"TA CRÈME SOLAIRE EXPIRE INTACTE. CHAQUE ANNÉE"
+},
+{
+"id":393,
+"fortune":"LA NEIGE EST MAGIQUE. PUIS VIENT LA PELLE"
+},
+{
+"id":394,
+"fortune":"TES PARAPLUIES VIVENT TOUS AILLEURS"
+},
+{
+"id":395,
+"fortune":"LA MÉTÉO EST TON GRAND SUJET DÉSORMAIS"
+},
+{
+"id":396,
+"fortune":"LA PRÉVISION A CHANGÉ. PAS TES PLANS. VIDES"
+},
+{
+"id":397,
+"fortune":"TON SALON DE JARDIN CRAINT CHAQUE SAISON"
+},
+{
+"id":398,
+"fortune":"LES FEUILLES TOMBENT. COMME TES RÉSOLUTIONS"
+},
+{
+"id":399,
+"fortune":"TA BATTERIE TIENT PLUS LONGTEMPS QUE TOI"
+},
+{
+"id":400,
+"fortune":"TU LIRAS LES CONDITIONS UN JOUR. NON"
+},
+{
+"id":401,
+"fortune":"TON RAPPORT DE TEMPS DEVANT ÉCRAN TE MÉNAGE"
+},
+{
+"id":402,
+"fortune":"TA CHAISE À LINGE A UN POSTE FIXE DÉSORMAIS"
+},
+{
+"id":403,
+"fortune":"TON RÉVEIL A CINQ RÉVEILS DE SECOURS. MUETS"
+},
+{
+"id":404,
+"fortune":"TON FRIGO HÉBERGE UNE EXPÉRIENCE SCIENTIFIQUE"
+},
+{
+"id":405,
+"fortune":"LE VOYANT MOTEUR EST DEVENU UNE AMBIANCE"
+},
+{
+"id":406,
+"fortune":"TES PLANTES VERTES ONT ACCEPTÉ LEUR SORT"
+},
+{
+"id":407,
+"fortune":"TON TIROIR FOURRE TOUT A OUVERT UNE ANNEXE"
+},
+{
+"id":408,
+"fortune":"TON SAC DE SPORT EST PRÊT. ÇA COMPTE"
+},
+{
+"id":409,
+"fortune":"TA MESSAGERIE EST PLEINE. ON A RENONCÉ"
+},
+{
+"id":410,
+"fortune":"TES ONGLETS FORMENT UN ÉCOSYSTÈME"
+},
+{
+"id":411,
+"fortune":"TON PARAPLUIE ATTEND. TU VAS LE LAISSER LÀ"
+},
+{
+"id":412,
+"fortune":"TES RESTES AVAIENT DES RÊVES. ILS COMPOSTENT"
+},
+{
+"id":413,
+"fortune":"TA LISTE DE TÂCHES A UNE LISTE DE TÂCHES"
+},
+{
+"id":414,
+"fortune":"TON ARMOIRE HABILLE TROIS VERSIONS DE TOI"
+},
+{
+"id":415,
+"fortune":"TON JOGGING MATINAL EST PLANIFIÉ. DEPUIS MARS"
+},
+{
+"id":416,
+"fortune":"TON ROUTEUR TRÔNE SUR UN AUTEL. NORMAL"
+},
+{
+"id":417,
+"fortune":"TA BOÎTE MAIL VIDE RESTE UNE LÉGENDE"
+},
+{
+"id":418,
+"fortune":"TON TIROIR À CHAUSSETTES PROTÈGE LES VEUVES"
+},
+{
+"id":419,
+"fortune":"TA LISTE DE COURSES RESTE À LA MAISON. EXPRÈS"
+},
+{
+"id":420,
+"fortune":"TA LISTE DE SÉRIES A SURVÉCU À TROIS PASSIONS"
+},
+{
+"id":421,
+"fortune":"TON IMPRIMANTE SENT LA PANIQUE. DONC PANNE"
+},
+{
+"id":422,
+"fortune":"TON COUCHER EST UNE MOTION. TOUJOURS REJETÉE"
+},
+{
+"id":423,
+"fortune":"TES ÉCOUTEURS SE NOUENT SEULS. MYSTÈRE TOTAL"
+},
+{
+"id":424,
+"fortune":"TES ÉPICES SONT CLASSÉES DE A À C. BON DÉBUT"
+},
+{
+"id":425,
+"fortune":"TA BANQUETTE ARRIÈRE EST UN BUREAU DES OBJETS"
+},
+{
+"id":426,
+"fortune":"LE BON CÂBLE EST TOUJOURS AILLEURS"
+},
+{
+"id":427,
+"fortune":"TON BUREAU DEBOUT RESTE ASSIS. COMME TOI"
+},
+{
+"id":428,
+"fortune":"TON BATCH COOKING DONNE UN PLAT. SIX BOÎTES"
+},
+{
+"id":429,
+"fortune":"LE LIVREUR TE SALUE DE LOIN MAINTENANT"
+},
+{
+"id":430,
+"fortune":"TA FRITEUSE À AIR A REMPLACÉ LE FOUR. ET TOI"
+},
+{
+"id":431,
+"fortune":"TES MARQUE PAGES SONT UN MUSÉE DES INTENTIONS"
+},
+{
+"id":432,
+"fortune":"TON BOUTON SNOOZE MONTRE UNE USURE GÉOLOGIQUE"
+},
+{
+"id":433,
+"fortune":"TES SACS RÉUTILISABLES VIVENT DANS LE COFFRE"
+},
+{
+"id":434,
+"fortune":"TES MISES À JOUR ONT DES ANNÉES DE SERVICE"
+},
+{
+"id":435,
+"fortune":"LE BAC À GLAÇONS REVIENT VIDE. UNE TRADITION"
+},
+{
+"id":436,
+"fortune":"TON GARAGE STOCKE TOUT SAUF LA VOITURE"
+},
+{
+"id":437,
+"fortune":"TON PODOMÈTRE A ENCADRÉ SON MEILLEUR JOUR"
+},
+{
+"id":438,
+"fortune":"TA TASSE PRÉFÉRÉE EST SOUS PROTECTION"
+},
+{
+"id":439,
+"fortune":"LA MÉTÉO A RENONCÉ À TES TENUES"
+},
+{
+"id":440,
+"fortune":"TA BALANCE PRATIQUE LA FRANCHISE RADICALE"
+},
+{
+"id":441,
+"fortune":"TES TÉLÉCOMMANDES MIGRENT DANS LE CANAPÉ"
+},
+{
+"id":442,
+"fortune":"LE PLACARD DU COULOIR GARDE TA VÉRITÉ. JUSTE"
+},
+{
+"id":443,
+"fortune":"TU AS TOUTES LES PILES SAUF LA BONNE"
+},
+{
+"id":444,
+"fortune":"TON ASPIRATEUR ÉVITE LES COINS. COMME TOI"
+},
+{
+"id":445,
+"fortune":"TES IDÉES DE DOUCHE RESTENT SOUS LA DOUCHE"
+},
+{
+"id":446,
+"fortune":"TA CAFETIÈRE CONNAÎT TA TÊTE DU LUNDI"
+},
+{
+"id":447,
+"fortune":"LE FOND DU CONGÉLATEUR PRÉCÈDE TES AMITIÉS"
+},
+{
+"id":448,
+"fortune":"TON STOCKAGE EST PLEIN. DE CAPTURES INUTILES"
+},
+{
+"id":449,
+"fortune":"TES PNEUS DE VÉLO SOUPIRENT LENTEMENT"
+},
+{
+"id":450,
+"fortune":"TA PILE DE RETOURS A UNE ZONE DE DÉPART"
+},
+{
+"id":451,
+"fortune":"TES BOUGIES SONT DÉCO. LES ALLUMETTES AUSSI"
+},
+{
+"id":452,
+"fortune":"TA TABLE À MANGER A QUITTÉ LE MÉTIER"
+},
+{
+"id":453,
+"fortune":"TON CLAVIER PROPOSE PARDON EN PREMIER"
+},
+{
+"id":454,
+"fortune":"TON APPLI DE SPORT FAIT DES PHRASES COURTES"
+},
+{
+"id":455,
+"fortune":"TA POCHE DE MANTEAU EST UNE CAPSULE DU TEMPS"
+},
+{
+"id":456,
+"fortune":"LE BOUTON PLUS 30 SECONDES GÈRE TA CUISINE"
+},
+{
+"id":457,
+"fortune":"LES BONS CISEAUX ONT DISPARU. UN SEUL SUSPECT"
+},
+{
+"id":458,
+"fortune":"TON DOSSIER TÉLÉCHARGEMENTS EST UNE DÉCHARGE"
+},
+{
+"id":459,
+"fortune":"TES PLANTES VIVENT DE CULPABILITÉ"
+},
+{
+"id":460,
+"fortune":"LE SÈCHE LINGE PREND UNE CHAUSSETTE EN TRIBUT"
+},
+{
+"id":461,
+"fortune":"TES DESSOUS DE VERRE REGARDENT SANS AGIR"
+},
+{
+"id":462,
+"fortune":"TON APPLI DE NOTES EST UNE DÉCHARGE DE GÉNIE"
+},
+{
+"id":463,
+"fortune":"TES JEUX DE SOCIÉTÉ VIEILLISSENT SOUS BLISTER"
+},
+{
+"id":464,
+"fortune":"TON TAPIS DE YOGA A SERVI DEUX FOIS. SIESTES"
+},
+{
+"id":465,
+"fortune":"TES RALLONGES SE MULTIPLIENT DANS LE NOIR"
+},
+{
+"id":466,
+"fortune":"TON ENCEINTE CONNECTÉE A ENTENDU DES CHOSES"
+},
+{
+"id":467,
+"fortune":"TES BOÎTES ET LEURS COUVERCLES DIVORCENT"
+},
+{
+"id":468,
+"fortune":"TES BASKETS DE MARCHE VISITENT LE COFFRE"
+},
+{
+"id":469,
+"fortune":"TON DOSSIER IMPORTANT EST UN MOUROIR"
+},
+{
+"id":470,
+"fortune":"TA COURONNE DE NOËL EST PERMANENTE. FESTIF"
+},
+{
+"id":471,
+"fortune":"LE TIROIR QUI COINCE A CESSÉ DE PARLER"
+},
+{
+"id":472,
+"fortune":"TON ÉCRAN À 2 HEURES DU MATIN RÉVÈLE TOUT"
+},
+{
+"id":473,
+"fortune":"TON EXTINCTEUR VIT SUR SA RÉPUTATION"
+},
+{
+"id":474,
+"fortune":"TON OBJECTIF EAU FUT ATTEINT UNE FOIS. BRAVO"
+},
+{
+"id":475,
+"fortune":"VIEILLIR TE VA BIEN. LE CONTRAIRE MOINS"
+},
+{
+"id":476,
+"fortune":"TON ÂGE EST UN SIMPLE NOMBRE. CROISSANT"
+},
+{
+"id":477,
+"fortune":"TES GENOUX ANNONCENT LA PLUIE. UN TALENT"
+},
+{
+"id":478,
+"fortune":"TON DOS EST SORTI PLUS SOUVENT QUE TOI"
+},
+{
+"id":479,
+"fortune":"LA SAGESSE VIENT AVEC LE GRIS. LE TIEN EST LÀ"
+},
+{
+"id":480,
+"fortune":"TU VIEILLIS COMME LE VIN. COUCHÉ SURTOUT"
+},
+{
+"id":481,
+"fortune":"TES BOUGIES POSENT UN RISQUE INCENDIE"
+},
+{
+"id":482,
+"fortune":"TES LUNETTES DE LECTURE ONT DES LUNETTES"
+},
+{
+"id":483,
+"fortune":"TA PLAYLIST EST CLASSÉE RÉTRO. PAR LES JEUNES"
+},
+{
+"id":484,
+"fortune":"TU GÉMIS EN PRENANT PLACE. UN REÇU VOCAL"
+},
+{
+"id":485,
+"fortune":"TON MÉTABOLISME EST PARTI SANS UN MOT"
+},
+{
+"id":486,
+"fortune":"TU TE SENS COMME À 25 ANS. TES LENDEMAINS NON"
+},
+{
+"id":487,
+"fortune":"UNE POMME PAR JOUR. EN TARTE. BELLE ASTUCE"
+},
+{
+"id":488,
+"fortune":"TA POSTURE PROGRESSE DEUX FOIS PAR JOUR. BREF"
+},
+{
+"id":489,
+"fortune":"TU DORMIRAS HUIT HEURES. EN TROIS NUITS"
+},
+{
+"id":490,
+"fortune":"TES VITAMINES EXPIRENT INTACTES. CHAQUE FOIS"
+},
+{
+"id":491,
+"fortune":"TON RÉGIME COMMENCE LUNDI. LES LUNDIS FUIENT"
+},
+{
+"id":492,
+"fortune":"LE DENTISTE SAIT QUE LE FIL DATE DU MATIN"
+},
+{
+"id":493,
+"fortune":"TON POULS AU REPOS EST PARFAIT. LOGIQUE"
+},
+{
+"id":494,
+"fortune":"TU VIVRAS CENT ANS. PAR PURE REVANCHE"
+},
+{
+"id":495,
+"fortune":"TON TRACKER DE SOMMEIL PARLE DE FICTION"
+},
+{
+"id":496,
+"fortune":"TES ALLERGIES SONT PONCTUELLES. ELLES OUI"
+},
+{
+"id":497,
+"fortune":"TON MAL DE DOS A UNE VIE SOCIALE RICHE"
+},
+{
+"id":498,
+"fortune":"TES TALENTS CACHÉS RESTENT BIEN CACHÉS"
+},
+{
+"id":499,
+"fortune":"TA CRÉATIVITÉ NE CONNAÎT QUE LES PAUSES"
+},
+{
+"id":500,
+"fortune":"TU AS UN DON. SANS TICKET DE CAISSE"
+},
+{
+"id":501,
+"fortune":"TON ROMAN SERA FINI. PAR UNE AUTRE PERSONNE"
+},
+{
+"id":502,
+"fortune":"NÉ POUR CRÉER. LES EXCUSES COMPTENT AUSSI"
+},
+{
+"id":503,
+"fortune":"TON GRAND ŒUVRE VIT EN TOI. IL Y RESTE"
+},
+{
+"id":504,
+"fortune":"TON CHANT FAIT PLEURER. LA BIOLOGIE EST AINSI"
+},
+{
+"id":505,
+"fortune":"LA MUSE TE VISITE. ELLE PRÉVIENT AVANT"
+},
+{
+"id":506,
+"fortune":"TES PHOTOS CAPTURENT UNE CONFUSION BRUTE"
+},
+{
+"id":507,
+"fortune":"TU PENSES HORS DU CADRE. LE CADRE RESPIRE"
+},
+{
+"id":508,
+"fortune":"TES POÈMES ÉMEUVENT. DIRECTION LA SORTIE"
+},
+{
+"id":509,
+"fortune":"TON IMAGINATION EST VASTE. PAS TES ŒUVRES"
+},
+{
+"id":510,
+"fortune":"TU VOIS LE MONDE AUTREMENT. FAIS CONTRÔLER"
+},
+{
+"id":511,
+"fortune":"TON IDÉE DE PODCAST SALUE LES SIX AUTRES"
+},
+{
+"id":512,
+"fortune":"LA CRÉATIVITÉ PASSE DEVANT TOI. ELLE SALUE"
+},
+{
+"id":513,
+"fortune":"TES CROQUIS MÉRITENT UNE PLACE. UN TIROIR"
+},
+{
+"id":514,
+"fortune":"TA CUISINE EST DU SPECTACLE. AVEC ALARME"
+},
+{
+"id":515,
+"fortune":"TON SCÉNARIO A UNE ÉNERGIE POTENTIELLE"
+},
+{
+"id":516,
+"fortune":"LE MONDE EST TA TOILE. ENCORE VIERGE"
+},
+{
+"id":517,
+"fortune":"TES PROJETS FORMENT UNE TRILOGIE OUVERTE"
+},
+{
+"id":518,
+"fortune":"TES GOÛTS MUSICAUX SONT SÛRS. SELON TOI"
+},
+{
+"id":519,
+"fortune":"TA DANSE DÉFIE LES CODES. ET LA PHYSIQUE"
+},
+{
+"id":520,
+"fortune":"TU RACONTES BIEN. LES FINS RESTENT À VENIR"
+},
+{
+"id":521,
+"fortune":"LES PHARMACIENS ENCADRENT TON ÉCRITURE"
+},
+{
+"id":522,
+"fortune":"TES IDÉES VIENNENT À 2 HEURES. PARTENT À 8"
+},
+{
+"id":523,
+"fortune":"TON CARNET GARDE DE GRANDES PROMESSES"
+},
+{
+"id":524,
+"fortune":"TU POURRAIS ÉCRIRE UN LIVRE. UN DÉPLIANT"
+},
+{
+"id":525,
+"fortune":"TA PHASE POTERIE A CRÉÉ DES PIÈCES UNIQUES"
+},
+{
+"id":526,
+"fortune":"TON ARTISTE INTÉRIEUR VEUT UN CAFÉ AVANT"
+},
+{
+"id":527,
+"fortune":"TES CHOIX DE COULEURS SONT COURAGEUX"
+},
+{
+"id":528,
+"fortune":"TA GUITARE MAÎTRISE TROIS ACCORDS"
+},
+{
+"id":529,
+"fortune":"TON PROCESSUS CRÉATIF RESTE UN MYSTÈRE"
+},
+{
+"id":530,
+"fortune":"TES ÉCHARPES SONT DEVENUES DES EXPÉRIENCES"
+},
+{
+"id":531,
+"fortune":"TU PEINS AVEC ÉMOTION. LE SOL CONFIRME"
+},
+{
+"id":532,
+"fortune":"TON BONSAÏ EST UN ARBRE NORMAL DÉSORMAIS"
+},
+{
+"id":533,
+"fortune":"TA VOIX LITTÉRAIRE EST FORTE. EN TEXTOS"
+},
+{
+"id":534,
+"fortune":"TON JARDIN POUSSE. LES MAUVAISES HERBES OUI"
+},
+{
+"id":535,
+"fortune":"TA PHASE CALLIGRAPHIE DURA UN WEEK END"
+},
+{
+"id":536,
+"fortune":"TON BOIS EST HONNÊTE. LES ÉCHARDES AUSSI"
+},
+{
+"id":537,
+"fortune":"TA FANFICTION A DES FANS. LES DEUX"
+},
+{
+"id":538,
+"fortune":"TES ORIGAMIS REMPLISSENT LE BAC À PAPIER"
+},
+{
+"id":539,
+"fortune":"TON BLOCAGE CRÉATIF EST DEVENU PORTEUR"
+},
+{
+"id":540,
+"fortune":"TON LEVAIN A SURVÉCU À TA PASSION"
+},
+{
+"id":541,
+"fortune":"TES AQUARELLES CAPTURENT UN TRUC. LEQUEL"
+},
+{
+"id":542,
+"fortune":"TU BRILLES AUX DÉBUTS. LES MILIEUX ATTENDENT"
+},
+{
+"id":543,
+"fortune":"TON UKULÉLÉ ASSUME SON RÔLE DÉCORATIF"
+},
+{
+"id":544,
+"fortune":"TU ES TON PIRE CRITIQUE. SANS RIVAL SÉRIEUX"
+},
+{
+"id":545,
+"fortune":"TON ART PARLE POUR LUI. À VOIX BASSE"
+},
+{
+"id":546,
+"fortune":"TON ATELIER EST REDEVENU UN PLACARD"
+},
+{
+"id":547,
+"fortune":"TES PREMIERS JETS RESTENT ENFANTS UNIQUES"
+},
+{
+"id":548,
+"fortune":"TA PHASE BOUGIES A LAISSÉ DES TRACES. DE CIRE"
+},
+{
+"id":549,
+"fortune":"TES DÉBUTS SUR SCÈNE RESTENT IMMINENTS"
+},
+{
+"id":550,
+"fortune":"TES COSTUMES MONTRENT UN VRAI ENGAGEMENT"
+},
+{
+"id":551,
+"fortune":"TA CHOUETTE EN MACRAMÉ A TOUT VU. ELLE JUGE"
+},
+{
+"id":552,
+"fortune":"TES MÉMOS VOCAUX SONT DES LISTES DE COURSES"
+},
+{
+"id":553,
+"fortune":"TU SERAS DÉCOUVERT. SUR TON CANAPÉ"
+},
+{
+"id":554,
+"fortune":"TON MOODBOARD A DU MOOD. PAS DE BOARD"
+},
+{
+"id":555,
+"fortune":"TA VISITE DE MUSÉE FINIT AU CAFÉ DU MUSÉE"
+},
+{
+"id":556,
+"fortune":"TES REPRISES BATTENT LES ORIGINAUX. CHUT"
+},
+{
+"id":557,
+"fortune":"TA MACHINE À ÉCRIRE DÉCORE AVEC DIGNITÉ"
+},
+{
+"id":558,
+"fortune":"TA PÉRIODE ABSTRAITE PERDIT MÊME TOI"
+},
+{
+"id":559,
+"fortune":"TA BD A UN LECTEUR FIDÈLE. COUCOU MAMAN"
+},
+{
+"id":560,
+"fortune":"TES RIMES SONT AMBITIEUSES. TRÈS"
+},
+{
+"id":561,
+"fortune":"TON COIN BRICOLAGE A ANNEXÉ LA CHAMBRE"
+},
+{
+"id":562,
+"fortune":"TON GÉNIE EST INCOMPRIS. ET INVISIBLE"
+},
+{
+"id":563,
+"fortune":"TON GRAND ŒUVRE INFUSE DEPUIS DES ANNÉES"
+},
+{
+"id":564,
+"fortune":"TON DOSSIER INSPIRATION A DES SOUS DOSSIERS"
+},
+{
+"id":565,
+"fortune":"TON CAFÉ EST DEVENU UN PARAGRAPHE ENTIER"
+},
+{
+"id":566,
+"fortune":"LE CAFÉ EN PREMIER. LA PERSONNALITÉ SUIT"
+},
+{
+"id":567,
+"fortune":"TON QUATRIÈME CAFÉ TE SURVEILLE"
+},
+{
+"id":568,
+"fortune":"LE DÉCA EXISTE. TU NIES SON EXISTENCE"
+},
+{
+"id":569,
+"fortune":"TA COLLECTION DE TASSES DÉBORDE DU PLACARD"
+},
+{
+"id":570,
+"fortune":"TU DIS BRUNCH. TU VEUX DIRE RÉVEIL TARDIF"
+},
+{
+"id":571,
+"fortune":"TA PHASE SALADE EST MORTE À LA SAUCE"
+},
+{
+"id":572,
+"fortune":"TU PLANIFIES TES REPAS. PUIS TU COMMANDES"
+},
+{
+"id":573,
+"fortune":"TON PLAT SIGNATURE A UN FAN. TOI"
+},
+{
+"id":574,
+"fortune":"LE MINUTEUR DU FOUR EST UN SIMPLE AVIS"
+},
+{
+"id":575,
+"fortune":"TES SMOOTHIES CACHENT DES LÉGUMES. À TOI"
+},
+{
+"id":576,
+"fortune":"TU CUISINES AVEC AMOUR. ET TROP DE SEL"
+},
+{
+"id":577,
+"fortune":"TES SUBSTITUTIONS DE RECETTE SONT BRAVES"
+},
+{
+"id":578,
+"fortune":"TU DOSES TON AIL AVEC LE CŒUR. ENCORE"
+},
+{
+"id":579,
+"fortune":"TON PAIN GRILLÉ EST SOLIDE. TRÈS GRILLÉ"
+},
+{
+"id":580,
+"fortune":"LE DESSERT EN PREMIER. LA VIE EST COURTE"
+},
+{
+"id":581,
+"fortune":"TON TIROIR À SNACKS A SA FILE DE FANS"
+},
+{
+"id":582,
+"fortune":"LE LIVREUR CONNAÎT TON PRÉNOM ET TON CODE"
+},
+{
+"id":583,
+"fortune":"TES GADGETS DE CUISINE FORMENT UN MUSÉE"
+},
+{
+"id":584,
+"fortune":"TES BOÎTES DE TRAITEUR SONT DES HÉRITAGES"
+},
+{
+"id":585,
+"fortune":"TU MANGES DE TOUT. EN THÉORIE SEULEMENT"
+},
+{
+"id":586,
+"fortune":"TES CHOIX DE PIZZA ONT DES CRITIQUES"
+},
+{
+"id":587,
+"fortune":"TON CHIEN VOUS ADORE TOUS. IL EST DRESSÉ"
+},
+{
+"id":588,
+"fortune":"TON CHAT TE TOLÈRE. UN GRAND HONNEUR"
+},
+{
+"id":589,
+"fortune":"TON ANIMAL MANGE MIEUX QUE TOI"
+},
+{
+"id":590,
+"fortune":"TON CHIEN A UN CERCLE SOCIAL PLUS LARGE"
+},
+{
+"id":591,
+"fortune":"LE CHAT A TOUT FAIT TOMBER EXPRÈS. RESPECT"
+},
+{
+"id":592,
+"fortune":"TON POISSON CONNAÎT TON EMPLOI DU TEMPS"
+},
+{
+"id":593,
+"fortune":"LE CHIEN A MANGÉ TA MOTIVATION"
+},
+{
+"id":594,
+"fortune":"TON CHAT ÉVALUE TA VIE CHAQUE NUIT"
+},
+{
+"id":595,
+"fortune":"TON PERROQUET CITE TES PIRES PHRASES"
+},
+{
+"id":596,
+"fortune":"TON ANIMAL ÉCOUTE BIEN. ET GRATUITEMENT"
+},
+{
+"id":597,
+"fortune":"TON MOT DE PASSE EST TON CHAT. ON LE SAIT"
+},
+{
+"id":598,
+"fortune":"TU AS 47 MISES À JOUR EN ATTENTE. PATIENTES"
+},
+{
+"id":599,
+"fortune":"TON CLOUD EST PLEIN. DE DOUBLONS"
+},
+{
+"id":600,
+"fortune":"LE CORRECTEUR SAVAIT. IL A REFUSÉ"
+},
+{
+"id":601,
+"fortune":"TON ROUTEUR VEUT UN REDÉMARRAGE. TOI AUSSI"
+},
+{
+"id":602,
+"fortune":"TON HISTORIQUE DE RECHERCHE EST UNE SAGA"
+},
+{
+"id":603,
+"fortune":"TU AS FERMÉ UN ONGLET CE JOUR. PROGRÈS"
+},
+{
+"id":604,
+"fortune":"TON DOSSIER SPAM SE SENT SEUL"
+},
+{
+"id":605,
+"fortune":"LES ALGORITHMES TE CONNAISSENT TROP BIEN"
+},
+{
+"id":606,
+"fortune":"TA MONTRE TE CONSEILLE DE RESPIRER. SUBTIL"
+},
+{
+"id":607,
+"fortune":"TU TAPES PLUS VITE PENDANT LES DISPUTES"
+},
+{
+"id":608,
+"fortune":"TU AS COUPÉ LE GROUPE. LE GROUPE LE SAIT"
+},
+{
+"id":609,
+"fortune":"TA TOUCHE MAJUSCULE FAIT DU SPORT"
+},
+{
+"id":610,
+"fortune":"TES EMOJIS ONT FAIT DÉBAT. PLUS DUNE FOIS"
+},
+{
+"id":611,
+"fortune":"LE NOM DE TON WIFI EST TA MEILLEURE BLAGUE"
+},
+{
+"id":612,
+"fortune":"REDÉMARRER EST TON ART DE VIVRE"
+},
+{
+"id":613,
+"fortune":"TA SALLE DE SPORT TE REMERCIE POUR LE DON"
+},
+{
+"id":614,
+"fortune":"TON PLAN MARATHON EST SAUVEGARDÉ. EN LIEU SÛR"
+},
+{
+"id":615,
+"fortune":"LE JOUR DES JAMBES RESPECTE TON ABSENCE"
+},
+{
+"id":616,
+"fortune":"TA PROTÉINE EN POUDRE VIEILLIT AVEC CLASSE"
+},
+{
+"id":617,
+"fortune":"TU TÉTIRES UNE FOIS PAR AN. AVEC AMBITION"
+},
+{
+"id":618,
+"fortune":"TON ÉQUIPE PERD. TU PRENDS ÇA POUR TOI"
+},
+{
+"id":619,
+"fortune":"TU ARRIVES EN RETARD. ÇA COMPTE COMME CARDIO"
+},
+{
+"id":620,
+"fortune":"TON HOME GYM RANGE LE LINGE DÉSORMAIS"
+},
+{
+"id":621,
+"fortune":"TON RECORD PERSONNEL FUT UN TRAVAIL DE GROUPE"
+},
+{
+"id":622,
+"fortune":"TON ÉCHAUFFEMENT EST TOUTE LA SÉANCE"
+},
+{
+"id":623,
+"fortune":"TES JOURS DE REPOS ONT DES JOURS DE REPOS"
+},
+{
+"id":624,
+"fortune":"LE SOMMEIL EST POUR LES FORTS. TU DÉFILES"
+},
+{
+"id":625,
+"fortune":"TON PLANNING DE SIESTES EST TON VRAI AGENDA"
+},
+{
+"id":626,
+"fortune":"TU COMPTES LES MOUTONS. EUX TES EXCUSES"
+},
+{
+"id":627,
+"fortune":"TON OREILLER CONNAÎT TOUS TES SECRETS"
+},
+{
+"id":628,
+"fortune":"UN DERNIER ÉPISODE ÉGALE QUATRE ÉPISODES"
+},
+{
+"id":629,
+"fortune":"TES RÊVES SONT VIFS. TES MATINS MOINS"
+},
+{
+"id":630,
+"fortune":"TU METS SIX ALARMES. AUCUNE NE TE FAIT PEUR"
+},
+{
+"id":631,
+"fortune":"REPOUSSER LE COUCHER RESTE UN CHOIX"
+},
+{
+"id":632,
+"fortune":"TA DETTE DE SOMMEIL PREND DES INTÉRÊTS"
+},
+{
+"id":633,
+"fortune":"TA FAMILLE TE SOUTIENT. VOTE SERRÉ"
+},
+{
+"id":634,
+"fortune":"TA MÈRE AVAIT RAISON. SUR TOUT"
+},
+{
+"id":635,
+"fortune":"LES REPAS DE FAMILLE TESTENT TA DIPLOMATIE"
+},
+{
+"id":636,
+"fortune":"TA FRATRIE SE SOUVIENT DE TOUT. POUR TOUJOURS"
+},
+{
+"id":637,
+"fortune":"LES ONCLES DEMANDENT TES PROJETS. TIENS BON"
+},
+{
+"id":638,
+"fortune":"TU ES LE PRÉFÉRÉ. SOURCE NON CONFIRMÉE"
+},
+{
+"id":639,
+"fortune":"LE GROUPE FAMILLE NE DORT JAMAIS"
+},
+{
+"id":640,
+"fortune":"MAMIE TE NOURRIT. TOUTE RÉSISTANCE EST VAINE"
+},
+{
+"id":641,
+"fortune":"TES BLAGUES DE PAPA SE TRANSMETTENT INTACTES"
+},
+{
+"id":642,
+"fortune":"LE PLAN DE TABLE DES FÊTES EST POLITIQUE"
+},
+{
+"id":643,
+"fortune":"TON VOISIN TE SALUE. LA CLÔTURE FUT SON IDÉE"
+},
+{
+"id":644,
+"fortune":"LE SYNDIC A REVU TA PELOUSE. ENCORE"
+},
+{
+"id":645,
+"fortune":"TES VOISINS CONNAISSENT TON EMPLOI DU TEMPS"
+},
+{
+"id":646,
+"fortune":"UN OUTIL PRÊTÉ DEVIENT UN OUTIL DONNÉ"
+},
+{
+"id":647,
+"fortune":"TA CAMÉRA DE PORTE A FILMÉ TON SPRINT"
+},
+{
+"id":648,
+"fortune":"TON TRAJET QUOTIDIEN FORGE LE CARACTÈRE"
+},
+{
+"id":649,
+"fortune":"LES BOUCHONS NE VISENT PERSONNE. SAUF TOI"
+},
+{
+"id":650,
+"fortune":"TON CRÉNEAU LAISSE DES TÉMOINS SANS VOIX"
+},
+{
+"id":651,
+"fortune":"TON GPS DIT RECALCUL. AVEC LASSITUDE"
+},
+{
+"id":652,
+"fortune":"TU CONDUIS COMME TU VIS. CLIGNOTANT EN OPTION"
+},
+{
+"id":653,
+"fortune":"TON RÉSERVOIR ROULE À LA FOI. ET AUX VAPEURS"
+},
+{
+"id":654,
+"fortune":"LA VOIE DE GAUCHE SERT À DOUBLER. VOILÀ TOUT"
+},
+{
+"id":655,
+"fortune":"TA PLAYLIST AUTO A CULMINÉ EN 2016"
+},
+{
+"id":656,
+"fortune":"TON KLAXON TRAVAILLE PLUS QUE TON CLIGNOTANT"
+},
+{
+"id":657,
+"fortune":"LE TEMPS FILE. LE TIEN A UN PLAN DE VOL"
+},
+{
+"id":658,
+"fortune":"PROCRASTINER EST UN ART. TU ENSEIGNES"
+},
+{
+"id":659,
+"fortune":"TU LE FERAS DEMAIN. DEMAIN EST PRÉVENU"
+},
+{
+"id":660,
+"fortune":"LES DÉLAIS APPROCHENT. TU ADMIRES LA VUE"
+},
+{
+"id":661,
+"fortune":"TES CINQ MINUTES DURENT DES HEURES AILLEURS"
+},
+{
+"id":662,
+"fortune":"PLUS TARD EST TON FUSEAU HORAIRE PRÉFÉRÉ"
+},
+{
+"id":663,
+"fortune":"TU FINIS TOUT. UN JOUR EST UN MOT VALIDE"
+},
+{
+"id":664,
+"fortune":"TA LISTE UN JOUR PEUT REMPLIR UNE ÉTAGÈRE"
+},
+{
+"id":665,
+"fortune":"LA GESTION DU TEMPS EST UNE COMPÉTENCE. NOTÉ"
+},
+{
+"id":666,
+"fortune":"TU ES EN AVANCE UNE FOIS PAR AN. ON PANIQUE"
+},
+{
+"id":667,
+"fortune":"TA PONCTUALITÉ EST CÉLÈBRE. PAS EN BIEN"
+},
+{
+"id":668,
+"fortune":"TU LIS CECI AU LIEU DE TRAVAILLER. NOTÉ"
+},
+{
+"id":669,
+"fortune":"TON ATTENTION EST. TIENS UN OISEAU"
+},
+{
+"id":670,
+"fortune":"ENCORE UNE MINUTE. PAROLES CÉLÈBRES"
+},
+{
+"id":671,
+"fortune":"TU RÉPONDS AUX TEXTOS EN TEMPS GÉOLOGIQUE"
+},
+{
+"id":672,
+"fortune":"TES ACCUSÉS DE LECTURE TE TRAHISSENT"
+},
+{
+"id":673,
+"fortune":"TU AS VU LE MESSAGE. EUX AUSSI ONT VU"
+},
+{
+"id":674,
+"fortune":"TA BULLE DE FRAPPE EST APPARUE. PUIS PARTIE"
+},
+{
+"id":675,
+"fortune":"TU AS DIT ON DEVRAIT SE VOIR. UN CLASSIQUE"
+},
+{
+"id":676,
+"fortune":"TON TÉLÉPHONE EST MUET. DEPUIS DES ANNÉES"
+},
+{
+"id":677,
+"fortune":"TU FAIS DES CAPTURES AU LIEU DE RÉPONDRE"
+},
+{
+"id":678,
+"fortune":"TON AVIS FUT NOTÉ. PUIS RECYCLÉ"
+},
+{
+"id":679,
+"fortune":"UN COMPLIMENT ARRIVE. ACCEPTE LE MAL"
+},
+{
+"id":680,
+"fortune":"TON VISAGE NEUTRE A UNE RÉPUTATION"
+},
+{
+"id":681,
+"fortune":"VOUS ÊTES DACCORD SUR LE DÉSACCORD. TU PERDS"
+},
+{
+"id":682,
+"fortune":"TON ROULEMENT DES YEUX EST PRESQUE SONORE"
+},
+{
+"id":683,
+"fortune":"TON SOUPIR VIENT DE PARLER POUR TOI"
+},
+{
+"id":684,
+"fortune":"TU AS DIT ÇA VA. RIEN NE VA"
+},
+{
+"id":685,
+"fortune":"TON POUCE LEVÉ A BRISÉ TROIS AMITIÉS"
+},
+{
+"id":686,
+"fortune":"PAS DE SOUCI AS TU DIT. PLEIN DE SOUCIS"
+},
+{
+"id":687,
+"fortune":"TON HAUSSEMENT DE COUPE FAIT UN GROS TRAVAIL"
+},
+{
+"id":688,
+"fortune":"TU AS SOURI À TRAVERS TOUT ÇA. ON A VU"
+},
+{
+"id":689,
+"fortune":"TA PATIENCE A UNE BARRE DE CHARGEMENT. FIGÉE"
+},
+{
+"id":690,
+"fortune":"TU LEUR AS PARDONNÉ. LE TABLEUR RESTE"
+},
+{
+"id":691,
+"fortune":"TES SOUS ENTENDUS VEULENT DES SOUS TITRES"
+},
+{
+"id":692,
+"fortune":"TU AS FAILLI LE DIRE. LE FAILLI ÉTAIT FORT"
+},
+{
+"id":693,
+"fortune":"TON SILENCE A UN ORDRE DU JOUR. CLASSIQUE"
+},
+{
+"id":694,
+"fortune":"TU AS LAISSÉ COULER. DANS TES ARCHIVES"
+},
+{
+"id":695,
+"fortune":"TON CALME INTRIGUE TOUT LE MONDE"
+},
+{
+"id":696,
+"fortune":"TU AS PRIS LA VOIE NOBLE. AVEC COMMENTAIRES"
+},
+{
+"id":697,
+"fortune":"TU AS PRIS LA HAUTEUR. AVEC UN COMMENTAIRE"
+},
+{
+"id":698,
+"fortune":"TON CALME EST SUSPECT. TOUT LE MONDE LE DIT"
+},
+{
+"id":699,
+"fortune":"CE BISCUIT NA PAS DE SAGESSE. QUE DU SUCRE"
+},
+{
+"id":700,
+"fortune":"LA SAGESSE CHERCHÉE EST DANS UN AUTRE BISCUIT"
+}
+]

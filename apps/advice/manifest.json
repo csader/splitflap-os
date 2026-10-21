@@ -1,0 +1,34 @@
+{
+  "id": "advice",
+  "name": "Advice",
+  "icon": "🧭",
+  "description": "A random piece of advice",
+  "type": "functional",
+  "refresh_interval": 1800,
+  "loop_delay": 7,
+  "category": "entertainment",
+  "min_rows": 2,
+  "min_cols": 15,
+  "settings": [
+    {
+      "key": "refresh_minutes",
+      "label": "Fetch new advice every (minutes)",
+      "type": "number",
+      "default": "30",
+      "min": "1",
+      "max": "1440",
+      "step": "1",
+      "stepper": true
+    },
+    {
+      "key": "loop_delay",
+      "label": "Delay Between Pages (seconds)",
+      "type": "number",
+      "default": "7",
+      "min": "2",
+      "max": "30",
+      "step": "1",
+      "stepper": true
+    }
+  ]
+}
